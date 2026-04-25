@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { AlertCircle, LogIn } from "lucide-react";
 import { signInWithGoogle } from "@/lib/firebase/client";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ export function LoginCard({ missingEnv }: { missingEnv: string[] }) {
   const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/admin";
+  const t = useTranslations("auth");
 
   const isConfigured = missingEnv.length === 0;
 
@@ -30,12 +32,12 @@ export function LoginCard({ missingEnv }: { missingEnv: string[] }) {
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
-        throw new Error(body.error ?? "Sign-in failed.");
+        throw new Error(body.error ?? t("signInFailed"));
       }
       router.push(callbackUrl);
       router.refresh();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Sign-in failed.";
+      const message = err instanceof Error ? err.message : t("signInFailed");
       setError(message);
     } finally {
       setLoading(false);
@@ -48,10 +50,8 @@ export function LoginCard({ missingEnv }: { missingEnv: string[] }) {
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground text-base mb-2">
           ۞
         </div>
-        <CardTitle className="text-lg">i-muslim Admin</CardTitle>
-        <CardDescription>
-          Sign in with your authorized Google account to continue.
-        </CardDescription>
+        <CardTitle className="text-lg">{t("title")}</CardTitle>
+        <CardDescription>{t("subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 p-6 pt-0">
         {!isConfigured && (
@@ -59,15 +59,17 @@ export function LoginCard({ missingEnv }: { missingEnv: string[] }) {
             <div className="flex items-start gap-2">
               <AlertCircle className="size-4 mt-0.5 shrink-0 text-warning" />
               <div className="space-y-1">
-                <p className="font-medium text-foreground">Firebase is not configured.</p>
+                <p className="font-medium text-foreground">{t("notConfigured")}</p>
                 <p className="text-muted-foreground">
-                  Set the following env vars in{" "}
-                  <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
-                    .env.local
-                  </code>
-                  , then restart the dev server:
+                  {t.rich("notConfiguredHelp", {
+                    file: () => (
+                      <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
+                        .env.local
+                      </code>
+                    ),
+                  })}
                 </p>
-                <ul className="mt-1 list-disc pl-4 text-xs text-muted-foreground">
+                <ul className="mt-1 list-disc ps-4 text-xs text-muted-foreground">
                   {missingEnv.map((v) => (
                     <li key={v} className="font-mono">{v}</li>
                   ))}
@@ -97,11 +99,11 @@ export function LoginCard({ missingEnv }: { missingEnv: string[] }) {
           ) : (
             <LogIn className="size-4" />
           )}
-          Continue with Google
+          {t("continueWithGoogle")}
         </Button>
 
         <p className="text-center text-xs text-muted-foreground">
-          Access is limited to approved administrators.
+          {t("limitedAccessNote")}
         </p>
 
         <div className="pt-2 text-center">
@@ -109,7 +111,7 @@ export function LoginCard({ missingEnv }: { missingEnv: string[] }) {
             href="/"
             className="text-xs text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
           >
-            ← Back to i-muslim
+            {t("backToSite")}
           </Link>
         </div>
       </CardContent>

@@ -8,15 +8,13 @@ interface StatCardProps {
   label: string;
   value: string | number;
   delta?: number;
-  format?: (v: number) => string;
   sparkline?: number[];
   suffix?: string;
 }
 
-export function StatCard({ label, value, delta, sparkline, format, suffix }: StatCardProps) {
+export function StatCard({ label, value, delta, sparkline, suffix }: StatCardProps) {
   const positive = (delta ?? 0) >= 0;
-  const displayValue =
-    typeof value === "number" ? (format ? format(value) : value.toLocaleString()) : value;
+  const displayValue = typeof value === "number" ? value.toLocaleString() : value;
 
   const chartData = (sparkline ?? []).map((v, i) => ({ i, v }));
 

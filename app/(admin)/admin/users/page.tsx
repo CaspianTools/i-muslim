@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { UsersPageClient } from "@/components/admin/users/UsersPageClient";
 import { fetchUsers } from "@/lib/admin/data/users";
 
-export const metadata: Metadata = { title: "Users" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("users");
+  return { title: t("pageTitle") };
+}
 
 export default async function UsersPage() {
   const { users, source } = await fetchUsers();
+  const t = await getTranslations("users");
 
   return (
     <div>
       <PageHeader
-        title="Users"
-        subtitle={
-          source === "firestore"
-            ? "Live from Firestore."
-            : "Sample data — configure Firebase Admin to see live users."
-        }
+        title={t("pageTitle")}
+        subtitle={source === "firestore" ? t("subtitleLive") : t("subtitleMock")}
       />
       <UsersPageClient initialUsers={users} source={source} />
     </div>

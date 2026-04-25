@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Amiri, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { dirFor, type Locale } from "@/i18n/config";
 import "./globals.css";
 
 const inter = Inter({
@@ -32,19 +35,26 @@ export const metadata: Metadata = {
     "A clean, fast reader for the Quran and major Hadith collections with Arabic, English, Russian, and Azerbaijani translations.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = (await getLocale()) as Locale;
+  const messages = await getMessages();
+  const dir = dirFor(locale);
+
   return (
     <html
-      lang="en"
+      lang={locale}
+      dir={dir}
       suppressHydrationWarning
       className={`${inter.variable} ${amiri.variable} ${plexArabic.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider>{children}</ThemeProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

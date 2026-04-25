@@ -31,75 +31,115 @@ import {
   Users2,
 } from "lucide-react";
 
+export type NavItemKey =
+  | "dashboard"
+  | "analytics"
+  | "activity"
+  | "users"
+  | "roles"
+  | "scholars"
+  | "groups"
+  | "articles"
+  | "quran"
+  | "hadith"
+  | "duas"
+  | "khutbahs"
+  | "media"
+  | "prayerTimes"
+  | "hijriCalendar"
+  | "events"
+  | "mosques"
+  | "qa"
+  | "announcements"
+  | "newsletter"
+  | "moderation"
+  | "donations"
+  | "businesses"
+  | "courses"
+  | "matrimonial"
+  | "reports"
+  | "audit"
+  | "settings"
+  | "integrations";
+
+export type NavGroupKey =
+  | "overview"
+  | "community"
+  | "content"
+  | "worship"
+  | "engagement"
+  | "services"
+  | "system";
+
 export interface NavItem {
-  label: string;
+  labelKey: NavItemKey;
   href: string;
   icon: LucideIcon;
-  badgeKey?: "pendingUsers" | "unansweredQa" | "flaggedContent";
+  badgeKey?:
+    | "pendingUsers"
+    | "unansweredQa"
+    | "flaggedContent"
+    | "openReports"
+    | "pendingMosques"
+    | "pendingMatrimonial";
 }
 
 export interface NavGroup {
-  id: string;
-  label: string;
+  id: NavGroupKey;
   items: NavItem[];
 }
 
 export const ADMIN_NAV: NavGroup[] = [
   {
     id: "overview",
-    label: "Overview",
     items: [
-      { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-      { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-      { label: "Activity Log", href: "/admin/activity", icon: Activity },
+      { labelKey: "dashboard", href: "/admin", icon: LayoutDashboard },
+      { labelKey: "analytics", href: "/admin/analytics", icon: BarChart3 },
+      { labelKey: "activity", href: "/admin/activity", icon: Activity },
     ],
   },
   {
     id: "community",
-    label: "Community",
     items: [
-      { label: "Users", href: "/admin/users", icon: Users, badgeKey: "pendingUsers" },
-      { label: "Roles & Permissions", href: "/admin/roles", icon: Shield },
-      { label: "Scholars & Imams", href: "/admin/scholars", icon: GraduationCap },
-      { label: "Groups & Chapters", href: "/admin/groups", icon: Users2 },
+      { labelKey: "users", href: "/admin/users", icon: Users, badgeKey: "pendingUsers" },
+      { labelKey: "roles", href: "/admin/roles", icon: Shield },
+      { labelKey: "scholars", href: "/admin/scholars", icon: GraduationCap },
+      { labelKey: "groups", href: "/admin/groups", icon: Users2 },
     ],
   },
   {
     id: "content",
-    label: "Content",
     items: [
-      { label: "Articles & Blog", href: "/admin/articles", icon: FileText },
-      { label: "Quran Resources", href: "/admin/quran", icon: BookOpen },
-      { label: "Hadith Collections", href: "/admin/hadith", icon: BookMarked },
-      { label: "Duas & Adhkar", href: "/admin/duas", icon: Sparkles },
-      { label: "Khutbahs / Sermons", href: "/admin/khutbahs", icon: Mic2 },
-      { label: "Media Library", href: "/admin/media", icon: Image },
+      { labelKey: "articles", href: "/admin/articles", icon: FileText },
+      { labelKey: "quran", href: "/admin/quran", icon: BookOpen },
+      { labelKey: "hadith", href: "/admin/hadith", icon: BookMarked },
+      { labelKey: "duas", href: "/admin/duas", icon: Sparkles },
+      { labelKey: "khutbahs", href: "/admin/khutbahs", icon: Mic2 },
+      { labelKey: "media", href: "/admin/media", icon: Image },
     ],
   },
   {
     id: "worship",
-    label: "Worship & Calendar",
     items: [
-      { label: "Prayer Times", href: "/admin/prayer-times", icon: Clock },
-      { label: "Hijri Calendar", href: "/admin/hijri-calendar", icon: Calendar },
-      { label: "Events", href: "/admin/events", icon: CalendarDays },
-      { label: "Mosque Directory", href: "/admin/mosques", icon: Landmark },
+      { labelKey: "prayerTimes", href: "/admin/prayer-times", icon: Clock },
+      { labelKey: "hijriCalendar", href: "/admin/hijri-calendar", icon: Calendar },
+      { labelKey: "events", href: "/admin/events", icon: CalendarDays },
+      { labelKey: "mosques", href: "/admin/mosques", icon: Landmark, badgeKey: "pendingMosques" },
     ],
   },
   {
     id: "engagement",
-    label: "Engagement",
     items: [
       {
-        label: "Q&A / Fatwa Requests",
+        labelKey: "qa",
         href: "/admin/qa",
         icon: MessageCircleQuestion,
         badgeKey: "unansweredQa",
       },
-      { label: "Announcements", href: "/admin/announcements", icon: Megaphone },
-      { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
+      { labelKey: "announcements", href: "/admin/announcements", icon: Megaphone },
+      { labelKey: "newsletter", href: "/admin/newsletter", icon: Mail },
       {
-        label: "Comments & Moderation",
+        labelKey: "moderation",
         href: "/admin/moderation",
         icon: MessageSquareWarning,
         badgeKey: "flaggedContent",
@@ -108,22 +148,20 @@ export const ADMIN_NAV: NavGroup[] = [
   },
   {
     id: "services",
-    label: "Services",
     items: [
-      { label: "Donations & Zakat", href: "/admin/donations", icon: HandCoins },
-      { label: "Halal Business Directory", href: "/admin/businesses", icon: Store },
-      { label: "Classes & Courses", href: "/admin/courses", icon: BookOpenCheck },
-      { label: "Matrimonial", href: "/admin/matrimonial", icon: Heart },
+      { labelKey: "donations", href: "/admin/donations", icon: HandCoins },
+      { labelKey: "businesses", href: "/admin/businesses", icon: Store, badgeKey: "openReports" },
+      { labelKey: "courses", href: "/admin/courses", icon: BookOpenCheck },
+      { labelKey: "matrimonial", href: "/admin/matrimonial", icon: Heart, badgeKey: "pendingMatrimonial" },
     ],
   },
   {
     id: "system",
-    label: "System",
     items: [
-      { label: "Reports", href: "/admin/reports", icon: FileBarChart },
-      { label: "Audit Logs", href: "/admin/audit", icon: ScrollText },
-      { label: "Settings", href: "/admin/settings", icon: Settings },
-      { label: "Integrations", href: "/admin/integrations", icon: Plug },
+      { labelKey: "reports", href: "/admin/reports", icon: FileBarChart },
+      { labelKey: "audit", href: "/admin/audit", icon: ScrollText },
+      { labelKey: "settings", href: "/admin/settings", icon: Settings },
+      { labelKey: "integrations", href: "/admin/integrations", icon: Plug },
     ],
   },
 ];

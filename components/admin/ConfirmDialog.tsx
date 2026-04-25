@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -29,14 +30,18 @@ export function ConfirmDialog({
   onOpenChange,
   title,
   description,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel,
+  cancelLabel,
   confirmWord,
   onConfirm,
 }: ConfirmDialogProps) {
   const [typed, setTyped] = useState("");
   const [busy, setBusy] = useState(false);
   const ready = !confirmWord || typed === confirmWord;
+  const t = useTranslations("confirmDialog");
+  const tCommon = useTranslations("common");
+  const resolvedConfirmLabel = confirmLabel ?? tCommon("yes");
+  const resolvedCancelLabel = cancelLabel ?? tCommon("cancel");
 
   async function handle() {
     if (!ready) return;
@@ -66,7 +71,9 @@ export function ConfirmDialog({
         {confirmWord && (
           <div className="space-y-2">
             <Label htmlFor="confirm-word">
-              Type <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">{confirmWord}</code> to confirm
+              {t("typePromptPrefix")}{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">{confirmWord}</code>{" "}
+              {t("typePromptSuffix")}
             </Label>
             <Input
               id="confirm-word"
@@ -78,10 +85,10 @@ export function ConfirmDialog({
         )}
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)} disabled={busy}>
-            {cancelLabel}
+            {resolvedCancelLabel}
           </Button>
           <Button variant="danger" onClick={handle} disabled={!ready || busy} aria-busy={busy}>
-            {busy ? "Working…" : confirmLabel}
+            {busy ? tCommon("working") : resolvedConfirmLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

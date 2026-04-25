@@ -1,25 +1,24 @@
 import { FileQuestion } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { EmptyState } from "./EmptyState";
 import { PageHeader } from "./PageHeader";
-import { findNavItem } from "@/lib/admin/nav";
+import { findNavItem, type NavItemKey } from "@/lib/admin/nav";
 
 interface StubPageProps {
   href: string;
-  description?: string;
 }
 
-export function StubPage({
-  href,
-  description = "This section is coming soon. Phase 1 ships the Dashboard and Users; the rest follows as the app grows.",
-}: StubPageProps) {
+export async function StubPage({ href }: StubPageProps) {
   const item = findNavItem(href);
   const Icon = item?.icon ?? FileQuestion;
-  const title = item?.label ?? "Coming soon";
+  const tNav = await getTranslations("sidebar.items");
+  const tStub = await getTranslations("stub");
+  const title = item ? tNav(item.labelKey as NavItemKey) : tStub("comingSoon");
 
   return (
     <div>
       <PageHeader title={title} />
-      <EmptyState icon={Icon} title="Coming soon" description={description} />
+      <EmptyState icon={Icon} title={tStub("comingSoon")} description={tStub("description")} />
     </div>
   );
 }

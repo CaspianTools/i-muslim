@@ -1,34 +1,40 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { formatHijri, formatGregorian } from "@/lib/admin/hijri";
+import { useLocale, useTranslations } from "next-intl";
+import { getHijriParts, formatGregorian } from "@/lib/admin/hijri";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-function useTodayDates(): { hijri: string; gregorian: string } | null {
-  return useSyncExternalStore(
-    () => () => {},
-    () => {
-      const now = new Date();
-      return { hijri: formatHijri(now), gregorian: formatGregorian(now) };
-    },
-    () => null,
-  );
+const noopSubscribe = () => () => {};
+const getMounted = () => true;
+const getMountedServer = () => false;
+
+function useMounted(): boolean {
+  return useSyncExternalStore(noopSubscribe, getMounted, getMountedServer);
 }
 
 export function HijriDate() {
-  const today = useTodayDates();
+  const mounted = useMounted();
+  const t = useTranslations("hijri.months");
+  const locale = useLocale();
 
-  if (!today) return <span className="text-sm text-muted-foreground">—</span>;
+  if (!mounted) return <span className="text-sm text-muted-foreground">—</span>;
+
+  const today = new Date();
+  const { day, monthIndex, year } = getHijriParts(today);
+  const monthName = t(String(monthIndex) as "1");
+  const hijri = `${day} ${monthName} ${year}`;
+  const gregorian = formatGregorian(today, locale);
 
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="cursor-help text-sm text-muted-foreground" aria-label={`${today.hijri} (${today.gregorian})`}>
-            {today.hijri}
+          <span className="cursor-help text-sm text-muted-foreground" aria-label={`${hijri} (${gregorian})`}>
+            {hijri}
           </span>
         </TooltipTrigger>
-        <TooltipContent>{today.gregorian}</TooltipContent>
+        <TooltipContent>{gregorian}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

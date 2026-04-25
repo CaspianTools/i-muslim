@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 interface Props {
@@ -7,11 +8,12 @@ interface Props {
 }
 
 export function EngagementBarChart({ data }: Props) {
+  const t = useTranslations("dashboard.engagement");
   return (
     <div className="rounded-lg border border-border bg-card p-5">
       <div className="pb-4">
-        <h2 className="text-sm font-semibold text-foreground">Engagement by content type</h2>
-        <p className="text-xs text-muted-foreground">Views this week</p>
+        <h2 className="text-sm font-semibold text-foreground">{t("title")}</h2>
+        <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
       </div>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">

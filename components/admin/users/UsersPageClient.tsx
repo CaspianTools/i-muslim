@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   flexRender,
   getCoreRowModel,
@@ -42,21 +43,8 @@ import { InviteUserDrawer } from "./InviteUserDrawer";
 
 const PAGE_SIZES = [10, 25, 50, 100];
 
-const ROLE_OPTIONS: Array<{ value: AdminRole | "all"; label: string }> = [
-  { value: "all", label: "All roles" },
-  { value: "admin", label: "Admin" },
-  { value: "moderator", label: "Moderator" },
-  { value: "scholar", label: "Scholar" },
-  { value: "member", label: "Member" },
-];
-
-const STATUS_OPTIONS: Array<{ value: AdminUserStatus | "all"; label: string }> = [
-  { value: "all", label: "All statuses" },
-  { value: "active", label: "Active" },
-  { value: "pending", label: "Pending" },
-  { value: "suspended", label: "Suspended" },
-  { value: "banned", label: "Banned" },
-];
+const ROLE_VALUES = ["all", "admin", "moderator", "scholar", "member"] as const;
+const STATUS_VALUES = ["all", "active", "pending", "suspended", "banned"] as const;
 
 function roleVariant(role: AdminRole): "accent" | "info" | "success" | "neutral" {
   if (role === "admin") return "accent";
@@ -93,6 +81,11 @@ export function UsersPageClient({
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
   const [bulkDelete, setBulkDelete] = useState(false);
 
+  const t = useTranslations("users");
+  const tCommon = useTranslations("common");
+  const tRoles = useTranslations("users.roles");
+  const tStatuses = useTranslations("users.statuses");
+
   const filtered = useMemo(() => {
     return users.filter((u) => {
       if (role !== "all" && u.role !== role) return false;
@@ -114,7 +107,7 @@ export function UsersPageClient({
         id: "select",
         header: ({ table }) => (
           <Checkbox
-            aria-label="Select all"
+            aria-label={t("selectAll")}
             checked={
               table.getIsAllPageRowsSelected()
                 ? true
@@ -127,7 +120,7 @@ export function UsersPageClient({
         ),
         cell: ({ row }) => (
           <Checkbox
-            aria-label={`Select ${row.original.name}`}
+            aria-label={t("selectRow", { name: row.original.name })}
             checked={row.getIsSelected()}
             onCheckedChange={(v) => row.toggleSelected(Boolean(v))}
             onClick={(e) => e.stopPropagation()}
@@ -139,7 +132,7 @@ export function UsersPageClient({
       {
         id: "user",
         accessorFn: (u) => u.name,
-        header: "User",
+        header: t("columns.user"),
         cell: ({ row }) => {
           const u = row.original;
           return (
@@ -152,7 +145,7 @@ export function UsersPageClient({
                 <div className="flex items-center gap-1 text-sm font-medium text-foreground">
                   <span className="truncate">{u.name}</span>
                   {u.verified && (
-                    <BadgeCheck className="size-3.5 text-primary shrink-0" aria-label="Verified" />
+                    <BadgeCheck className="size-3.5 text-primary shrink-0" aria-label={t("verified")} />
                   )}
                 </div>
                 <div className="truncate text-xs text-muted-foreground">{u.email}</div>
@@ -164,27 +157,27 @@ export function UsersPageClient({
       {
         id: "role",
         accessorKey: "role",
-        header: "Role",
+        header: t("columns.role"),
         cell: ({ row }) => (
-          <Badge variant={roleVariant(row.original.role)} className="capitalize">
-            {row.original.role}
+          <Badge variant={roleVariant(row.original.role)}>
+            {tRoles(row.original.role)}
           </Badge>
         ),
       },
       {
         id: "status",
         accessorKey: "status",
-        header: "Status",
+        header: t("columns.status"),
         cell: ({ row }) => (
-          <Badge variant={statusVariant(row.original.status)} className="capitalize">
-            {row.original.status}
+          <Badge variant={statusVariant(row.original.status)}>
+            {tStatuses(row.original.status)}
           </Badge>
         ),
       },
       {
         id: "joined",
         accessorFn: (u) => new Date(u.joinedAt).getTime(),
-        header: "Joined",
+        header: t("columns.joined"),
         cell: ({ row }) => (
           <span className="text-sm tabular-nums text-muted-foreground">
             {formatRelative(row.original.joinedAt)}
@@ -194,7 +187,7 @@ export function UsersPageClient({
       {
         id: "lastActive",
         accessorFn: (u) => new Date(u.lastActiveAt).getTime(),
-        header: "Last active",
+        header: t("columns.lastActive"),
         cell: ({ row }) => (
           <span className="text-sm tabular-nums text-muted-foreground">
             {formatRelative(row.original.lastActiveAt)}
@@ -209,38 +202,48 @@ export function UsersPageClient({
             <div onClick={(e) => e.stopPropagation()} className="text-right">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label={`Actions for ${u.name}`}>
+                  <Button variant="ghost" size="icon" aria-label={t("rowActions", { name: u.name })}>
                     <MoreHorizontal className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => setDetailUser(u)}>
-                    <UserCog /> View profile
+                    <UserCog /> {t("viewProfile")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {
-                      toast("Password reset email sent (mock).");
+                      toast(t("resetPasswordToast"));
                     }}
                   >
-                    <Mail /> Reset password
+                    <Mail /> {t("resetPassword")}
                   </DropdownMenuItem>
                   {u.status !== "suspended" && (
                     <DropdownMenuItem
-                      onClick={() => {
-                        setUsers((prev) =>
-                          prev.map((p) =>
-                            p.id === u.id ? { ...p, status: "suspended" as const } : p,
-                          ),
-                        );
-                        toast.success(`${u.name} suspended.`);
+                      onClick={async () => {
+                        try {
+                          const res = await fetch(`/api/admin/users/${u.id}`, {
+                            method: "PATCH",
+                            headers: { "content-type": "application/json" },
+                            body: JSON.stringify({ status: "suspended" }),
+                          });
+                          if (!res.ok) throw new Error((await res.json()).error || "Failed");
+                          setUsers((prev) =>
+                            prev.map((p) =>
+                              p.id === u.id ? { ...p, status: "suspended" as const } : p,
+                            ),
+                          );
+                          toast.success(t("suspendedToast", { name: u.name }));
+                        } catch (err) {
+                          toast.error(err instanceof Error ? err.message : "Failed");
+                        }
                       }}
                     >
-                      <ShieldX /> Suspend
+                      <ShieldX /> {t("suspend")}
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(u)}>
-                    <Trash2 /> Delete
+                    <Trash2 /> {tCommon("delete")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -251,7 +254,7 @@ export function UsersPageClient({
         size: 48,
       },
     ],
-    [],
+    [t, tCommon, tRoles, tStatuses],
   );
 
   const table = useReactTable({
@@ -298,68 +301,107 @@ export function UsersPageClient({
     URL.revokeObjectURL(url);
   }
 
-  function applyBulkStatus(next: AdminUserStatus) {
-    setUsers((prev) =>
-      prev.map((u) => (selectedIds.includes(u.id) ? { ...u, status: next } : u)),
-    );
-    setRowSelection({});
-    toast.success(`Updated ${selectedCount} user${selectedCount === 1 ? "" : "s"}.`);
+  async function applyBulkStatus(next: AdminUserStatus) {
+    const ids = selectedIds.slice();
+    try {
+      const res = await fetch("/api/admin/users/bulk", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ids, op: "status", status: next }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Failed");
+      setUsers((prev) =>
+        prev.map((u) => (ids.includes(u.id) ? { ...u, status: next } : u)),
+      );
+      setRowSelection({});
+      toast.success(t("rolesUpdatedToast", { count: ids.length }));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed");
+    }
   }
 
-  function applyBulkRole(next: AdminRole) {
-    setUsers((prev) =>
-      prev.map((u) => (selectedIds.includes(u.id) ? { ...u, role: next } : u)),
-    );
-    setRowSelection({});
-    toast.success(`Role changed for ${selectedCount} user${selectedCount === 1 ? "" : "s"}.`);
+  async function applyBulkRole(next: AdminRole) {
+    const ids = selectedIds.slice();
+    try {
+      const res = await fetch("/api/admin/users/bulk", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ids, op: "role", role: next }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Failed");
+      setUsers((prev) =>
+        prev.map((u) => (ids.includes(u.id) ? { ...u, role: next } : u)),
+      );
+      setRowSelection({});
+      toast.success(t("rolesChangedToast", { count: ids.length }));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed");
+    }
   }
 
-  function applyBulkDelete() {
-    setUsers((prev) => prev.filter((u) => !selectedIds.includes(u.id)));
-    setRowSelection({});
-    setBulkDelete(false);
-    toast.success(`Deleted ${selectedCount} user${selectedCount === 1 ? "" : "s"}.`);
+  async function applyBulkDelete() {
+    const ids = selectedIds.slice();
+    try {
+      const res = await fetch("/api/admin/users/bulk", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ids, op: "delete" }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Failed");
+      setUsers((prev) => prev.filter((u) => !ids.includes(u.id)));
+      setRowSelection({});
+      setBulkDelete(false);
+      toast.success(t("deletedToast", { count: ids.length }));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed");
+    }
   }
 
-  function handleDeleteOne() {
+  async function handleDeleteOne() {
     if (!deleteTarget) return;
-    const name = deleteTarget.name;
-    setUsers((prev) => prev.filter((u) => u.id !== deleteTarget.id));
-    setDeleteTarget(null);
-    toast.success(`${name} deleted.`);
+    const target = deleteTarget;
+    try {
+      const res = await fetch(`/api/admin/users/${target.id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error((await res.json()).error || "Failed");
+      setUsers((prev) => prev.filter((u) => u.id !== target.id));
+      setDeleteTarget(null);
+      toast.success(t("deletedOneToast", { name: target.name }));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed");
+    }
   }
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search name or email…"
+            placeholder={t("searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-8 w-64"
-            aria-label="Search users"
+            className="ps-8 w-64"
+            aria-label={t("searchAria")}
           />
         </div>
         <select
           className="h-9 rounded-md border border-input bg-background px-2 text-sm"
           value={role}
           onChange={(e) => setRole(e.target.value as AdminRole | "all")}
-          aria-label="Filter by role"
+          aria-label={t("filterByRole")}
         >
-          {ROLE_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
+          {ROLE_VALUES.map((v) => (
+            <option key={v} value={v}>{tRoles(v)}</option>
           ))}
         </select>
         <select
           className="h-9 rounded-md border border-input bg-background px-2 text-sm"
           value={status}
           onChange={(e) => setStatus(e.target.value as AdminUserStatus | "all")}
-          aria-label="Filter by status"
+          aria-label={t("filterByStatus")}
         >
-          {STATUS_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
+          {STATUS_VALUES.map((v) => (
+            <option key={v} value={v}>{tStatuses(v)}</option>
           ))}
         </select>
         <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
@@ -367,35 +409,35 @@ export function UsersPageClient({
             checked={verifiedOnly}
             onCheckedChange={(v) => setVerifiedOnly(Boolean(v))}
           />
-          Verified only
+          {t("verifiedOnly")}
         </label>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ms-auto flex items-center gap-2">
           <Button
             variant="secondary"
             size="sm"
             onClick={() => exportCsv(filtered)}
             disabled={filtered.length === 0}
           >
-            <Download /> Export CSV
+            <Download /> {t("exportCsv")}
           </Button>
           <Button size="sm" onClick={() => setInviteOpen(true)} disabled={source === "mock"}>
-            <Plus /> Invite user
+            <Plus /> {t("inviteUser")}
           </Button>
         </div>
       </div>
 
       {selectedCount > 0 && (
         <div className="flex flex-wrap items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-sm">
-          <span className="font-medium">{selectedCount} selected</span>
-          <div className="ml-auto flex flex-wrap items-center gap-2">
+          <span className="font-medium">{t("selectedCount", { count: selectedCount })}</span>
+          <div className="ms-auto flex flex-wrap items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="sm">Change role</Button>
+                <Button variant="secondary" size="sm">{t("changeRole")}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {(["admin", "moderator", "scholar", "member"] as const).map((r) => (
-                  <DropdownMenuItem key={r} onClick={() => applyBulkRole(r)} className="capitalize">
-                    {r}
+                  <DropdownMenuItem key={r} onClick={() => applyBulkRole(r)}>
+                    {tRoles(r)}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -404,14 +446,14 @@ export function UsersPageClient({
               variant="secondary"
               size="sm"
               onClick={() => {
-                toast("Emails queued (mock).");
+                toast(t("emailQueuedToast"));
                 setRowSelection({});
               }}
             >
-              <Mail /> Email
+              <Mail /> {t("email")}
             </Button>
             <Button variant="secondary" size="sm" onClick={() => applyBulkStatus("suspended")}>
-              <ShieldX /> Suspend
+              <ShieldX /> {t("suspend")}
             </Button>
             <Button
               variant="secondary"
@@ -420,10 +462,10 @@ export function UsersPageClient({
                 exportCsv(users.filter((u) => selectedIds.includes(u.id)))
               }
             >
-              <Download /> Export
+              <Download /> {t("export")}
             </Button>
             <Button variant="danger" size="sm" onClick={() => setBulkDelete(true)}>
-              <Trash2 /> Delete
+              <Trash2 /> {tCommon("delete")}
             </Button>
           </div>
         </div>
@@ -476,7 +518,7 @@ export function UsersPageClient({
                     colSpan={columns.length}
                     className="py-12 text-center text-sm text-muted-foreground"
                   >
-                    No users match these filters.
+                    {t("noResults")}
                   </td>
                 </tr>
               ) : (
@@ -505,7 +547,7 @@ export function UsersPageClient({
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-3 py-2 text-xs">
           <div className="flex items-center gap-2 text-muted-foreground">
-            <span>Rows per page</span>
+            <span>{t("rowsPerPage")}</span>
             <select
               className="h-7 rounded-md border border-input bg-background px-1"
               value={pageSize}
@@ -513,7 +555,7 @@ export function UsersPageClient({
                 setPageSize(Number(e.target.value));
                 setPageIndex(0);
               }}
-              aria-label="Rows per page"
+              aria-label={t("rowsPerPage")}
             >
               {PAGE_SIZES.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -523,27 +565,30 @@ export function UsersPageClient({
           <div className="flex items-center gap-2 text-muted-foreground tabular-nums">
             <span>
               {table.getRowModel().rows.length === 0
-                ? "0"
-                : `${pageIndex * pageSize + 1}–${Math.min((pageIndex + 1) * pageSize, filtered.length)}`}{" "}
-              of {filtered.length}
+                ? t("rangeOf", { start: 0, end: 0, total: 0 })
+                : t("rangeOf", {
+                    start: pageIndex * pageSize + 1,
+                    end: Math.min((pageIndex + 1) * pageSize, filtered.length),
+                    total: filtered.length,
+                  })}
             </span>
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Previous page"
+              aria-label={t("previousPage")}
               disabled={!table.getCanPreviousPage()}
               onClick={() => table.previousPage()}
             >
-              <ChevronLeft className="size-4" />
+              <ChevronLeft className="size-4 rtl:rotate-180" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Next page"
+              aria-label={t("nextPage")}
               disabled={!table.getCanNextPage()}
               onClick={() => table.nextPage()}
             >
-              <ChevronRight className="size-4" />
+              <ChevronRight className="size-4 rtl:rotate-180" />
             </Button>
           </div>
         </div>
@@ -554,7 +599,7 @@ export function UsersPageClient({
         onOpenChange={setInviteOpen}
         onInvite={(u) => {
           setUsers((prev) => [u, ...prev]);
-          toast.success(`Invite sent to ${u.email}.`);
+          toast.success(t("inviteSentToast", { email: u.email }));
         }}
       />
 
@@ -570,13 +615,9 @@ export function UsersPageClient({
       <ConfirmDialog
         open={Boolean(deleteTarget)}
         onOpenChange={(next) => !next && setDeleteTarget(null)}
-        title="Delete user"
-        description={
-          deleteTarget
-            ? `This permanently deletes ${deleteTarget.name}. This cannot be undone.`
-            : ""
-        }
-        confirmLabel="Delete"
+        title={t("deleteOneTitle")}
+        description={deleteTarget ? t("deleteOneDescription", { name: deleteTarget.name }) : ""}
+        confirmLabel={tCommon("delete")}
         confirmWord={deleteTarget?.name}
         onConfirm={handleDeleteOne}
       />
@@ -584,10 +625,10 @@ export function UsersPageClient({
       <ConfirmDialog
         open={bulkDelete}
         onOpenChange={setBulkDelete}
-        title={`Delete ${selectedCount} users`}
-        description="This permanently deletes the selected users. This cannot be undone."
-        confirmLabel={`Delete ${selectedCount}`}
-        confirmWord={`delete ${selectedCount}`}
+        title={t("deleteBulkTitle", { count: selectedCount })}
+        description={t("deleteBulkDescription")}
+        confirmLabel={t("deleteBulkLabel", { count: selectedCount })}
+        confirmWord={t("deleteBulkConfirmWord", { count: selectedCount })}
         onConfirm={applyBulkDelete}
       />
     </div>
@@ -603,14 +644,17 @@ function UserDetailSheet({
   onOpenChange: (open: boolean) => void;
   onDelete: (u: AdminUser) => void;
 }) {
+  const t = useTranslations("users");
+  const tDrawer = useTranslations("users.drawer");
+  const tRoles = useTranslations("users.roles");
+  const tStatuses = useTranslations("users.statuses");
+  const tCommon = useTranslations("common");
   return (
     <Sheet open={Boolean(user)} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0">
         <SheetHeader>
-          <SheetTitle>User profile</SheetTitle>
-          <SheetDescription>
-            View activity and contributions. Manage roles and status.
-          </SheetDescription>
+          <SheetTitle>{tDrawer("title")}</SheetTitle>
+          <SheetDescription>{tDrawer("description")}</SheetDescription>
         </SheetHeader>
         {user && (
           <div className="flex-1 overflow-y-auto p-5">
@@ -622,55 +666,53 @@ function UserDetailSheet({
               <div>
                 <div className="flex items-center gap-1 text-base font-semibold text-foreground">
                   {user.name}
-                  {user.verified && <BadgeCheck className="size-4 text-primary" aria-label="Verified" />}
+                  {user.verified && <BadgeCheck className="size-4 text-primary" aria-label={t("verified")} />}
                 </div>
                 <div className="text-sm text-muted-foreground">{user.email}</div>
               </div>
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <Badge variant={roleVariant(user.role)} className="capitalize">{user.role}</Badge>
-              <Badge variant={statusVariant(user.status)} className="capitalize">{user.status}</Badge>
+              <Badge variant={roleVariant(user.role)}>{tRoles(user.role)}</Badge>
+              <Badge variant={statusVariant(user.status)}>{tStatuses(user.status)}</Badge>
             </div>
 
             <Tabs defaultValue="profile" className="mt-6">
               <TabsList>
-                <TabsTrigger value="profile">Profile</TabsTrigger>
-                <TabsTrigger value="activity">Activity</TabsTrigger>
-                <TabsTrigger value="content">Content</TabsTrigger>
-                <TabsTrigger value="donations">Donations</TabsTrigger>
+                <TabsTrigger value="profile">{tDrawer("tabProfile")}</TabsTrigger>
+                <TabsTrigger value="activity">{tDrawer("tabActivity")}</TabsTrigger>
+                <TabsTrigger value="content">{tDrawer("tabContent")}</TabsTrigger>
+                <TabsTrigger value="donations">{tDrawer("tabDonations")}</TabsTrigger>
               </TabsList>
               <TabsContent value="profile" className="space-y-3 pt-3">
-                <Row label="User ID" value={user.id} mono />
-                <Row label="Joined" value={new Date(user.joinedAt).toLocaleString()} />
-                <Row label="Last active" value={new Date(user.lastActiveAt).toLocaleString()} />
-                <Row label="Email verified" value={user.verified ? "Yes" : "No"} />
+                <Row label={tDrawer("userId")} value={user.id} mono />
+                <Row label={tDrawer("joinedLabel")} value={new Date(user.joinedAt).toLocaleString()} />
+                <Row label={tDrawer("lastActiveLabel")} value={new Date(user.lastActiveAt).toLocaleString()} />
+                <Row label={tDrawer("emailVerified")} value={user.verified ? tCommon("yes") : tCommon("no")} />
               </TabsContent>
               <TabsContent value="activity" className="pt-3 text-sm text-muted-foreground">
-                Activity timeline is coming in a later phase.
+                {tDrawer("activityPlaceholder")}
               </TabsContent>
               <TabsContent value="content" className="pt-3 text-sm text-muted-foreground">
-                Contributed articles, comments, and Q&amp;A answers will appear here.
+                {tDrawer("contentPlaceholder")}
               </TabsContent>
               <TabsContent value="donations" className="pt-3 text-sm text-muted-foreground">
-                No donations yet.
+                {tDrawer("donationsPlaceholder")}
               </TabsContent>
             </Tabs>
 
             <div className="mt-8 rounded-md border border-danger/30 bg-danger/5 p-4">
-              <h3 className="text-sm font-semibold text-danger">Danger zone</h3>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Deleting a user removes all their data from the directory.
-              </p>
+              <h3 className="text-sm font-semibold text-danger">{tDrawer("dangerZone")}</h3>
+              <p className="mt-1 text-xs text-muted-foreground">{tDrawer("dangerZoneNote")}</p>
               <div className="mt-3">
                 <Button variant="danger" size="sm" onClick={() => onDelete(user)}>
-                  <Trash2 /> Delete user
+                  <Trash2 /> {tDrawer("deleteUser")}
                 </Button>
               </div>
             </div>
           </div>
         )}
         <SheetFooter>
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>Close</Button>
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>{tCommon("close")}</Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

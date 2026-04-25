@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth } from "@/lib/firebase/admin";
-import { isAdminEmail } from "@/lib/auth/allowlist";
 import { SESSION_COOKIE, SESSION_MAX_AGE_MS } from "@/lib/auth/session";
 
 export const runtime = "nodejs";
@@ -36,13 +35,6 @@ export async function POST(req: Request) {
   if (!decoded.email || !decoded.email_verified) {
     return NextResponse.json(
       { error: "Email is not verified." },
-      { status: 403 },
-    );
-  }
-
-  if (!isAdminEmail(decoded.email)) {
-    return NextResponse.json(
-      { error: "This account is not authorized." },
       { status: 403 },
     );
   }

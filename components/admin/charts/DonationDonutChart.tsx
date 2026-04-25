@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 interface Props {
@@ -13,12 +14,13 @@ const COLORS = [
 ];
 
 export function DonationDonutChart({ data }: Props) {
+  const t = useTranslations("dashboard.donations");
   const total = data.reduce((s, d) => s + d.value, 0);
   return (
     <div className="rounded-lg border border-border bg-card p-5">
       <div className="pb-4">
-        <h2 className="text-sm font-semibold text-foreground">Donation breakdown</h2>
-        <p className="text-xs text-muted-foreground">By category, this month</p>
+        <h2 className="text-sm font-semibold text-foreground">{t("title")}</h2>
+        <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
       </div>
       <div className="grid grid-cols-[1fr_auto] items-center gap-6">
         <div className="h-48">

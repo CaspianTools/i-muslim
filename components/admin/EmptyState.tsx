@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 
 interface EmptyStateProps {
@@ -11,13 +12,14 @@ interface EmptyStateProps {
   backHref?: string;
 }
 
-export function EmptyState({
+export async function EmptyState({
   icon: Icon,
   title,
   description,
   action,
   backHref = "/admin",
 }: EmptyStateProps) {
+  const t = await getTranslations("stub");
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border bg-card p-10 text-center">
       <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
@@ -31,7 +33,7 @@ export function EmptyState({
         {backHref && (
           <Button variant="secondary" size="sm" asChild>
             <Link href={backHref}>
-              <ArrowLeft /> Back to Dashboard
+              <ArrowLeft className="rtl:rotate-180" /> {t("backToDashboard")}
             </Link>
           </Button>
         )}

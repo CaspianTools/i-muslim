@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Area,
   AreaChart,
@@ -22,22 +23,24 @@ interface Props {
   data: Record<RangeKey, SeriesPoint[]>;
 }
 
-const RANGES: Array<{ value: Range; label: string }> = [
-  { value: "30", label: "30 days" },
-  { value: "90", label: "90 days" },
-  { value: "365", label: "1 year" },
-];
-
 export function UserGrowthChart({ data }: Props) {
   const [range, setRange] = useState<Range>("30");
   const series = useMemo(() => data[range] ?? [], [data, range]);
+  const t = useTranslations("dashboard.userGrowth");
+  const locale = useLocale();
+
+  const RANGES: Array<{ value: Range; labelKey: "range30" | "range90" | "range365" }> = [
+    { value: "30", labelKey: "range30" },
+    { value: "90", labelKey: "range90" },
+    { value: "365", labelKey: "range365" },
+  ];
 
   return (
     <div className="rounded-lg border border-border bg-card p-5">
       <div className="flex items-center justify-between gap-2 pb-4">
         <div>
-          <h2 className="text-sm font-semibold text-foreground">User growth</h2>
-          <p className="text-xs text-muted-foreground">New users joining over time</p>
+          <h2 className="text-sm font-semibold text-foreground">{t("title")}</h2>
+          <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
         </div>
         <div
           role="tablist"
@@ -57,7 +60,7 @@ export function UserGrowthChart({ data }: Props) {
               )}
               onClick={() => setRange(r.value)}
             >
-              {r.label}
+              {t(r.labelKey)}
             </button>
           ))}
         </div>
@@ -80,7 +83,7 @@ export function UserGrowthChart({ data }: Props) {
               fontSize={11}
               tickFormatter={(v: string) => {
                 const d = new Date(v);
-                return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+                return d.toLocaleDateString(locale, { month: "short", day: "numeric" });
               }}
               minTickGap={30}
             />

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Keyboard, LogOut, ScrollText, Settings, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,8 @@ interface UserMenuProps {
 export function UserMenu({ name, email, picture }: UserMenuProps) {
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
+  const t = useTranslations("userMenu");
+  const tHeader = useTranslations("header");
 
   async function handleSignOut() {
     setSigningOut(true);
@@ -42,7 +45,7 @@ export function UserMenu({ name, email, picture }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Account menu" className="rounded-full">
+        <Button variant="ghost" size="icon" aria-label={tHeader("accountMenu")} className="rounded-full">
           <Avatar className="size-8">
             {picture && <AvatarImage src={picture} alt="" />}
             <AvatarFallback>{initials(name ?? email)}</AvatarFallback>
@@ -51,25 +54,25 @@ export function UserMenu({ name, email, picture }: UserMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[14rem]">
         <DropdownMenuLabel className="flex flex-col normal-case tracking-normal">
-          <span className="text-sm font-medium text-foreground truncate">{name ?? "Administrator"}</span>
+          <span className="text-sm font-medium text-foreground truncate">{name ?? t("fallbackName")}</span>
           <span className="text-xs font-normal text-muted-foreground truncate">{email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/admin/settings"><UserIcon /> Profile</Link>
+          <Link href="/admin/settings"><UserIcon /> {t("profile")}</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/admin/settings"><Settings /> Account settings</Link>
+          <Link href="/admin/settings"><Settings /> {t("accountSettings")}</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/admin/activity"><ScrollText /> Activity log</Link>
+          <Link href="/admin/activity"><ScrollText /> {t("activityLog")}</Link>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
-          <Keyboard /> Keyboard shortcuts
+          <Keyboard /> {t("keyboardShortcuts")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="danger" onClick={handleSignOut} disabled={signingOut}>
-          <LogOut /> {signingOut ? "Signing out…" : "Sign out"}
+          <LogOut /> {signingOut ? t("signingOut") : t("signOut")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -14,7 +14,9 @@ export type AdminSession = {
   picture: string | null;
 };
 
-export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
+export type SiteSession = AdminSession;
+
+export const getSiteSession = cache(async (): Promise<SiteSession | null> => {
   const auth = getAdminAuth();
   if (!auth) return null;
 
@@ -24,10 +26,10 @@ export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
 
   try {
     const decoded = await auth.verifySessionCookie(token, true);
-    if (!isAdminEmail(decoded.email)) return null;
+    if (!decoded.email) return null;
     return {
       uid: decoded.uid,
-      email: decoded.email!,
+      email: decoded.email,
       name: (decoded.name as string | undefined) ?? null,
       picture: (decoded.picture as string | undefined) ?? null,
     };
@@ -36,8 +38,21 @@ export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
   }
 });
 
+export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
+  const session = await getSiteSession();
+  if (!session) return null;
+  if (!isAdminEmail(session.email)) return null;
+  return session;
+});
+
 export async function requireAdminSession(): Promise<AdminSession> {
   const session = await getAdminSession();
+  if (!session) throw new Error("Unauthorized");
+  return session;
+}
+
+export async function requireSiteSession(): Promise<SiteSession> {
+  const session = await getSiteSession();
   if (!session) throw new Error("Unauthorized");
   return session;
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 import { AlertCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { HijriDate } from "@/components/admin/HijriDate";
@@ -11,11 +12,14 @@ import { requireAdminSession } from "@/lib/auth/session";
 import { fetchDashboard } from "@/lib/admin/data/dashboard";
 import { formatRelative, initials } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("sidebar.items");
+  return { title: t("dashboard") };
+}
 
-function firstName(name: string | null, email: string): string {
+function firstName(name: string | null, email: string, fallback: string): string {
   if (name) return name.split(/\s+/)[0] ?? name;
-  return email.split("@")[0] ?? "friend";
+  return email.split("@")[0] ?? fallback;
 }
 
 function formatUsd(value: number): string {
@@ -23,26 +27,31 @@ function formatUsd(value: number): string {
   return `$${value.toLocaleString()}`;
 }
 
-function formatEventDate(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
-}
-
 export default async function DashboardPage() {
   const session = await requireAdminSession();
   const data = await fetchDashboard();
+  const t = await getTranslations("dashboard");
+  const locale = await getLocale();
+
+  const greetingName = firstName(session.name, session.email, t("fallbackFirstName"));
+  const today = new Date().toLocaleDateString(locale, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Assalamu alaikum, {firstName(session.name, session.email)}
+            {t("greeting", { name: greetingName })}
           </h1>
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <HijriDate />
             <span aria-hidden>·</span>
-            <span>{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</span>
+            <span>{today}</span>
           </div>
         </div>
         <div className="md:min-w-[320px] md:flex-1 md:max-w-[560px]">
@@ -57,9 +66,22 @@ export default async function DashboardPage() {
         >
           <AlertCircle className="mt-0.5 size-4 shrink-0 text-warning" />
           <div className="text-foreground">
-            Showing sample data.{" "}
+            {t("sampleDataBanner")}{" "}
             <span className="text-muted-foreground">
-              Configure Firebase Admin (see <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">.env.example</code>) and add documents to the <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">users</code> / <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">donations</code> collections in the <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">main</code> database to see live counts.
+              {t.rich("sampleDataBannerHelp", {
+                file: () => (
+                  <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">.env.example</code>
+                ),
+                usersCol: () => (
+                  <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">users</code>
+                ),
+                donationsCol: () => (
+                  <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">donations</code>
+                ),
+                db: () => (
+                  <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">main</code>
+                ),
+              })}
             </span>
           </div>
         </div>
@@ -67,29 +89,28 @@ export default async function DashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Total users"
+          label={t("kpi.totalUsers")}
           value={data.kpis.totalUsers.value}
           delta={data.kpis.totalUsers.delta}
           sparkline={data.kpis.totalUsers.sparkline}
         />
         <StatCard
-          label="Active this week"
+          label={t("kpi.activeThisWeek")}
           value={data.kpis.activeThisWeek.value}
           delta={data.kpis.activeThisWeek.delta}
           sparkline={data.kpis.activeThisWeek.sparkline}
         />
         <StatCard
-          label="Pending approvals"
+          label={t("kpi.pendingApprovals")}
           value={data.kpis.pendingApprovals.value}
           delta={data.kpis.pendingApprovals.delta}
           sparkline={data.kpis.pendingApprovals.sparkline}
         />
         <StatCard
-          label="Donations (month)"
-          value={data.kpis.donationsThisMonth.value}
+          label={t("kpi.donationsThisMonth")}
+          value={formatUsd(data.kpis.donationsThisMonth.value)}
           delta={data.kpis.donationsThisMonth.delta}
           sparkline={data.kpis.donationsThisMonth.sparkline}
-          format={formatUsd}
         />
       </div>
 
@@ -103,8 +124,8 @@ export default async function DashboardPage() {
       <div className="grid gap-4 lg:grid-cols-5">
         <div className="rounded-lg border border-border bg-card p-5 lg:col-span-3">
           <div className="pb-3">
-            <h2 className="text-sm font-semibold text-foreground">Recent activity</h2>
-            <p className="text-xs text-muted-foreground">What admins and the system did most recently</p>
+            <h2 className="text-sm font-semibold text-foreground">{t("activity.title")}</h2>
+            <p className="text-xs text-muted-foreground">{t("activity.subtitle")}</p>
           </div>
           <ul className="divide-y divide-border">
             {data.recentActivity.map((entry) => (
@@ -127,18 +148,24 @@ export default async function DashboardPage() {
         </div>
         <div className="rounded-lg border border-border bg-card p-5 lg:col-span-2">
           <div className="pb-3">
-            <h2 className="text-sm font-semibold text-foreground">Upcoming events</h2>
-            <p className="text-xs text-muted-foreground">Next 14 days</p>
+            <h2 className="text-sm font-semibold text-foreground">{t("events.title")}</h2>
+            <p className="text-xs text-muted-foreground">{t("events.subtitle")}</p>
           </div>
           <ul className="divide-y divide-border">
             {data.upcomingEvents.map((e) => (
               <li key={e.id} className="flex items-center justify-between gap-3 py-3">
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{e.title}</p>
-                  <p className="text-xs text-muted-foreground">{formatEventDate(e.startsAt)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(e.startsAt).toLocaleDateString(locale, {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
                 </div>
                 <span className="shrink-0 rounded-sm bg-muted px-2 py-0.5 text-xs tabular-nums text-muted-foreground">
-                  {e.rsvpCount} RSVPs
+                  {t("events.rsvps", { count: e.rsvpCount })}
                 </span>
               </li>
             ))}
