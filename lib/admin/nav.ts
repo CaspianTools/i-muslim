@@ -14,6 +14,7 @@ import {
   HandCoins,
   Heart,
   Image,
+  Inbox,
   Landmark,
   LayoutDashboard,
   Mail,
@@ -57,6 +58,7 @@ export type NavItemKey =
   | "businesses"
   | "courses"
   | "matrimonial"
+  | "contactMessages"
   | "reports"
   | "audit"
   | "settings"
@@ -81,7 +83,8 @@ export interface NavItem {
     | "flaggedContent"
     | "openReports"
     | "pendingMosques"
-    | "pendingMatrimonial";
+    | "pendingMatrimonial"
+    | "openContactMessages";
 }
 
 export interface NavGroup {
@@ -143,6 +146,12 @@ export const ADMIN_NAV: NavGroup[] = [
         href: "/admin/moderation",
         icon: MessageSquareWarning,
         badgeKey: "flaggedContent",
+      },
+      {
+        labelKey: "contactMessages",
+        href: "/admin/contact",
+        icon: Inbox,
+        badgeKey: "openContactMessages",
       },
     ],
   },
