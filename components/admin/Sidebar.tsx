@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useCallback, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, HelpCircle, Plus } from "lucide-react";

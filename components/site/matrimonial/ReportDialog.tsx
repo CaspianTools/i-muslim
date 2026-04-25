@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/sonner";
-import { reportProfile } from "@/app/(site)/matrimonial/actions";
+import { reportProfile } from "@/app/[locale]/(site)/matrimonial/actions";
 import type { ReportReason } from "@/types/matrimonial";
 
 const REASONS: ReportReason[] = [

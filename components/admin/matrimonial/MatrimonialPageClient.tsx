@@ -48,7 +48,7 @@ import { ageFromDob } from "@/lib/matrimonial/age";
 import {
   bulkDelete,
   bulkSetStatus,
-} from "@/app/(admin)/admin/matrimonial/actions";
+} from "@/app/[locale]/(admin)/admin/matrimonial/actions";
 import { ProfileDetailDrawer } from "./ProfileDetailDrawer";
 import { ReportsTable } from "./ReportsTable";
 import { StatsTab } from "./StatsTab";

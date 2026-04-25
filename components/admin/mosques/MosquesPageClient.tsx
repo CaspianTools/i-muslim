@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -30,7 +30,7 @@ import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { toast } from "sonner";
 import { cn, formatRelative } from "@/lib/utils";
 import type { Mosque, MosqueStatus } from "@/types/mosque";
-import { deleteMosque, setMosqueStatus } from "@/app/(admin)/admin/mosques/actions";
+import { deleteMosque, setMosqueStatus } from "@/app/[locale]/(admin)/admin/mosques/actions";
 import { countryName } from "@/lib/mosques/countries";
 
 const STATUS_VALUES = ["all", "draft", "pending_review", "published", "suspended"] as const;

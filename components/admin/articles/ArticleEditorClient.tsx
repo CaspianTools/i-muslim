@@ -18,7 +18,7 @@ import {
   updateArticle,
   publishTranslation,
   unpublishTranslation,
-} from "@/app/(admin)/admin/articles/_actions";
+} from "@/app/[locale]/(admin)/admin/articles/_actions";
 
 const CATEGORY_LABELS: Record<CategorySlug, string> = {
   "prayer-times": "Prayer Times",

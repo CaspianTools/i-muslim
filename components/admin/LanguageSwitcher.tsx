@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,13 +30,16 @@ export function LanguageSwitcher() {
   const current = useLocale() as Locale;
   const t = useTranslations();
   const router = useRouter();
+  const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
   function select(code: Locale) {
     if (code === current) return;
     persistLocaleCookie(code);
+    // next-intl pathname is locale-less; replace with the same path under the
+    // selected locale so the URL prefix updates.
     startTransition(() => {
-      router.refresh();
+      router.replace(pathname, { locale: code });
     });
   }
 

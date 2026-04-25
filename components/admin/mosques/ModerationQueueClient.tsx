@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { CheckCircle2, XCircle, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ import {
   promoteSubmission,
   rejectSubmission,
   setMosqueStatus,
-} from "@/app/(admin)/admin/mosques/actions";
+} from "@/app/[locale]/(admin)/admin/mosques/actions";
 
 export function ModerationQueueClient({
   submissions,

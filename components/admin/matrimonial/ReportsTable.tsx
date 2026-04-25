@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { setProfileStatus, setReportStatus } from "@/app/(admin)/admin/matrimonial/actions";
+import { setProfileStatus, setReportStatus } from "@/app/[locale]/(admin)/admin/matrimonial/actions";
 import { formatRelative } from "@/lib/utils";
 import type {
   MatrimonialProfile,

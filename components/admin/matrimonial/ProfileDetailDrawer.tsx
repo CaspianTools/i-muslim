@@ -24,7 +24,7 @@ import {
   deleteProfile,
   setProfileStatus,
   setProfileVerification,
-} from "@/app/(admin)/admin/matrimonial/actions";
+} from "@/app/[locale]/(admin)/admin/matrimonial/actions";
 import type {
   MatrimonialProfile,
   ProfileStatus,

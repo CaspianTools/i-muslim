@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/sonner";
-import { saveProfile } from "@/app/(site)/matrimonial/actions";
+import { saveProfile } from "@/app/[locale]/(site)/matrimonial/actions";
 import { PhotoUploadStub } from "./PhotoUploadStub";
 import type { MatrimonialProfile } from "@/types/matrimonial";
 

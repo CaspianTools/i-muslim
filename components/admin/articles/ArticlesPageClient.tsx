@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { Plus, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { toast } from "@/components/ui/sonner";
 import { cn, formatRelative } from "@/lib/utils";
 import type { AdminArticleRow, CategorySlug } from "@/types/blog";
 import { CATEGORY_SLUGS } from "@/lib/blog/taxonomy";
-import { deleteArticle } from "@/app/(admin)/admin/articles/_actions";
+import { deleteArticle } from "@/app/[locale]/(admin)/admin/articles/_actions";
 
 const CATEGORY_LABELS: Record<CategorySlug, string> = {
   "prayer-times": "Prayer Times",

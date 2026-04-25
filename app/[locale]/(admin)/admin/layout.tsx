@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { getAdminSession } from "@/lib/auth/session";
+import { getAdminSession, getSiteSession } from "@/lib/auth/session";
 import { getFirebaseAdminStatus } from "@/lib/firebase/admin";
 import { Sidebar, type SidebarBadges } from "@/components/admin/Sidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
@@ -10,6 +10,9 @@ import { MOCK_NOTIFICATIONS } from "@/lib/admin/mock/notifications";
 import { countOpenReports } from "@/lib/admin/data/business-reports";
 import { listProfiles } from "@/lib/matrimonial/store";
 import { countPendingMosques } from "@/lib/admin/data/mosques";
+import { countOpenContactMessages } from "@/lib/admin/data/contact-messages";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: {
@@ -18,25 +21,40 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
   const status = getFirebaseAdminStatus();
   if (!status.configured) {
-    redirect("/login");
+    redirect(`/${locale}/login`);
   }
 
+  const siteSession = await getSiteSession();
+  if (!siteSession) {
+    redirect(`/${locale}/login`);
+  }
   const session = await getAdminSession();
   if (!session) {
-    redirect("/login");
+    // Signed in but not in the admin allowlist — bounce to home.
+    redirect(`/${locale}/`);
   }
 
   const pendingUsers = MOCK_USERS.filter((u) => u.status === "pending").length;
   const flaggedContent = MOCK_NOTIFICATIONS.filter((n) => n.type === "flagged" && !n.read).length;
   const unansweredQa = MOCK_NOTIFICATIONS.filter((n) => n.type === "qa" && !n.read).length;
-  const [openReports, { profiles: matrimonialProfiles }, pendingMosques] = await Promise.all([
-    countOpenReports(),
-    listProfiles(),
-    countPendingMosques(),
-  ]);
+  const [openReports, { profiles: matrimonialProfiles }, pendingMosques, openContactMessages] =
+    await Promise.all([
+      countOpenReports(),
+      listProfiles(),
+      countPendingMosques(),
+      countOpenContactMessages(),
+    ]);
   const pendingMatrimonial = matrimonialProfiles.filter((p) => p.status === "pending").length;
 
   const badges: SidebarBadges = {
@@ -46,6 +64,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     openReports,
     pendingMatrimonial,
     pendingMosques,
+    openContactMessages,
   };
 
   return (

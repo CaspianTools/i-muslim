@@ -8,7 +8,7 @@ import { Loader2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { bulkImport, type MosqueInput } from "@/app/(admin)/admin/mosques/actions";
+import { bulkImport, type MosqueInput } from "@/app/[locale]/(admin)/admin/mosques/actions";
 import { defaultPrayerCalc } from "@/lib/mosques/adhan";
 import { emptyServices } from "@/lib/mosques/constants";
 

@@ -11,7 +11,7 @@ import {
   deleteMyProfile,
   hideMyProfile,
   republishMyProfile,
-} from "@/app/(site)/matrimonial/actions";
+} from "@/app/[locale]/(site)/matrimonial/actions";
 import type { ProfileStatus } from "@/types/matrimonial";
 
 export function SettingsActions({ status }: { status: ProfileStatus }) {

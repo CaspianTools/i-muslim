@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/navigation";
 import { AlertCircle, LogIn } from "lucide-react";
 import { signInWithGoogle } from "@/lib/firebase/client";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,16 @@ export function LoginCard({ missingEnv }: { missingEnv: string[] }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const params = useSearchParams();
-  const callbackUrl = params.get("callbackUrl") ?? "/admin";
+  const rawCallback = params.get("callbackUrl");
   const t = useTranslations("auth");
+
+  // Callback URLs from the proxy already include a locale prefix (e.g.
+  // "/en/admin/users"). Strip it so next-intl router.push doesn't double-prefix.
+  // If no callback was provided, default to "/admin" and let the router add the
+  // current locale.
+  const callbackTarget = rawCallback
+    ? rawCallback.replace(/^\/(en|ar|tr|id)(?=\/|$)/, "") || "/admin"
+    : "/admin";
 
   const isConfigured = missingEnv.length === 0;
 
@@ -34,7 +42,7 @@ export function LoginCard({ missingEnv }: { missingEnv: string[] }) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? t("signInFailed"));
       }
-      router.push(callbackUrl);
+      router.push(callbackTarget);
       router.refresh();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("signInFailed");

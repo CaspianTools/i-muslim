@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import type { IqamahRule, Mosque, MosqueServices } from "@/types/mosque";
 import { SERVICE_KEYS, DENOMINATIONS, emptyServices, PRAYER_KEYS } from "@/lib/mosques/constants";
 import { defaultPrayerCalc } from "@/lib/mosques/adhan";
-import { createMosque, updateMosque, type MosqueInput } from "@/app/(admin)/admin/mosques/actions";
+import { createMosque, updateMosque, type MosqueInput } from "@/app/[locale]/(admin)/admin/mosques/actions";
 
 interface MosqueFormProps {
   mode: "create" | "edit";

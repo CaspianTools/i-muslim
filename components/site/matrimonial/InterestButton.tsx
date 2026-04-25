@@ -10,7 +10,7 @@ import {
   expressInterest,
   respondInterest,
   withdrawInterest,
-} from "@/app/(site)/matrimonial/actions";
+} from "@/app/[locale]/(site)/matrimonial/actions";
 import type { MatrimonialInterest } from "@/types/matrimonial";
 
 interface Props {

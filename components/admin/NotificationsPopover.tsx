@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Bell, CheckCheck, HandCoins, MessageCircleQuestion, ShieldAlert, UserPlus, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";

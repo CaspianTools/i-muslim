@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { LucideIcon } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { getTranslations } from "next-intl/server";
