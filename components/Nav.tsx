@@ -1,8 +1,11 @@
-import Link from "next/link";
 import { Suspense } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 import { SearchBar } from "./SearchBar";
+import { SiteUserMenu } from "./site/SiteUserMenu";
+import { getSiteSession } from "@/lib/auth/session";
+import { isAdminEmail } from "@/lib/auth/allowlist";
 
 function SearchBarFallback() {
   return (
@@ -10,9 +13,11 @@ function SearchBarFallback() {
   );
 }
 
-export function Nav() {
-  const t = useTranslations("nav");
-  const locale = useLocale();
+export async function Nav() {
+  const t = await getTranslations("nav");
+  const locale = await getLocale();
+  const session = await getSiteSession();
+  const isAdmin = isAdminEmail(session?.email);
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
@@ -83,6 +88,7 @@ export function Nav() {
             </Suspense>
           </div>
           <ThemeToggle />
+          <SiteUserMenu session={session} isAdmin={isAdmin} />
         </div>
       </div>
       <div className="border-t border-border px-4 py-2 sm:hidden">

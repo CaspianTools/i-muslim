@@ -1,5 +1,7 @@
 import "server-only";
-import { getDb } from "@/lib/firebase/admin";
+import type { UserRecord } from "firebase-admin/auth";
+import { getAdminAuth, getDb } from "@/lib/firebase/admin";
+import { isAdminEmail } from "@/lib/auth/allowlist";
 import { MOCK_USERS } from "@/lib/admin/mock/users";
 import type { AdminUser, AdminRole, AdminUserStatus } from "@/types/admin";
 
@@ -8,56 +10,107 @@ export type UsersResult = {
   source: "firestore" | "mock";
 };
 
-function normalize(id: string, raw: Record<string, unknown>): AdminUser | null {
-  if (!raw) return null;
-  const email = typeof raw.email === "string" ? raw.email : "";
+const ROLES: AdminRole[] = ["admin", "moderator", "scholar", "member"];
+const STATUSES: AdminUserStatus[] = ["active", "pending", "suspended", "banned"];
+
+function asIso(v: unknown): string {
+  if (!v) return new Date().toISOString();
+  if (typeof v === "string") {
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+  }
+  if (v instanceof Date) return v.toISOString();
+  if (
+    typeof v === "object" &&
+    v &&
+    "toDate" in v &&
+    typeof (v as { toDate: () => Date }).toDate === "function"
+  ) {
+    return (v as { toDate: () => Date }).toDate().toISOString();
+  }
+  return new Date().toISOString();
+}
+
+function compose(
+  authUser: UserRecord,
+  overlay: Record<string, unknown> | null,
+): AdminUser {
+  const email = authUser.email ?? "";
+
+  const overlayRole = overlay?.role;
+  const role: AdminRole = ROLES.includes(overlayRole as AdminRole)
+    ? (overlayRole as AdminRole)
+    : isAdminEmail(email)
+      ? "admin"
+      : "member";
+
+  const overlayStatus = overlay?.status;
+  let status: AdminUserStatus = STATUSES.includes(overlayStatus as AdminUserStatus)
+    ? (overlayStatus as AdminUserStatus)
+    : "active";
+  if (authUser.disabled && status === "active") status = "suspended";
+
+  const overlayName = typeof overlay?.name === "string" ? overlay.name : null;
+  const overlayDisplayName =
+    typeof overlay?.displayName === "string" ? overlay.displayName : null;
   const name =
-    typeof raw.name === "string"
-      ? raw.name
-      : typeof raw.displayName === "string"
-        ? raw.displayName
-        : email.split("@")[0] ?? "Unknown";
+    authUser.displayName ??
+    overlayDisplayName ??
+    overlayName ??
+    (email ? (email.split("@")[0] ?? "Unknown") : "Unknown");
 
-  const role = (raw.role as AdminRole) ?? "member";
-  const status = (raw.status as AdminUserStatus) ?? "active";
-  const verified = Boolean(raw.verified ?? raw.emailVerified ?? false);
-
-  const asIso = (v: unknown): string => {
-    if (!v) return new Date().toISOString();
-    if (typeof v === "string") return v;
-    if (typeof v === "object" && v && "toDate" in v && typeof (v as { toDate: () => Date }).toDate === "function") {
-      return (v as { toDate: () => Date }).toDate().toISOString();
-    }
-    if (v instanceof Date) return v.toISOString();
-    return new Date().toISOString();
-  };
+  const overlayAvatar =
+    typeof overlay?.avatarUrl === "string" ? overlay.avatarUrl : null;
 
   return {
-    id,
+    id: authUser.uid,
     name,
     email,
-    avatarUrl: (raw.avatarUrl as string | null) ?? (raw.photoURL as string | null) ?? null,
+    avatarUrl: authUser.photoURL ?? overlayAvatar ?? null,
     role,
     status,
-    verified,
-    joinedAt: asIso(raw.joinedAt ?? raw.createdAt),
-    lastActiveAt: asIso(raw.lastActiveAt ?? raw.updatedAt ?? raw.createdAt),
+    verified: Boolean(authUser.emailVerified),
+    joinedAt: asIso(authUser.metadata.creationTime ?? overlay?.joinedAt ?? overlay?.createdAt),
+    lastActiveAt: asIso(
+      authUser.metadata.lastSignInTime ||
+        authUser.metadata.creationTime ||
+        overlay?.lastActiveAt ||
+        overlay?.updatedAt,
+    ),
   };
 }
 
 export async function fetchUsers(): Promise<UsersResult> {
-  const db = getDb();
-  if (!db) return { users: MOCK_USERS, source: "mock" };
+  const auth = getAdminAuth();
+  if (!auth) return { users: MOCK_USERS, source: "mock" };
 
   try {
-    const snap = await db.collection("users").limit(500).get();
-    if (snap.empty) return { users: MOCK_USERS, source: "mock" };
-    const users = snap.docs
-      .map((d) => normalize(d.id, d.data() as Record<string, unknown>))
-      .filter((u): u is AdminUser => u !== null);
+    const list = await auth.listUsers(1000);
+    if (list.users.length === 0) return { users: [], source: "firestore" };
+
+    const overlays = new Map<string, Record<string, unknown>>();
+    const db = getDb();
+    if (db) {
+      try {
+        const refs = list.users.map((u) => db.collection("users").doc(u.uid));
+        const docs = await db.getAll(...refs);
+        for (const doc of docs) {
+          if (doc.exists) {
+            overlays.set(doc.id, doc.data() as Record<string, unknown>);
+          }
+        }
+      } catch (err) {
+        console.warn("[admin/data/users] Firestore overlay read failed:", err);
+      }
+    }
+
+    const users = list.users
+      .map((u) => compose(u, overlays.get(u.uid) ?? null))
+      .sort((a, b) => new Date(b.joinedAt).getTime() - new Date(a.joinedAt).getTime());
+
     return { users, source: "firestore" };
   } catch (err) {
-    console.warn("[admin/data/users] Firestore read failed, falling back to mock:", err);
+    console.warn("[admin/data/users] Auth read failed, falling back to mock:", err);
     return { users: MOCK_USERS, source: "mock" };
   }
 }
