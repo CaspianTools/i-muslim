@@ -1,34 +1,8 @@
 import "server-only";
 import { getDb } from "@/lib/firebase/admin";
+import type { AdminSurah, AdminAyah } from "@/types/admin-content";
 
-export type AdminSurah = {
-  number: number;
-  name_ar: string;
-  name_en: string;
-  name_translated: string;
-  revelation_place: "makkah" | "madinah";
-  ayah_count: number;
-  bismillah_pre: boolean;
-  edited_count?: number;
-};
-
-export type AdminAyah = {
-  id: string; // "{surah}:{ayah}"
-  surah: number;
-  ayah: number;
-  text_ar: string;
-  text_translit: string | null;
-  translations: { en: string; ru: string };
-  juz: number;
-  page: number;
-  sajdah: boolean;
-  tags: string[];
-  notes: string | null;
-  published: boolean;
-  editedByAdmin: boolean;
-  updatedAt: string | null;
-  updatedBy: string | null;
-};
+export type { AdminSurah, AdminAyah };
 
 export type SurahsResult = {
   surahs: AdminSurah[];

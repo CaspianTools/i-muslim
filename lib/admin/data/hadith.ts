@@ -1,34 +1,11 @@
 import "server-only";
 import { getDb } from "@/lib/firebase/admin";
+import type {
+  AdminHadithCollection,
+  AdminHadith,
+} from "@/types/admin-content";
 
-export type AdminHadithCollection = {
-  slug: string;
-  name_en: string;
-  name_ar: string;
-  short_name?: string;
-  total: number;
-  books: Array<{ number: number; name: string; count: number }>;
-  edited_count?: number;
-};
-
-export type AdminHadith = {
-  id: string; // "{collection}:{number}"
-  collection: string;
-  number: number;
-  arabic_number: number | null;
-  book: number;
-  hadith_in_book: number | null;
-  text_ar: string;
-  translations: { en: string; ru: string };
-  narrator: string | null;
-  grade: string | null;
-  tags: string[];
-  notes: string | null;
-  published: boolean;
-  editedByAdmin: boolean;
-  updatedAt: string | null;
-  updatedBy: string | null;
-};
+export type { AdminHadithCollection, AdminHadith };
 
 export type CollectionsResult = {
   collections: AdminHadithCollection[];

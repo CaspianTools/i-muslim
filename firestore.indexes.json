@@ -86,6 +86,23 @@
         { "fieldPath": "submitterIp", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "hadith_entries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "collection", "order": "ASCENDING" },
+        { "fieldPath": "number", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "hadith_entries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "collection", "order": "ASCENDING" },
+        { "fieldPath": "book", "order": "ASCENDING" },
+        { "fieldPath": "number", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

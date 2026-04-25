@@ -17,7 +17,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { toast } from "@/components/ui/sonner";
-import type { AdminHadith } from "@/lib/admin/data/hadith";
+import type { AdminHadith } from "@/types/admin-content";
 
 const Schema = z.object({
   en: z.string().max(20000),
