@@ -1,18 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  getArabicEdition,
-  getBooksFromEdition,
-  getCollection,
-  getEditionsForLangs,
-  filterHadithsByBook,
-  indexByHadithNumber,
-} from "@/lib/hadith";
-import { parseLangsParam } from "@/lib/translations";
-import type { LangCode } from "@/lib/translations";
 import { Suspense } from "react";
+import {
+  getHadithCollection,
+  getHadithsByBook,
+  type HadithDoc,
+} from "@/lib/hadith/db";
+import { parseLangsParam, HADITH_LANG_COVERAGE } from "@/lib/translations";
+import type { LangCode } from "@/lib/translations";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { HadithCard, type HadithTranslationSlice } from "@/components/HadithCard";
+import type { HadithEntry } from "@/types/hadith";
 
 export async function generateMetadata({
   params,
@@ -20,10 +18,25 @@ export async function generateMetadata({
   params: Promise<{ collection: string; book: string }>;
 }) {
   const { collection, book } = await params;
-  const meta = getCollection(collection);
+  const meta = await getHadithCollection(collection);
   if (!meta) return {};
+  return { title: `${meta.name_en} — Book ${book}` };
+}
+
+function docToHadithEntry(d: HadithDoc, langKey: "ar" | "en" | "ru"): HadithEntry | null {
+  const text =
+    langKey === "ar"
+      ? d.text_ar
+      : langKey === "en"
+        ? d.translations.en
+        : d.translations.ru;
+  if (!text) return null;
   return {
-    title: `${meta.name} — Book ${book}`,
+    hadithnumber: d.number,
+    arabicnumber: d.arabic_number ?? d.number,
+    text,
+    grades: d.grades ?? (d.grade ? [{ name: "Grade", grade: d.grade }] : []),
+    reference: { book: d.book, hadith: d.hadith_in_book ?? d.number },
   };
 }
 
@@ -36,50 +49,23 @@ export default async function HadithBookPage({
 }) {
   const { collection, book } = await params;
   const { lang: langParam } = await searchParams;
-  const meta = getCollection(collection);
-  console.log("[hadith/book] collection:", collection, "book:", book, "metaFound:", !!meta);
+  const meta = await getHadithCollection(collection);
   if (!meta) notFound();
 
   const bookNumber = Number(book);
-  console.log("[hadith/book] bookNumber:", bookNumber);
   if (!Number.isInteger(bookNumber) || bookNumber < 1) notFound();
 
   const langs = parseLangsParam(langParam);
   const nonArabic = langs.filter((l): l is Exclude<LangCode, "ar"> => l !== "ar");
   const showArabic = langs.includes("ar");
 
-  const [arabicEdition, translationsMap] = await Promise.all([
-    getArabicEdition(collection),
-    getEditionsForLangs(collection, langs),
-  ]);
-
-  const books = getBooksFromEdition(arabicEdition);
-  console.log("[hadith/book] books.length:", books.length, "firstFew:", books.slice(0, 3).map((b) => ({ n: b.number, name: b.name.slice(0, 30) })));
-  const bookMeta = books.find((b) => b.number === bookNumber);
-  console.log("[hadith/book] bookMeta found:", !!bookMeta);
+  const bookMeta = meta.books.find((b) => b.number === bookNumber);
   if (!bookMeta) notFound();
 
-  const arabicHadiths = filterHadithsByBook(arabicEdition.hadiths, bookNumber);
+  const hadiths = await getHadithsByBook(collection, bookNumber);
 
-  // Build per-language indexes for quick lookup by hadithnumber.
-  const langIndexes = new Map<
-    LangCode,
-    {
-      actual: LangCode;
-      fallback: boolean;
-      index: ReturnType<typeof indexByHadithNumber>;
-    }
-  >();
-  for (const [requested, info] of translationsMap.entries()) {
-    langIndexes.set(requested, {
-      actual: info.actualLang,
-      fallback: info.fallback,
-      index: indexByHadithNumber(info.edition.hadiths),
-    });
-  }
-
-  const prev = books.find((b) => b.number === bookNumber - 1);
-  const next = books.find((b) => b.number === bookNumber + 1);
+  const prev = meta.books.find((b) => b.number === bookNumber - 1);
+  const next = meta.books.find((b) => b.number === bookNumber + 1);
   const langQS = langParam ? `?lang=${encodeURIComponent(langParam)}` : "";
 
   return (
@@ -88,18 +74,18 @@ export default async function HadithBookPage({
         href={`/hadith/${collection}${langQS}`}
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
-        ← {meta.name}
+        ← {meta.name_en}
       </Link>
 
       <header className="mt-4 border-b border-border pb-6">
         <p className="text-xs uppercase tracking-wide text-muted-foreground">
-          {meta.name} · Book {bookNumber}
+          {meta.name_en} · Book {bookNumber}
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
           {bookMeta.name}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {arabicHadiths.length} hadith in this book.
+          {hadiths.length} hadith in this book.
         </p>
         <div className="mt-4">
           <Suspense fallback={<div className="h-8" />}>
@@ -109,32 +95,30 @@ export default async function HadithBookPage({
       </header>
 
       <div className="mt-6 space-y-4">
-        {arabicHadiths.map((h) => {
+        {hadiths.map((h) => {
+          const arabic = showArabic ? docToHadithEntry(h, "ar") : null;
           const translations: HadithTranslationSlice[] = nonArabic.map((lang) => {
-            const info = langIndexes.get(lang);
-            if (!info) {
+            const covered = HADITH_LANG_COVERAGE[lang]?.has(collection);
+            if (!covered) {
+              // No native translation in this language. Show English as fallback.
+              const enEntry = lang !== "en" ? docToHadithEntry(h, "en") : null;
               return {
                 requested: lang,
-                actual: null,
-                entry: null,
-                fallback: false,
+                actual: enEntry ? "en" : null,
+                entry: enEntry,
+                fallback: Boolean(enEntry),
               };
             }
-            const entry = info.index.get(h.hadithnumber) ?? null;
-            return {
-              requested: lang,
-              actual: info.actual,
-              entry,
-              fallback: info.fallback,
-            };
+            const entry = docToHadithEntry(h, lang as "en" | "ru");
+            return { requested: lang, actual: lang, entry, fallback: false };
           });
           return (
             <HadithCard
-              key={h.hadithnumber}
-              number={h.hadithnumber}
-              arabic={showArabic ? h : null}
+              key={h.number}
+              number={h.number}
+              arabic={arabic}
               translations={translations}
-              collectionShortName={meta.shortName ?? meta.name}
+              collectionShortName={meta.short_name ?? meta.name_en}
             />
           );
         })}

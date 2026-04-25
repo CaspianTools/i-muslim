@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getChapters } from "@/lib/quran";
+import { getSurahs } from "@/lib/quran/db";
 
 export const metadata = {
   title: "The Quran — 114 surahs",
@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default async function QuranIndexPage() {
-  const chapters = await getChapters();
+  const chapters = await getSurahs();
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">

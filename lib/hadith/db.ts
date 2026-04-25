@@ -1,0 +1,99 @@
+import "server-only";
+import { unstable_cache, revalidateTag } from "next/cache";
+import { getDb } from "@/lib/firebase/admin";
+
+const COLLECTIONS_TAG = "hadith:collections";
+const collectionTag = (slug: string) => `hadith:${slug}`;
+
+const REVALIDATE_SECONDS = 60 * 60 * 24; // 1 day
+
+export type HadithCollectionDoc = {
+  slug: string;
+  name_en: string;
+  name_ar: string;
+  short_name?: string;
+  total: number;
+  books: Array<{ number: number; name: string; count: number }>;
+};
+
+export type HadithDoc = {
+  collection: string;
+  number: number;
+  arabic_number?: number;
+  book: number;
+  hadith_in_book?: number;
+  text_ar: string;
+  translations: { en: string; ru: string };
+  narrator: string | null;
+  grade: string | null;
+  grades?: Array<{ name: string; grade: string }>;
+  tags: string[];
+  notes: string | null;
+  published: boolean;
+};
+
+const _getCollections = unstable_cache(
+  async (): Promise<HadithCollectionDoc[]> => {
+    const db = getDb();
+    if (!db) return [];
+    const snap = await db.collection("hadith_collections").get();
+    if (snap.empty) return [];
+    return snap.docs.map((d) => d.data() as HadithCollectionDoc);
+  },
+  ["hadith:collections"],
+  { revalidate: REVALIDATE_SECONDS, tags: [COLLECTIONS_TAG] },
+);
+
+export async function getHadithCollections(): Promise<HadithCollectionDoc[]> {
+  return _getCollections();
+}
+
+export async function getHadithCollection(
+  slug: string,
+): Promise<HadithCollectionDoc | null> {
+  const all = await _getCollections();
+  return all.find((c) => c.slug === slug) ?? null;
+}
+
+export async function getHadithsByBook(
+  slug: string,
+  book: number,
+): Promise<HadithDoc[]> {
+  return unstable_cache(
+    async (): Promise<HadithDoc[]> => {
+      const db = getDb();
+      if (!db) return [];
+      const snap = await db
+        .collection("hadith_entries")
+        .where("collection", "==", slug)
+        .where("book", "==", book)
+        .where("published", "==", true)
+        .get();
+      if (snap.empty) return [];
+      return snap.docs
+        .map((d) => d.data() as HadithDoc)
+        .sort((a, b) => a.number - b.number);
+    },
+    [`hadith:${slug}:book:${book}`],
+    { revalidate: REVALIDATE_SECONDS, tags: [collectionTag(slug)] },
+  )();
+}
+
+export async function getHadith(
+  slug: string,
+  number: number,
+): Promise<HadithDoc | null> {
+  const db = getDb();
+  if (!db) return null;
+  const doc = await db
+    .collection("hadith_entries")
+    .doc(`${slug}:${number}`)
+    .get();
+  if (!doc.exists) return null;
+  return doc.data() as HadithDoc;
+}
+
+export function revalidateHadithCollection(slug: string): void {
+  revalidateTag(collectionTag(slug), { expire: 0 });
+  revalidateTag(COLLECTIONS_TAG, { expire: 0 });
+}

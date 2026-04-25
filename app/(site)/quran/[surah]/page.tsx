@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getChapter, getChapters, getVerses } from "@/lib/quran";
+import {
+  getSurah,
+  getSurahs,
+  getAyahsForSurah,
+  filterVerseLangs,
+} from "@/lib/quran/db";
 import { parseLangsParam } from "@/lib/translations";
 import { Suspense } from "react";
 import { AyahCard } from "@/components/AyahCard";
@@ -15,7 +20,8 @@ export async function generateMetadata({
   const id = Number(surah);
   if (!Number.isInteger(id) || id < 1 || id > 114) return {};
   try {
-    const chapter = await getChapter(id);
+    const chapter = await getSurah(id);
+    if (!chapter) return {};
     return {
       title: `Surah ${chapter.name_simple} (${id})`,
       description: `Read Surah ${chapter.name_simple} — ${chapter.translated_name.name}. ${chapter.verses_count} verses.`,
@@ -38,11 +44,13 @@ export default async function SurahPage({
   if (!Number.isInteger(id) || id < 1 || id > 114) notFound();
 
   const langs = parseLangsParam(langParam);
-  const [chapter, verses, chapters] = await Promise.all([
-    getChapter(id),
-    getVerses(id, langs),
-    getChapters(),
+  const [chapter, allVerses, chapters] = await Promise.all([
+    getSurah(id),
+    getAyahsForSurah(id),
+    getSurahs(),
   ]);
+  if (!chapter) notFound();
+  const verses = allVerses.map((v) => filterVerseLangs(v, langs));
 
   const prev = chapters.find((c) => c.id === id - 1);
   const next = chapters.find((c) => c.id === id + 1);

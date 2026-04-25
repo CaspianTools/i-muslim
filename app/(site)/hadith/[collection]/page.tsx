@@ -1,10 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  getArabicEdition,
-  getBooksFromEdition,
-  getCollection,
-} from "@/lib/hadith";
+import { getHadithCollection } from "@/lib/hadith/db";
 
 export async function generateMetadata({
   params,
@@ -12,11 +8,11 @@ export async function generateMetadata({
   params: Promise<{ collection: string }>;
 }) {
   const { collection } = await params;
-  const meta = getCollection(collection);
+  const meta = await getHadithCollection(collection);
   if (!meta) return {};
   return {
-    title: `${meta.name} — Books`,
-    description: `Browse books of ${meta.name}.`,
+    title: `${meta.name_en} — Books`,
+    description: `Browse books of ${meta.name_en}.`,
   };
 }
 
@@ -29,11 +25,9 @@ export default async function CollectionPage({
 }) {
   const { collection } = await params;
   const { lang: langParam } = await searchParams;
-  const meta = getCollection(collection);
+  const meta = await getHadithCollection(collection);
   if (!meta) notFound();
 
-  const edition = await getArabicEdition(collection);
-  const books = getBooksFromEdition(edition);
   const langQS = langParam ? `?lang=${encodeURIComponent(langParam)}` : "";
 
   return (
@@ -49,24 +43,20 @@ export default async function CollectionPage({
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">
-              {meta.name}
+              {meta.name_en}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {books.length} books · {edition.hadiths.length} total hadith
+              {meta.books.length} books · {meta.total} total hadith
             </p>
           </div>
-          <p
-            dir="rtl"
-            lang="ar"
-            className="font-arabic text-3xl text-foreground"
-          >
-            {meta.arabicName}
+          <p dir="rtl" lang="ar" className="font-arabic text-3xl text-foreground">
+            {meta.name_ar}
           </p>
         </div>
       </header>
 
       <ul className="mt-6 divide-y divide-border rounded-lg border border-border bg-background">
-        {books.map((b) => (
+        {meta.books.map((b) => (
           <li key={b.number}>
             <Link
               href={`/hadith/${collection}/${b.number}${langQS}`}
@@ -76,9 +66,7 @@ export default async function CollectionPage({
                 {b.number}
               </span>
               <span className="flex-1 truncate">{b.name}</span>
-              <span className="text-xs text-muted-foreground">
-                {b.count} hadith
-              </span>
+              <span className="text-xs text-muted-foreground">{b.count} hadith</span>
             </Link>
           </li>
         ))}
