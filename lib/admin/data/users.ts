@@ -80,6 +80,18 @@ function compose(
   };
 }
 
+export async function countPendingUsers(): Promise<number> {
+  const db = getDb();
+  if (!db) return 0;
+  try {
+    const snap = await db.collection("users").where("status", "==", "pending").count().get();
+    return snap.data().count;
+  } catch (err) {
+    console.warn("[admin/data/users] countPendingUsers failed:", err);
+    return 0;
+  }
+}
+
 export async function fetchUsers(): Promise<UsersResult> {
   const auth = getAdminAuth();
   if (!auth) return { users: MOCK_USERS, source: "mock" };

@@ -79,8 +79,6 @@ export interface NavItem {
   icon: LucideIcon;
   badgeKey?:
     | "pendingUsers"
-    | "unansweredQa"
-    | "flaggedContent"
     | "openReports"
     | "pendingMosques"
     | "pendingMatrimonial"
@@ -133,20 +131,10 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "engagement",
     items: [
-      {
-        labelKey: "qa",
-        href: "/admin/qa",
-        icon: MessageCircleQuestion,
-        badgeKey: "unansweredQa",
-      },
+      { labelKey: "qa", href: "/admin/qa", icon: MessageCircleQuestion },
       { labelKey: "announcements", href: "/admin/announcements", icon: Megaphone },
       { labelKey: "newsletter", href: "/admin/newsletter", icon: Mail },
-      {
-        labelKey: "moderation",
-        href: "/admin/moderation",
-        icon: MessageSquareWarning,
-        badgeKey: "flaggedContent",
-      },
+      { labelKey: "moderation", href: "/admin/moderation", icon: MessageSquareWarning },
       {
         labelKey: "contactMessages",
         href: "/admin/contact",

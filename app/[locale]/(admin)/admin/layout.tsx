@@ -5,12 +5,11 @@ import { getFirebaseAdminStatus } from "@/lib/firebase/admin";
 import { Sidebar, type SidebarBadges } from "@/components/admin/Sidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Toaster } from "@/components/ui/sonner";
-import { MOCK_USERS } from "@/lib/admin/mock/users";
-import { MOCK_NOTIFICATIONS } from "@/lib/admin/mock/notifications";
 import { countOpenReports } from "@/lib/admin/data/business-reports";
 import { listProfiles } from "@/lib/matrimonial/store";
 import { countPendingMosques } from "@/lib/admin/data/mosques";
 import { countOpenContactMessages } from "@/lib/admin/data/contact-messages";
+import { countPendingUsers } from "@/lib/admin/data/users";
 
 export const dynamic = "force-dynamic";
 
@@ -45,22 +44,23 @@ export default async function AdminLayout({
     redirect(`/${locale}/`);
   }
 
-  const pendingUsers = MOCK_USERS.filter((u) => u.status === "pending").length;
-  const flaggedContent = MOCK_NOTIFICATIONS.filter((n) => n.type === "flagged" && !n.read).length;
-  const unansweredQa = MOCK_NOTIFICATIONS.filter((n) => n.type === "qa" && !n.read).length;
-  const [openReports, { profiles: matrimonialProfiles }, pendingMosques, openContactMessages] =
-    await Promise.all([
-      countOpenReports(),
-      listProfiles(),
-      countPendingMosques(),
-      countOpenContactMessages(),
-    ]);
+  const [
+    openReports,
+    { profiles: matrimonialProfiles },
+    pendingMosques,
+    openContactMessages,
+    pendingUsers,
+  ] = await Promise.all([
+    countOpenReports(),
+    listProfiles(),
+    countPendingMosques(),
+    countOpenContactMessages(),
+    countPendingUsers(),
+  ]);
   const pendingMatrimonial = matrimonialProfiles.filter((p) => p.status === "pending").length;
 
   const badges: SidebarBadges = {
     pendingUsers,
-    flaggedContent,
-    unansweredQa,
     openReports,
     pendingMatrimonial,
     pendingMosques,
