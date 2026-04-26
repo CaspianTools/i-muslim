@@ -3,7 +3,7 @@
 import { Link, usePathname } from "@/i18n/navigation";
 import { useCallback, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, HelpCircle, Plus } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
 import { ADMIN_NAV, type NavItem } from "@/lib/admin/nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -186,24 +186,8 @@ export function Sidebar({ badges = {}, variant = "desktop", onNavigate }: Sideba
           </nav>
         </ScrollArea>
 
-        <div className="border-t border-sidebar-border p-3">
-          {showLabels ? (
-            <div className="rounded-md border border-border bg-card p-3 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="font-medium text-foreground">{t("storageLabel")}</span>
-                <span className="text-muted-foreground">{t("storageUsed", { percent: 23 })}</span>
-              </div>
-              <div className="mt-1.5 h-1.5 w-full rounded-full bg-muted">
-                <div className="h-full w-[23%] rounded-full bg-primary" />
-              </div>
-              <Link
-                href="#"
-                className="mt-2 flex items-center gap-1 text-muted-foreground hover:text-foreground"
-              >
-                <HelpCircle className="size-3" /> {t("helpAndDocs")}
-              </Link>
-            </div>
-          ) : (
+        {!showLabels && (
+          <div className="border-t border-sidebar-border p-3">
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -217,8 +201,8 @@ export function Sidebar({ badges = {}, variant = "desktop", onNavigate }: Sideba
               </TooltipTrigger>
               <TooltipContent side="right">{t("expand")}</TooltipContent>
             </Tooltip>
-          )}
-        </div>
+          </div>
+        )}
       </aside>
     </TooltipProvider>
   );

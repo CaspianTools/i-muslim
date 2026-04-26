@@ -110,9 +110,6 @@
     "newButton": "جديد",
     "expand": "توسيع",
     "collapse": "طيّ الشريط الجانبي",
-    "storageLabel": "التخزين",
-    "storageUsed": "{percent}%",
-    "helpAndDocs": "المساعدة والوثائق",
     "groups": {
       "overview": "نظرة عامة",
       "community": "المجتمع",

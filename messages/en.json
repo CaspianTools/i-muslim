@@ -107,9 +107,6 @@
     "newButton": "New",
     "expand": "Expand",
     "collapse": "Collapse sidebar",
-    "storageLabel": "Storage",
-    "storageUsed": "{percent}%",
-    "helpAndDocs": "Help & Docs",
     "groups": {
       "overview": "Overview",
       "community": "Community",

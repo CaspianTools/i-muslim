@@ -110,9 +110,6 @@
     "newButton": "Baru",
     "expand": "Perluas",
     "collapse": "Ciutkan bilah samping",
-    "storageLabel": "Penyimpanan",
-    "storageUsed": "{percent}%",
-    "helpAndDocs": "Bantuan & Dokumentasi",
     "groups": {
       "overview": "Ikhtisar",
       "community": "Komunitas",

@@ -110,9 +110,6 @@
     "newButton": "Yeni",
     "expand": "Genişlet",
     "collapse": "Kenar çubuğunu daralt",
-    "storageLabel": "Depolama",
-    "storageUsed": "%{percent}",
-    "helpAndDocs": "Yardım ve Belgeler",
     "groups": {
       "overview": "Genel Bakış",
       "community": "Topluluk",
