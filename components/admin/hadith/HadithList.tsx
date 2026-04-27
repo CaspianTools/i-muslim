@@ -17,7 +17,7 @@ import {
   EditorDialogHeader,
   EditorDialogTitle,
 } from "@/components/ui/editor-dialog";
-import { FormGrid } from "@/components/admin/ui/form-layout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/sonner";
 import type { AdminHadith } from "@/types/admin-content";
 
@@ -250,71 +250,80 @@ function EditHadithDrawer({
                 Arabic text is read-only. Translations and metadata can be edited.
               </EditorDialogDescription>
             </EditorDialogHeader>
-            <EditorDialogBody className="space-y-4">
-              <div className="rounded-md bg-muted/40 p-3">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                  Arabic (read-only)
-                </span>
-                <p
-                  dir="rtl"
-                  lang="ar"
-                  className="mt-1 font-arabic text-lg leading-loose"
-                >
-                  {hadith.text_ar}
-                </p>
-              </div>
+            <EditorDialogBody className="overflow-hidden p-0">
+              <div className="grid h-full grid-cols-1 lg:grid-cols-[30%_1fr]">
+                <div className="space-y-4 overflow-y-auto p-5 lg:border-e lg:border-border">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="hadith-narrator">Narrator</Label>
+                    <Input id="hadith-narrator" {...form.register("narrator")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="hadith-grade">Grade</Label>
+                    <Input id="hadith-grade" {...form.register("grade")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="hadith-tags">Tags (comma-separated)</Label>
+                    <Input id="hadith-tags" {...form.register("tags")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="hadith-notes">Internal notes</Label>
+                    <textarea
+                      id="hadith-notes"
+                      rows={4}
+                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
+                      {...form.register("notes")}
+                    />
+                  </div>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      {...form.register("published")}
+                      className="size-4"
+                    />
+                    Published (visible to public reader)
+                  </label>
+                </div>
 
-              <FormGrid>
-                <div className="space-y-1.5">
-                  <Label htmlFor="hadith-en">English</Label>
-                  <textarea
-                    id="hadith-en"
-                    rows={6}
-                    className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
-                    {...form.register("en")}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="hadith-ru">Russian</Label>
-                  <textarea
-                    id="hadith-ru"
-                    rows={6}
-                    className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
-                    {...form.register("ru")}
-                  />
-                </div>
-              </FormGrid>
-              <FormGrid cols={3}>
-                <div className="space-y-1.5">
-                  <Label htmlFor="hadith-narrator">Narrator</Label>
-                  <Input id="hadith-narrator" {...form.register("narrator")} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="hadith-grade">Grade</Label>
-                  <Input id="hadith-grade" {...form.register("grade")} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="hadith-tags">Tags (comma-separated)</Label>
-                  <Input id="hadith-tags" {...form.register("tags")} />
-                </div>
-              </FormGrid>
-              <div className="space-y-1.5">
-                <Label htmlFor="hadith-notes">Internal notes</Label>
-                <textarea
-                  id="hadith-notes"
-                  rows={2}
-                  className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
-                  {...form.register("notes")}
-                />
+                <Tabs defaultValue="ar" className="flex min-h-0 flex-col p-5">
+                  <div className="-mx-5 overflow-x-auto px-5 pb-1">
+                    <TabsList>
+                      <TabsTrigger value="ar">Arabic</TabsTrigger>
+                      <TabsTrigger value="en">English</TabsTrigger>
+                      <TabsTrigger value="ru">Russian</TabsTrigger>
+                    </TabsList>
+                  </div>
+                  <TabsContent value="ar" className="mt-3 flex-1 overflow-y-auto">
+                    <div className="rounded-md bg-muted/40 p-4">
+                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                        Arabic (read-only)
+                      </span>
+                      <p
+                        dir="rtl"
+                        lang="ar"
+                        className="mt-2 font-arabic text-lg leading-loose"
+                      >
+                        {hadith.text_ar}
+                      </p>
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="en" className="mt-3 flex flex-1 flex-col">
+                    <Label htmlFor="hadith-en" className="sr-only">English</Label>
+                    <textarea
+                      id="hadith-en"
+                      className="flex h-full min-h-[240px] w-full flex-1 resize-none rounded-md border border-input bg-background p-3 text-sm"
+                      {...form.register("en")}
+                    />
+                  </TabsContent>
+                  <TabsContent value="ru" className="mt-3 flex flex-1 flex-col">
+                    <Label htmlFor="hadith-ru" className="sr-only">Russian</Label>
+                    <textarea
+                      id="hadith-ru"
+                      className="flex h-full min-h-[240px] w-full flex-1 resize-none rounded-md border border-input bg-background p-3 text-sm"
+                      {...form.register("ru")}
+                    />
+                  </TabsContent>
+                </Tabs>
               </div>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  {...form.register("published")}
-                  className="size-4"
-                />
-                Published (visible to public reader)
-              </label>
             </EditorDialogBody>
 
             <EditorDialogFooter>
