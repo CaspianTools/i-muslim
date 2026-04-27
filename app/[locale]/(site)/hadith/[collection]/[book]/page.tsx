@@ -10,6 +10,7 @@ import { parseLangsParam, HADITH_LANG_COVERAGE } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { HadithCard, type HadithTranslationSlice } from "@/components/HadithCard";
+import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import type { HadithEntry } from "@/types/hadith";
 
 export async function generateMetadata({
@@ -62,7 +63,10 @@ export default async function HadithBookPage({
   const bookMeta = meta.books.find((b) => b.number === bookNumber);
   if (!bookMeta) notFound();
 
-  const hadiths = await getHadithsByBook(collection, bookNumber);
+  const [hadiths, languageSettings] = await Promise.all([
+    getHadithsByBook(collection, bookNumber),
+    getLanguageSettings(),
+  ]);
 
   const prev = meta.books.find((b) => b.number === bookNumber - 1);
   const next = meta.books.find((b) => b.number === bookNumber + 1);
@@ -89,7 +93,7 @@ export default async function HadithBookPage({
         </p>
         <div className="mt-4">
           <Suspense fallback={<div className="h-8" />}>
-            <LanguageSelector />
+            <LanguageSelector availableLangs={languageSettings.contentEnabled} />
           </Suspense>
         </div>
       </header>

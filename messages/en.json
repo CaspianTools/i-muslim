@@ -1692,5 +1692,20 @@
     "metaReceived": "Received",
     "metaLocale": "Locale",
     "noPersistToast": "Configure Firebase Admin to manage contact messages."
+  },
+  "adminSettings": {
+    "languages": {
+      "title": "Languages",
+      "description": "Choose which languages are visible to visitors. Disabled languages disappear from public switchers, but existing URLs keep working.",
+      "uiSection": "Interface languages",
+      "uiDescription": "Languages users can pick for the app interface.",
+      "contentSection": "Translation languages (Qur'an & Hadith)",
+      "contentDescription": "Languages available as translations for sacred-text passages. Arabic is always shown as the original.",
+      "defaultLockedHint": "default · always on",
+      "save": "Save changes",
+      "savedToast": "Language settings saved.",
+      "errorToast": "Could not save language settings.",
+      "unsavedChanges": "Unsaved changes"
+    }
   }
 }

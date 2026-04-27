@@ -1,10 +1,14 @@
 import { Link } from "@/i18n/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 
-export function Footer() {
-  const t = useTranslations("footer");
-  const locale = useLocale();
+export async function Footer() {
+  const [t, locale, languageSettings] = await Promise.all([
+    getTranslations("footer"),
+    getLocale(),
+    getLanguageSettings(),
+  ]);
   const year = new Date().getFullYear();
 
   const linkClass =
@@ -127,7 +131,7 @@ export function Footer() {
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>{t("copyright", { year })}</p>
           <div className="flex flex-wrap items-center gap-3">
-            <LocaleSwitcher />
+            <LocaleSwitcher availableLocales={languageSettings.uiEnabled} />
           </div>
           <p>
             {t.rich("attribution", {

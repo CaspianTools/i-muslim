@@ -10,6 +10,7 @@ import { parseLangsParam } from "@/lib/translations";
 import { Suspense } from "react";
 import { AyahCard } from "@/components/AyahCard";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 
 export async function generateMetadata({
   params,
@@ -44,10 +45,11 @@ export default async function SurahPage({
   if (!Number.isInteger(id) || id < 1 || id > 114) notFound();
 
   const langs = parseLangsParam(langParam);
-  const [chapter, allVerses, chapters] = await Promise.all([
+  const [chapter, allVerses, chapters, languageSettings] = await Promise.all([
     getSurah(id),
     getAyahsForSurah(id),
     getSurahs(),
+    getLanguageSettings(),
   ]);
   if (!chapter) notFound();
   const verses = allVerses.map((v) => filterVerseLangs(v, langs));
@@ -89,7 +91,7 @@ export default async function SurahPage({
         </div>
         <div className="mt-4">
           <Suspense fallback={<div className="h-8" />}>
-            <LanguageSelector />
+            <LanguageSelector availableLangs={languageSettings.contentEnabled} />
           </Suspense>
         </div>
       </header>

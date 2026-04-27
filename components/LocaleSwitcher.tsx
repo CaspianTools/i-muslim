@@ -19,12 +19,26 @@ const LOCALE_LABEL: Record<Locale, string> = {
   id: "Bahasa",
 };
 
-export function LocaleSwitcher() {
+type LocaleSwitcherProps = {
+  // When provided, only these locales appear in the dropdown. The current
+  // locale is always included so users on a now-disabled URL can still switch
+  // away. When undefined, falls back to the full LOCALES list.
+  availableLocales?: readonly Locale[];
+};
+
+export function LocaleSwitcher({ availableLocales }: LocaleSwitcherProps = {}) {
   const locale = useLocale() as Locale;
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations("footer");
   const [pending, startTransition] = useTransition();
+
+  const visible: Locale[] = (() => {
+    if (!availableLocales) return [...LOCALES];
+    const set = new Set<Locale>(availableLocales);
+    set.add(locale);
+    return LOCALES.filter((l) => set.has(l));
+  })();
 
   function switchLocale(next: Locale) {
     if (next === locale) return;
@@ -44,7 +58,7 @@ export function LocaleSwitcher() {
         <span>{LOCALE_LABEL[locale]}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[10rem]">
-        {LOCALES.map((l) => (
+        {visible.map((l) => (
           <DropdownMenuItem
             key={l}
             onClick={() => switchLocale(l)}

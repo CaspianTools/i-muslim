@@ -1696,5 +1696,20 @@
     "metaReceived": "Diterima",
     "metaLocale": "Bahasa",
     "noPersistToast": "Konfigurasikan Firebase Admin untuk mengelola pesan kontak."
+  },
+  "adminSettings": {
+    "languages": {
+      "title": "Bahasa",
+      "description": "Pilih bahasa yang terlihat oleh pengunjung. Bahasa yang dinonaktifkan akan hilang dari pemilih bahasa publik, namun URL yang ada tetap berfungsi.",
+      "uiSection": "Bahasa antarmuka",
+      "uiDescription": "Bahasa yang dapat dipilih pengguna untuk antarmuka aplikasi.",
+      "contentSection": "Bahasa terjemahan (Al-Qur'an & Hadis)",
+      "contentDescription": "Bahasa yang tersedia sebagai terjemahan untuk teks-teks suci. Bahasa Arab selalu ditampilkan sebagai teks asli.",
+      "defaultLockedHint": "default · selalu aktif",
+      "save": "Simpan perubahan",
+      "savedToast": "Pengaturan bahasa disimpan.",
+      "errorToast": "Tidak dapat menyimpan pengaturan bahasa.",
+      "unsavedChanges": "Perubahan belum disimpan"
+    }
   }
 }

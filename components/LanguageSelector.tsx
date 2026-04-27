@@ -12,11 +12,21 @@ import type { LangCode } from "@/lib/translations";
 
 const STORAGE_KEY = "i-muslim.langs";
 
-export function LanguageSelector() {
+type LanguageSelectorProps = {
+  // When provided, only these translation languages appear as toggle buttons.
+  // The user's currently-selected languages are still respected via ?lang=
+  // (deep links keep working) — the prop only filters the picker UI.
+  availableLangs?: readonly LangCode[];
+};
+
+export function LanguageSelector({ availableLangs }: LanguageSelectorProps = {}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = parseLangsParam(searchParams.get("lang"));
+  const visible: readonly LangCode[] = availableLangs
+    ? ALL_LANGS.filter((l) => availableLangs.includes(l) || current.includes(l))
+    : ALL_LANGS;
 
   // On first mount, if URL has no ?lang= but localStorage remembers a
   // preference, push a redirect so the server rerenders with saved prefs.
@@ -59,7 +69,7 @@ export function LanguageSelector() {
       <span className="text-xs uppercase tracking-wide text-muted-foreground">
         Translations:
       </span>
-      {ALL_LANGS.map((lang) => {
+      {visible.map((lang) => {
         const active = current.includes(lang);
         return (
           <button

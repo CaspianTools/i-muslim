@@ -1696,5 +1696,20 @@
     "metaReceived": "Alındı",
     "metaLocale": "Dil",
     "noPersistToast": "İletişim mesajlarını yönetmek için Firebase Admin'i yapılandırın."
+  },
+  "adminSettings": {
+    "languages": {
+      "title": "Diller",
+      "description": "Ziyaretçilerin görebileceği dilleri seçin. Devre dışı bırakılan diller herkese açık dil seçicilerinden kaldırılır; mevcut URL'leri çalışmaya devam eder.",
+      "uiSection": "Arayüz dilleri",
+      "uiDescription": "Kullanıcıların uygulama arayüzü için seçebileceği diller.",
+      "contentSection": "Çeviri dilleri (Kur'an ve Hadis)",
+      "contentDescription": "Kutsal metin pasajları için kullanılabilir çeviri dilleri. Arapça her zaman orijinal olarak gösterilir.",
+      "defaultLockedHint": "varsayılan · her zaman açık",
+      "save": "Değişiklikleri kaydet",
+      "savedToast": "Dil ayarları kaydedildi.",
+      "errorToast": "Dil ayarları kaydedilemedi.",
+      "unsavedChanges": "Kaydedilmemiş değişiklikler"
+    }
   }
 }
