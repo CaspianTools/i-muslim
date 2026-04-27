@@ -4,7 +4,10 @@ import type {
   HadithEntry,
   BookEntry,
 } from "@/types/hadith";
-import { HADITH_LANG_COVERAGE } from "./translations";
+import {
+  HADITH_LANG_COVERAGE,
+  HADITH_EDITION_LANG,
+} from "./translations";
 import type { LangCode } from "./translations";
 
 const BASE = "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions";
@@ -70,18 +73,14 @@ export function getCollection(slug: string): HadithCollection | undefined {
   return COLLECTIONS.find((c) => c.slug === slug);
 }
 
-type EditionLang = "ara" | "eng" | "rus";
+type EditionLang = string;
 
 function langToEdition(lang: LangCode): EditionLang | null {
-  if (lang === "ar") return "ara";
-  if (lang === "en") return "eng";
-  if (lang === "ru") return "rus";
-  return null;
+  return HADITH_EDITION_LANG[lang] ?? null;
 }
 
 export function hasEdition(lang: LangCode, collection: string): boolean {
   if (lang === "ar") return true; // every collection has Arabic
-  if (lang === "az") return false;
   const set = HADITH_LANG_COVERAGE[lang];
   return set?.has(collection) ?? false;
 }
@@ -158,8 +157,9 @@ export async function getEditionsForLangs(
         })),
       );
     } else if (lang !== "en" && hasEdition("en", collection)) {
+      const enEdition = HADITH_EDITION_LANG.en ?? "eng";
       jobs.push(
-        fetchEdition("eng", collection).then((edition) => ({
+        fetchEdition(enEdition, collection).then((edition) => ({
           requested: lang,
           actualLang: "en" as LangCode,
           edition,

@@ -23,7 +23,9 @@ export type HadithDoc = {
   book: number;
   hadith_in_book?: number;
   text_ar: string;
-  translations: { en: string; ru: string };
+  // Open map keyed by LangCode. Missing or empty entries trigger the renderer's
+  // English-fallback path; per-language seed scripts populate new keys.
+  translations: Record<string, string | undefined>;
   narrator: string | null;
   grade: string | null;
   grades?: Array<{ name: string; grade: string }>;

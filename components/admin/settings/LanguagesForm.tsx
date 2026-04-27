@@ -22,18 +22,20 @@ const UI_NATIVE: Record<Locale, string> = {
   id: "Bahasa Indonesia",
 };
 
-const CONTENT_FLAGS: Record<LangCode, string> = {
+const CONTENT_FLAGS: Record<string, string> = {
   ar: "🇸🇦",
   en: "🇬🇧",
   ru: "🇷🇺",
   az: "🇦🇿",
+  tr: "🇹🇷",
 };
 
-const CONTENT_NATIVE: Record<LangCode, string> = {
+const CONTENT_NATIVE: Record<string, string> = {
   ar: "العربية",
   en: "English",
   ru: "Русский",
   az: "Azərbaycanca",
+  tr: "Türkçe",
 };
 
 const CONTENT_DEFAULT: LangCode = "ar";
@@ -155,8 +157,8 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
               <LanguageRow
                 key={code}
                 code={code}
-                flag={CONTENT_FLAGS[code]}
-                native={CONTENT_NATIVE[code]}
+                flag={CONTENT_FLAGS[code] ?? "🌐"}
+                native={CONTENT_NATIVE[code] ?? code.toUpperCase()}
                 checked={checked}
                 isDefault={isDefault}
                 defaultHint={t("defaultLockedHint")}

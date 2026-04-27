@@ -6,7 +6,7 @@ import {
   getHadithsByBook,
   type HadithDoc,
 } from "@/lib/hadith/db";
-import { parseLangsParam, HADITH_LANG_COVERAGE } from "@/lib/translations";
+import { parseLangsParam } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { HadithCard, type HadithTranslationSlice } from "@/components/HadithCard";
@@ -24,13 +24,8 @@ export async function generateMetadata({
   return { title: `${meta.name_en} — Book ${book}` };
 }
 
-function docToHadithEntry(d: HadithDoc, langKey: "ar" | "en" | "ru"): HadithEntry | null {
-  const text =
-    langKey === "ar"
-      ? d.text_ar
-      : langKey === "en"
-        ? d.translations.en
-        : d.translations.ru;
+function docToHadithEntry(d: HadithDoc, lang: LangCode): HadithEntry | null {
+  const text = lang === "ar" ? d.text_ar : d.translations?.[lang];
   if (!text) return null;
   return {
     hadithnumber: d.number,
@@ -102,19 +97,20 @@ export default async function HadithBookPage({
         {hadiths.map((h) => {
           const arabic = showArabic ? docToHadithEntry(h, "ar") : null;
           const translations: HadithTranslationSlice[] = nonArabic.map((lang) => {
-            const covered = HADITH_LANG_COVERAGE[lang]?.has(collection);
-            if (!covered) {
-              // No native translation in this language. Show English as fallback.
-              const enEntry = lang !== "en" ? docToHadithEntry(h, "en") : null;
-              return {
-                requested: lang,
-                actual: enEntry ? "en" : null,
-                entry: enEntry,
-                fallback: Boolean(enEntry),
-              };
+            // Prefer the doc's translation in the requested language. If it's
+            // missing or empty (e.g. seed hasn't been run for this lang yet),
+            // fall back to English so the reader sees something.
+            const native = docToHadithEntry(h, lang);
+            if (native) {
+              return { requested: lang, actual: lang, entry: native, fallback: false };
             }
-            const entry = docToHadithEntry(h, lang as "en" | "ru");
-            return { requested: lang, actual: lang, entry, fallback: false };
+            const enEntry = lang !== "en" ? docToHadithEntry(h, "en") : null;
+            return {
+              requested: lang,
+              actual: enEntry ? "en" : null,
+              entry: enEntry,
+              fallback: Boolean(enEntry),
+            };
           });
           return (
             <HadithCard

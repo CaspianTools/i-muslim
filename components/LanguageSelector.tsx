@@ -83,7 +83,7 @@ export function LanguageSelector({ availableLangs }: LanguageSelectorProps = {})
                 : "rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             }
           >
-            {LANG_LABELS[lang]}
+            {LANG_LABELS[lang] ?? lang.toUpperCase()}
           </button>
         );
       })}

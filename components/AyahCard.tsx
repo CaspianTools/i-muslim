@@ -12,7 +12,7 @@ function stripHtml(s: string): string {
 }
 
 export function AyahCard({ verse, langs }: { verse: Verse; langs: LangCode[] }) {
-  const nonArabic = langs.filter((l): l is Exclude<LangCode, "ar"> => l !== "ar");
+  const nonArabic = langs.filter((l) => l !== "ar");
 
   return (
     <article className="rounded-xl border border-border bg-background p-5">
@@ -36,12 +36,16 @@ export function AyahCard({ verse, langs }: { verse: Verse; langs: LangCode[] }) 
         <div className="mt-4 space-y-4">
           {nonArabic.map((lang) => {
             const id = QURAN_TRANSLATION_IDS[lang];
+            if (id == null) return null;
             const t = verse.translations.find((tr) => tr.resource_id === id);
             if (!t) return null;
+            const label = LANG_LABELS[lang] ?? lang.toUpperCase();
+            const translator = QURAN_TRANSLATION_NAMES[lang];
             return (
               <div key={lang} className="border-l-2 border-border pl-4">
                 <div className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
-                  {LANG_LABELS[lang]} · {QURAN_TRANSLATION_NAMES[lang]}
+                  {label}
+                  {translator ? ` · ${translator}` : ""}
                 </div>
                 <p className="text-base leading-relaxed">{stripHtml(t.text)}</p>
               </div>

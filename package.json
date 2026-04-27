@@ -9,7 +9,9 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "seed:quran": "tsx scripts/seed-quran.ts",
-    "seed:hadith": "tsx scripts/seed-hadith.ts"
+    "seed:quran:lang": "tsx scripts/seed-quran-translation.ts",
+    "seed:hadith": "tsx scripts/seed-hadith.ts",
+    "seed:hadith:lang": "tsx scripts/seed-hadith-translation.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

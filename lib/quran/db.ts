@@ -29,7 +29,10 @@ type AyahDoc = {
   ayah: number;
   text_ar: string;
   text_translit: string | null;
-  translations: { en?: string; ru?: string };
+  // Open map keyed by LangCode (e.g. "en", "ru", "tr"). New translations are
+  // added by per-language seed scripts; absent keys mean "not yet seeded for
+  // this language" and the renderer skips that section for that ayah.
+  translations: Record<string, string | undefined>;
   juz?: number;
   page?: number;
   sajdah?: boolean;
@@ -56,19 +59,11 @@ function surahDocToChapter(d: SurahDoc): Chapter {
 
 function ayahDocToVerse(d: AyahDoc): Verse {
   const translations: VerseTranslation[] = [];
-  if (d.translations.en) {
-    translations.push({
-      id: QURAN_TRANSLATION_IDS.en,
-      resource_id: QURAN_TRANSLATION_IDS.en,
-      text: d.translations.en,
-    });
-  }
-  if (d.translations.ru) {
-    translations.push({
-      id: QURAN_TRANSLATION_IDS.ru,
-      resource_id: QURAN_TRANSLATION_IDS.ru,
-      text: d.translations.ru,
-    });
+  for (const [code, text] of Object.entries(d.translations ?? {})) {
+    if (!text) continue;
+    const id = QURAN_TRANSLATION_IDS[code];
+    if (id == null) continue; // translation key without a known resource ID
+    translations.push({ id, resource_id: id, text });
   }
   return {
     id: d.surah * 10000 + d.ayah,
@@ -146,7 +141,7 @@ export function filterVerseLangs(verse: Verse, langs: LangCode[]): Verse {
   const wantedIds = new Set<number>();
   for (const lang of langs) {
     if (lang === "ar") continue;
-    const id = QURAN_TRANSLATION_IDS[lang as Exclude<LangCode, "ar">];
+    const id = QURAN_TRANSLATION_IDS[lang];
     if (id) wantedIds.add(id);
   }
   return {

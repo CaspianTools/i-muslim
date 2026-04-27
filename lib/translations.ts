@@ -1,34 +1,55 @@
-export type LangCode = "ar" | "en" | "ru" | "az";
+// Registry of supported content (sacred-text translation) languages.
+//
+// Adding a language here is a code change — the value side stays static so
+// types and lookups can stay simple. Once added, an admin can flip the
+// language ON in /admin/settings; running the per-language seed scripts
+// (`scripts/seed-quran-translation.ts`, `scripts/seed-hadith-translation.ts`)
+// populates Firestore with the translated text for that language.
+//
+// LangCode is a plain `string` so render paths don't need to be re-typed when
+// the registry grows. Bundled codes are the keys present in the maps below.
 
-export const ALL_LANGS: readonly LangCode[] = ["ar", "en", "ru", "az"] as const;
+export type LangCode = string;
 
-export const LANG_LABELS: Record<LangCode, string> = {
+export const ALL_LANGS: readonly LangCode[] = [
+  "ar",
+  "en",
+  "ru",
+  "az",
+  "tr",
+] as const;
+
+export const LANG_LABELS: Record<string, string> = {
   ar: "Arabic",
   en: "English",
   ru: "Russian",
   az: "Azerbaijani",
+  tr: "Turkish",
 };
 
-// Verified translation resource IDs on api.quran.com/api/v4/resources/translations
-export const QURAN_TRANSLATION_IDS: Record<Exclude<LangCode, "ar">, number> = {
+// Verified translation resource IDs on api.quran.com/api/v4/resources/translations.
+// Arabic is the original — no translation ID. Add an entry when extending.
+export const QURAN_TRANSLATION_IDS: Record<string, number> = {
   en: 20, // Saheeh International
   ru: 45, // Elmir Kuliev
   az: 75, // Alikhan Musayev
+  tr: 77, // Diyanet İşleri Başkanlığı
 };
 
-export const QURAN_TRANSLATION_NAMES: Record<Exclude<LangCode, "ar">, string> =
-  {
-    en: "Saheeh International",
-    ru: "Эльмир Кулиев",
-    az: "Əlixan Musayev",
-  };
+export const QURAN_TRANSLATION_NAMES: Record<string, string> = {
+  en: "Saheeh International",
+  ru: "Эльмир Кулиев",
+  az: "Əlixan Musayev",
+  tr: "Diyanet İşleri Başkanlığı",
+};
 
 // fawazahmed0/hadith-api editions per language.
-// key: LangCode, value: set of collection slugs that have an edition.
-export const HADITH_LANG_COVERAGE: Record<
-  Exclude<LangCode, "ar">,
-  ReadonlySet<string>
-> = {
+// Keys: language code → set of collection slugs that have a native edition.
+// Collections not listed here fall back to English at render time.
+//
+// Edition slugs on the CDN follow the `${langCode3}-${collection}` pattern
+// (see HADITH_EDITION_LANG below). Update both maps when adding a language.
+export const HADITH_LANG_COVERAGE: Record<string, ReadonlySet<string>> = {
   en: new Set([
     "bukhari",
     "muslim",
@@ -41,7 +62,20 @@ export const HADITH_LANG_COVERAGE: Record<
     "qudsi",
   ]),
   ru: new Set(["bukhari", "muslim", "abudawud"]),
-  az: new Set(), // no Azerbaijani hadith translations available
+  az: new Set(),
+  // fawazahmed0 ships Turkish (`tur`) editions for these slugs as of writing;
+  // the seed script will skip any that 404 and the renderer falls back to
+  // English on a missing translation.
+  tr: new Set(["bukhari"]),
+};
+
+// Maps our LangCode to fawazahmed0's 3-letter edition prefix. Used by both
+// the runtime fetcher in lib/hadith.ts and the per-language seeder.
+export const HADITH_EDITION_LANG: Record<string, string> = {
+  ar: "ara",
+  en: "eng",
+  ru: "rus",
+  tr: "tur",
 };
 
 const DEFAULT_LANGS: LangCode[] = ["ar", "en"];
@@ -70,11 +104,11 @@ export function hadithLangsWithFallback(langs: LangCode[], collection: string) {
   for (const lang of langs) {
     if (lang === "ar") continue;
     const coverage = HADITH_LANG_COVERAGE[lang];
-    if (coverage.has(collection)) {
+    if (coverage?.has(collection)) {
       out.push({ requested: lang, actual: lang });
     } else if (
       lang !== "en" &&
-      HADITH_LANG_COVERAGE.en.has(collection) &&
+      HADITH_LANG_COVERAGE.en?.has(collection) &&
       !out.some((e) => e.actual === "en")
     ) {
       out.push({ requested: lang, actual: "en" });

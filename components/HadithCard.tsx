@@ -54,11 +54,11 @@ export function HadithCard({
               className="border-l-2 border-border pl-4"
             >
               <div className="mb-1 flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
-                <span>{LANG_LABELS[requested]}</span>
+                <span>{LANG_LABELS[requested] ?? requested.toUpperCase()}</span>
                 {fallback && actual && (
                   <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] normal-case tracking-normal">
-                    {LANG_LABELS[requested]} unavailable — showing{" "}
-                    {LANG_LABELS[actual]}
+                    {LANG_LABELS[requested] ?? requested.toUpperCase()} unavailable — showing{" "}
+                    {LANG_LABELS[actual] ?? actual.toUpperCase()}
                   </span>
                 )}
                 {!entry && !fallback && (
