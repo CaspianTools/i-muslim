@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Pencil, Power } from "lucide-react";
+import { Pencil, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -224,6 +224,16 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
     setReserved((prev) =>
       prev.map((r) => (r.code === activatingCode ? { ...r, activated: true } : r)),
     );
+    // The admin clicked the toggle on an unactivated row to activate; their
+    // intent is "make this language visible". Mirror that into uiEnabled
+    // locally so the toggle reads ON without a second click. The change
+    // shows up as dirty in the SaveBar so admin still confirms with Save.
+    setUiEnabled((prev) => {
+      if (prev.has(activatingCode)) return prev;
+      const next = new Set(prev);
+      next.add(activatingCode);
+      return next;
+    });
   }
 
   function onEditorSaved(newOverlay: MessageTree, percent: number) {
@@ -272,11 +282,6 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
       </TabsList>
 
       <TabsContent value="interface" className="space-y-4">
-        <div>
-          <h2 className="text-base font-semibold">{t("uiSection")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("uiDescription")}</p>
-        </div>
-
         <ul className="divide-y divide-border rounded-lg border border-border bg-card">
           {LOCALES.map((code) => {
             const isDefault = code === DEFAULT_LOCALE;
@@ -288,7 +293,6 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
                   ? "activated"
                   : "unactivated";
             const meta = LOCALE_META[code];
-            const usable = status !== "unactivated";
             const checked = uiEnabled.has(code) || isDefault;
 
             return (
@@ -353,21 +357,20 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
                       </Button>
                     </>
                   )}
-                  {status === "unactivated" && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => openActivateDialog(code)}
-                      disabled={pending}
-                    >
-                      <Plus className="size-3.5" />
-                      {t("activate.activate")}
-                    </Button>
-                  )}
+                  {/*
+                    Unactivated reserved row: the toggle itself is the
+                    activation affordance. We force `checked={false}` so the
+                    visual matches the locale's actual usability, regardless
+                    of whether `uiEnabled` happens to include the code via
+                    the default.
+                  */}
                   <ToggleSwitch
-                    checked={checked}
-                    disabled={isDefault || !usable}
-                    onChange={() => toggleUi(code)}
+                    checked={status === "unactivated" ? false : checked}
+                    disabled={isDefault || pending}
+                    onChange={() => {
+                      if (status === "unactivated") openActivateDialog(code);
+                      else toggleUi(code);
+                    }}
                     label={meta?.nativeName ?? code}
                   />
                 </div>
@@ -386,11 +389,6 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
       </TabsContent>
 
       <TabsContent value="quran" className="space-y-4">
-        <div>
-          <h2 className="text-base font-semibold">{t("quranSection")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("quranDescription")}</p>
-        </div>
-
         <ContentLangList
           enabled={quranEnabled}
           onToggle={(c) => toggleContent(setQuranEnabled, c)}
@@ -407,11 +405,6 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
       </TabsContent>
 
       <TabsContent value="hadith" className="space-y-4">
-        <div>
-          <h2 className="text-base font-semibold">{t("hadithSection")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("hadithDescription")}</p>
-        </div>
-
         <ContentLangList
           enabled={hadithEnabled}
           onToggle={(c) => toggleContent(setHadithEnabled, c)}

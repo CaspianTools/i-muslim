@@ -25,6 +25,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 - Activated reserved locales now show a **completion percentage chip** on each row in /admin/settings → Interface. Click the chip (or "Edit") to open a phrase-by-phrase editor that lists every key with the base value above and an editable input below; supports search, "untranslated only" filter, and bulk-save (only changed rows are written). Updates land at `config/uiLocales/locales/{code}.messages` via a new `updateUiLocaleMessagesAction` server action.
+
+### Changed
+- Settings: each row's toggle is now the activation affordance for unactivated reserved locales (the separate "+ Activate" button is gone). Toggle reads OFF until activated; clicking opens the paste-JSON dialog. Once activated the toggle controls public-switcher visibility as before, and the locale is auto-included in `uiEnabled` so the toggle reads ON without a second click. The descriptive paragraphs above each tab's list have been removed.
 - Admin Settings page is now tabbed (Interface / Qur'an / Hadith); the Interface tab merges the bundled and reserved locale lists into one. Reserved-locale rows show an "Activate" button when inactive and "Edit" + "Deactivate" once activated.
 - "Download base JSON" button in the activate-locale dialog so admins can grab the latest `messages/<base>.json` to translate offline before pasting back.
 - `npm run sync:locales` script: mirrors activated reserved-locale Firestore docs to the current bundled-locale shape, adding missing keys with English placeholders and dropping stale ones. Idempotent. CLAUDE.md instructs Claude to run it after any change to `messages/*.json` that adds, renames, or removes keys.
