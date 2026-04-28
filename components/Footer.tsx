@@ -55,11 +55,6 @@ export async function Footer() {
                 {t("hadith")}
               </Link>
             </li>
-            <li>
-              <Link href="/zakat" className={linkClass}>
-                {t("zakat")}
-              </Link>
-            </li>
           </ul>
         </nav>
 
@@ -108,27 +103,12 @@ export async function Footer() {
           </ul>
         </nav>
 
-        <nav aria-label={t("colCompany")} className="space-y-3">
-          <h2 className={headingClass}>{t("colCompany")}</h2>
+        <nav aria-label={t("colTools")} className="space-y-3">
+          <h2 className={headingClass}>{t("colTools")}</h2>
           <ul className="space-y-2">
             <li>
-              <Link href="/about" className={linkClass}>
-                {t("about")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/privacy" className={linkClass}>
-                {t("privacy")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/terms" className={linkClass}>
-                {t("terms")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className={linkClass}>
-                {t("contact")}
+              <Link href="/zakat" className={linkClass}>
+                {t("zakat")}
               </Link>
             </li>
           </ul>
@@ -138,33 +118,33 @@ export async function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>{t("copyright", { year })}</p>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <nav aria-label={t("colCompany")}>
+              <ul className="flex flex-wrap gap-x-4 gap-y-1">
+                <li>
+                  <Link href="/about" className={linkClass}>
+                    {t("about")}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className={linkClass}>
+                    {t("privacy")}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className={linkClass}>
+                    {t("terms")}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className={linkClass}>
+                    {t("contact")}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
             <LocaleSwitcher availableLocales={availableLocales} />
           </div>
-          <p>
-            {t.rich("attribution", {
-              quran: (chunks) => (
-                <a
-                  className="underline underline-offset-2 hover:text-foreground"
-                  href="https://quran.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {chunks}
-                </a>
-              ),
-              hadith: (chunks) => (
-                <a
-                  className="underline underline-offset-2 hover:text-foreground"
-                  href="https://github.com/fawazahmed0/hadith-api"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {chunks}
-                </a>
-              ),
-            })}
-          </p>
         </div>
       </div>
     </footer>

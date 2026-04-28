@@ -24,6 +24,35 @@ export default async function AboutPage() {
         <p>{t("p2")}</p>
         <p>{t("p3")}</p>
       </div>
+      <section className="mt-10 border-t border-border pt-6">
+        <h2 className="text-xl font-semibold tracking-tight text-foreground">
+          {t("creditsTitle")}
+        </h2>
+        <p className="mt-3 text-foreground/90">
+          {t.rich("credits", {
+            quran: (chunks) => (
+              <a
+                className="underline underline-offset-2 hover:text-foreground"
+                href="https://quran.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {chunks}
+              </a>
+            ),
+            hadith: (chunks) => (
+              <a
+                className="underline underline-offset-2 hover:text-foreground"
+                href="https://github.com/fawazahmed0/hadith-api"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {chunks}
+              </a>
+            ),
+          })}
+        </p>
+      </section>
     </div>
   );
 }

@@ -573,6 +573,7 @@
     "tagline": "Kur'an ve Sünneti okuyun, namaz vakitlerini ve camileri bulun, helal hayatı keşfedin — hepsi tek yerde.",
     "colWorship": "İbadet",
     "colCommunity": "Topluluk",
+    "colTools": "Araçlar",
     "colCompany": "Hakkında",
     "prayerTimes": "Namaz Vakitleri",
     "quran": "Kur'an",
@@ -589,8 +590,7 @@
     "terms": "Şartlar",
     "contact": "İletişim",
     "language": "Dil",
-    "copyright": "© {year} i-muslim",
-    "attribution": "Kur'an metni ve çevirileri <quran>quran.com</quran> tarafından; hadisler <hadith>fawazahmed0/hadith-api</hadith> tarafından."
+    "copyright": "© {year} i-muslim"
   },
   "legal": {
     "about": {
@@ -598,7 +598,9 @@
       "description": "Modern Müslüman için her şey bir arada İslami bir yardımcı.",
       "p1": "i-muslim ücretsiz, reklamsız bir İslami yardımcıdır. Günlük temelleri — Namaz Vakitleri, Kıble, Kur'an, Hadis, Hicri takvim, Zekât, cami rehberi, helal işletmeler ve evlilik bölümü — tek bir sakin ve hızlı deneyimde toplar.",
       "p2": "Kutsal içerik aslına sadık biçimde sunulur. Kur'an metni ve çevirileri quran.com'dan; hadis koleksiyonları açık topluluk kaynaklarından gelir. Anlamı değiştirip kısaltmayız.",
-      "p3": "Müslümanlar tarafından Müslümanlar için, okumayı, namazı ve bağ kurmayı kolaylaştırma niyetiyle inşa edildi. Allah bizden ve sizden kabul etsin."
+      "p3": "Müslümanlar tarafından Müslümanlar için, okumayı, namazı ve bağ kurmayı kolaylaştırma niyetiyle inşa edildi. Allah bizden ve sizden kabul etsin.",
+      "creditsTitle": "Teşekkürler",
+      "credits": "Kur'an metni ve çevirileri <quran>quran.com</quran> tarafından; hadisler <hadith>fawazahmed0/hadith-api</hadith> tarafından."
     },
     "privacy": {
       "title": "Gizlilik",

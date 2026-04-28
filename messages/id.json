@@ -573,6 +573,7 @@
     "tagline": "Baca Al-Qur'an dan Sunnah, temukan waktu salat, masjid, dan kehidupan halal — semuanya di satu tempat.",
     "colWorship": "Ibadah",
     "colCommunity": "Komunitas",
+    "colTools": "Alat",
     "colCompany": "Tentang",
     "prayerTimes": "Waktu Salat",
     "quran": "Al-Qur'an",
@@ -589,8 +590,7 @@
     "terms": "Syarat",
     "contact": "Kontak",
     "language": "Bahasa",
-    "copyright": "© {year} i-muslim",
-    "attribution": "Teks Al-Qur'an & terjemahan oleh <quran>quran.com</quran>; hadis oleh <hadith>fawazahmed0/hadith-api</hadith>."
+    "copyright": "© {year} i-muslim"
   },
   "legal": {
     "about": {
@@ -598,7 +598,9 @@
       "description": "Pendamping Islami serbaguna untuk Muslim modern.",
       "p1": "i-muslim adalah pendamping Islami gratis dan tanpa iklan. Kami menghadirkan kebutuhan harian — Waktu Salat, Kiblat, Al-Qur'an, Hadis, kalender Hijriah, Zakat, direktori masjid, bisnis halal, dan pencarian jodoh — dalam satu pengalaman yang tenang dan cepat.",
       "p2": "Konten suci kami sajikan apa adanya. Teks Al-Qur'an dan terjemahannya berasal dari quran.com; koleksi hadis berasal dari sumber komunitas terbuka. Kami tidak memparafrase atau memotong tanpa pemberitahuan.",
-      "p3": "Dibangun oleh Muslim untuk Muslim, dengan niat memudahkan membaca, salat, dan menjalin hubungan. Semoga Allah menerimanya dari kami dan dari Anda."
+      "p3": "Dibangun oleh Muslim untuk Muslim, dengan niat memudahkan membaca, salat, dan menjalin hubungan. Semoga Allah menerimanya dari kami dan dari Anda.",
+      "creditsTitle": "Kredit",
+      "credits": "Teks Al-Qur'an & terjemahan oleh <quran>quran.com</quran>; hadis oleh <hadith>fawazahmed0/hadith-api</hadith>."
     },
     "privacy": {
       "title": "Privasi",

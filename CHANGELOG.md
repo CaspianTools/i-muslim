@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+- Footer restructured (mus-1190): added a **Tools** column with the Zakat Calculator (moved out of Worship), demoted the Company links (About / Privacy / Terms / Contact) to inline horizontal links on the copyright line beside the language switcher, and moved the Quran/hadith source attribution from every page to a single **Credits** section on the About page.
+
 ### Removed
 - Hijri Calendar admin section (was a stub; user-facing `/hijri-calendar` page is unchanged).
 

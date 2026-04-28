@@ -395,6 +395,7 @@
     "tagline": "Read the Quran and Sunnah, find prayer times, mosques, and halal life — all in one place.",
     "colWorship": "Worship",
     "colCommunity": "Community",
+    "colTools": "Tools",
     "colCompany": "Company",
     "prayerTimes": "Prayer Times",
     "quran": "Quran",
@@ -411,8 +412,7 @@
     "terms": "Terms",
     "contact": "Contact",
     "language": "Language",
-    "copyright": "© {year} i-muslim",
-    "attribution": "Quran text & translations by <quran>quran.com</quran>; hadith by <hadith>fawazahmed0/hadith-api</hadith>."
+    "copyright": "© {year} i-muslim"
   },
   "legal": {
     "about": {
@@ -420,7 +420,9 @@
       "description": "An all-in-one Islamic companion for the modern Muslim.",
       "p1": "i-muslim is a free, ad-free Islamic companion. We bring the daily essentials — Prayer Times, Qibla, Quran, Hadith, the Hijri calendar, Zakat, mosque directory, halal businesses, and the matrimonial — into one calm, fast experience.",
       "p2": "Sacred content is rendered faithfully. Quran text and translations come from quran.com; hadith collections come from open community sources. We do not paraphrase or silently truncate.",
-      "p3": "We're built by Muslims for Muslims, with the niyyah of making it easier to read, pray, and connect. May Allah accept it from us and from you."
+      "p3": "We're built by Muslims for Muslims, with the niyyah of making it easier to read, pray, and connect. May Allah accept it from us and from you.",
+      "creditsTitle": "Credits",
+      "credits": "Quran text & translations by <quran>quran.com</quran>; hadith by <hadith>fawazahmed0/hadith-api</hadith>."
     },
     "privacy": {
       "title": "Privacy",
