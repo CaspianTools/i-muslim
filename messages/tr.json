@@ -1713,6 +1713,7 @@
       "defaultLockedHint": "varsayılan · her zaman açık",
       "activatedHint": "etkin",
       "notActivatedHint": "etkin değil",
+      "progressChipLabel": "Çevirileri düzenle — %{percent} tamam",
       "deactivate": "Devre dışı bırak",
       "editTranslations": "Düzenle",
       "deactivatedToast": "Dil devre dışı bırakıldı.",
@@ -1746,6 +1747,19 @@
         "errorParse": "Çeviri JSON'u geçerli değil",
         "errorNotObject": "Çeviriler en üst düzeyde bir JSON nesnesi olmalıdır.",
         "errorWriteFailed": "Dil kaydedilemedi."
+      },
+      "editor": {
+        "title": "Çevirileri düzenle",
+        "description": "Tek tek düzenleyin. Her satır üstte temel değeri ve altta mevcut çeviriyi gösterir. Çevrilmemiş satırlar hâlâ temele uyuyor — ilerlemeyi işaretlemek için değiştirin.",
+        "searchPlaceholder": "Anahtarlarda veya metinde ara…",
+        "untranslatedOnly": "Yalnızca çevrilmemişleri göster",
+        "untranslated": "çevrilmemiş",
+        "progress": "%{percent} — {translated} / {total}",
+        "noMatches": "Bu filtreyle eşleşen ifade yok.",
+        "save": "Değişiklik yok",
+        "saveChanges": "{count, plural, one {# değişikliği} other {# değişikliği}} kaydet",
+        "savedToast": "Çeviriler kaydedildi.",
+        "errorToast": "Çeviriler kaydedilemedi."
       }
     }
   }

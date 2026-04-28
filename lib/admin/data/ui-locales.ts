@@ -170,6 +170,37 @@ export async function setUiLocale(
   return normalize(input.code, docData);
 }
 
+// Update only the `messages` field of an already-activated locale doc.
+// Used by the phrase-by-phrase editor — leaves nativeName/flag/etc. alone.
+export async function updateUiLocaleMessages(
+  code: Locale,
+  messages: Record<string, unknown>,
+  adminEmail: string,
+): Promise<UiLocaleDoc> {
+  const db = requireDb();
+  await db
+    .collection(UI_LOCALES_COLLECTION)
+    .doc("uiLocales")
+    .collection("locales")
+    .doc(code)
+    .set(
+      {
+        messages,
+        updatedAt: Timestamp.now(),
+        updatedBy: adminEmail,
+      },
+      { merge: true },
+    );
+  // Re-read to return the canonical normalized doc.
+  const snap = await db
+    .collection(UI_LOCALES_COLLECTION)
+    .doc("uiLocales")
+    .collection("locales")
+    .doc(code)
+    .get();
+  return normalize(code, snap.data() as Record<string, unknown>);
+}
+
 export async function deactivateUiLocale(
   code: Locale,
   adminEmail: string,

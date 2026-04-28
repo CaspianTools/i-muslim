@@ -1713,6 +1713,7 @@
       "defaultLockedHint": "default · selalu aktif",
       "activatedHint": "aktif",
       "notActivatedHint": "belum aktif",
+      "progressChipLabel": "Edit terjemahan — {percent}% selesai",
       "deactivate": "Nonaktifkan",
       "editTranslations": "Edit",
       "deactivatedToast": "Bahasa dinonaktifkan.",
@@ -1746,6 +1747,19 @@
         "errorParse": "JSON terjemahan tidak valid",
         "errorNotObject": "Terjemahan harus berupa objek JSON di tingkat atas.",
         "errorWriteFailed": "Tidak dapat menyimpan bahasa."
+      },
+      "editor": {
+        "title": "Edit terjemahan",
+        "description": "Edit per frasa. Setiap baris menampilkan nilai dasar di atas dan terjemahan saat ini di bawah. Baris yang belum diterjemahkan masih sama dengan dasar — ubah untuk menandai kemajuan.",
+        "searchPlaceholder": "Cari kunci atau teks…",
+        "untranslatedOnly": "Hanya tampilkan yang belum diterjemahkan",
+        "untranslated": "belum diterjemahkan",
+        "progress": "{percent}% — {translated} / {total}",
+        "noMatches": "Tidak ada frasa yang cocok dengan filter ini.",
+        "save": "Tidak ada perubahan",
+        "saveChanges": "Simpan {count, plural, one {# perubahan} other {# perubahan}}",
+        "savedToast": "Terjemahan disimpan.",
+        "errorToast": "Tidak dapat menyimpan terjemahan."
       }
     }
   }

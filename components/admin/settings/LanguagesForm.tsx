@@ -16,6 +16,30 @@ import {
 import { ALL_LANGS, type LangCode } from "@/lib/translations";
 import { updateLanguageSettings, deactivateUiLocaleAction } from "@/app/[locale]/(admin)/admin/settings/_actions";
 import { ActivateLocaleDialog } from "./ActivateLocaleDialog";
+import { EditTranslationsDialog } from "./EditTranslationsDialog";
+import type { MessageTree } from "@/lib/i18n/translation-stats";
+
+type BundledCode = "en" | "ar" | "tr" | "id";
+const BUNDLED_CODES = new Set<BundledCode>(["en", "ar", "tr", "id"]);
+function isBundledCode(code: string): code is BundledCode {
+  return BUNDLED_CODES.has(code as BundledCode);
+}
+
+// Loaded on demand when the admin opens the phrase editor — keeps the static
+// bundle for /admin/settings small (~no JSON until a click).
+async function loadBundledMessages(code: BundledCode): Promise<MessageTree> {
+  switch (code) {
+    case "ar":
+      return (await import("@/messages/ar.json")).default as MessageTree;
+    case "tr":
+      return (await import("@/messages/tr.json")).default as MessageTree;
+    case "id":
+      return (await import("@/messages/id.json")).default as MessageTree;
+    case "en":
+    default:
+      return (await import("@/messages/en.json")).default as MessageTree;
+  }
+}
 
 const CONTENT_FLAGS: Record<string, string> = {
   ar: "🇸🇦",
@@ -44,6 +68,9 @@ export type ReservedLocaleSummary = {
   rtl: boolean;
   baseLocale: Locale;
   messages: Record<string, unknown>;
+  // Server-computed translation completion against the base locale.
+  // 0 when not activated.
+  stats: { total: number; translated: number; percent: number };
 };
 
 export type LanguagesFormProps = {
@@ -162,23 +189,55 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
     });
   }
 
-  // ── Reserved-locale dialog.
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingCode, setEditingCode] = useState<Locale | null>(null);
-  const editingDoc = useMemo(
-    () => (editingCode ? reserved.find((r) => r.code === editingCode && r.activated) : undefined),
-    [editingCode, reserved],
+  // ── Reserved-locale dialogs. Activate dialog (paste-JSON) is for first-time
+  //    activation; Edit dialog (phrase editor) is for incremental edits on
+  //    already-activated locales.
+  const [activateOpen, setActivateOpen] = useState(false);
+  const [activatingCode, setActivatingCode] = useState<Locale | null>(null);
+
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [editorCode, setEditorCode] = useState<Locale | null>(null);
+  const [editorBaseMessages, setEditorBaseMessages] = useState<MessageTree | null>(null);
+
+  const editorTarget = useMemo(
+    () => (editorCode ? reserved.find((r) => r.code === editorCode && r.activated) : undefined),
+    [editorCode, reserved],
   );
 
   function openActivateDialog(code: Locale) {
-    setEditingCode(code);
-    setDialogOpen(true);
+    setActivatingCode(code);
+    setActivateOpen(true);
   }
 
-  function onDialogSaved() {
-    if (!editingCode) return;
+  async function openEditor(code: Locale) {
+    const target = reserved.find((r) => r.code === code && r.activated);
+    if (!target) return;
+    const baseCode: BundledCode = isBundledCode(target.baseLocale) ? target.baseLocale : "en";
+    const baseMessages = await loadBundledMessages(baseCode);
+    setEditorBaseMessages(baseMessages);
+    setEditorCode(code);
+    setEditorOpen(true);
+  }
+
+  function onActivateSaved() {
+    if (!activatingCode) return;
     setReserved((prev) =>
-      prev.map((r) => (r.code === editingCode ? { ...r, activated: true } : r)),
+      prev.map((r) => (r.code === activatingCode ? { ...r, activated: true } : r)),
+    );
+  }
+
+  function onEditorSaved(newOverlay: MessageTree, percent: number) {
+    if (!editorCode) return;
+    setReserved((prev) =>
+      prev.map((r) =>
+        r.code === editorCode
+          ? {
+              ...r,
+              messages: newOverlay as Record<string, unknown>,
+              stats: { total: r.stats.total, translated: Math.round((percent / 100) * r.stats.total), percent },
+            }
+          : r,
+      ),
     );
   }
 
@@ -259,13 +318,23 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {status === "activated" && (
+                  {status === "activated" && reservedDoc && (
                     <>
+                      <ProgressChip
+                        percent={reservedDoc.stats.percent}
+                        translated={reservedDoc.stats.translated}
+                        total={reservedDoc.stats.total}
+                        label={t("progressChipLabel", {
+                          percent: reservedDoc.stats.percent,
+                        })}
+                        onClick={() => openEditor(code)}
+                        disabled={pending}
+                      />
                       <Button
                         type="button"
                         size="sm"
                         variant="secondary"
-                        onClick={() => openActivateDialog(code)}
+                        onClick={() => openEditor(code)}
                         disabled={pending}
                       >
                         <Pencil className="size-3.5" />
@@ -361,25 +430,68 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
       <ActivateLocaleDialog
         // Remount the dialog whenever the target locale changes so its
         // form state is reinitialised from props without a useEffect.
-        key={editingCode ?? "none"}
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        code={editingCode}
-        initial={
-          editingDoc
-            ? {
-                nativeName: editingDoc.nativeName,
-                englishName: editingDoc.englishName,
-                flag: editingDoc.flag,
-                rtl: editingDoc.rtl,
-                baseLocale: editingDoc.baseLocale,
-                messages: editingDoc.messages,
-              }
-            : undefined
-        }
-        onSaved={onDialogSaved}
+        key={`activate:${activatingCode ?? "none"}`}
+        open={activateOpen}
+        onOpenChange={setActivateOpen}
+        code={activatingCode}
+        initial={undefined}
+        onSaved={onActivateSaved}
       />
+
+      {editorTarget && editorBaseMessages && (
+        <EditTranslationsDialog
+          key={`editor:${editorCode ?? "none"}`}
+          open={editorOpen}
+          onOpenChange={setEditorOpen}
+          code={editorCode}
+          nativeName={editorTarget.nativeName}
+          baseMessages={editorBaseMessages}
+          initialOverlay={(editorTarget.messages ?? {}) as MessageTree}
+          rtl={editorTarget.rtl}
+          onSaved={onEditorSaved}
+        />
+      )}
     </Tabs>
+  );
+}
+
+function ProgressChip({
+  percent,
+  translated,
+  total,
+  label,
+  onClick,
+  disabled,
+}: {
+  percent: number;
+  translated: number;
+  total: number;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  const tone =
+    percent >= 95
+      ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+      : percent >= 50
+        ? "bg-amber-500/10 text-amber-700 dark:text-amber-300"
+        : "bg-rose-500/10 text-rose-700 dark:text-rose-300";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={`${translated} / ${total}`}
+      aria-label={label}
+      className={[
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium tabular-nums transition-opacity",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60",
+        tone,
+      ].join(" ")}
+    >
+      {percent}%
+    </button>
   );
 }
 

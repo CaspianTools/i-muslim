@@ -1713,6 +1713,7 @@
       "defaultLockedHint": "افتراضي · مفعّل دائمًا",
       "activatedHint": "مفعّل",
       "notActivatedHint": "غير مفعّل",
+      "progressChipLabel": "تحرير الترجمات — اكتمال {percent}٪",
       "deactivate": "إلغاء التفعيل",
       "editTranslations": "تعديل",
       "deactivatedToast": "تم إلغاء تفعيل اللغة.",
@@ -1746,6 +1747,19 @@
         "errorParse": "ترجمات JSON غير صالحة",
         "errorNotObject": "يجب أن تكون الترجمات كائن JSON على المستوى الأعلى.",
         "errorWriteFailed": "تعذّر حفظ اللغة."
+      },
+      "editor": {
+        "title": "تحرير الترجمات",
+        "description": "حرّر العبارات واحدة تلو الأخرى. كل صف يعرض القيمة الأساسية في الأعلى والترجمة الحالية في الأسفل. الصفوف غير المترجمة تطابق الأساس — غيّرها لتسجيل التقدم.",
+        "searchPlaceholder": "ابحث في المفاتيح أو النص…",
+        "untranslatedOnly": "إظهار غير المترجمة فقط",
+        "untranslated": "غير مترجم",
+        "progress": "{percent}٪ — {translated} / {total}",
+        "noMatches": "لا توجد عبارات تطابق هذا التصفية.",
+        "save": "لا تغييرات",
+        "saveChanges": "حفظ {count, plural, one {تغيير #} other {# تغييرات}}",
+        "savedToast": "تم حفظ الترجمات.",
+        "errorToast": "تعذّر حفظ الترجمات."
       }
     }
   }

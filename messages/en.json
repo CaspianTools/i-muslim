@@ -1709,6 +1709,7 @@
       "defaultLockedHint": "default · always on",
       "activatedHint": "activated",
       "notActivatedHint": "not activated",
+      "progressChipLabel": "Edit translations — {percent}% complete",
       "deactivate": "Deactivate",
       "editTranslations": "Edit",
       "deactivatedToast": "Locale deactivated.",
@@ -1742,7 +1743,71 @@
         "errorParse": "Translations JSON is not valid JSON",
         "errorNotObject": "Translations must be a JSON object at the top level.",
         "errorWriteFailed": "Could not save the locale."
+      },
+      "editor": {
+        "title": "Edit translations",
+        "description": "Edit phrase-by-phrase. Each row shows the base value above and the current translation below. Untranslated rows still mirror the base — change them to mark progress.",
+        "searchPlaceholder": "Search keys or text…",
+        "untranslatedOnly": "Show only untranslated",
+        "untranslated": "untranslated",
+        "progress": "{percent}% — {translated} / {total}",
+        "noMatches": "No phrases match this filter.",
+        "save": "No changes",
+        "saveChanges": "Save {count, plural, one {# change} other {# changes}}",
+        "savedToast": "Translations saved.",
+        "errorToast": "Could not save translations."
       }
     }
+  },
+  "profileNav": {
+    "title": "Profile",
+    "items": {
+      "overview": "Overview",
+      "reading": "Reading progress",
+      "favorites": "Favorites",
+      "matrimonial": "Matrimonial profile",
+      "events": "Events",
+      "submitMosque": "Submit a mosque",
+      "contact": "Contact"
+    },
+    "collapse": "Collapse",
+    "expand": "Expand"
+  },
+  "favorites": {
+    "pageTitle": "Favorites",
+    "pageDescription": "Ayahs, hadith, articles, events, and profiles you've saved.",
+    "save": "Save",
+    "saved": "Saved",
+    "remove": "Remove",
+    "open": "Open",
+    "signInRequired": "Sign in to save favorites",
+    "signInCta": "Sign in",
+    "savedToast": "Added to favorites",
+    "removedToast": "Removed from favorites",
+    "saveFailed": "Couldn't save — please try again.",
+    "matrimonial": {
+      "save": "Save profile",
+      "saved": "Saved"
+    },
+    "tabs": {
+      "all": "All",
+      "ayah": "Ayahs",
+      "surah": "Surahs",
+      "hadith": "Hadith",
+      "article": "Articles",
+      "event": "Events",
+      "matrimonialProfile": "Profiles"
+    },
+    "empty": "Nothing saved yet."
+  },
+  "reading": {
+    "title": "Reading progress",
+    "pageDescription": "Pick up where you left off — captured automatically when you close the tab or switch away.",
+    "lastQuranAyah": "Last ayah read",
+    "lastSurah": "Last surah viewed",
+    "lastHadith": "Last hadith read",
+    "viewedAt": "Viewed {when}",
+    "resume": "Resume",
+    "empty": "No reading history yet — start with the Quran or Hadith section."
   }
 }

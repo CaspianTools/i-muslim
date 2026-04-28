@@ -17,6 +17,7 @@ import {
 import {
   setUiLocale,
   deactivateUiLocale,
+  updateUiLocaleMessages,
   type UiLocaleDoc,
 } from "@/lib/admin/data/ui-locales";
 
@@ -98,6 +99,37 @@ export async function activateUiLocale(
 export type DeactivateUiLocaleResult =
   | { ok: true }
   | { ok: false; error: string };
+
+const updateMessagesSchema = z.object({
+  code: reservedLocaleEnum,
+  messages: z.record(z.string(), z.unknown()),
+});
+
+export type UpdateUiLocaleMessagesResult =
+  | { ok: true; locale: UiLocaleDoc }
+  | { ok: false; error: string };
+
+export async function updateUiLocaleMessagesAction(
+  rawInput: unknown,
+): Promise<UpdateUiLocaleMessagesResult> {
+  const session = await requireAdminSession();
+  const parsed = updateMessagesSchema.safeParse(rawInput);
+  if (!parsed.success) {
+    return { ok: false, error: "invalid-input" };
+  }
+  try {
+    const locale = await updateUiLocaleMessages(
+      parsed.data.code,
+      parsed.data.messages,
+      session.email,
+    );
+    revalidatePath("/", "layout");
+    return { ok: true, locale };
+  } catch (err) {
+    console.warn("[admin/settings/_actions] updateMessages failed:", err);
+    return { ok: false, error: "write-failed" };
+  }
+}
 
 export async function deactivateUiLocaleAction(
   code: string,
