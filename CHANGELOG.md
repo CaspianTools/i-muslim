@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+- **Shared `<CountryCombobox>`** (mus-1193) — searchable, alphabetically sorted dropdown of all ~250 countries, localized into en/ar/tr/id via `i18n-iso-countries`. Replaces hand-rolled country `<Input>` fields across the profile, matrimonial preferences, mosque admin form, public mosque submission, business editor, certification-bodies admin, and the matrimonial admin filter. Stores ISO-3166 alpha-2 codes; supports single-select and multi-select (chips) modes.
+- `npm run migrate:country-iso2` — one-shot Firestore migration that converts legacy free-text `profile.country` and `matrimonialProfiles.*.country` values to ISO-2 codes. Idempotent; supports `--dry-run`.
+
 ### Changed
+- Profile schema tightened: `country` is now `^[A-Z]{2}$` (or empty) instead of free-text 2–60 chars. Matrimonial `preferredCountries` is now a `string[]` of ISO-2 codes instead of a comma-separated text field.
 - **Profile + Matrimonial merged.** Identity and deen fields (display name, gender, DOB, country/city, languages, madhhab, sect, prayer commitment, hijab/beard, education, profession, marital history, bio) now live on `/profile` as a single editable form and persist to `users/{uid}.profile`. Matrimonial-only fields (preferences, polygamy stance, photos) are gated behind an opt-in toggle on the new `/profile/matrimonial` page, which also hosts the inbox/matches view. `/matrimonial/onboarding`, `/matrimonial/settings`, and `/matrimonial/inbox` now redirect to the unified surface.
 - Profile sidebar restyled as a rounded card inside the centered content area (sticky just below the top nav) instead of a full-bleed left rail. Sidebar nav trimmed to Overview / Reading / Favorites / Matrimonial — the four "Your space" link cards are gone, replaced by the inline editable profile form.
 

@@ -85,7 +85,7 @@ export async function enableMatrimonialAction(
       lookingForGender: v.lookingForGender,
       ageMin: v.ageMin,
       ageMax: v.ageMax,
-      countries: csvToList(v.preferredCountries),
+      countries: v.preferredCountries,
       locationRadiusKm: null,
       madhhabs: csvToList(v.preferredMadhhabs).filter((m) =>
         ["hanafi", "maliki", "shafii", "hanbali", "other", "none"].includes(m),

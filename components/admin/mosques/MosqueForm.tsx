@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CountryCombobox } from "@/components/common/CountryCombobox";
 import type { IqamahRule, Mosque, MosqueServices } from "@/types/mosque";
 import { SERVICE_KEYS, DENOMINATIONS, emptyServices, PRAYER_KEYS } from "@/lib/mosques/constants";
 import { defaultPrayerCalc } from "@/lib/mosques/adhan";
@@ -276,12 +277,9 @@ export function MosqueForm({ mode, initial }: MosqueFormProps) {
             />
           </Field>
           <Field label={t("country")} error={errors.country}>
-            <Input
-              maxLength={2}
-              className="uppercase"
+            <CountryCombobox
               value={state.country}
-              onChange={(e) => setState((s) => ({ ...s, country: e.target.value.toUpperCase() }))}
-              placeholder="AZ"
+              onChange={(code) => setState((s) => ({ ...s, country: code }))}
             />
           </Field>
         </div>

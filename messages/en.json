@@ -15,6 +15,14 @@
     "all": "All",
     "of": "of"
   },
+  "countryCombobox": {
+    "selectCountry": "Select country",
+    "selectCountries": "Select countries",
+    "searchPlaceholder": "Search country…",
+    "noResults": "No country found.",
+    "moreCountries": "+{count} more",
+    "removeChip": "Remove {name}"
+  },
   "locale": {
     "en": "English",
     "ar": "العربية",
@@ -220,6 +228,33 @@
       "12": "Dhu al-Hijjah"
     }
   },
+  "hijriConverter": {
+    "title": "Hijri Date Converter",
+    "subtitle": "Convert between the Gregorian and Hijri (Islamic) calendars.",
+    "today": {
+      "label": "Today",
+      "ahSuffix": "AH",
+      "ceSuffix": "CE"
+    },
+    "gregorianToHijri": {
+      "title": "Gregorian → Hijri",
+      "dateLabel": "Gregorian date",
+      "resultLabel": "Hijri date",
+      "useToday": "Use today"
+    },
+    "hijriToGregorian": {
+      "title": "Hijri → Gregorian",
+      "yearLabel": "Year (AH)",
+      "monthLabel": "Month",
+      "dayLabel": "Day",
+      "resultLabel": "Gregorian date",
+      "useToday": "Use today"
+    },
+    "errors": {
+      "invalidDate": "That day doesn't exist in the selected Hijri month.",
+      "outOfRange": "Date is outside the supported Hijri range."
+    }
+  },
   "prayer": {
     "pageTitle": "Prayer Times",
     "pageSubtitleCity": "Today's five daily prayers for {city}, {country}.",
@@ -401,6 +436,7 @@
     "quran": "Quran",
     "hadith": "Hadith",
     "zakat": "Zakat Calculator",
+    "hijriConverter": "Hijri Date Converter",
     "mosques": "Mosques",
     "events": "Events",
     "matrimonial": "Matrimonial",
@@ -881,7 +917,7 @@
       "profession": "Profession (optional)",
       "lookingForGender": "Looking for",
       "ageRange": "Age range",
-      "preferredCountries": "Preferred countries (comma-separated, optional)",
+      "preferredCountries": "Preferred countries (optional)",
       "preferredMadhhabs": "Acceptable madhhabs (optional)",
       "prayerMin": "Minimum prayer commitment",
       "polygamyAcceptable": "Open to polygamy",
@@ -1189,7 +1225,7 @@
         "addressLine1": "Street address",
         "addressLine2": "Address line 2",
         "city": "City",
-        "country": "Country (ISO alpha-2 code)",
+        "country": "Country",
         "denomination": "Tradition",
         "phone": "Phone",
         "website": "Website",
@@ -1328,7 +1364,7 @@
       "postalCode": "Postal code",
       "city": "City",
       "region": "Region / state",
-      "country": "Country (ISO alpha-2)",
+      "country": "Country",
       "lat": "Latitude",
       "lng": "Longitude",
       "timezone": "Timezone (IANA)",
@@ -1575,7 +1611,7 @@
       "addressLine1": "Street address",
       "city": "City",
       "region": "Region / state (optional)",
-      "country": "Country (ISO-2)",
+      "country": "Country",
       "postalCode": "Postal code (optional)",
       "lat": "Latitude",
       "lng": "Longitude",
@@ -1823,7 +1859,7 @@
       "preferencesDescription": "These fields are matrimonial-only — used to filter who sees you and whom you see.",
       "lookingForGender": "Looking for",
       "ageRange": "Age range",
-      "preferredCountries": "Preferred countries (comma-separated)",
+      "preferredCountries": "Preferred countries",
       "preferredMadhhabs": "Preferred madhhabs (comma-separated)",
       "prayerMin": "Minimum prayer commitment",
       "polygamyStance": "Polygamy stance",

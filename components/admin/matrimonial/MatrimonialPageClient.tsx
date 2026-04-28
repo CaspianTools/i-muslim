@@ -32,6 +32,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { CountryCombobox } from "@/components/common/CountryCombobox";
+import { countryName } from "@/lib/mosques/countries";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -92,6 +94,7 @@ export function MatrimonialPageClient({ initialProfiles, initialReports, stats, 
   const [gender, setGender] = useState<Gender | "all">("all");
   const [status, setStatus] = useState<ProfileStatus | "all">("all");
   const [madhhab, setMadhhab] = useState<Madhhab | "all">("all");
+  const [country, setCountry] = useState<string>("");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -130,6 +133,7 @@ export function MatrimonialPageClient({ initialProfiles, initialReports, stats, 
       if (gender !== "all" && p.gender !== gender) return false;
       if (status !== "all" && p.status !== status) return false;
       if (madhhab !== "all" && p.madhhab !== madhhab) return false;
+      if (country && p.country.toUpperCase() !== country) return false;
       if (verifiedOnly && !p.verification.emailVerified) return false;
       if (query) {
         const q = query.toLowerCase();
@@ -143,7 +147,7 @@ export function MatrimonialPageClient({ initialProfiles, initialReports, stats, 
       }
       return true;
     });
-  }, [profiles, query, gender, status, madhhab, verifiedOnly]);
+  }, [profiles, query, gender, status, madhhab, country, verifiedOnly]);
 
   const columns = useMemo<ColumnDef<MatrimonialProfile>[]>(
     () => [
@@ -211,9 +215,16 @@ export function MatrimonialPageClient({ initialProfiles, initialReports, stats, 
         id: "country",
         accessorKey: "country",
         header: t("columns.country"),
-        cell: ({ row }) => (
-          <span className="text-sm text-muted-foreground">{row.original.country}</span>
-        ),
+        cell: ({ row }) => {
+          const code = row.original.country;
+          if (!code) return <span className="text-sm text-muted-foreground">—</span>;
+          return (
+            <span className="text-sm text-muted-foreground">
+              <span className="font-mono text-xs me-1.5">{code}</span>
+              {countryName(code)}
+            </span>
+          );
+        },
       },
       {
         id: "status",
@@ -396,6 +407,13 @@ export function MatrimonialPageClient({ initialProfiles, initialReports, stats, 
               <option key={v} value={v}>{tMadhhabs(v)}</option>
             ))}
           </select>
+          <div className="w-48">
+            <CountryCombobox
+              ariaLabel={t("columns.country")}
+              value={country}
+              onChange={setCountry}
+            />
+          </div>
           <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
             <Checkbox
               checked={verifiedOnly}

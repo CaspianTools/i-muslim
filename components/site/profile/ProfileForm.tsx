@@ -2,13 +2,14 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/sonner";
+import { CountryCombobox } from "@/components/common/CountryCombobox";
 import { Section } from "./forms/Section";
 import { Field } from "./forms/Field";
 import { Select } from "./forms/Select";
@@ -58,6 +59,7 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isDirty },
   } = useForm<ProfileFieldsInput>({
@@ -93,7 +95,13 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
           <Input type="date" {...register("dateOfBirth")} />
         </Field>
         <Field label={t("country")} error={errors.country?.message}>
-          <Input {...register("country")} />
+          <Controller
+            name="country"
+            control={control}
+            render={({ field }) => (
+              <CountryCombobox value={field.value ?? ""} onChange={field.onChange} />
+            )}
+          />
         </Field>
         <Field label={t("city")} error={errors.city?.message}>
           <Input {...register("city")} />

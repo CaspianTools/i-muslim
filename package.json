@@ -12,7 +12,8 @@
     "seed:quran:lang": "tsx scripts/seed-quran-translation.ts",
     "seed:hadith": "tsx scripts/seed-hadith.ts",
     "seed:hadith:lang": "tsx scripts/seed-hadith-translation.ts",
-    "sync:locales": "tsx scripts/sync-locale-translations.ts"
+    "sync:locales": "tsx scripts/sync-locale-translations.ts",
+    "migrate:country-iso2": "tsx scripts/migrate-profile-country-to-iso2.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -38,6 +39,7 @@
     "firebase": "^12.12.1",
     "firebase-admin": "^13.8.0",
     "geofire-common": "^6.0.0",
+    "i18n-iso-countries": "^7.14.0",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^1.11.0",

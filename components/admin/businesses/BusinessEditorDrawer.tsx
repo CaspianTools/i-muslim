@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CountryCombobox } from "@/components/common/CountryCombobox";
 import {
   EditorDialog,
   EditorDialogBody,
@@ -403,10 +404,9 @@ export function BusinessEditorDrawer({
                 <Input value={form.line1} onChange={(e) => update("line1", e.target.value)} />
               </Field>
               <Field label={t("country")}>
-                <Input
+                <CountryCombobox
                   value={form.countryCode}
-                  onChange={(e) => update("countryCode", e.target.value.toUpperCase().slice(0, 2))}
-                  maxLength={2}
+                  onChange={(code) => update("countryCode", code)}
                 />
               </Field>
             </FormGrid>

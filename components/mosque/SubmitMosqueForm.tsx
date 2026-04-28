@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CountryCombobox } from "@/components/common/CountryCombobox";
 import { DENOMINATIONS } from "@/lib/mosques/constants";
 import type { Denomination } from "@/types/mosque";
 
@@ -154,13 +155,10 @@ export function SubmitMosqueForm() {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="sub-country">{t("fields.country")}</Label>
-          <Input
+          <CountryCombobox
             id="sub-country"
-            maxLength={2}
-            className="uppercase"
             value={state.country}
-            onChange={(e) => setState((s) => ({ ...s, country: e.target.value.toUpperCase() }))}
-            placeholder="AZ"
+            onChange={(code) => setState((s) => ({ ...s, country: code }))}
           />
           {errors.country && <p className="text-xs text-danger">{errors.country}</p>}
         </div>

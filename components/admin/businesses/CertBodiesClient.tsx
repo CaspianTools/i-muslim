@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CountryCombobox } from "@/components/common/CountryCombobox";
+import { countryName } from "@/lib/mosques/countries";
 import {
   EditorDialog,
   EditorDialogBody,
@@ -151,7 +153,10 @@ export function CertBodiesClient({ initialCertBodies, canPersist }: Props) {
                 <tr key={c.id} className="border-t border-border">
                   <td className="px-3 py-2.5 font-medium">{c.name}</td>
                   <td className="px-3 py-2.5 font-mono text-xs text-muted-foreground">{c.slug}</td>
-                  <td className="px-3 py-2.5">{c.country}</td>
+                  <td className="px-3 py-2.5">
+                    <span className="font-mono text-xs text-muted-foreground me-1.5">{c.country}</span>
+                    {countryName(c.country)}
+                  </td>
                   <td className="px-3 py-2.5">
                     {c.verifiedByPlatform ? <Badge variant="info">●</Badge> : <Badge>—</Badge>}
                   </td>
@@ -198,12 +203,11 @@ export function CertBodiesClient({ initialCertBodies, canPersist }: Props) {
               </FormGrid>
               <FormGrid cols={3}>
                 <div className="space-y-1.5">
-                  <Label>Country (ISO-2)</Label>
-                  <Input
-                    value={form.country}
-                    onChange={(e) => setForm((s) => ({ ...s, country: e.target.value.toUpperCase().slice(0, 2) }))}
-                    maxLength={2}
+                  <Label>Country</Label>
+                  <CountryCombobox
                     required
+                    value={form.country}
+                    onChange={(code) => setForm((s) => ({ ...s, country: code }))}
                   />
                 </div>
                 <div className="space-y-1.5">

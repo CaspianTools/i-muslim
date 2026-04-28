@@ -1,12 +1,19 @@
 import { z } from "zod";
 
+// ISO-3166 alpha-2: two uppercase letters. Empty allowed during partial saves
+// (the form will block submission if required) — keeps backfill flows lenient.
+const countryCodeSchema = z
+  .string()
+  .regex(/^[A-Z]{2}$/, "Pick a country")
+  .or(z.literal(""));
+
 // Identity + deen fields — the unified profile, used everywhere on the site
 // (event RSVPs, mosque submissions, matrimonial display, etc.).
 export const profileFieldsSchema = z.object({
   displayName: z.string().min(2).max(60),
   gender: z.enum(["male", "female"]),
   dateOfBirth: z.string().min(8),
-  country: z.string().min(2).max(60),
+  country: countryCodeSchema,
   city: z.string().min(1).max(60),
   ethnicity: z.string().max(60).optional().or(z.literal("")),
   languages: z.string().max(120).optional().or(z.literal("")),
@@ -35,7 +42,7 @@ export const matrimonialFieldsSchema = z.object({
   lookingForGender: z.enum(["male", "female"]),
   ageMin: z.number().int().min(18).max(99),
   ageMax: z.number().int().min(18).max(99),
-  preferredCountries: z.string().max(200).optional().or(z.literal("")),
+  preferredCountries: z.array(z.string().regex(/^[A-Z]{2}$/)).max(50),
   preferredMadhhabs: z.string().max(120).optional().or(z.literal("")),
   prayerMin: z.enum(["always", "mostly", "sometimes", "rarely", "learning"]),
   polygamyAcceptable: z.boolean(),
