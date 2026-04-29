@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
-import { getAdminAuth, getDb, requireDb } from "@/lib/firebase/admin";
+import { getDb, requireDb } from "@/lib/firebase/admin";
 import { requireSiteSession } from "@/lib/auth/session";
 import {
   inputToRecord,
@@ -69,33 +69,27 @@ export async function saveProfileFieldsAction(
 
 export type ToggleFavoriteResult =
   | { ok: true; favorited: boolean }
-  | { ok: false; error: string };
+  | { ok: false; error: string; reason?: "unauthorized" };
 
-export async function toggleFavoriteAction(
-  idToken: string,
-  payload: {
-    itemType: FavoriteItemType;
-    itemId: string;
-    itemMeta: FavoriteItemMeta;
-  },
-): Promise<ToggleFavoriteResult> {
-  if (!idToken) return { ok: false, error: "Sign in required" };
+export async function toggleFavoriteAction(payload: {
+  itemType: FavoriteItemType;
+  itemId: string;
+  itemMeta: FavoriteItemMeta;
+}): Promise<ToggleFavoriteResult> {
   if (!isFavoriteItemType(payload.itemType)) return { ok: false, error: "Bad item type" };
   if (!payload.itemId) return { ok: false, error: "Bad item id" };
 
-  const auth = getAdminAuth();
-  const db = getDb();
-  if (!auth || !db) return { ok: false, error: "Firebase is not configured" };
-
-  let decoded;
+  let session;
   try {
-    decoded = await auth.verifyIdToken(idToken, true);
+    session = await requireSiteSession();
   } catch {
-    return { ok: false, error: "Invalid sign-in token" };
+    return { ok: false, error: "Sign in required", reason: "unauthorized" };
   }
-  if (!decoded.email_verified) return { ok: false, error: "Email not verified" };
 
-  const col = db.collection("users").doc(decoded.uid).collection("favorites");
+  const db = getDb();
+  if (!db) return { ok: false, error: "Firebase is not configured" };
+
+  const col = db.collection("users").doc(session.uid).collection("favorites");
 
   try {
     const existing = await col
@@ -131,28 +125,29 @@ export async function toggleFavoriteAction(
   }
 }
 
+export type RemoveFavoriteResult =
+  | { ok: true }
+  | { ok: false; error: string; reason?: "unauthorized" };
+
 export async function removeFavoriteAction(
-  idToken: string,
   favoriteId: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (!idToken) return { ok: false, error: "Sign in required" };
+): Promise<RemoveFavoriteResult> {
   if (!favoriteId) return { ok: false, error: "Missing favorite id" };
 
-  const auth = getAdminAuth();
-  const db = getDb();
-  if (!auth || !db) return { ok: false, error: "Firebase is not configured" };
-
-  let decoded;
+  let session;
   try {
-    decoded = await auth.verifyIdToken(idToken, true);
+    session = await requireSiteSession();
   } catch {
-    return { ok: false, error: "Invalid sign-in token" };
+    return { ok: false, error: "Sign in required", reason: "unauthorized" };
   }
+
+  const db = getDb();
+  if (!db) return { ok: false, error: "Firebase is not configured" };
 
   try {
     await db
       .collection("users")
-      .doc(decoded.uid)
+      .doc(session.uid)
       .collection("favorites")
       .doc(favoriteId)
       .delete();

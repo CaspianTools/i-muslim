@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useState, useTransition, type MouseEvent } from "react";
+import { useState, useTransition, type MouseEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Bookmark, Heart } from "lucide-react";
-import type { User } from "firebase/auth";
 import { toast } from "@/components/ui/sonner";
-import { getClientAuth, getFirebaseClientStatus } from "@/lib/firebase/client";
 import { toggleFavoriteAction } from "@/app/[locale]/(site)/profile/actions";
 import { useFavoritesContext } from "@/components/site/favorites/FavoritesContext";
 import type { FavoriteItemMeta, FavoriteItemType } from "@/types/profile";
@@ -24,9 +22,10 @@ interface Props {
    */
   iconOnly?: boolean;
   /**
-   * Server-known auth state. When true, the button waits for the Firebase
-   * client SDK to finish hydrating instead of falsely prompting an already
-   * signed-in user to sign in.
+   * Server-known auth state from `getSiteSession()`. The button uses this as
+   * the sole signal for whether to gate the click — the toggle action itself
+   * authenticates via the same `__session` cookie, so we never need a
+   * Firebase client ID token.
    */
   signedIn?: boolean;
 }
@@ -47,17 +46,7 @@ export function FavoriteButton({
   const [localFavorited, setLocalFavorited] = useState<boolean>(initialFavorited);
   const favorited = ctxFavorited ?? localFavorited;
   const [pending, startTransition] = useTransition();
-  const [gating, setGating] = useState(false);
-  const status = getFirebaseClientStatus();
-  const auth = status.configured ? getClientAuth() : null;
-  const [user, setUser] = useState<User | null>(null);
   const t = useTranslations("favorites");
-
-  useEffect(() => {
-    if (!auth) return;
-    const unsubscribe = auth.onAuthStateChanged((u) => setUser(u));
-    return () => unsubscribe();
-  }, [auth]);
 
   const Icon = variant === "bookmark" ? Bookmark : Heart;
 
@@ -72,31 +61,15 @@ export function FavoriteButton({
     });
   }
 
-  async function handleClick(e: MouseEvent) {
+  function handleClick(e: MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
 
-    let activeUser: User | null = user;
-
-    // Server says we're signed in but the Firebase client SDK hasn't
-    // restored its session yet — wait for it before deciding instead of
-    // showing the sign-in toast.
-    if (!activeUser && signedIn && auth) {
-      setGating(true);
-      try {
-        await auth.authStateReady();
-        activeUser = auth.currentUser;
-      } finally {
-        setGating(false);
-      }
-    }
-
-    if (!activeUser) {
+    if (!signedIn) {
       handleAnonClick();
       return;
     }
 
-    const u = activeUser;
     const previous = favorited;
     const next = !favorited;
     setLocalFavorited(next);
@@ -104,12 +77,15 @@ export function FavoriteButton({
 
     startTransition(async () => {
       try {
-        const token = await u.getIdToken();
-        const result = await toggleFavoriteAction(token, { itemType, itemId, itemMeta });
+        const result = await toggleFavoriteAction({ itemType, itemId, itemMeta });
         if (!result.ok) {
           setLocalFavorited(previous);
           ctx?.set(itemType, itemId, previous);
-          toast.error(t("saveFailed"));
+          if (result.reason === "unauthorized") {
+            handleAnonClick();
+          } else {
+            toast.error(t("saveFailed"));
+          }
           return;
         }
         if (result.favorited !== next) {
@@ -138,7 +114,7 @@ export function FavoriteButton({
     <button
       type="button"
       onClick={handleClick}
-      disabled={pending || gating}
+      disabled={pending}
       aria-pressed={favorited}
       aria-label={label}
       title={label}
