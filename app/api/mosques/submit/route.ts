@@ -18,6 +18,7 @@ const schema = z.object({
   email: z.string().email().optional().or(z.literal("")),
   description: z.string().optional(),
   submitterEmail: z.string().email(),
+  languages: z.array(z.string()).max(20).default([]),
   website_url_secondary: z.string().optional(), // honeypot
   turnstileToken: z.string().optional(),
 });
@@ -89,7 +90,7 @@ export async function POST(req: Request) {
       email: data.email || undefined,
     },
     services: emptyServices(),
-    languages: [],
+    languages: data.languages,
     prayerCalc: defaultPrayerCalc(),
     description: data.description ? { en: data.description.trim() } : undefined,
   };

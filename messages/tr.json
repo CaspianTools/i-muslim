@@ -27,6 +27,14 @@
     "moreCountries": "+{count} daha",
     "removeChip": "{name} sil"
   },
+  "languageCombobox": {
+    "selectLanguage": "Dil seç",
+    "selectLanguages": "Dil seç",
+    "searchPlaceholder": "Dil ara…",
+    "noResults": "Dil bulunamadı.",
+    "moreLanguages": "+{count} daha",
+    "removeChip": "{name} sil"
+  },
   "locale": {
     "en": "English",
     "ar": "العربية",
@@ -1235,7 +1243,7 @@
         "phone": "Telefon",
         "website": "Web sitesi",
         "email": "E-posta",
-        "languages": "Konuşulan diller (virgüllü ISO kodları)",
+        "languages": "Konuşulan diller",
         "description": "Açıklama",
         "submitterEmail": "E-posta adresiniz"
       },
@@ -1383,7 +1391,7 @@
       "instagram": "Instagram URL",
       "youtube": "YouTube URL",
       "whatsapp": "WhatsApp linki",
-      "languages": "Konuşulan diller (virgüllü ISO)",
+      "languages": "Konuşulan diller",
       "altSpellings": "Alternatif yazımlar (virgüllü)",
       "capacity": "Kapasite",
       "calcMethod": "Hesaplama yöntemi",

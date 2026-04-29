@@ -24,6 +24,14 @@
     "moreCountries": "+{count} more",
     "removeChip": "Remove {name}"
   },
+  "languageCombobox": {
+    "selectLanguage": "Select language",
+    "selectLanguages": "Select languages",
+    "searchPlaceholder": "Search language…",
+    "noResults": "No language found.",
+    "moreLanguages": "+{count} more",
+    "removeChip": "Remove {name}"
+  },
   "locale": {
     "en": "English",
     "ar": "العربية",
@@ -903,7 +911,7 @@
       "country": "Country",
       "city": "City",
       "ethnicity": "Ethnicity (optional)",
-      "languages": "Languages (comma-separated)",
+      "languages": "Languages",
       "madhhab": "Madhhab",
       "sect": "Sect",
       "prayerCommitment": "Prayer commitment",
@@ -1231,7 +1239,7 @@
         "phone": "Phone",
         "website": "Website",
         "email": "Email",
-        "languages": "Languages spoken (comma-separated ISO codes)",
+        "languages": "Languages spoken",
         "description": "Description",
         "submitterEmail": "Your email"
       },
@@ -1379,7 +1387,7 @@
       "instagram": "Instagram URL",
       "youtube": "YouTube URL",
       "whatsapp": "WhatsApp link",
-      "languages": "Languages spoken (comma-separated ISO codes)",
+      "languages": "Languages spoken",
       "altSpellings": "Alternative spellings (comma-separated)",
       "capacity": "Capacity",
       "calcMethod": "Calculation method",
@@ -1815,6 +1823,23 @@
       }
     }
   },
+  "quranSidebar": {
+    "title": "Filters",
+    "menu": "Filters",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "sections": {
+      "translations": "Translations"
+    }
+  },
+  "quranLanguageFilter": {
+    "label": "Translations",
+    "placeholder": "Select languages",
+    "searchPlaceholder": "Search language…",
+    "noResults": "No language found.",
+    "moreItems": "+{count} more",
+    "removeChip": "Remove {name}"
+  },
   "profileNav": {
     "title": "Profile",
     "items": {
@@ -1846,7 +1871,7 @@
     "country": "Country",
     "city": "City",
     "ethnicity": "Ethnicity",
-    "languages": "Languages (comma-separated)",
+    "languages": "Languages",
     "madhhab": "Madhhab",
     "sect": "Sect",
     "prayerCommitment": "Prayer commitment",

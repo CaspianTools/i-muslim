@@ -16,7 +16,10 @@ export const profileFieldsSchema = z.object({
   country: countryCodeSchema,
   city: z.string().min(1).max(60),
   ethnicity: z.string().max(60).optional().or(z.literal("")),
-  languages: z.string().max(120).optional().or(z.literal("")),
+  // Lenient on values: legacy free-text entries are kept as-is per mus-1194
+  // "no migration" decision; the LanguageCombobox UI guarantees valid ISO-639-1
+  // codes for new writes.
+  languages: z.array(z.string()).max(20),
   madhhab: z.enum(["hanafi", "maliki", "shafii", "hanbali", "other", "none"]),
   sect: z.enum(["sunni", "shia", "other"]),
   prayerCommitment: z.enum(["always", "mostly", "sometimes", "rarely", "learning"]),
@@ -93,7 +96,7 @@ export function inputToRecord(input: ProfileFieldsInput): Omit<ProfileFieldsReco
     country: input.country,
     city: input.city,
     ethnicity: input.ethnicity ? input.ethnicity : null,
-    languages: csvToList(input.languages),
+    languages: input.languages,
     madhhab: input.madhhab,
     sect: input.sect,
     prayerCommitment: input.prayerCommitment,

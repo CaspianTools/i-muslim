@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
+import { LanguageCombobox } from "@/components/common/LanguageCombobox";
 import type { IqamahRule, Mosque, MosqueServices } from "@/types/mosque";
 import { SERVICE_KEYS, DENOMINATIONS, emptyServices, PRAYER_KEYS } from "@/lib/mosques/constants";
 import { defaultPrayerCalc } from "@/lib/mosques/adhan";
@@ -372,10 +373,10 @@ export function MosqueForm({ mode, initial }: MosqueFormProps) {
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           <Field label={t("languages")}>
-            <Input
-              placeholder="en, ar, tr"
-              value={state.languages.join(", ")}
-              onChange={(e) => setState((s) => ({ ...s, languages: e.target.value.split(",").map((v) => v.trim()) }))}
+            <LanguageCombobox
+              multiple
+              value={state.languages}
+              onChange={(codes) => setState((s) => ({ ...s, languages: codes }))}
             />
           </Field>
           <Field label={t("altSpellings")}>

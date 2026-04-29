@@ -27,6 +27,14 @@
     "moreCountries": "+{count} أخرى",
     "removeChip": "إزالة {name}"
   },
+  "languageCombobox": {
+    "selectLanguage": "اختر اللغة",
+    "selectLanguages": "اختر اللغات",
+    "searchPlaceholder": "ابحث عن لغة…",
+    "noResults": "لم يتم العثور على لغة.",
+    "moreLanguages": "+{count} أخرى",
+    "removeChip": "إزالة {name}"
+  },
   "locale": {
     "en": "English",
     "ar": "العربية",
@@ -1235,7 +1243,7 @@
         "phone": "الهاتف",
         "website": "الموقع الإلكتروني",
         "email": "البريد الإلكتروني",
-        "languages": "اللغات (رموز ISO مفصولة بفواصل)",
+        "languages": "اللغات",
         "description": "الوصف",
         "submitterEmail": "بريدك الإلكتروني"
       },
@@ -1383,7 +1391,7 @@
       "instagram": "رابط إنستغرام",
       "youtube": "رابط يوتيوب",
       "whatsapp": "رابط واتساب",
-      "languages": "اللغات (رموز ISO مفصولة بفواصل)",
+      "languages": "اللغات",
       "altSpellings": "تهجئات بديلة (مفصولة بفواصل)",
       "capacity": "السعة",
       "calcMethod": "طريقة الحساب",

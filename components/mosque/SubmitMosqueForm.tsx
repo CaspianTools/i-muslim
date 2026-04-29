@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
+import { LanguageCombobox } from "@/components/common/LanguageCombobox";
 import { DENOMINATIONS } from "@/lib/mosques/constants";
 import type { Denomination } from "@/types/mosque";
 
@@ -23,6 +24,7 @@ interface FormState {
   email: string;
   description: string;
   submitterEmail: string;
+  languages: string[];
   // honeypot
   website_url_secondary: string;
 }
@@ -39,6 +41,7 @@ const empty: FormState = {
   email: "",
   description: "",
   submitterEmail: "",
+  languages: [],
   website_url_secondary: "",
 };
 
@@ -196,6 +199,15 @@ export function SubmitMosqueForm() {
             onChange={(e) => setState((s) => ({ ...s, website: e.target.value }))}
           />
         </div>
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="sub-languages">{t("fields.languages")}</Label>
+        <LanguageCombobox
+          id="sub-languages"
+          multiple
+          value={state.languages}
+          onChange={(codes) => setState((s) => ({ ...s, languages: codes }))}
+        />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="sub-desc">{t("fields.description")}</Label>

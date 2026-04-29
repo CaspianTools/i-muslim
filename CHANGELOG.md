@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- **Shared `<LanguageCombobox>`** (mus-1194) — searchable, alphabetically sorted dropdown of ~180 ISO-639-1 languages with locale-aware names (en/ar/id/ru/fr/ms/de/es supported; other UI locales fall back to English names). Replaces the free-text "Languages (comma-separated)" inputs on the profile form and the admin mosque form, and adds a new languages picker to the public mosque submission form. Multi-select with chips, mirrors the `<CountryCombobox>` pattern.
+
+### Added
 - **Hijri Date Converter** (mus-1191) — new tool page at `/hijri-converter` with two cards (Gregorian → Hijri and Hijri → Gregorian) plus a "Today" strip showing the current date in both calendars. Linked from the footer **Tools** column. Uses the existing `@umalqura/core` library; surfaces clear errors for out-of-range years and days that don't exist in the chosen Hijri month.
 - Real per-language **completion percentage** on every Qur'an and Hadith translation row in /admin/settings (chip applies whether the row is enabled or disabled). Stats come from a pre-aggregated `config/translationStats` Firestore doc that the seed scripts maintain — the page does one read on load, no live count queries, no Firestore index dance. Click any row's name area to open a stats dialog showing translated / total / coverage, a per-collection breakdown for Hadith, an in-place enable/disable toggle, and a copy-to-clipboard `npm run seed:*:lang -- --lang=<code>` snippet for filling gaps.
 - `npm run recompute:translation-stats` — standalone script that rebuilds `config/translationStats` by streaming `quran_ayahs` and `hadith_entries` and counting non-empty `translations.<lang>` values per language and per Hadith collection. Run once to bootstrap; subsequent seed runs (`seed:quran`, `seed:quran:lang`, `seed:hadith`, `seed:hadith:lang`) call it automatically at the end so stats stay fresh.

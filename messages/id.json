@@ -27,6 +27,14 @@
     "moreCountries": "+{count} lainnya",
     "removeChip": "Hapus {name}"
   },
+  "languageCombobox": {
+    "selectLanguage": "Pilih bahasa",
+    "selectLanguages": "Pilih bahasa",
+    "searchPlaceholder": "Cari bahasa…",
+    "noResults": "Bahasa tidak ditemukan.",
+    "moreLanguages": "+{count} lainnya",
+    "removeChip": "Hapus {name}"
+  },
   "locale": {
     "en": "English",
     "ar": "العربية",
@@ -1235,7 +1243,7 @@
         "phone": "Telepon",
         "website": "Situs web",
         "email": "Email",
-        "languages": "Bahasa (kode ISO dipisah koma)",
+        "languages": "Bahasa",
         "description": "Deskripsi",
         "submitterEmail": "Email Anda"
       },
@@ -1383,7 +1391,7 @@
       "instagram": "URL Instagram",
       "youtube": "URL YouTube",
       "whatsapp": "Tautan WhatsApp",
-      "languages": "Bahasa (kode ISO dipisah koma)",
+      "languages": "Bahasa",
       "altSpellings": "Ejaan alternatif (dipisah koma)",
       "capacity": "Kapasitas",
       "calcMethod": "Metode perhitungan",

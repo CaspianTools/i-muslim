@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/sonner";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
+import { LanguageCombobox } from "@/components/common/LanguageCombobox";
 import { Section } from "./forms/Section";
 import { Field } from "./forms/Field";
 import { Select } from "./forms/Select";
@@ -28,7 +29,7 @@ function defaultsFrom(initial: ProfileFieldsRecord | null): ProfileFieldsInput {
     country: initial?.country ?? "",
     city: initial?.city ?? "",
     ethnicity: initial?.ethnicity ?? "",
-    languages: (initial?.languages ?? []).join(", "),
+    languages: initial?.languages ?? [],
     madhhab: initial?.madhhab ?? "none",
     sect: initial?.sect ?? "sunni",
     prayerCommitment: initial?.prayerCommitment ?? "mostly",
@@ -110,7 +111,17 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
           <Input {...register("ethnicity")} />
         </Field>
         <Field label={t("languages")} span="full">
-          <Input placeholder="en, ar, tr" {...register("languages")} />
+          <Controller
+            name="languages"
+            control={control}
+            render={({ field }) => (
+              <LanguageCombobox
+                multiple
+                value={field.value ?? []}
+                onChange={field.onChange}
+              />
+            )}
+          />
         </Field>
       </Section>
 
