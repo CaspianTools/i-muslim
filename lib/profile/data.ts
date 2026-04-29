@@ -50,11 +50,20 @@ export async function listFavorites(
   const db = getDb();
   if (!db) return [];
   const col = db.collection("users").doc(uid).collection("favorites");
-  let query = col.orderBy("createdAt", "desc");
-  if (opts.itemType) query = query.where("itemType", "==", opts.itemType) as typeof query;
-  query = query.limit(opts.limit ?? 100) as typeof query;
+  const limit = opts.limit ?? 100;
   try {
-    const snap = await query.get();
+    if (opts.itemType) {
+      // Filter-only query (no orderBy) so we don't need a composite
+      // (itemType, createdAt) index. Sort in memory — the per-user
+      // favorites collection is small.
+      const snap = await col.where("itemType", "==", opts.itemType).limit(limit).get();
+      const records = snap.docs
+        .map((d) => normalizeFavorite(d.id, d.data() as Record<string, unknown>))
+        .filter((f): f is FavoriteRecord => f !== null);
+      records.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+      return records;
+    }
+    const snap = await col.orderBy("createdAt", "desc").limit(limit).get();
     return snap.docs
       .map((d) => normalizeFavorite(d.id, d.data() as Record<string, unknown>))
       .filter((f): f is FavoriteRecord => f !== null);
