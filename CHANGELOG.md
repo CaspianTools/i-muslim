@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- **Quran reading sidebar** (mus-1195) — surah pages now have a left sidebar (collapsible on desktop, slide-out drawer on mobile) modeled on the profile sidebar. First filter is a **searchable multi-select language combobox** with options sorted A–Z; replaces the inline language pill row in the surah header. URL (`?lang=`) and `i-muslim.langs` localStorage semantics are preserved, so deep links and saved preferences keep working. Introduces a reusable `<SearchableMultiCombobox>` primitive in `components/common/`.
+
+### Added
 - **Shared `<LanguageCombobox>`** (mus-1194) — searchable, alphabetically sorted dropdown of ~180 ISO-639-1 languages with locale-aware names (en/ar/id/ru/fr/ms/de/es supported; other UI locales fall back to English names). Replaces the free-text "Languages (comma-separated)" inputs on the profile form and the admin mosque form, and adds a new languages picker to the public mosque submission form. Multi-select with chips, mirrors the `<CountryCombobox>` pattern.
 
 ### Added
