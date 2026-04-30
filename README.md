@@ -23,7 +23,7 @@ Arabic alongside English, Russian, and Azerbaijani translations.
     falls back to English with a "translation unavailable" badge; admins can
     fill individual hadiths via the per-hadith editor at
     `/admin/hadith/<collection>`, which has an AI-translate button (Gemini)
-    once a key is configured at `/admin/settings`.
+    once a key is configured at `/admin/integrations`.
 
 ## Getting started
 

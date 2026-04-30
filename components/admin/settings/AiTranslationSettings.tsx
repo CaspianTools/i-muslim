@@ -15,7 +15,7 @@ import {
 import {
   updateGeminiConfigAction,
   clearGeminiKeyAction,
-} from "@/app/[locale]/(admin)/admin/settings/_actions";
+} from "@/app/[locale]/(admin)/admin/integrations/_actions";
 
 export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus }) {
   const [status, setStatus] = useState<GeminiConfigStatus>(initial);

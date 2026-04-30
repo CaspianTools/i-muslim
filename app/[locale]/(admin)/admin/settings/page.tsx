@@ -1,10 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { LanguagesForm } from "@/components/admin/settings/LanguagesForm";
-import { AiTranslationSettings } from "@/components/admin/settings/AiTranslationSettings";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { listReservedLocaleDocs } from "@/lib/admin/data/ui-locales";
 import { getContentTranslationStats } from "@/lib/admin/data/content-translation-stats";
-import { getGeminiConfigStatus } from "@/lib/admin/data/secrets";
 import {
   computeTranslationStats,
   type MessageTree,
@@ -27,11 +25,10 @@ function isBundledLocale(code: string): code is BundledLocale {
 }
 
 export default async function Page() {
-  const [settings, reservedDocs, contentStats, geminiStatus, t] = await Promise.all([
+  const [settings, reservedDocs, contentStats, t] = await Promise.all([
     getLanguageSettings(),
     listReservedLocaleDocs(),
     getContentTranslationStats(),
-    getGeminiConfigStatus(),
     getTranslations("adminSettings.languages"),
   ]);
 
@@ -72,7 +69,6 @@ export default async function Page() {
           }),
         }}
       />
-      <AiTranslationSettings initial={geminiStatus} />
     </div>
   );
 }

@@ -20,12 +20,6 @@ import {
   updateUiLocaleMessages,
   type UiLocaleDoc,
 } from "@/lib/admin/data/ui-locales";
-import {
-  setGeminiConfig,
-  clearGeminiKey,
-  GEMINI_MODELS,
-  type GeminiConfigStatus,
-} from "@/lib/admin/data/secrets";
 
 const inputSchema = z.object({
   uiEnabled: z.array(z.enum(LOCALES as unknown as [Locale, ...Locale[]])),
@@ -133,49 +127,6 @@ export async function updateUiLocaleMessagesAction(
     return { ok: true, locale };
   } catch (err) {
     console.warn("[admin/settings/_actions] updateMessages failed:", err);
-    return { ok: false, error: "write-failed" };
-  }
-}
-
-const geminiConfigSchema = z.object({
-  apiKey: z.string().trim().max(500).optional(),
-  model: z.enum(GEMINI_MODELS as unknown as [string, ...string[]]),
-});
-
-export type UpdateGeminiConfigResult =
-  | { ok: true; status: GeminiConfigStatus }
-  | { ok: false; error: string };
-
-export async function updateGeminiConfigAction(
-  rawInput: unknown,
-): Promise<UpdateGeminiConfigResult> {
-  const session = await requireAdminSession();
-  const parsed = geminiConfigSchema.safeParse(rawInput);
-  if (!parsed.success) {
-    return { ok: false, error: "invalid-input" };
-  }
-  try {
-    const status = await setGeminiConfig(
-      {
-        apiKey: parsed.data.apiKey ?? null,
-        model: parsed.data.model as (typeof GEMINI_MODELS)[number],
-      },
-      session.email,
-    );
-    return { ok: true, status };
-  } catch (err) {
-    console.warn("[admin/settings/_actions] gemini write failed:", err);
-    return { ok: false, error: "write-failed" };
-  }
-}
-
-export async function clearGeminiKeyAction(): Promise<UpdateGeminiConfigResult> {
-  const session = await requireAdminSession();
-  try {
-    const status = await clearGeminiKey(session.email);
-    return { ok: true, status };
-  } catch (err) {
-    console.warn("[admin/settings/_actions] gemini clear failed:", err);
     return { ok: false, error: "write-failed" };
   }
 }
