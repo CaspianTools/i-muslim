@@ -172,17 +172,20 @@ async function main() {
     console.error("Arabic is the original text, not a translation. Run `npm run seed:hadith` for Arabic + canonical text.");
     process.exit(1);
   }
+  const coverage = HADITH_LANG_COVERAGE[lang];
+  if (!coverage || coverage.size === 0) {
+    // Empty coverage = admin-edited-only language. Renderer falls back to
+    // English with a "translation unavailable" badge; admin-edited entries
+    // are preserved across seeds via the editedTranslations.<lang> flag.
+    console.log(
+      `No upstream hadith editions for "${lang}" — admin-edited only. Nothing to seed.`,
+    );
+    process.exit(0);
+  }
   const editionLang = HADITH_EDITION_LANG[lang];
   if (!editionLang) {
     console.error(
-      `No HADITH_EDITION_LANG mapping for "${lang}". Add the 3-letter fawazahmed0 edition prefix in lib/translations.ts.`,
-    );
-    process.exit(1);
-  }
-  const coverage = HADITH_LANG_COVERAGE[lang];
-  if (!coverage || coverage.size === 0) {
-    console.error(
-      `HADITH_LANG_COVERAGE has no collections for "${lang}". Add covered slugs in lib/translations.ts before seeding (page renderer falls back to English for uncovered slugs).`,
+      `HADITH_LANG_COVERAGE lists collections for "${lang}" but HADITH_EDITION_LANG has no edition prefix. Add the 3-letter fawazahmed0 edition prefix in lib/translations.ts.`,
     );
     process.exit(1);
   }

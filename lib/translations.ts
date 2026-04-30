@@ -49,6 +49,12 @@ export const QURAN_TRANSLATION_NAMES: Record<string, string> = {
 //
 // Edition slugs on the CDN follow the `${langCode3}-${collection}` pattern
 // (see HADITH_EDITION_LANG below). Update both maps when adding a language.
+//
+// An empty Set (e.g. `az: new Set()`) is the deliberate "admin-edited only"
+// marker: no upstream editions exist on the CDN, so the per-lang seeder
+// (scripts/seed-hadith-translation.ts) skips this lang and exits cleanly.
+// Translations are populated solely through the admin UI and preserved
+// across re-seeds via `editedTranslations.<lang> === true` on each doc.
 export const HADITH_LANG_COVERAGE: Record<string, ReadonlySet<string>> = {
   en: new Set([
     "bukhari",
