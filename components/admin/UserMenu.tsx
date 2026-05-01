@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Keyboard, LogOut, ScrollText, Settings, User as UserIcon } from "lucide-react";
+import { Globe, Keyboard, LogOut, ScrollText, Settings, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,6 +69,9 @@ export function UserMenu({ name, email, picture }: UserMenuProps) {
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
           <Keyboard /> {t("keyboardShortcuts")}
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/"><Globe /> {t("viewSite")}</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="danger" onClick={handleSignOut} disabled={signingOut}>
