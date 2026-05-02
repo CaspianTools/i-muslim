@@ -25,6 +25,7 @@ import { SyncRatesButton } from "./SyncRatesButton";
 import {
   computeNisab,
   computeTotals,
+  formatGrams,
   formatUSD,
 } from "@/lib/zakat/calculate";
 import {
@@ -101,13 +102,20 @@ export function ZakatCalculator() {
             <SettingsIcon className="size-4" />
             {t("settingsButton")}
           </Button>
-          <div className="flex items-baseline gap-2">
+          <div className="flex items-baseline gap-2 flex-wrap sm:justify-end">
             <span className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-1">
               <Globe className="size-3 text-success" />
               {t("nisabLabel")}
             </span>
+            <span className="text-sm tabular-nums text-muted-foreground">
+              {t(
+                nisab.metal === "gold" ? "nisabGoldGrams" : "nisabSilverGrams",
+                { grams: formatGrams(nisab.grams) },
+              )}
+            </span>
+            <span className="text-muted-foreground">≈</span>
             <span className="text-2xl font-bold tabular-nums text-primary">
-              {formatUSD(nisab)}
+              {formatUSD(nisab.value)}
             </span>
           </div>
         </div>
@@ -385,7 +393,7 @@ export function ZakatCalculator() {
 
         <ResultsPanel
           totals={totals}
-          nisab={nisab}
+          nisab={nisab.value}
           settings={state.settings}
           resolveLabel={resolveLabel}
           onReset={() => dispatch({ type: "RESET" })}

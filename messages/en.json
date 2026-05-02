@@ -593,6 +593,8 @@
     "subtitle": "Wealth Purification Calculator",
     "settingsButton": "Settings",
     "nisabLabel": "Nisab",
+    "nisabGoldGrams": "{grams}g gold",
+    "nisabSilverGrams": "{grams}g silver",
     "subtotalUsd": "Subtotal in USD",
     "subtotalOwed": "Subtotal Owed (USD)",
     "currencySearchPlaceholder": "Search currency…",

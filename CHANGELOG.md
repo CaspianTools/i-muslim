@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **`rel="noopener noreferrer"` on admin business links.** `/admin/businesses` action menu and `/admin/businesses/reports` row links open in new tabs and now include `noreferrer` alongside `noopener` for defense-in-depth (matches the existing pattern on event location links).
 
 ### Changed
+- **Zakat calculator header now shows the nisab grams alongside the dollar conversion** — e.g. `NISAB 87.48g gold ≈ $5,686.20` (or silver, when the active threshold uses silver). `computeNisab` returns `{ value, grams, metal }` so the active-metal display stays in sync with mazhab and `nisabSource` (gold / silver / auto-lower-of-the-two). Two new keys in [messages/en.json](messages/en.json): `zakat.nisabGoldGrams`, `zakat.nisabSilverGrams`.
 - Bumped patch/minor dependencies: `react`/`react-dom` 19.2.4 → 19.2.5, `next-intl` 4.9.1 → 4.11.0, `lucide-react` 1.11.0 → 1.14.0, `react-hook-form` 7.73.1 → 7.74.0, `zod` 4.3.6 → 4.4.1. Major bumps (TypeScript 6, ESLint 10, `@types/node` 25, `dotenv` 17) deferred. Outstanding `npm audit` advisories (12, all transitive under `firebase-admin`'s google-cloud chain plus `postcss` via `next`) are upstream issues — `npm audit fix --force` would downgrade `firebase-admin` to 10.1.0 and `next` to 9.3.3, which is not acceptable.
 
 ### Added

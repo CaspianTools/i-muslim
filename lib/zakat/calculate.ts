@@ -59,16 +59,25 @@ export function computeTotals(state: ZakatState): Totals {
   };
 }
 
+export interface NisabBreakdown {
+  value: number;
+  grams: number;
+  metal: "gold" | "silver";
+}
+
 export function computeNisab(
   settings: UserSettings,
   goldPrice: number,
   silverPrice: number,
-): number {
+): NisabBreakdown {
   const goldNisab = goldPrice * settings.goldNisabGrams;
   const silverNisab = silverPrice * settings.silverNisabGrams;
-  if (settings.nisabSource === "gold") return goldNisab;
-  if (settings.nisabSource === "silver") return silverNisab;
-  return Math.min(goldNisab, silverNisab);
+  const useGold =
+    settings.nisabSource === "gold" ||
+    (settings.nisabSource === "auto" && goldNisab <= silverNisab);
+  return useGold
+    ? { value: goldNisab, grams: settings.goldNisabGrams, metal: "gold" }
+    : { value: silverNisab, grams: settings.silverNisabGrams, metal: "silver" };
 }
 
 export function isZakatDue(netWealth: number, nisab: number): boolean {
@@ -80,6 +89,13 @@ export function formatUSD(value: number, locale?: string): string {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+export function formatGrams(value: number, locale?: string): string {
+  return new Intl.NumberFormat(locale ?? "en-US", {
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(value);
 }
