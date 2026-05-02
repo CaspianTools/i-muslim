@@ -10,18 +10,18 @@ import { ALL_LANGS, type LangCode } from "@/lib/translations";
 const NON_ARABIC_LANGS = ALL_LANGS.filter((l) => l !== "ar") as [LangCode, ...LangCode[]];
 
 const translateSchema = z.object({
-  collection: z.string().min(1).max(64),
-  number: z.number().int().positive(),
+  surah: z.number().int().min(1).max(114),
+  ayah: z.number().int().positive(),
   targetLang: z.enum(NON_ARABIC_LANGS as unknown as [string, ...string[]]),
 });
 
-export type TranslateHadithFieldResult =
+export type TranslateAyahFieldResult =
   | { ok: true; text: string }
   | { ok: false; error: string };
 
-export async function translateHadithFieldAction(
+export async function translateAyahFieldAction(
   rawInput: unknown,
-): Promise<TranslateHadithFieldResult> {
+): Promise<TranslateAyahFieldResult> {
   await requireAdminSession();
   const parsed = translateSchema.safeParse(rawInput);
   if (!parsed.success) {
@@ -37,10 +37,10 @@ export async function translateHadithFieldAction(
   }
 
   const db = requireDb();
-  const id = `${parsed.data.collection}:${parsed.data.number}`;
-  const snap = await db.collection("hadith_entries").doc(id).get();
+  const id = `${parsed.data.surah}:${parsed.data.ayah}`;
+  const snap = await db.collection("quran_ayahs").doc(id).get();
   if (!snap.exists) {
-    return { ok: false, error: `Hadith ${id} not found.` };
+    return { ok: false, error: `Ayah ${id} not found.` };
   }
   const data = snap.data() ?? {};
   const arabic = (data.text_ar as string | undefined) ?? "";
@@ -51,7 +51,7 @@ export async function translateHadithFieldAction(
     arabic,
     englishContext,
     targetLang: parsed.data.targetLang as LangCode,
-    sourceKind: "hadith",
+    sourceKind: "ayah",
     config,
   });
 }

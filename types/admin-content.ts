@@ -19,7 +19,13 @@ export type AdminAyah = {
   ayah: number;
   text_ar: string;
   text_translit: string | null;
-  translations: { en: string; ru: string };
+  // Keyed by LangCode (en/ru/az/tr/...). Missing keys mean "no translation
+  // yet" — the public reader and admin filter handle absence gracefully.
+  translations: Record<string, string>;
+  // editedTranslations.<lang> === true marks an admin override that the
+  // per-language seeder (scripts/seed-quran-translation.ts) preserves on
+  // re-runs. Mirrors AdminHadith.
+  editedTranslations: Record<string, boolean>;
   juz: number;
   page: number;
   sajdah: boolean;

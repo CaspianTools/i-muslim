@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchSurahWithAyahs } from "@/lib/admin/data/quran";
 import { AyahList } from "@/components/admin/quran/AyahList";
+import { getGeminiConfigStatus } from "@/lib/admin/data/secrets";
+import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 
 export const dynamic = "force-dynamic";
 
@@ -14,8 +16,14 @@ export default async function AdminSurahPage({
   const num = Number(surahParam);
   if (!Number.isInteger(num) || num < 1 || num > 114) notFound();
 
-  const { surah, ayahs } = await fetchSurahWithAyahs(num);
+  const [{ surah, ayahs }, geminiStatus, languageSettings] = await Promise.all([
+    fetchSurahWithAyahs(num),
+    getGeminiConfigStatus(),
+    getLanguageSettings(),
+  ]);
   if (!surah) notFound();
+
+  const availableLangs = languageSettings.quranEnabled.filter((l) => l !== "ar");
 
   return (
     <div className="space-y-4">
@@ -46,7 +54,12 @@ export default async function AdminSurahPage({
           populate the database.
         </div>
       ) : (
-        <AyahList ayahs={ayahs} surah={num} />
+        <AyahList
+          ayahs={ayahs}
+          surah={num}
+          availableLangs={availableLangs}
+          aiConfigured={geminiStatus.configured}
+        />
       )}
     </div>
   );

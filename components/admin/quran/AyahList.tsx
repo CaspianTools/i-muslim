@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormRegister } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Pencil, Save, X } from "lucide-react";
+import { Pencil, Save, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +18,7 @@ import {
   EditorDialogHeader,
   EditorDialogTitle,
 } from "@/components/ui/editor-dialog";
-import { FormGrid } from "@/components/admin/ui/form-layout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/sonner";
 import {
   SearchableMultiCombobox,
@@ -26,12 +26,10 @@ import {
 } from "@/components/common/SearchableMultiCombobox";
 import { LANG_LABELS } from "@/lib/translations";
 import type { AdminAyah } from "@/types/admin-content";
+import { translateAyahFieldAction } from "@/app/[locale]/(admin)/admin/quran/_actions";
 
 const VISIBLE_LANGS_STORAGE_KEY = "i-muslim.admin-quran-visible-langs";
 const VISIBLE_LANGS_EVENT = "i-muslim.admin-quran-visible-langs-change";
-
-type FormLang = "en" | "ru";
-const QURAN_LANGS: FormLang[] = ["en", "ru"];
 
 function subscribeVisibleLangs(cb: () => void) {
   window.addEventListener("storage", cb);
@@ -42,6 +40,8 @@ function subscribeVisibleLangs(cb: () => void) {
   };
 }
 
+// Stable serialized snapshot — useSyncExternalStore compares snapshots by
+// reference identity, so we return the persisted string and parse downstream.
 function readVisibleLangsRaw(): string {
   try {
     return window.localStorage.getItem(VISIBLE_LANGS_STORAGE_KEY) ?? "";
@@ -50,40 +50,71 @@ function readVisibleLangsRaw(): string {
   }
 }
 
-function parseVisibleLangs(raw: string): FormLang[] {
-  if (!raw) return QURAN_LANGS;
+function parseVisibleLangs(raw: string, availableLangs: string[]): string[] {
+  if (!raw) return availableLangs;
   const parts = raw
     .split(",")
     .map((s) => s.trim())
-    .filter((s): s is FormLang => (QURAN_LANGS as string[]).includes(s));
+    .filter((s) => availableLangs.includes(s));
   return parts;
 }
 
+// Hardcoded so zod's TS inference picks up each lang field. Keep aligned with
+// the non-Arabic subset of ALL_LANGS — the `availableLangs` prop drives which
+// of these tabs/inputs are actually rendered, but the schema accepts any.
 const Schema = z.object({
   en: z.string().max(8000),
   ru: z.string().max(8000),
+  az: z.string().max(8000),
+  tr: z.string().max(8000),
   text_translit: z.string().max(8000),
   notes: z.string().max(4000),
   tags: z.string().max(500),
   published: z.boolean(),
 });
 type Values = z.infer<typeof Schema>;
+type FormLang = "en" | "ru" | "az" | "tr";
 
-export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }) {
+const NON_ARABIC_LANGS: FormLang[] = ["en", "ru", "az", "tr"];
+
+export function AyahList({
+  ayahs,
+  surah,
+  availableLangs,
+  aiConfigured,
+}: {
+  ayahs: AdminAyah[];
+  surah: number;
+  availableLangs: string[];
+  aiConfigured: boolean;
+}) {
   const [items, setItems] = useState(ayahs);
   const [editing, setEditing] = useState<AdminAyah | null>(null);
   const [filter, setFilter] = useState("");
   const locale = useLocale();
   const tFilter = useTranslations("quranLanguageFilter");
 
+  // Editor only ever shows langs that are both supported (FormLang union) and
+  // currently activated in /admin/settings → Languages → Qur'an.
+  const editableLangs = useMemo<FormLang[]>(
+    () => NON_ARABIC_LANGS.filter((l) => availableLangs.includes(l)),
+    [availableLangs],
+  );
+
+  // Persist the per-admin "which translations to display" selection in
+  // localStorage so it survives reloads. Mirrors the pattern used by the
+  // hadith admin reader and the public Quran sidebar.
   const visibleLangsRaw = useSyncExternalStore(
     subscribeVisibleLangs,
     readVisibleLangsRaw,
     () => "",
   );
-  const visibleLangs = useMemo(() => parseVisibleLangs(visibleLangsRaw), [visibleLangsRaw]);
+  const visibleLangs = useMemo(
+    () => parseVisibleLangs(visibleLangsRaw, availableLangs),
+    [visibleLangsRaw, availableLangs],
+  );
 
-  const setAndPersistVisibleLangs = useCallback((next: FormLang[]) => {
+  const setAndPersistVisibleLangs = useCallback((next: string[]) => {
     try {
       window.localStorage.setItem(VISIBLE_LANGS_STORAGE_KEY, next.join(","));
       window.dispatchEvent(new Event(VISIBLE_LANGS_EVENT));
@@ -94,13 +125,13 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
 
   const langOptions: SearchableMultiComboboxOption[] = useMemo(() => {
     const collator = new Intl.Collator(locale, { sensitivity: "base" });
-    return QURAN_LANGS
+    return availableLangs
       .map((code) => ({
         value: code,
         label: LANG_LABELS[code] ?? code.toUpperCase(),
       }))
       .sort((a, b) => collator.compare(a.label, b.label));
-  }, [locale]);
+  }, [availableLangs, locale]);
 
   const filtered = useMemo(() => {
     if (!filter.trim()) return items;
@@ -108,8 +139,7 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
     return items.filter(
       (a) =>
         String(a.ayah).includes(q) ||
-        a.translations.en.toLowerCase().includes(q) ||
-        a.translations.ru.toLowerCase().includes(q),
+        Object.values(a.translations).some((v) => v?.toLowerCase().includes(q)),
     );
   }, [items, filter]);
 
@@ -126,7 +156,7 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
           <SearchableMultiCombobox
             options={langOptions}
             value={visibleLangs}
-            onChange={(next) => setAndPersistVisibleLangs(next as FormLang[])}
+            onChange={(next) => setAndPersistVisibleLangs(next)}
             placeholder={tFilter("placeholder")}
             searchPlaceholder={tFilter("searchPlaceholder")}
             emptyText={tFilter("noResults")}
@@ -188,7 +218,7 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
               </p>
             )}
             <div className="mt-3 space-y-2 text-sm">
-              {QURAN_LANGS.map((lang) => {
+              {availableLangs.map((lang) => {
                 if (!visibleLangs.includes(lang)) return null;
                 const text = a.translations[lang];
                 if (!text) return null;
@@ -196,6 +226,11 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
                   <div key={lang}>
                     <span className="text-xs uppercase tracking-wide text-muted-foreground">
                       {lang.toUpperCase()}
+                      {a.editedTranslations?.[lang] && (
+                        <span className="ml-1 text-primary" title="Admin-edited; preserved on re-seed">
+                          ✓
+                        </span>
+                      )}
                     </span>
                     <p className="text-foreground">{text}</p>
                   </div>
@@ -214,6 +249,8 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
       <EditAyahDrawer
         surah={surah}
         ayah={editing}
+        editableLangs={editableLangs}
+        aiConfigured={aiConfigured}
         onClose={() => setEditing(null)}
         onSaved={(updated) => {
           setItems((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
@@ -224,14 +261,31 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
   );
 }
 
+function buildInitialValues(ayah: AdminAyah | null): Values {
+  return {
+    en: ayah?.translations.en ?? "",
+    ru: ayah?.translations.ru ?? "",
+    az: ayah?.translations.az ?? "",
+    tr: ayah?.translations.tr ?? "",
+    text_translit: ayah?.text_translit ?? "",
+    notes: ayah?.notes ?? "",
+    tags: ayah ? ayah.tags.join(", ") : "",
+    published: ayah ? ayah.published : true,
+  };
+}
+
 function EditAyahDrawer({
   surah,
   ayah,
+  editableLangs,
+  aiConfigured,
   onClose,
   onSaved,
 }: {
   surah: number;
   ayah: AdminAyah | null;
+  editableLangs: FormLang[];
+  aiConfigured: boolean;
   onClose: () => void;
   onSaved: (a: AdminAyah) => void;
 }) {
@@ -239,35 +293,25 @@ function EditAyahDrawer({
 
   const form = useForm<Values>({
     resolver: zodResolver(Schema),
-    values: ayah
-      ? {
-          en: ayah.translations.en,
-          ru: ayah.translations.ru,
-          text_translit: ayah.text_translit ?? "",
-          notes: ayah.notes ?? "",
-          tags: ayah.tags.join(", "),
-          published: ayah.published,
-        }
-      : {
-          en: "",
-          ru: "",
-          text_translit: "",
-          notes: "",
-          tags: "",
-          published: true,
-        },
-    resetOptions: { keepDirtyValues: false },
+    values: buildInitialValues(ayah),
   });
 
   async function onSubmit(values: Values) {
     if (!ayah) return;
     setSubmitting(true);
     try {
+      // Only submit langs the admin can actually edit — disabled langs in
+      // settings shouldn't be touched, so the per-language seeder can keep
+      // owning them on re-seed.
+      const translationsPayload: Record<string, string> = {};
+      for (const lang of editableLangs) {
+        translationsPayload[lang] = values[lang];
+      }
       const res = await fetch(`/api/admin/quran/${surah}/${ayah.ayah}`, {
         method: "PATCH",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          translations: { en: values.en, ru: values.ru },
+          translations: translationsPayload,
           text_translit: values.text_translit || null,
           notes: values.notes || null,
           tags: values.tags
@@ -280,9 +324,18 @@ function EditAyahDrawer({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to save");
 
+      const mergedTranslations: Record<string, string> = { ...ayah.translations };
+      const editedNext: Record<string, boolean> = { ...ayah.editedTranslations };
+      for (const lang of editableLangs) {
+        mergedTranslations[lang] = values[lang];
+        if (values[lang] !== (ayah.translations[lang] ?? "")) {
+          editedNext[lang] = true;
+        }
+      }
       const updated: AdminAyah = {
         ...ayah,
-        translations: { en: values.en, ru: values.ru },
+        translations: mergedTranslations,
+        editedTranslations: editedNext,
         text_translit: values.text_translit || null,
         notes: values.notes || null,
         tags: values.tags
@@ -312,75 +365,90 @@ function EditAyahDrawer({
             <EditorDialogHeader>
               <EditorDialogTitle>Edit ayah {surah}:{ayah.ayah}</EditorDialogTitle>
               <EditorDialogDescription>
-                Arabic text is read-only. Translations and metadata can be edited.
+                Arabic text is read-only. Translations and metadata can be edited;
+                use the AI button to draft a translation, then review before saving.
               </EditorDialogDescription>
             </EditorDialogHeader>
-            <EditorDialogBody className="space-y-4">
-              <div className="rounded-md bg-muted/40 p-3">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                  Arabic (read-only)
-                </span>
-                <p
-                  dir="rtl"
-                  lang="ar"
-                  className="mt-1 font-arabic text-xl leading-loose"
-                >
-                  {ayah.text_ar}
-                </p>
-              </div>
+            <EditorDialogBody className="overflow-hidden p-0">
+              <div className="grid h-full grid-cols-1 lg:grid-cols-[30%_1fr]">
+                <div className="space-y-4 overflow-y-auto p-5 lg:border-e lg:border-border">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="ayah-translit">Transliteration</Label>
+                    <textarea
+                      id="ayah-translit"
+                      rows={3}
+                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
+                      {...form.register("text_translit")}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="ayah-tags">Tags (comma-separated)</Label>
+                    <Input id="ayah-tags" {...form.register("tags")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="ayah-notes">Internal notes</Label>
+                    <textarea
+                      id="ayah-notes"
+                      rows={4}
+                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
+                      {...form.register("notes")}
+                    />
+                  </div>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      {...form.register("published")}
+                      className="size-4"
+                    />
+                    Published (visible to public reader)
+                  </label>
+                </div>
 
-              <FormGrid>
-                <div className="space-y-1.5">
-                  <Label htmlFor="ayah-en">English</Label>
-                  <textarea
-                    id="ayah-en"
-                    rows={4}
-                    className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
-                    {...form.register("en")}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="ayah-ru">Russian</Label>
-                  <textarea
-                    id="ayah-ru"
-                    rows={4}
-                    className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
-                    {...form.register("ru")}
-                  />
-                </div>
-              </FormGrid>
-              <div className="space-y-1.5">
-                <Label htmlFor="ayah-translit">Transliteration</Label>
-                <textarea
-                  id="ayah-translit"
-                  rows={2}
-                  className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
-                  {...form.register("text_translit")}
-                />
+                <Tabs defaultValue="ar" className="flex min-h-0 flex-col p-5">
+                  <div className="-mx-5 overflow-x-auto px-5 pb-1">
+                    <TabsList>
+                      <TabsTrigger value="ar">Arabic</TabsTrigger>
+                      {editableLangs.map((lang) => (
+                        <TabsTrigger key={lang} value={lang}>
+                          {LANG_LABELS[lang] ?? lang.toUpperCase()}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </div>
+                  <TabsContent value="ar" className="mt-3 flex-1 overflow-y-auto">
+                    <div className="rounded-md bg-muted/40 p-4">
+                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                        Arabic (read-only)
+                      </span>
+                      <p
+                        dir="rtl"
+                        lang="ar"
+                        className="mt-2 font-arabic text-lg leading-loose"
+                      >
+                        {ayah.text_ar}
+                      </p>
+                    </div>
+                  </TabsContent>
+                  {editableLangs.map((lang) => (
+                    <TabsContent
+                      key={lang}
+                      value={lang}
+                      className="mt-3 flex flex-1 flex-col gap-2"
+                    >
+                      <TranslationField
+                        lang={lang}
+                        register={form.register}
+                        setValue={(text) =>
+                          form.setValue(lang, text, { shouldDirty: true, shouldValidate: true })
+                        }
+                        surah={surah}
+                        ayah={ayah.ayah}
+                        aiConfigured={aiConfigured}
+                      />
+                    </TabsContent>
+                  ))}
+                </Tabs>
               </div>
-              <FormGrid>
-                <div className="space-y-1.5">
-                  <Label htmlFor="ayah-tags">Tags (comma-separated)</Label>
-                  <Input id="ayah-tags" {...form.register("tags")} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="ayah-notes">Internal notes</Label>
-                  <textarea
-                    id="ayah-notes"
-                    rows={2}
-                    className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
-                    {...form.register("notes")}
-                  />
-                </div>
-              </FormGrid>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  {...form.register("published")}
-                  className="size-4"
-                />
-                Published (visible to public reader)
-              </label>
             </EditorDialogBody>
 
             <EditorDialogFooter>
@@ -400,5 +468,73 @@ function EditAyahDrawer({
         )}
       </EditorDialogContent>
     </EditorDialog>
+  );
+}
+
+function TranslationField({
+  lang,
+  register,
+  setValue,
+  surah,
+  ayah,
+  aiConfigured,
+}: {
+  lang: FormLang;
+  register: UseFormRegister<Values>;
+  setValue: (text: string) => void;
+  surah: number;
+  ayah: number;
+  aiConfigured: boolean;
+}) {
+  const [translating, startTranslate] = useTransition();
+  const label = LANG_LABELS[lang] ?? lang;
+
+  function onAiTranslate() {
+    if (!aiConfigured) {
+      toast.error(
+        "Configure a Gemini API key in /admin/settings → AI translation first.",
+      );
+      return;
+    }
+    startTranslate(async () => {
+      const res = await translateAyahFieldAction({
+        surah,
+        ayah,
+        targetLang: lang,
+      });
+      if (res.ok) {
+        setValue(res.text);
+        toast.success(`${label} translation drafted — review before saving.`);
+      } else {
+        toast.error(res.error);
+      }
+    });
+  }
+
+  return (
+    <>
+      <div className="flex items-center justify-between gap-2">
+        <Label htmlFor={`ayah-${lang}`} className="text-xs uppercase tracking-wide text-muted-foreground">
+          {label}
+        </Label>
+        <Button
+          type="button"
+          size="sm"
+          variant="ghost"
+          onClick={onAiTranslate}
+          disabled={translating}
+          aria-busy={translating}
+          title={aiConfigured ? `Translate to ${label} with Gemini` : "Configure a Gemini key in /admin/settings first"}
+        >
+          <Sparkles />
+          {translating ? "Translating…" : "Translate with AI"}
+        </Button>
+      </div>
+      <textarea
+        id={`ayah-${lang}`}
+        className="flex h-full min-h-[240px] w-full flex-1 resize-none rounded-md border border-input bg-background p-3 text-sm"
+        {...register(lang)}
+      />
+    </>
   );
 }

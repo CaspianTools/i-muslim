@@ -4,18 +4,22 @@ import { FieldValue } from "firebase-admin/firestore";
 import { requireAdmin, badRequest, notFound, serverError } from "@/lib/admin/api";
 import { requireDb } from "@/lib/firebase/admin";
 import { revalidateSurah } from "@/lib/quran/db";
+import { ALL_LANGS } from "@/lib/translations";
 
 export const runtime = "nodejs";
 
+// Translatable languages = all configured langs minus Arabic (which is the
+// original sacred text and never edited via the admin UI).
+const NON_ARABIC_LANGS = ALL_LANGS.filter((l) => l !== "ar");
+
+const translationsShape: Record<string, z.ZodOptional<z.ZodString>> = {};
+for (const lang of NON_ARABIC_LANGS) {
+  translationsShape[lang] = z.string().max(8000).optional();
+}
+
 const PatchSchema = z
   .object({
-    translations: z
-      .object({
-        en: z.string().max(8000).optional(),
-        ru: z.string().max(8000).optional(),
-      })
-      .partial()
-      .optional(),
+    translations: z.object(translationsShape).partial().optional(),
     text_translit: z.string().max(8000).nullable().optional(),
     tags: z.array(z.string().max(64)).max(50).optional(),
     notes: z.string().max(4000).nullable().optional(),
@@ -70,11 +74,21 @@ export async function PATCH(
 
     const p = parsed.data;
     if (p.translations) {
-      const existing = (snap.data()?.translations as { en?: string; ru?: string }) ?? {};
-      updates.translations = {
-        en: p.translations.en ?? existing.en ?? "",
-        ru: p.translations.ru ?? existing.ru ?? "",
-      };
+      const existing = (snap.data()?.translations as Record<string, string | undefined>) ?? {};
+      const existingEdited = (snap.data()?.editedTranslations as Record<string, boolean> | undefined) ?? {};
+      const mergedTranslations: Record<string, string> = { ...existing } as Record<string, string>;
+      const mergedEdited: Record<string, boolean> = { ...existingEdited };
+      for (const lang of NON_ARABIC_LANGS) {
+        const incoming = p.translations[lang as keyof typeof p.translations];
+        if (typeof incoming === "string") {
+          mergedTranslations[lang] = incoming;
+          // Mark this lang as admin-edited so the per-language seeder
+          // (scripts/seed-quran-translation.ts) preserves it on re-seed.
+          mergedEdited[lang] = true;
+        }
+      }
+      updates.translations = mergedTranslations;
+      updates.editedTranslations = mergedEdited;
     }
     if (p.text_translit !== undefined) updates.text_translit = p.text_translit;
     if (p.tags !== undefined) updates.tags = p.tags;

@@ -12,10 +12,13 @@ const NATIVE_NAMES: Record<string, string> = {
   tr: "Turkish (Türkçe)",
 };
 
+export type SacredSourceKind = "hadith" | "ayah";
+
 export type TranslateInput = {
   arabic: string;
   englishContext: string | null;
   targetLang: LangCode;
+  sourceKind: SacredSourceKind;
   config: GeminiConfig;
 };
 
@@ -29,13 +32,17 @@ function nativeName(lang: LangCode): string {
 
 function buildPrompt(input: Omit<TranslateInput, "config">): string {
   const target = nativeName(input.targetLang);
+  const sourceDescription =
+    input.sourceKind === "ayah"
+      ? "a verse (ayah) from the Holy Qur'an — the literal, revealed word of Allah"
+      : "a hadith — a recorded saying or action of Prophet Muhammad ﷺ";
   const lines = [
-    `You are translating a hadith — a recorded saying or action of Prophet Muhammad ﷺ — for a Muslim companion app.`,
+    `You are translating ${sourceDescription} for a Muslim companion app.`,
     ``,
     `Target language: ${target}`,
     ``,
     `Strict rules:`,
-    `1. Translate the Arabic source faithfully. Preserve meaning exactly. Do not paraphrase, summarize, or embellish.`,
+    `1. Translate the Arabic source faithfully. Preserve meaning exactly. Do not paraphrase, summarize, embellish, or add tafsir / commentary.`,
     `2. Output ONLY the translated text. No preface, no notes, no explanations, no transliteration, no quotation marks around the whole answer.`,
     `3. Do not translate or transliterate the honorific ﷺ (sallallahu alayhi wa sallam) — preserve it as-is when it appears.`,
     `4. Keep proper names (Allah, Prophet Muhammad, companions) in their conventional ${target} form.`,
@@ -51,7 +58,7 @@ function buildPrompt(input: Omit<TranslateInput, "config">): string {
   return lines.join("\n");
 }
 
-export async function translateHadithText(
+export async function translateSacredText(
   input: TranslateInput,
 ): Promise<TranslateResult> {
   if (!input.arabic.trim()) {

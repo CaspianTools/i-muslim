@@ -85,14 +85,24 @@ export async function fetchSurahWithAyahs(surah: number): Promise<AyahsResult> {
   const ayahs: AdminAyah[] = ayahsSnap.docs
     .map((d) => {
       const r = d.data() as Record<string, unknown>;
-      const t = (r.translations as { en?: string; ru?: string }) ?? {};
+      const rawTranslations = (r.translations as Record<string, unknown> | undefined) ?? {};
+      const translations: Record<string, string> = {};
+      for (const [k, v] of Object.entries(rawTranslations)) {
+        translations[k] = typeof v === "string" ? v : "";
+      }
+      const rawEdited = (r.editedTranslations as Record<string, unknown> | undefined) ?? {};
+      const editedTranslations: Record<string, boolean> = {};
+      for (const [k, v] of Object.entries(rawEdited)) {
+        if (v === true) editedTranslations[k] = true;
+      }
       return {
         id: d.id,
         surah: r.surah as number,
         ayah: r.ayah as number,
         text_ar: (r.text_ar as string) ?? "",
         text_translit: (r.text_translit as string) ?? null,
-        translations: { en: t.en ?? "", ru: t.ru ?? "" },
+        translations,
+        editedTranslations,
         juz: (r.juz as number) ?? 0,
         page: (r.page as number) ?? 0,
         sajdah: Boolean(r.sajdah),
