@@ -434,7 +434,17 @@
     "matrimonial": "Matrimonial",
     "events": "Events",
     "mosques": "Mosques",
-    "articles": "Articles"
+    "articles": "Articles",
+    "search": "Search",
+    "searchTitle": "Search",
+    "searchDescription": "Find verses in the Quran and narrations in the Hadith collections.",
+    "searchPlaceholder": "Search Quran and Hadith…",
+    "searchHint": "Press Enter to search."
+  },
+  "prayerBar": {
+    "viewAll": "All prayer times",
+    "viewAllAria": "View all prayer times",
+    "inCountdown": "in {countdown}"
   },
   "footer": {
     "tagline": "Read the Quran and Sunnah, find prayer times, mosques, and halal life — all in one place.",

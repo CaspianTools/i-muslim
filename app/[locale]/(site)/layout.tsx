@@ -1,5 +1,6 @@
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { PrayerTimesBar } from "@/components/prayer/PrayerTimesBar";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function SiteLayout({
@@ -9,6 +10,7 @@ export default function SiteLayout({
 }>) {
   return (
     <>
+      <PrayerTimesBar />
       <Nav />
       <main className="flex-1">{children}</main>
       <Footer />

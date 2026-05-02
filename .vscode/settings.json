@@ -1,4 +1,25 @@
 {
     "caspianTaskmaster.idPrefix": "mus-",
-    "caspianTaskmaster.repo": "i-muslim"
+    "caspianTaskmaster.repo": "i-muslim",
+    "caspianTaskmaster.owner": "CaspianTools",
+    "caspianTaskmaster.syncIntervalMinutes": 1,
+    "caspianTaskmaster.mcpPort": 37521,
+    "caspianTaskmaster.todoFileExtensions": [
+        "ts",
+        "js",
+        "tsx",
+        "jsx",
+        "py",
+        "java",
+        "cs",
+        "cpp",
+        "go",
+        "rs",
+        "swift",
+        "kt",
+        "rb",
+        "php"
+    ],
+    "caspianTaskmaster.commitWatcherEnabled": true,
+    "caspianTaskmaster.defaultView": "tracker"
 }

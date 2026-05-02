@@ -1,33 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Download, Sunrise as SunriseIcon } from "lucide-react";
 import {
-  computeDailyTimes,
   formatPrayerTime,
-  getCurrentPrayer,
   type Coords,
   type MadhabKey,
   type MethodKey,
   type PrayerKey,
   type PrayerOrSunrise,
 } from "@/lib/prayer/engine";
-import { pickDefaultMadhab, pickDefaultMethod } from "@/lib/prayer/methods";
-import {
-  detectClientTimeZone,
-  fetchIpLocation,
-  geolocationPermissionState,
-  requestBrowserLocation,
-} from "@/lib/prayer/location";
-import { tzToCity } from "@/lib/prayer/tz-country";
-import {
-  readPrefs,
-  usePrayerPrefs,
-  writePrefs,
-  type PrayerPrefs,
-} from "@/lib/prayer/storage";
-import { useNow } from "@/lib/prayer/ticker";
+import { type PrayerPrefs } from "@/lib/prayer/storage";
+import { usePrayerTimes } from "@/lib/prayer/use-prayer-times";
 import { getHijriParts, formatGregorian } from "@/lib/admin/hijri";
 import { NextPrayerPill } from "./NextPrayerPill";
 import { PrayerTimesSettings } from "./PrayerTimesSettings";
@@ -69,133 +54,19 @@ function buildPrefsFromInit(init: PanelInit): PrayerPrefs {
   };
 }
 
-async function resolveTzFromCoords(lat: number, lng: number): Promise<string> {
-  try {
-    const mod = await import("tz-lookup");
-    const fn = (mod.default ?? mod) as (a: number, b: number) => string;
-    return fn(lat, lng);
-  } catch {
-    return detectClientTimeZone();
-  }
-}
-
 export function PrayerTimesPanel({ initial }: Props) {
   const t = useTranslations("prayer");
   const tPrayers = useTranslations("prayerTimes");
   const tHijri = useTranslations("hijri.months");
   const locale = useLocale();
 
-  const stored = usePrayerPrefs();
   const fallback = useMemo(() => buildPrefsFromInit(initial), [initial]);
-  const prefs = stored ?? fallback;
-  const [autoBusy, setAutoBusy] = useState(false);
+  const { effectivePrefs, today, current, autoBusy, now } = usePrayerTimes({
+    fallback,
+  });
+  const prefs = effectivePrefs ?? fallback;
 
-  // Auto-detect cascade — runs once on mount when no prefs are stored.
-  // writePrefs() updates localStorage and dispatches a storage event, which
-  // the usePrayerPrefs hook subscribes to, so the panel re-renders with the
-  // detected location without needing local React state.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (readPrefs()) return;
-
-    let cancelled = false;
-    (async () => {
-      setAutoBusy(true);
-      try {
-        const permState = await geolocationPermissionState();
-        if (permState === "granted" && !cancelled) {
-          try {
-            const pos = await requestBrowserLocation({ enableHighAccuracy: false });
-            if (cancelled) return;
-            const c: Coords = {
-              lat: pos.coords.latitude,
-              lng: pos.coords.longitude,
-            };
-            const tz = await resolveTzFromCoords(c.lat, c.lng);
-            const tzCity = tzToCity(tz);
-            const cc = tzCity?.countryCode ?? null;
-            writePrefs({
-              method: pickDefaultMethod(cc),
-              madhab: pickDefaultMadhab(cc),
-              coords: c,
-              city: tzCity?.city ?? null,
-              countryCode: cc,
-              tz,
-              source: "browser",
-            });
-            return;
-          } catch {
-            // fall through
-          }
-        }
-
-        const ip = await fetchIpLocation();
-        if (cancelled) return;
-        if (ip) {
-          writePrefs({
-            method: pickDefaultMethod(ip.countryCode),
-            madhab: pickDefaultMadhab(ip.countryCode),
-            coords: ip.coords,
-            city: ip.city,
-            countryCode: ip.countryCode,
-            tz: ip.tz,
-            source: "auto-ip",
-          });
-          return;
-        }
-
-        const tz = detectClientTimeZone();
-        const tzCity = tzToCity(tz);
-        if (tzCity && !cancelled) {
-          writePrefs({
-            method: pickDefaultMethod(tzCity.countryCode),
-            madhab: pickDefaultMadhab(tzCity.countryCode),
-            coords: { lat: tzCity.lat, lng: tzCity.lng },
-            city: tzCity.city,
-            countryCode: tzCity.countryCode,
-            tz,
-            source: "auto-tz",
-          });
-        }
-      } finally {
-        if (!cancelled) setAutoBusy(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const now = useNow(30_000);
   const renderDate = now ?? new Date();
-  const renderDayKey = renderDate.toDateString();
-
-  const today = useMemo(
-    () =>
-      computeDailyTimes({
-        date: renderDate,
-        coords: prefs.coords,
-        method: prefs.method,
-        madhab: prefs.madhab,
-        tz: prefs.tz,
-        highLatitudeRule: prefs.highLatitudeRule,
-      }),
-    // renderDayKey is the date stamp; we exclude renderDate so we don't
-    // recompute on every 30s tick.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      renderDayKey,
-      prefs.coords.lat,
-      prefs.coords.lng,
-      prefs.method,
-      prefs.madhab,
-      prefs.tz,
-      prefs.highLatitudeRule,
-    ],
-  );
-
-  const current = now ? getCurrentPrayer(now, today) : null;
 
   // Hijri + Gregorian header
   const hijri = getHijriParts(renderDate);
@@ -213,7 +84,8 @@ export function PrayerTimesPanel({ initial }: Props) {
       : t("pageSubtitleGeneric");
 
   const sourceLabel = sourceLabelKey(prefs.source);
-  const showHighLatNotice = today.highLatRuleAuto && Math.abs(prefs.coords.lat) > 48;
+  const showHighLatNotice =
+    !!today && today.highLatRuleAuto && Math.abs(prefs.coords.lat) > 48;
 
   // Build ICS query
   const icsHref = `/prayer-times/calendar.ics?${new URLSearchParams({
@@ -243,7 +115,7 @@ export function PrayerTimesPanel({ initial }: Props) {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <NextPrayerPill today={today} />
+          {today && <NextPrayerPill today={today} />}
           <PrayerTimesSettings current={prefs} />
         </div>
       </header>
@@ -251,7 +123,7 @@ export function PrayerTimesPanel({ initial }: Props) {
       <ul className="mt-6 divide-y divide-border rounded-md border border-border overflow-hidden">
         {ROWS.map((key) => {
           const isCurrent = current === key;
-          const time = today[key];
+          const time = today?.[key] ?? null;
           const label =
             key === "sunrise" ? tPrayers("sunrise") : tPrayers(key as PrayerKey);
           return (
@@ -267,7 +139,7 @@ export function PrayerTimesPanel({ initial }: Props) {
                 <span className={isCurrent ? "text-primary" : ""}>{label}</span>
               </span>
               <span className="font-mono text-base tabular-nums">
-                {formatPrayerTime(time, prefs.tz, locale)}
+                {time ? formatPrayerTime(time, prefs.tz, locale) : "—"}
               </span>
             </li>
           );
@@ -277,7 +149,7 @@ export function PrayerTimesPanel({ initial }: Props) {
       <footer className="mt-4 flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <span>
           {autoBusy ? t("loading") : t(sourceLabel)}
-          {showHighLatNotice && (
+          {showHighLatNotice && today && (
             <>
               <span className="mx-2 opacity-50">·</span>
               <span>
