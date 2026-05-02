@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,7 +20,44 @@ import {
 } from "@/components/ui/editor-dialog";
 import { FormGrid } from "@/components/admin/ui/form-layout";
 import { toast } from "@/components/ui/sonner";
+import {
+  SearchableMultiCombobox,
+  type SearchableMultiComboboxOption,
+} from "@/components/common/SearchableMultiCombobox";
+import { LANG_LABELS } from "@/lib/translations";
 import type { AdminAyah } from "@/types/admin-content";
+
+const VISIBLE_LANGS_STORAGE_KEY = "i-muslim.admin-quran-visible-langs";
+const VISIBLE_LANGS_EVENT = "i-muslim.admin-quran-visible-langs-change";
+
+type FormLang = "en" | "ru";
+const QURAN_LANGS: FormLang[] = ["en", "ru"];
+
+function subscribeVisibleLangs(cb: () => void) {
+  window.addEventListener("storage", cb);
+  window.addEventListener(VISIBLE_LANGS_EVENT, cb);
+  return () => {
+    window.removeEventListener("storage", cb);
+    window.removeEventListener(VISIBLE_LANGS_EVENT, cb);
+  };
+}
+
+function readVisibleLangsRaw(): string {
+  try {
+    return window.localStorage.getItem(VISIBLE_LANGS_STORAGE_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function parseVisibleLangs(raw: string): FormLang[] {
+  if (!raw) return QURAN_LANGS;
+  const parts = raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s): s is FormLang => (QURAN_LANGS as string[]).includes(s));
+  return parts;
+}
 
 const Schema = z.object({
   en: z.string().max(8000),
@@ -35,6 +73,34 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
   const [items, setItems] = useState(ayahs);
   const [editing, setEditing] = useState<AdminAyah | null>(null);
   const [filter, setFilter] = useState("");
+  const locale = useLocale();
+  const tFilter = useTranslations("quranLanguageFilter");
+
+  const visibleLangsRaw = useSyncExternalStore(
+    subscribeVisibleLangs,
+    readVisibleLangsRaw,
+    () => "",
+  );
+  const visibleLangs = useMemo(() => parseVisibleLangs(visibleLangsRaw), [visibleLangsRaw]);
+
+  const setAndPersistVisibleLangs = useCallback((next: FormLang[]) => {
+    try {
+      window.localStorage.setItem(VISIBLE_LANGS_STORAGE_KEY, next.join(","));
+      window.dispatchEvent(new Event(VISIBLE_LANGS_EVENT));
+    } catch {
+      // localStorage may be unavailable (private mode, quota); ignore.
+    }
+  }, []);
+
+  const langOptions: SearchableMultiComboboxOption[] = useMemo(() => {
+    const collator = new Intl.Collator(locale, { sensitivity: "base" });
+    return QURAN_LANGS
+      .map((code) => ({
+        value: code,
+        label: LANG_LABELS[code] ?? code.toUpperCase(),
+      }))
+      .sort((a, b) => collator.compare(a.label, b.label));
+  }, [locale]);
 
   const filtered = useMemo(() => {
     if (!filter.trim()) return items;
@@ -49,13 +115,26 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Input
           placeholder="Filter by number or translation…"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           className="max-w-md"
         />
+        <div className="min-w-[14rem] flex-1">
+          <SearchableMultiCombobox
+            options={langOptions}
+            value={visibleLangs}
+            onChange={(next) => setAndPersistVisibleLangs(next as FormLang[])}
+            placeholder={tFilter("placeholder")}
+            searchPlaceholder={tFilter("searchPlaceholder")}
+            emptyText={tFilter("noResults")}
+            removeChipLabel={(name) => tFilter("removeChip", { name })}
+            moreText={(count) => tFilter("moreItems", { count })}
+            ariaLabel={tFilter("label")}
+          />
+        </div>
         <span className="text-xs text-muted-foreground">
           {filtered.length} / {items.length}
         </span>
@@ -109,18 +188,19 @@ export function AyahList({ ayahs, surah }: { ayahs: AdminAyah[]; surah: number }
               </p>
             )}
             <div className="mt-3 space-y-2 text-sm">
-              {a.translations.en && (
-                <div>
-                  <span className="text-xs uppercase tracking-wide text-muted-foreground">EN</span>
-                  <p className="text-foreground">{a.translations.en}</p>
-                </div>
-              )}
-              {a.translations.ru && (
-                <div>
-                  <span className="text-xs uppercase tracking-wide text-muted-foreground">RU</span>
-                  <p className="text-foreground">{a.translations.ru}</p>
-                </div>
-              )}
+              {QURAN_LANGS.map((lang) => {
+                if (!visibleLangs.includes(lang)) return null;
+                const text = a.translations[lang];
+                if (!text) return null;
+                return (
+                  <div key={lang}>
+                    <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {lang.toUpperCase()}
+                    </span>
+                    <p className="text-foreground">{text}</p>
+                  </div>
+                );
+              })}
             </div>
             {a.notes && (
               <p className="mt-2 rounded-md bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
