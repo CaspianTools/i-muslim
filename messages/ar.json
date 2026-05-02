@@ -497,7 +497,9 @@
       "h3": "آداب المجتمع",
       "p4": "خدمات الزواج ودليل المساجد والأعمال هي مساحات مجتمعية. كن صادقًا. كن محترمًا. لا تنتحل شخصية غيرك ولا تنشر معلومات مضللة. قد نُعلِّق الحسابات التي تُسيء استخدام هذه المساحات.",
       "h4": "التغييرات",
-      "p5": "قد نُحدِّث هذه الشروط مع نمو التطبيق. ستُذكر التغييرات الجوهرية في هذه الصفحة."
+      "p5": "قد نُحدِّث هذه الشروط مع نمو التطبيق. ستُذكر التغييرات الجوهرية في هذه الصفحة.",
+      "h5": "Zakat calculator rates",
+      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying."
     },
     "contact": {
       "title": "تواصل معنا",

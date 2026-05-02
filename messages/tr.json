@@ -672,7 +672,9 @@
       "h3": "Topluluk kuralları",
       "p4": "Evlilik bölümü, cami rehberi ve işletme rehberi topluluk alanlarıdır. Dürüst olun. Saygılı olun. Başkalarının kimliğine bürünmeyin, yanıltıcı bilgi yayınlamayın. Bu alanları kötüye kullanan hesapları askıya alabiliriz.",
       "h4": "Değişiklikler",
-      "p5": "Uygulama büyüdükçe bu şartları güncelleyebiliriz. Önemli değişiklikler bu sayfada belirtilecektir."
+      "p5": "Uygulama büyüdükçe bu şartları güncelleyebiliriz. Önemli değişiklikler bu sayfada belirtilecektir.",
+      "h5": "Zakat calculator rates",
+      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying."
     },
     "contact": {
       "title": "İletişim",

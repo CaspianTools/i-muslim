@@ -504,7 +504,9 @@
       "h3": "Community conduct",
       "p4": "The matrimonial, mosque directory, and business directory are community spaces. Be honest. Be respectful. Don't impersonate others or post misleading information. We may suspend accounts that abuse these spaces.",
       "h4": "Changes",
-      "p5": "We may update these terms as the app grows. Significant changes will be noted on this page."
+      "p5": "We may update these terms as the app grows. Significant changes will be noted on this page.",
+      "h5": "Zakat calculator rates",
+      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying."
     },
     "contact": {
       "title": "Contact",

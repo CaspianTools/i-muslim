@@ -672,7 +672,9 @@
       "h3": "Etika komunitas",
       "p4": "Pencarian jodoh, direktori masjid, dan direktori bisnis adalah ruang komunitas. Jujurlah. Hormati orang lain. Jangan menyamar atau memposting informasi menyesatkan. Kami dapat menangguhkan akun yang menyalahgunakan ruang-ruang ini.",
       "h4": "Perubahan",
-      "p5": "Kami dapat memperbarui syarat ini seiring berkembangnya aplikasi. Perubahan signifikan akan dicatat di halaman ini."
+      "p5": "Kami dapat memperbarui syarat ini seiring berkembangnya aplikasi. Perubahan signifikan akan dicatat di halaman ini.",
+      "h5": "Zakat calculator rates",
+      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying."
     },
     "contact": {
       "title": "Kontak",

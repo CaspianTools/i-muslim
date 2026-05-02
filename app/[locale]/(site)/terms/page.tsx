@@ -33,6 +33,9 @@ export default async function TermsPage() {
 
         <h2 className="pt-4 text-lg font-semibold text-foreground">{t("h4")}</h2>
         <p>{t("p5")}</p>
+
+        <h2 className="pt-4 text-lg font-semibold text-foreground">{t("h5")}</h2>
+        <p>{t("p6")}</p>
       </div>
     </div>
   );
