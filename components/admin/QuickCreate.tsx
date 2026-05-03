@@ -23,7 +23,6 @@ import {
 import {
   EditorDialog,
   EditorDialogContent,
-  EditorDialogHeader,
   EditorDialogTitle,
 } from "@/components/ui/editor-dialog";
 import { cn } from "@/lib/utils";
@@ -50,13 +49,14 @@ interface QuickCreateItem {
   id: Exclude<ViewId, "selector">;
   icon: LucideIcon;
   nameKey: "event" | "business" | "mosque" | "article";
+  shortcut: string;
 }
 
 const ITEMS: QuickCreateItem[] = [
-  { id: "event", icon: CalendarPlus, nameKey: "event" },
-  { id: "business", icon: Store, nameKey: "business" },
-  { id: "mosque", icon: Building2, nameKey: "mosque" },
-  { id: "article", icon: FileText, nameKey: "article" },
+  { id: "event", icon: CalendarPlus, nameKey: "event", shortcut: "E" },
+  { id: "business", icon: Store, nameKey: "business", shortcut: "B" },
+  { id: "mosque", icon: Building2, nameKey: "mosque", shortcut: "M" },
+  { id: "article", icon: FileText, nameKey: "article", shortcut: "A" },
 ];
 
 export function QuickCreate({ categories, amenities, certBodies, canPersist }: QuickCreateProps) {
@@ -101,8 +101,9 @@ export function QuickCreate({ categories, amenities, certBodies, canPersist }: Q
         <EditorDialogContent
           className={cn(
             !isForm &&
-              "h-auto max-h-[80vh] w-[90vw] max-w-md sm:max-h-[80vh]",
+              "h-auto max-h-[80vh] w-[92vw] max-w-2xl rounded-2xl sm:max-h-[80vh]",
           )}
+          hideClose={!isForm}
           onEscapeKeyDown={(e) => {
             if (isForm) {
               e.preventDefault();
@@ -154,36 +155,39 @@ function SelectorView({
     [tTypes],
   );
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <EditorDialogHeader>
-        <EditorDialogTitle>{t("title")}</EditorDialogTitle>
-      </EditorDialogHeader>
-      <Command className="flex-1 min-h-0 rounded-none">
-        <CommandInput placeholder={t("searchPlaceholder")} autoFocus />
-        <CommandList className="max-h-none flex-1">
-          <CommandEmpty>{t("empty")}</CommandEmpty>
-          {items.map((item) => {
-            const Icon = item.icon;
-            return (
-              <CommandItem
-                key={item.id}
-                value={`${item.name} ${item.description}`}
-                onSelect={() => onSelect(item.id)}
-                className="flex items-start gap-3 px-3 py-2.5"
-              >
-                <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-muted-foreground">
-                  <Icon className="size-4" />
-                </span>
-                <span className="flex flex-col">
-                  <span className="text-sm font-medium text-foreground">{item.name}</span>
-                  <span className="text-xs text-muted-foreground">{item.description}</span>
-                </span>
-              </CommandItem>
-            );
-          })}
-        </CommandList>
-      </Command>
-    </div>
+    <Command className="rounded-2xl bg-transparent">
+      <EditorDialogTitle className="sr-only">{t("title")}</EditorDialogTitle>
+      <CommandInput
+        placeholder={t("searchPlaceholder")}
+        autoFocus
+        className="h-12 text-[15px]"
+      />
+      <CommandList className="max-h-[60vh] p-2">
+        <CommandEmpty>{t("empty")}</CommandEmpty>
+        {items.map((item) => {
+          const Icon = item.icon;
+          return (
+            <CommandItem
+              key={item.id}
+              value={`${item.name} ${item.description}`}
+              onSelect={() => onSelect(item.id)}
+              className="my-0.5 flex items-center gap-3 rounded-lg px-3 py-2.5 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
+            >
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/60 text-muted-foreground">
+                <Icon className="size-[18px]" />
+              </span>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="text-sm font-semibold text-foreground">{item.name}</span>
+                <span className="truncate text-xs text-muted-foreground">{item.description}</span>
+              </span>
+              <kbd className="ml-auto inline-flex size-6 select-none items-center justify-center rounded-md border border-border bg-background font-mono text-[11px] font-medium text-muted-foreground">
+                {item.shortcut}
+              </kbd>
+            </CommandItem>
+          );
+        })}
+      </CommandList>
+    </Command>
   );
 }
 
