@@ -1,10 +1,9 @@
-import { getTranslations } from "next-intl/server";
-import { Plus } from "lucide-react";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { CommandPalette } from "./CommandPalette";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileSidebarDrawer } from "./MobileSidebarDrawer";
 import { NotificationsPopover } from "./NotificationsPopover";
+import { QuickCreate } from "./QuickCreate";
 import { ThemeMenu } from "./ThemeMenu";
 import { UserMenu } from "./UserMenu";
 import type { SidebarBadges } from "./Sidebar";
@@ -12,7 +11,12 @@ import type { AdminSession } from "@/lib/auth/session";
 import { BUNDLED_LOCALES } from "@/i18n/config";
 import { listActivatedReservedLocales } from "@/lib/admin/data/ui-locales";
 import { fetchNotifications } from "@/lib/admin/data/notifications";
-import { Button } from "@/components/ui/button";
+import {
+  fetchAmenities,
+  fetchCategories,
+  fetchCertBodies,
+} from "@/lib/admin/data/business-taxonomies";
+import { getFirebaseAdminStatus } from "@/lib/firebase/admin";
 
 interface AdminHeaderProps {
   session: AdminSession;
@@ -20,12 +24,21 @@ interface AdminHeaderProps {
 }
 
 export async function AdminHeader({ session, badges }: AdminHeaderProps) {
-  const [activated, { items: notifications }, tSidebar] = await Promise.all([
+  const [
+    activated,
+    { items: notifications },
+    { categories },
+    { amenities },
+    { certBodies },
+  ] = await Promise.all([
     listActivatedReservedLocales(),
     fetchNotifications({ limit: 50 }),
-    getTranslations("sidebar"),
+    fetchCategories(),
+    fetchAmenities(),
+    fetchCertBodies(),
   ]);
   const availableLocales = [...BUNDLED_LOCALES, ...activated];
+  const canPersist = getFirebaseAdminStatus().configured;
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
       <MobileSidebarDrawer badges={badges} />
@@ -42,14 +55,12 @@ export async function AdminHeader({ session, badges }: AdminHeaderProps) {
         <LanguageSwitcher availableLocales={availableLocales} />
         <ThemeMenu />
         <NotificationsPopover initialItems={notifications} />
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label={tSidebar("newButton")}
-          title={tSidebar("newButton")}
-        >
-          <Plus className="size-4" />
-        </Button>
+        <QuickCreate
+          categories={categories}
+          amenities={amenities}
+          certBodies={certBodies}
+          canPersist={canPersist}
+        />
         <UserMenu name={session.name} email={session.email} picture={session.picture} />
       </div>
     </header>

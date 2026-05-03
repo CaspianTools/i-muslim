@@ -2103,5 +2103,30 @@
     "viewedAt": "Viewed {when}",
     "resume": "Resume",
     "empty": "No reading history yet — start with the Quran or Hadith section."
+  },
+  "quickCreate": {
+    "trigger": "Quick create",
+    "title": "Create new",
+    "searchPlaceholder": "Search items to create…",
+    "empty": "No matches",
+    "back": "Back",
+    "types": {
+      "event": {
+        "name": "Event",
+        "description": "Prayer, lecture, iftar, fundraiser, or community gathering."
+      },
+      "business": {
+        "name": "Business",
+        "description": "Add a halal-friendly business to the directory."
+      },
+      "mosque": {
+        "name": "Mosque",
+        "description": "Add a mosque with prayer times and services."
+      },
+      "article": {
+        "name": "Article",
+        "description": "Draft a new article. Publish per locale once ready."
+      }
+    }
   }
 }

@@ -18,6 +18,10 @@ import { createMosque, updateMosque, type MosqueInput } from "@/app/[locale]/(ad
 interface MosqueFormProps {
   mode: "create" | "edit";
   initial?: Mosque;
+  /** When provided, called after a successful create/update instead of routing. */
+  onSaved?: (result: { slug: string }) => void;
+  /** When provided, the cancel button calls this instead of router.back(). */
+  onCancel?: () => void;
 }
 
 type FormState = MosqueInput;
@@ -84,7 +88,7 @@ function fromMosque(m: Mosque): FormState {
   };
 }
 
-export function MosqueForm({ mode, initial }: MosqueFormProps) {
+export function MosqueForm({ mode, initial, onSaved, onCancel }: MosqueFormProps) {
   const router = useRouter();
   const t = useTranslations("mosquesAdmin.form");
   const tValidation = useTranslations("mosquesAdmin.form.validation");
@@ -142,6 +146,10 @@ export function MosqueForm({ mode, initial }: MosqueFormProps) {
           ? tToast("createdToast", { name: state.name.en })
           : tToast("updatedToast", { name: state.name.en }),
       );
+      if (onSaved) {
+        onSaved({ slug: res.slug ?? initial?.slug ?? "" });
+        return;
+      }
       router.push("/admin/mosques");
       router.refresh();
     });
@@ -521,7 +529,7 @@ export function MosqueForm({ mode, initial }: MosqueFormProps) {
           </select>
         </Field>
         <div className="ms-auto flex items-center gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.back()}>
+          <Button type="button" variant="secondary" onClick={() => (onCancel ? onCancel() : router.back())}>
             {tCommon("cancel")}
           </Button>
           <Button type="submit" disabled={submitting} aria-busy={submitting}>

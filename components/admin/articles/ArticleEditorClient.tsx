@@ -71,9 +71,13 @@ function articleToForm(article: Article | null): FormState {
 interface Props {
   article: Article | null;
   source: "firestore" | "mock";
+  /** When provided, called after a successful create instead of routing to the new article's edit page. */
+  onSaved?: (result: { id: string }) => void;
+  /** When provided, renders a Cancel button in the footer that calls this. */
+  onCancel?: () => void;
 }
 
-export function ArticleEditorClient({ article, source }: Props) {
+export function ArticleEditorClient({ article, source, onSaved, onCancel }: Props) {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(() => articleToForm(article));
   const [activeLocale, setActiveLocale] = useState<BundledLocale>("en");
@@ -192,7 +196,11 @@ export function ArticleEditorClient({ article, source }: Props) {
         if (isNew) {
           const { id } = await createArticle(payload);
           toast.success("Article created.");
-          router.push(`/admin/articles/${id}`);
+          if (onSaved) {
+            onSaved({ id });
+          } else {
+            router.push(`/admin/articles/${id}`);
+          }
         } else {
           await updateArticle(article!.id, payload);
           toast.success("Article saved.");
@@ -438,6 +446,11 @@ export function ArticleEditorClient({ article, source }: Props) {
           {isMock && " · sample data mode (read-only)"}
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {onCancel && (
+            <Button type="button" variant="ghost" onClick={onCancel} disabled={pending}>
+              Cancel
+            </Button>
+          )}
           <Button
             type="button"
             variant="secondary"
