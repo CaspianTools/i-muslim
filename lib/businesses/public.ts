@@ -1,6 +1,5 @@
 import "server-only";
 import { getDb } from "@/lib/firebase/admin";
-import { MOCK_BUSINESSES } from "@/lib/admin/mock/businesses";
 import { normalizeBusiness } from "@/lib/admin/data/businesses";
 import type { Business } from "@/types/business";
 
@@ -12,16 +11,11 @@ export interface PublicListOptions {
 
 export async function listPublishedByCity(opts: PublicListOptions): Promise<{
   businesses: Business[];
-  source: "firestore" | "mock";
+  source: "firestore" | "unavailable";
 }> {
   const limit = opts.limit ?? 200;
   const db = getDb();
-  if (!db) {
-    return {
-      businesses: filterMock(MOCK_BUSINESSES, opts).slice(0, limit),
-      source: "mock",
-    };
-  }
+  if (!db) return { businesses: [], source: "unavailable" };
   try {
     let q = db
       .collection("businesses")
@@ -31,32 +25,19 @@ export async function listPublishedByCity(opts: PublicListOptions): Promise<{
       q = q.where("categoryIds", "array-contains", opts.categoryId);
     }
     const snap = await q.orderBy("name", "asc").limit(limit).get();
-    if (snap.empty) {
-      return { businesses: filterMock(MOCK_BUSINESSES, opts).slice(0, limit), source: "mock" };
-    }
     const businesses = snap.docs
       .map((d) => normalizeBusiness(d.id, d.data() as Record<string, unknown>))
       .filter((b): b is Business => b !== null);
     return { businesses, source: "firestore" };
   } catch (err) {
     console.warn("[businesses/public] listPublishedByCity failed:", err);
-    return { businesses: filterMock(MOCK_BUSINESSES, opts).slice(0, limit), source: "mock" };
+    return { businesses: [], source: "unavailable" };
   }
-}
-
-function filterMock(all: Business[], opts: PublicListOptions): Business[] {
-  return all
-    .filter((b) => b.status === "published")
-    .filter((b) => b.address.city.toLowerCase() === opts.city.toLowerCase())
-    .filter((b) => !opts.categoryId || b.categoryIds.includes(opts.categoryId))
-    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export async function getBySlug(slug: string): Promise<Business | null> {
   const db = getDb();
-  if (!db) {
-    return MOCK_BUSINESSES.find((b) => b.slug === slug && b.status === "published") ?? null;
-  }
+  if (!db) return null;
   try {
     const snap = await db
       .collection("businesses")
@@ -69,18 +50,13 @@ export async function getBySlug(slug: string): Promise<Business | null> {
     return normalizeBusiness(doc.id, doc.data() as Record<string, unknown>);
   } catch (err) {
     console.warn("[businesses/public] getBySlug failed:", err);
-    return MOCK_BUSINESSES.find((b) => b.slug === slug && b.status === "published") ?? null;
+    return null;
   }
 }
 
 export async function listPublishedSlugs(limit = 1000): Promise<Array<{ slug: string; updatedAt: string }>> {
   const db = getDb();
-  if (!db) {
-    return MOCK_BUSINESSES.filter((b) => b.status === "published").map((b) => ({
-      slug: b.slug,
-      updatedAt: b.updatedAt,
-    }));
-  }
+  if (!db) return [];
   try {
     const snap = await db
       .collection("businesses")

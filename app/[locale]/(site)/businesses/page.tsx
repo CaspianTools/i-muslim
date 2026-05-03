@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Store } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { listPublishedByCity } from "@/lib/businesses/public";
 import {
   fetchAmenities,
@@ -97,12 +98,9 @@ export default async function BusinessesPage({
 
       <p className="mt-10 rounded-md border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
         {t("claimSuggestNote", { city: ANCHOR_CITY })}{" "}
-        <a
-          className="underline hover:text-foreground"
-          href={`mailto:fuad.jalilov@gmail.com?subject=${encodeURIComponent("List my halal business in " + ANCHOR_CITY)}`}
-        >
-          {t("detail.claim")}
-        </a>
+        <Link className="underline hover:text-foreground" href="/businesses/submit">
+          {t("submitCta")}
+        </Link>
       </p>
     </div>
   );

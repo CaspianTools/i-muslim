@@ -207,6 +207,12 @@ export function BusinessesPageClient({
         </select>
         <div className="flex gap-1.5">
           <Link
+            href="/admin/businesses/submissions"
+            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-input px-3 text-sm hover:bg-muted"
+          >
+            {tAdmin("tabSubmissions")}
+          </Link>
+          <Link
             href="/admin/businesses/reports"
             className="inline-flex h-9 items-center gap-1.5 rounded-md border border-input px-3 text-sm hover:bg-muted"
           >

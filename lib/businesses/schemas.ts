@@ -129,6 +129,37 @@ export const certBodyInputSchema = z.object({
 });
 export type CertBodyInput = z.infer<typeof certBodyInputSchema>;
 
+// Schema for public, non-admin submissions of new halal businesses.
+// Admin reviews each submission, geocodes the address, and promotes it
+// to a draft `businesses` doc that they can finish editing/publishing.
+export const businessSubmissionSchema = z.object({
+  name: z.string().min(2).max(120),
+  descriptionEn: z.string().min(10).max(2000),
+  categoryIds: z.array(z.string().min(1)).min(1).max(3),
+  halalStatus: halalStatusEnum,
+  certificationBodyName: optionalString,
+  muslimOwned: z.boolean().default(false),
+  addressLine1: z.string().min(2),
+  city: z.string().min(1),
+  region: optionalString,
+  countryCode: z.string().length(2).toUpperCase(),
+  postalCode: optionalString,
+  phone: optionalString,
+  email: z
+    .union([z.string().email(), z.literal("")])
+    .optional()
+    .transform((v) => (v ? v : undefined)),
+  website: optionalUrl,
+  instagram: optionalString,
+  whatsapp: optionalString,
+  submitterEmail: z.string().email(),
+  isOwner: z.boolean().default(false),
+  // honeypot — must be empty
+  website_url_secondary: z.string().optional(),
+  turnstileToken: z.string().optional(),
+});
+export type BusinessSubmissionInput = z.infer<typeof businessSubmissionSchema>;
+
 const reportReasonEnum = z.enum(["not_halal", "closed", "wrong_info", "offensive", "duplicate", "other"]);
 
 export const reportInputSchema = z.object({

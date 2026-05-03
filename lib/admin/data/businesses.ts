@@ -1,6 +1,7 @@
 import "server-only";
 import { getDb } from "@/lib/firebase/admin";
-import { MOCK_BUSINESSES } from "@/lib/admin/mock/businesses";
+import { BUSINESS_SUBMISSIONS_COLLECTION } from "@/lib/businesses/constants";
+import type { BusinessSubmissionInput } from "@/lib/businesses/schemas";
 import type {
   Business,
   BusinessAddress,
@@ -18,7 +19,7 @@ import { BUSINESS_HOURS_DAYS } from "@/types/business";
 
 export type BusinessesResult = {
   businesses: Business[];
-  source: "firestore" | "mock";
+  source: "firestore" | "unavailable";
 };
 
 const STATUSES: BusinessStatus[] = ["draft", "published", "archived"];
@@ -196,7 +197,7 @@ export function normalizeBusiness(id: string, raw: Record<string, unknown>): Bus
 
 export async function fetchBusinesses(): Promise<BusinessesResult> {
   const db = getDb();
-  if (!db) return { businesses: MOCK_BUSINESSES, source: "mock" };
+  if (!db) return { businesses: [], source: "unavailable" };
 
   try {
     const snap = await db
@@ -204,28 +205,106 @@ export async function fetchBusinesses(): Promise<BusinessesResult> {
       .orderBy("createdAt", "desc")
       .limit(500)
       .get();
-    if (snap.empty) return { businesses: MOCK_BUSINESSES, source: "mock" };
     const businesses = snap.docs
       .map((d) => normalizeBusiness(d.id, d.data() as Record<string, unknown>))
       .filter((b): b is Business => b !== null);
     return { businesses, source: "firestore" };
   } catch (err) {
-    console.warn("[admin/data/businesses] Firestore read failed, falling back to mock:", err);
-    return { businesses: MOCK_BUSINESSES, source: "mock" };
+    console.warn("[admin/data/businesses] Firestore read failed:", err);
+    return { businesses: [], source: "unavailable" };
   }
 }
 
 export async function fetchBusinessById(id: string): Promise<Business | null> {
   const db = getDb();
-  if (!db) {
-    return MOCK_BUSINESSES.find((b) => b.id === id) ?? null;
-  }
+  if (!db) return null;
   try {
     const doc = await db.collection("businesses").doc(id).get();
     if (!doc.exists) return null;
     return normalizeBusiness(doc.id, doc.data() as Record<string, unknown>);
   } catch (err) {
     console.warn("[admin/data/businesses] fetchBusinessById failed:", err);
-    return MOCK_BUSINESSES.find((b) => b.id === id) ?? null;
+    return null;
+  }
+}
+
+export type BusinessSubmissionStatus = "pending_review" | "approved" | "rejected";
+
+export interface BusinessSubmission {
+  id: string;
+  status: BusinessSubmissionStatus;
+  payload: Omit<BusinessSubmissionInput, "submitterEmail" | "website_url_secondary" | "turnstileToken">;
+  submittedBy?: { email?: string };
+  submitterIp?: string;
+  createdAt: string;
+  decidedBy?: string;
+  decidedAt?: string;
+  rejectionReason?: string;
+  promotedBusinessId?: string;
+}
+
+export type BusinessSubmissionsResult = {
+  submissions: BusinessSubmission[];
+  source: "firestore" | "unavailable";
+};
+
+const SUBMISSION_STATUSES: BusinessSubmissionStatus[] = ["pending_review", "approved", "rejected"];
+
+function normalizeSubmission(id: string, raw: Record<string, unknown>): BusinessSubmission | null {
+  if (!raw) return null;
+  const payload = raw.payload as BusinessSubmission["payload"] | undefined;
+  if (!payload || typeof payload.name !== "string") return null;
+  const statusRaw = typeof raw.status === "string" ? raw.status : "pending_review";
+  const status: BusinessSubmissionStatus = SUBMISSION_STATUSES.includes(
+    statusRaw as BusinessSubmissionStatus,
+  )
+    ? (statusRaw as BusinessSubmissionStatus)
+    : "pending_review";
+  return {
+    id,
+    status,
+    payload,
+    submittedBy: (raw.submittedBy as BusinessSubmission["submittedBy"]) ?? undefined,
+    submitterIp: typeof raw.submitterIp === "string" ? raw.submitterIp : undefined,
+    createdAt: asIso(raw.createdAt),
+    decidedBy: typeof raw.decidedBy === "string" ? raw.decidedBy : undefined,
+    decidedAt: raw.decidedAt ? asIso(raw.decidedAt) : undefined,
+    rejectionReason: typeof raw.rejectionReason === "string" ? raw.rejectionReason : undefined,
+    promotedBusinessId:
+      typeof raw.promotedBusinessId === "string" ? raw.promotedBusinessId : undefined,
+  };
+}
+
+export async function fetchBusinessSubmissions(): Promise<BusinessSubmissionsResult> {
+  const db = getDb();
+  if (!db) return { submissions: [], source: "unavailable" };
+  try {
+    const snap = await db
+      .collection(BUSINESS_SUBMISSIONS_COLLECTION)
+      .orderBy("createdAt", "desc")
+      .limit(500)
+      .get();
+    const submissions = snap.docs
+      .map((d) => normalizeSubmission(d.id, d.data() as Record<string, unknown>))
+      .filter((s): s is BusinessSubmission => s !== null);
+    return { submissions, source: "firestore" };
+  } catch (err) {
+    console.warn("[admin/data/businesses] fetchBusinessSubmissions failed:", err);
+    return { submissions: [], source: "unavailable" };
+  }
+}
+
+export async function countPendingBusinessSubmissions(): Promise<number> {
+  const db = getDb();
+  if (!db) return 0;
+  try {
+    const snap = await db
+      .collection(BUSINESS_SUBMISSIONS_COLLECTION)
+      .where("status", "==", "pending_review")
+      .count()
+      .get();
+    return snap.data().count;
+  } catch {
+    return 0;
   }
 }

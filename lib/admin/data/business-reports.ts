@@ -1,6 +1,5 @@
 import "server-only";
 import { getDb } from "@/lib/firebase/admin";
-import { MOCK_BUSINESS_REPORTS } from "@/lib/admin/mock/business-reports";
 import type { BusinessReport, BusinessReportReason, BusinessReportStatus } from "@/types/business";
 
 const REASONS: BusinessReportReason[] = ["not_halal", "closed", "wrong_info", "offensive", "duplicate", "other"];
@@ -67,32 +66,31 @@ export function normalizeReport(id: string, raw: Record<string, unknown>): Busin
 
 export type ReportsResult = {
   reports: BusinessReport[];
-  source: "firestore" | "mock";
+  source: "firestore" | "unavailable";
 };
 
 export async function fetchBusinessReports(): Promise<ReportsResult> {
   const db = getDb();
-  if (!db) return { reports: MOCK_BUSINESS_REPORTS, source: "mock" };
+  if (!db) return { reports: [], source: "unavailable" };
   try {
     const snap = await db
       .collection("businessReports")
       .orderBy("createdAt", "desc")
       .limit(500)
       .get();
-    if (snap.empty) return { reports: MOCK_BUSINESS_REPORTS, source: "mock" };
     const reports = snap.docs
       .map((d) => normalizeReport(d.id, d.data() as Record<string, unknown>))
       .filter((r): r is BusinessReport => r !== null);
     return { reports, source: "firestore" };
   } catch (err) {
     console.warn("[admin/data/business-reports] read failed:", err);
-    return { reports: MOCK_BUSINESS_REPORTS, source: "mock" };
+    return { reports: [], source: "unavailable" };
   }
 }
 
 export async function countOpenReports(): Promise<number> {
   const db = getDb();
-  if (!db) return MOCK_BUSINESS_REPORTS.filter((r) => r.status === "open").length;
+  if (!db) return 0;
   try {
     const snap = await db
       .collection("businessReports")
