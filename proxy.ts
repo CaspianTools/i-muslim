@@ -4,7 +4,7 @@ import { routing } from "@/i18n/routing";
 import { LOCALES, DEFAULT_LOCALE, LOCALE_COOKIE, isLocale } from "@/i18n/config";
 
 // Inlined from lib/auth/session.ts — that module pulls in firebase-admin,
-// which is Node-only and can't run in the Edge middleware runtime.
+// which is Node-only and can't run in the Edge proxy runtime.
 const SESSION_COOKIE = "__session";
 
 const intl = createIntlMiddleware(routing);
@@ -16,7 +16,7 @@ function pickLocaleFromCookie(req: NextRequest): string {
   return isLocale(fromCookie) ? fromCookie : DEFAULT_LOCALE;
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const hasSession = Boolean(req.cookies.get(SESSION_COOKIE)?.value);
 
