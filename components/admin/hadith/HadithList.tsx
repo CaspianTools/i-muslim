@@ -483,7 +483,13 @@ function EditHadithDrawer({
                         collection={collection}
                         number={hadith.number}
                         aiConfigured={aiConfigured}
-                        publishedFieldName={PUBLISHED_KEY[lang]}
+                        publishedValue={form.watch(PUBLISHED_KEY[lang])}
+                        onPublishedChange={(next) =>
+                          form.setValue(PUBLISHED_KEY[lang], next, {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          })
+                        }
                       />
                     </TabsContent>
                   ))}
@@ -518,7 +524,8 @@ function TranslationField({
   collection,
   number,
   aiConfigured,
-  publishedFieldName,
+  publishedValue,
+  onPublishedChange,
 }: {
   lang: FormLang;
   register: UseFormRegister<Values>;
@@ -526,7 +533,8 @@ function TranslationField({
   collection: string;
   number: number;
   aiConfigured: boolean;
-  publishedFieldName: "publishedEn" | "publishedRu" | "publishedAz" | "publishedTr";
+  publishedValue: boolean;
+  onPublishedChange: (next: boolean) => void;
 }) {
   const [translating, startTranslate] = useTransition();
   const label = LANG_LABELS[lang] ?? lang;
@@ -559,32 +567,80 @@ function TranslationField({
         <Label htmlFor={`hadith-${lang}`} className="text-xs uppercase tracking-wide text-muted-foreground">
           {label}
         </Label>
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          onClick={onAiTranslate}
-          disabled={translating}
-          aria-busy={translating}
-          title={aiConfigured ? `Translate to ${label} with Gemini` : "Configure a Gemini key in /admin/settings first"}
-        >
-          <Sparkles />
-          {translating ? "Translating…" : "Translate with AI"}
-        </Button>
+        <div className="flex items-center gap-2">
+          <PublishToggle
+            value={publishedValue}
+            onChange={onPublishedChange}
+            ariaLabel={`Publish status for ${label} translation`}
+          />
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={onAiTranslate}
+            disabled={translating}
+            aria-busy={translating}
+            title={aiConfigured ? `Translate to ${label} with Gemini` : "Configure a Gemini key in /admin/settings first"}
+          >
+            <Sparkles />
+            {translating ? "Translating…" : "Translate with AI"}
+          </Button>
+        </div>
       </div>
-      <label className="flex items-center gap-2 text-xs text-muted-foreground">
-        <input
-          type="checkbox"
-          {...register(publishedFieldName)}
-          className="size-4"
-        />
-        Publish {label} translation (visible to public reader)
-      </label>
       <textarea
         id={`hadith-${lang}`}
         className="flex h-full min-h-[240px] w-full flex-1 resize-none rounded-md border border-input bg-background p-3 text-sm"
         {...register(lang)}
       />
     </>
+  );
+}
+
+function PublishToggle({
+  value,
+  onChange,
+  ariaLabel,
+}: {
+  value: boolean;
+  onChange: (next: boolean) => void;
+  ariaLabel: string;
+}) {
+  const baseSegment =
+    "rounded px-2 py-0.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  return (
+    <div
+      role="radiogroup"
+      aria-label={ariaLabel}
+      className="inline-flex items-center gap-0.5 rounded-md border border-border bg-muted p-0.5"
+    >
+      <button
+        type="button"
+        role="radio"
+        aria-checked={!value}
+        onClick={() => onChange(false)}
+        className={
+          baseSegment +
+          (!value
+            ? " bg-warning/15 text-warning"
+            : " text-muted-foreground hover:text-foreground")
+        }
+      >
+        Draft
+      </button>
+      <button
+        type="button"
+        role="radio"
+        aria-checked={value}
+        onClick={() => onChange(true)}
+        className={
+          baseSegment +
+          (value
+            ? " bg-success/15 text-success"
+            : " text-muted-foreground hover:text-foreground")
+        }
+      >
+        Published
+      </button>
+    </div>
   );
 }
