@@ -908,9 +908,6 @@
       "title": "Submit an event",
       "subtitle": "Propose a community event for review.",
       "guideline": "Submissions are reviewed by an admin before appearing on the public calendar.",
-      "draftRestored": "Draft restored.",
-      "draftCleared": "Draft cleared.",
-      "discardDraft": "Discard draft",
       "steps": {
         "basics": "Basics",
         "when": "When",

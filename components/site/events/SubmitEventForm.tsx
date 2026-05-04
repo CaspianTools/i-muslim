@@ -13,7 +13,6 @@ import {
   Pencil,
   Send,
   Sparkles,
-  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -58,8 +57,6 @@ const CATEGORIES_WITH_HINTS: ReadonlySet<EventCategory> = new Set([
   "class",
   "fundraiser",
 ]);
-
-const DRAFT_STORAGE_KEY = "i-muslim.event-submission-draft";
 
 const MAX_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -146,78 +143,7 @@ export function SubmitEventForm({
   const [done, setDone] = useState(false);
   const [submitted, setSubmitted] = useState<FormState | null>(null);
   const [tzSuggestion, setTzSuggestion] = useState<string | null>(null);
-  const hydrated = useRef(false);
   const timezoneTouched = useRef(false);
-
-  // Draft load: only in public mode. Admin UAPOP is transient — no persistence.
-  useEffect(() => {
-    if (adminMode || typeof window === "undefined") {
-      hydrated.current = true;
-      return;
-    }
-    try {
-      const raw = sessionStorage.getItem(DRAFT_STORAGE_KEY);
-      if (raw) {
-        const saved = JSON.parse(raw) as Partial<FormState> & {
-          __step?: number;
-          __tzTouched?: boolean;
-        };
-        const { __step, __tzTouched, ...savedFields } = saved;
-        const hasContent = Object.entries(savedFields).some(([k, v]) => {
-          if (k === "category" || k === "locationMode" || k === "timezone" || k === "recurrence")
-            return false;
-          if (k === "submitterEmail") return typeof v === "string" && v !== userEmail;
-          return typeof v === "string" && v.length > 0;
-        });
-        if (hasContent) {
-          setState((prev) => ({ ...prev, ...savedFields }));
-          if (typeof __step === "number" && __step >= 0 && __step < PUBLIC_STEPS.length) {
-            setStepIdx(__step);
-          }
-          if (__tzTouched === true) timezoneTouched.current = true;
-          toast.message(t("draftRestored"));
-        }
-      }
-    } catch {
-      // ignore corrupt draft
-    }
-    hydrated.current = true;
-  }, [t, userEmail, adminMode]);
-
-  // Draft save: only in public mode.
-  useEffect(() => {
-    if (adminMode || !hydrated.current || typeof window === "undefined" || done) return;
-    try {
-      sessionStorage.setItem(
-        DRAFT_STORAGE_KEY,
-        JSON.stringify({
-          ...state,
-          __step: stepIdx,
-          __tzTouched: timezoneTouched.current,
-        }),
-      );
-    } catch {
-      // quota exceeded — ignore
-    }
-  }, [state, stepIdx, done, adminMode]);
-
-  function clearDraft() {
-    try {
-      sessionStorage.removeItem(DRAFT_STORAGE_KEY);
-    } catch {
-      // ignore
-    }
-  }
-
-  function discardDraft() {
-    clearDraft();
-    setState(makeEmpty(userEmail));
-    setStepIdx(0);
-    setErrors({});
-    timezoneTouched.current = false;
-    setTzSuggestion(null);
-    toast.success(t("draftCleared"));
-  }
 
   function setTimezoneFromUser(tz: string) {
     timezoneTouched.current = true;
@@ -438,7 +364,6 @@ export function SubmitEventForm({
       }
       toast.success(t("success.headline"));
       setSubmitted({ ...state });
-      clearDraft();
       setState(makeEmpty(userEmail));
       timezoneTouched.current = false;
       setDone(true);
@@ -883,8 +808,8 @@ export function SubmitEventForm({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
-        {adminMode ? (
+      <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
+        {adminMode && (
           <Button
             type="button"
             variant="ghost"
@@ -895,18 +820,8 @@ export function SubmitEventForm({
           >
             {tQuick("cancel")}
           </Button>
-        ) : (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={discardDraft}
-            className="text-muted-foreground"
-          >
-            <Trash2 /> {t("discardDraft")}
-          </Button>
         )}
-        <div className="flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2">
           {stepIdx > 0 && (
             <Button type="button" variant="secondary" onClick={handleBack} disabled={submitting}>
               <ArrowLeft /> {t("actions.back")}
