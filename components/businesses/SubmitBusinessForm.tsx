@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
 import { SearchableMultiCombobox } from "@/components/common/SearchableMultiCombobox";
+import { getCallingCode } from "@/lib/countries/calling-codes";
+import { suggestCountryForTimezone } from "@/lib/countries/tz-to-country";
 import { pickLocalized } from "@/lib/utils";
 import type { BusinessCategory, HalalStatus } from "@/types/business";
 import type { Locale } from "@/i18n/config";
@@ -133,6 +135,7 @@ export function SubmitBusinessForm({ categories, userEmail }: Props) {
       // ignore corrupt draft
     }
     hydrated.current = true;
+    applyCountryDefault();
   }, []);
 
   useEffect(() => {
@@ -147,12 +150,27 @@ export function SubmitBusinessForm({ categories, userEmail }: Props) {
     }
   }, [state, stepIdx, done]);
 
+  function applyCountryDefault() {
+    setState((prev) => {
+      if (prev.countryCode) return prev;
+      try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const detected = suggestCountryForTimezone(tz);
+        if (!detected) return prev;
+        return { ...prev, countryCode: detected };
+      } catch {
+        return prev;
+      }
+    });
+  }
+
   function resumeDraft() {
     if (!pendingDraft) return;
     setState((prev) => ({ ...prev, ...pendingDraft.fields }));
     setStepIdx(0);
     setPendingDraft(null);
     hydrated.current = true;
+    applyCountryDefault();
     toast.message(t("draftRestored"));
   }
 
@@ -160,6 +178,7 @@ export function SubmitBusinessForm({ categories, userEmail }: Props) {
     clearDraft();
     setPendingDraft(null);
     hydrated.current = true;
+    applyCountryDefault();
   }
 
   function clearDraft() {
@@ -570,6 +589,10 @@ export function SubmitBusinessForm({ categories, userEmail }: Props) {
               <Input
                 id="biz-phone"
                 value={state.phone}
+                placeholder={(() => {
+                  const code = getCallingCode(state.countryCode);
+                  return code ? `+${code} …` : undefined;
+                })()}
                 onChange={(e) => setState((s) => ({ ...s, phone: e.target.value }))}
               />
               {errors.phone && <p className="text-xs text-danger">{errors.phone}</p>}
