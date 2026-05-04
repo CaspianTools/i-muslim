@@ -37,7 +37,7 @@ export async function AdminHeader({ session, badges }: AdminHeaderProps) {
       <div className="md:hidden flex-1 min-w-0">
         <Breadcrumbs />
       </div>
-      <PrayerPills className="hidden lg:flex mx-2" />
+      <PrayerPills className="hidden lg:flex mx-2" interactive={false} />
       <div className="ml-auto flex items-center gap-1">
         <div className="hidden md:block">
           <CommandPalette />
