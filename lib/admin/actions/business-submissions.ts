@@ -67,7 +67,7 @@ function buildBusinessInputFromSubmission(payload: BusinessSubmission["payload"]
       certificationNumber: undefined,
       expiresAt: undefined,
     },
-    muslimOwned: payload.muslimOwned,
+    muslimOwned: payload.muslimOwned ?? false,
     platformVerifiedAt: undefined,
     contact: {
       phone: payload.phone,

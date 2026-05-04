@@ -26,23 +26,18 @@ import {
   EditorDialogTitle,
 } from "@/components/ui/editor-dialog";
 import { cn } from "@/lib/utils";
-import { EventEditorBody } from "./events/EventEditorBody";
-import { BusinessEditorBody } from "./businesses/BusinessEditorBody";
+import { SubmitEventForm } from "@/components/site/events/SubmitEventForm";
+import { SubmitBusinessForm } from "@/components/businesses/SubmitBusinessForm";
 import { MosqueForm } from "./mosques/MosqueForm";
 import { ArticleEditorClient } from "./articles/ArticleEditorClient";
-import type {
-  BusinessAmenity,
-  BusinessCategory,
-  BusinessCertificationBody,
-} from "@/types/business";
+import type { BusinessCategory } from "@/types/business";
 
 type ViewId = "selector" | "event" | "business" | "mosque" | "article";
 
 interface QuickCreateProps {
   categories: BusinessCategory[];
-  amenities: BusinessAmenity[];
-  certBodies: BusinessCertificationBody[];
   canPersist: boolean;
+  adminEmail: string;
 }
 
 interface QuickCreateItem {
@@ -59,10 +54,11 @@ const ITEMS: QuickCreateItem[] = [
   { id: "article", icon: FileText, nameKey: "article", shortcut: "A" },
 ];
 
-export function QuickCreate({ categories, amenities, certBodies, canPersist }: QuickCreateProps) {
+export function QuickCreate({ categories, canPersist, adminEmail }: QuickCreateProps) {
   const router = useRouter();
   const t = useTranslations("quickCreate");
   const tTypes = useTranslations("quickCreate.types");
+  const tFormTitles = useTranslations("quickCreate.formTitles");
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<ViewId>("selector");
 
@@ -123,10 +119,10 @@ export function QuickCreate({ categories, amenities, certBodies, canPersist }: Q
               onBack={back}
               onClose={close}
               backLabel={t("back")}
+              titleFor={(v) => tFormTitles(v)}
               categories={categories}
-              amenities={amenities}
-              certBodies={certBodies}
               canPersist={canPersist}
+              adminEmail={adminEmail}
               router={router}
             />
           )}
@@ -196,20 +192,20 @@ function FormView({
   onBack,
   onClose,
   backLabel,
+  titleFor,
   categories,
-  amenities,
-  certBodies,
   canPersist,
+  adminEmail,
   router,
 }: {
   view: Exclude<ViewId, "selector">;
   onBack: () => void;
   onClose: () => void;
   backLabel: string;
+  titleFor: (view: Exclude<ViewId, "selector">) => string;
   categories: BusinessCategory[];
-  amenities: BusinessAmenity[];
-  certBodies: BusinessCertificationBody[];
   canPersist: boolean;
+  adminEmail: string;
   router: ReturnType<typeof useRouter>;
 }) {
   const BackButton = (
@@ -217,7 +213,7 @@ function FormView({
       type="button"
       onClick={onBack}
       aria-label={backLabel}
-      className="absolute left-3 top-3 inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <ArrowLeft className="size-4" />
     </button>
@@ -225,40 +221,40 @@ function FormView({
 
   if (view === "event") {
     return (
-      <EventEditorBody
-        event={null}
-        canPersist={canPersist}
-        onSaved={() => {
-          onClose();
-          router.refresh();
-        }}
-        onCancel={onClose}
-        headerLeading={BackButton}
-      />
+      <FormShell backButton={BackButton} title={titleFor("event")}>
+        <SubmitEventForm
+          adminMode
+          userEmail={adminEmail}
+          onAdminSaved={() => {
+            onClose();
+            router.refresh();
+          }}
+          onAdminCancel={onClose}
+        />
+      </FormShell>
     );
   }
 
   if (view === "business") {
     return (
-      <BusinessEditorBody
-        business={null}
-        categories={categories}
-        amenities={amenities}
-        certBodies={certBodies}
-        canPersist={canPersist}
-        onSaved={() => {
-          onClose();
-          router.refresh();
-        }}
-        onCancel={onClose}
-        headerLeading={BackButton}
-      />
+      <FormShell backButton={BackButton} title={titleFor("business")}>
+        <SubmitBusinessForm
+          adminMode
+          categories={categories}
+          userEmail={adminEmail}
+          onAdminSaved={() => {
+            onClose();
+            router.refresh();
+          }}
+          onAdminCancel={onClose}
+        />
+      </FormShell>
     );
   }
 
   if (view === "mosque") {
     return (
-      <FormShell backButton={BackButton}>
+      <FormShell backButton={BackButton} title={titleFor("mosque")}>
         <MosqueForm
           mode="create"
           onSaved={({ slug }) => {
@@ -277,7 +273,7 @@ function FormView({
 
   if (view === "article") {
     return (
-      <FormShell backButton={BackButton}>
+      <FormShell backButton={BackButton} title={titleFor("article")}>
         <ArticleEditorClient
           article={null}
           source={canPersist ? "firestore" : "mock"}
@@ -295,20 +291,28 @@ function FormView({
 }
 
 /**
- * Wraps non-EditorDialog forms (MosqueForm, ArticleEditorClient — designed for full-page use)
- * in a scrollable container with a back button and shared padding so they fit the popup chrome.
+ * Wraps the form contents with a flex header (back button + title) and a
+ * scrollable body. Replaces the previous absolute-positioned back button so
+ * the header doesn't overlap the form's own title.
  */
 function FormShell({
   backButton,
+  title,
   children,
 }: {
   backButton: React.ReactNode;
+  title: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
-      {backButton}
-      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-14 md:px-6">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
+      <div className="flex items-center gap-3 border-b border-border px-4 py-3 pe-12">
+        {backButton}
+        <EditorDialogTitle className="truncate text-base font-semibold text-foreground">
+          {title}
+        </EditorDialogTitle>
+      </div>
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6">
         {children}
       </div>
     </div>

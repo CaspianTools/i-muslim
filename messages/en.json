@@ -2141,6 +2141,8 @@
     "searchPlaceholder": "Search items to create…",
     "empty": "No matches",
     "back": "Back",
+    "cancel": "Cancel",
+    "create": "Create",
     "types": {
       "event": {
         "name": "Event",
@@ -2158,6 +2160,21 @@
         "name": "Article",
         "description": "Draft a new article. Publish per locale once ready."
       }
+    },
+    "formTitles": {
+      "event": "New event",
+      "business": "New business",
+      "mosque": "New mosque",
+      "article": "New article"
+    },
+    "steps": {
+      "admin": "Admin"
+    },
+    "adminFields": {
+      "status": "Status",
+      "statusHintEvent": "Draft hides the event from the public calendar. Published makes it live.",
+      "statusHintBusiness": "Draft hides the listing from public search. Published makes it live.",
+      "coordsMissingHint": "Saved without map coordinates — set them in the editor before publishing."
     }
   }
 }
