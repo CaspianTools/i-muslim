@@ -30,6 +30,7 @@ import {
   archiveBusinessAction,
   restoreBusinessAction,
 } from "@/lib/admin/actions/businesses";
+import type { BusinessSubmission } from "@/lib/admin/data/businesses";
 import type {
   Business,
   BusinessAmenity,
@@ -42,14 +43,19 @@ import { BusinessEditorDrawer } from "./BusinessEditorDrawer";
 
 interface Props {
   initialBusinesses: Business[];
+  pendingSubmissions: BusinessSubmission[];
   categories: BusinessCategory[];
   amenities: BusinessAmenity[];
   certBodies: BusinessCertificationBody[];
   canPersist: boolean;
 }
 
-const STATUS_VALUES = ["all", "draft", "published", "archived"] as const;
+const STATUS_VALUES = ["all", "submitted", "draft", "published", "archived"] as const;
 const HALAL_VALUES = ["all", "certified", "self_declared", "muslim_owned", "unverified"] as const;
+
+type ListingRow =
+  | { kind: "business"; b: Business; sortAt: number }
+  | { kind: "submission"; s: BusinessSubmission; sortAt: number };
 
 function halalVariant(s: HalalStatus): "success" | "info" | "warning" | "neutral" {
   if (s === "certified") return "success";
@@ -66,6 +72,7 @@ function statusVariant(s: BusinessStatus): "success" | "warning" | "neutral" {
 
 export function BusinessesPageClient({
   initialBusinesses,
+  pendingSubmissions,
   categories,
   amenities,
   certBodies,
@@ -95,10 +102,17 @@ export function BusinessesPageClient({
     return map;
   }, [categories]);
 
-  const filtered = useMemo(() => {
+  const filtered = useMemo<ListingRow[]>(() => {
     const q = query.trim().toLowerCase();
-    return businesses
-      .filter((b) => statusFilter === "all" || b.status === statusFilter)
+
+    const businessRows: ListingRow[] = businesses
+      .filter((b) =>
+        statusFilter === "all"
+          ? true
+          : statusFilter === "submitted"
+            ? false
+            : b.status === statusFilter,
+      )
       .filter((b) => halalFilter === "all" || b.halal.status === halalFilter)
       .filter((b) => categoryFilter === "all" || b.categoryIds.includes(categoryFilter))
       .filter((b) => {
@@ -109,8 +123,23 @@ export function BusinessesPageClient({
           b.slug.toLowerCase().includes(q)
         );
       })
-      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-  }, [businesses, query, statusFilter, halalFilter, categoryFilter]);
+      .map((b) => ({ kind: "business", b, sortAt: new Date(b.updatedAt).getTime() }));
+
+    const submissionRows: ListingRow[] = pendingSubmissions
+      .filter(() => statusFilter === "all" || statusFilter === "submitted")
+      .filter((s) => halalFilter === "all" || s.payload.halalStatus === halalFilter)
+      .filter((s) => categoryFilter === "all" || s.payload.categoryIds.includes(categoryFilter))
+      .filter((s) => {
+        if (!q) return true;
+        return (
+          s.payload.name.toLowerCase().includes(q) ||
+          s.payload.city.toLowerCase().includes(q)
+        );
+      })
+      .map((s) => ({ kind: "submission", s, sortAt: new Date(s.createdAt).getTime() }));
+
+    return [...businessRows, ...submissionRows].sort((a, b) => b.sortAt - a.sortAt);
+  }, [businesses, pendingSubmissions, query, statusFilter, halalFilter, categoryFilter]);
 
   function openCreate() {
     setEditing(null);
@@ -205,38 +234,6 @@ export function BusinessesPageClient({
             <option key={c.id} value={c.id}>{c.name[locale] ?? c.name.en}</option>
           ))}
         </select>
-        <div className="flex gap-1.5">
-          <Link
-            href="/admin/businesses/submissions"
-            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-input px-3 text-sm hover:bg-muted"
-          >
-            {tAdmin("tabSubmissions")}
-          </Link>
-          <Link
-            href="/admin/businesses/reports"
-            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-input px-3 text-sm hover:bg-muted"
-          >
-            {tAdmin("tabReports")}
-          </Link>
-          <Link
-            href="/admin/businesses/categories"
-            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-input px-3 text-sm hover:bg-muted"
-          >
-            {tAdmin("tabCategories")}
-          </Link>
-          <Link
-            href="/admin/businesses/cert-bodies"
-            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-input px-3 text-sm hover:bg-muted"
-          >
-            {tAdmin("tabCertBodies")}
-          </Link>
-          <Link
-            href="/admin/businesses/amenities"
-            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-input px-3 text-sm hover:bg-muted"
-          >
-            {tAdmin("tabAmenities")}
-          </Link>
-        </div>
         <Button onClick={openCreate} disabled={!canPersist}>
           <Plus className="size-4" /> {t("createCta")}
         </Button>
@@ -262,7 +259,55 @@ export function BusinessesPageClient({
                 </td>
               </tr>
             ) : (
-              filtered.map((b) => {
+              filtered.map((row) => {
+                if (row.kind === "submission") {
+                  const s = row.s;
+                  const primaryCategory = s.payload.categoryIds[0]
+                    ? categoryById.get(s.payload.categoryIds[0])
+                    : null;
+                  return (
+                    <tr key={`sub-${s.id}`} className="border-t border-border hover:bg-muted/30">
+                      <td className="px-3 py-2.5">
+                        <div className="font-medium text-foreground">{s.payload.name}</div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <MapPin className="size-3" /> {s.payload.city}
+                        </div>
+                      </td>
+                      <td className="px-3 py-2.5 text-sm">
+                        {primaryCategory ? primaryCategory.name[locale] ?? primaryCategory.name.en : "—"}
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <Badge variant={halalVariant(s.payload.halalStatus)}>
+                          {tHalal(s.payload.halalStatus)}
+                        </Badge>
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <Badge variant="warning">{tStatus("submitted")}</Badge>
+                      </td>
+                      <td className="px-3 py-2.5 text-xs text-muted-foreground">
+                        {new Date(s.createdAt).toLocaleDateString(locale)}
+                      </td>
+                      <td className="px-3 py-2.5 text-end">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" aria-label={tCommon("actions")}>
+                              <MoreHorizontal className="size-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <Link href="/admin/businesses/submissions">
+                                <ExternalLink className="size-4" /> {tAdmin("reviewCta")}
+                              </Link>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                }
+
+                const b = row.b;
                 const primaryCategory = b.categoryIds[0] ? categoryById.get(b.categoryIds[0]) : null;
                 return (
                   <tr key={b.id} className="border-t border-border hover:bg-muted/30">
