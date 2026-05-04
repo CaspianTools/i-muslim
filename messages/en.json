@@ -1809,7 +1809,8 @@
       "review": {
         "heading": "Review your submission",
         "subheading": "Make sure these details are correct before submitting. We'll verify before publishing.",
-        "editStep": "Edit"
+        "editStep": "Edit",
+        "geocodeFailed": "We couldn't pinpoint this address on a map. Submission still works — our team will verify the location before publishing."
       },
       "fields": {
         "name": "Business name",

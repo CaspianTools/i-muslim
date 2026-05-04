@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
 import { SearchableMultiCombobox } from "@/components/common/SearchableMultiCombobox";
+import { MosqueMap } from "@/components/mosque/MosqueMap";
 import { getCallingCode } from "@/lib/countries/calling-codes";
 import { suggestCountryForTimezone } from "@/lib/countries/tz-to-country";
 import { pickLocalized } from "@/lib/utils";
@@ -35,6 +36,12 @@ interface PendingDraft {
   fields: Partial<FormState>;
   savedAt: number;
 }
+
+type GeocodeState =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "ok"; lat: number; lng: number }
+  | { status: "fail" };
 
 function formatRelativeAge(savedAtMs: number, locale: string): string {
   const diffMs = Date.now() - savedAtMs;
@@ -104,6 +111,7 @@ export function SubmitBusinessForm({ categories, userEmail }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
   const [pendingDraft, setPendingDraft] = useState<PendingDraft | null>(null);
+  const [geocode, setGeocode] = useState<GeocodeState>({ status: "idle" });
   const hydrated = useRef(false);
 
   useEffect(() => {
@@ -149,6 +157,42 @@ export function SubmitBusinessForm({ categories, userEmail }: Props) {
       // quota exceeded — ignore
     }
   }, [state, stepIdx, done]);
+
+  const reviewAddress =
+    state.addressLine1.trim() && state.city.trim() && state.countryCode
+      ? [state.addressLine1, state.city, state.region, state.postalCode, state.countryCode]
+          .filter(Boolean)
+          .join(", ")
+      : "";
+
+  useEffect(() => {
+    if (STEPS[stepIdx] !== "review" || !reviewAddress) return;
+    let cancelled = false;
+    setGeocode({ status: "loading" });
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/businesses/geocode?q=${encodeURIComponent(reviewAddress)}`,
+        );
+        const data = (await res.json().catch(() => ({}))) as {
+          ok?: boolean;
+          lat?: number;
+          lng?: number;
+        };
+        if (cancelled) return;
+        if (res.ok && data.ok && typeof data.lat === "number" && typeof data.lng === "number") {
+          setGeocode({ status: "ok", lat: data.lat, lng: data.lng });
+        } else {
+          setGeocode({ status: "fail" });
+        }
+      } catch {
+        if (!cancelled) setGeocode({ status: "fail" });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [stepIdx, reviewAddress]);
 
   function applyCountryDefault() {
     setState((prev) => {
@@ -302,7 +346,11 @@ export function SubmitBusinessForm({ categories, userEmail }: Props) {
       const res = await fetch("/api/businesses/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(state),
+        body: JSON.stringify({
+          ...state,
+          geocoded:
+            geocode.status === "ok" ? { lat: geocode.lat, lng: geocode.lng } : null,
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
       if (res.status === 429) {
@@ -716,6 +764,22 @@ export function SubmitBusinessForm({ categories, userEmail }: Props) {
               ...(state.whatsapp ? [{ label: t("fields.whatsapp"), value: state.whatsapp }] : []),
             ]}
           />
+
+          {geocode.status === "loading" && (
+            <div className="h-[240px] w-full animate-pulse rounded-md bg-muted" aria-hidden />
+          )}
+          {geocode.status === "ok" && (
+            <MosqueMap
+              lat={geocode.lat}
+              lng={geocode.lng}
+              className="h-[240px] w-full overflow-hidden rounded-md"
+            />
+          )}
+          {geocode.status === "fail" && (
+            <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-xs text-amber-700 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-300">
+              {t("review.geocodeFailed")}
+            </p>
+          )}
         </div>
       )}
 

@@ -86,6 +86,11 @@ export async function POST(req: Request) {
   if (data.website) payload.website = data.website;
   if (data.instagram) payload.instagram = data.instagram;
   if (data.whatsapp) payload.whatsapp = data.whatsapp;
+  if (data.geocoded) {
+    payload.geocoded = data.geocoded;
+  } else if (data.geocoded === null) {
+    payload.geocodeFailed = true;
+  }
 
   const docRef = await db.collection(BUSINESS_SUBMISSIONS_COLLECTION).add({
     status: "pending_review",

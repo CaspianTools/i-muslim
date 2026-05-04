@@ -153,6 +153,10 @@ export const businessSubmissionSchema = z.object({
   instagram: optionalString,
   whatsapp: optionalString,
   isOwner: z.boolean().default(false),
+  geocoded: z
+    .object({ lat: z.number().min(-90).max(90), lng: z.number().min(-180).max(180) })
+    .nullable()
+    .optional(),
   // honeypot — must be empty
   website_url_secondary: z.string().optional(),
   turnstileToken: z.string().optional(),
