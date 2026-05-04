@@ -1783,9 +1783,8 @@
       "reportsPageTitle": "Listing reports",
       "reportsPageSubtitle": "Public reports flagged by visitors. Soft-archive listings here when valid.",
       "reportsEmpty": "No reports.",
-      "reportsTabOpen": "Open",
-      "reportsTabResolved": "Resolved",
-      "reportsTabDismissed": "Dismissed",
+      "reportsNoResults": "No reports match these filters.",
+      "reportsSearch": "Search business, reason, reporter…",
       "reportsResolveCta": "Resolve",
       "reportsDismissCta": "Dismiss",
       "reportsArchiveBusiness": "Archive listing",
@@ -1800,6 +1799,7 @@
       "reportsColActions": "Actions",
       "reportsAnonymous": "Anonymous",
       "reportStatuses": {
+        "all": "All statuses",
         "open": "Open",
         "resolved": "Resolved",
         "dismissed": "Dismissed"
