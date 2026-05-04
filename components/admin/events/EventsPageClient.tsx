@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
   flexRender,
@@ -32,6 +33,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { openQuickCreate } from "@/components/admin/QuickCreate";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -69,7 +71,7 @@ const CATEGORY_VALUES = [
   "community",
   "other",
 ] as const;
-const STATUS_VALUES = ["all", "draft", "published", "cancelled"] as const;
+const STATUS_VALUES = ["all", "under_review", "draft", "published", "cancelled"] as const;
 const WINDOW_VALUES = ["upcoming", "past", "all"] as const;
 
 type WindowFilter = (typeof WINDOW_VALUES)[number];
@@ -95,6 +97,7 @@ function categoryVariant(category: EventCategory): "accent" | "info" | "success"
 
 function statusVariant(status: EventStatus): "success" | "warning" | "danger" | "neutral" {
   if (status === "published") return "success";
+  if (status === "under_review") return "warning";
   if (status === "draft") return "neutral";
   if (status === "cancelled") return "danger";
   return "warning";
@@ -107,10 +110,24 @@ export function EventsPageClient({
   initialEvents: AdminEvent[];
   source: "firestore" | "mock";
 }) {
+  const searchParams = useSearchParams();
+  const initialStatus = (() => {
+    const raw = searchParams?.get("status");
+    if (
+      raw === "under_review" ||
+      raw === "draft" ||
+      raw === "published" ||
+      raw === "cancelled" ||
+      raw === "all"
+    ) {
+      return raw as EventStatus | "all";
+    }
+    return "all";
+  })();
   const [events, setEvents] = useState<AdminEvent[]>(initialEvents);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<EventCategory | "all">("all");
-  const [status, setStatus] = useState<EventStatus | "all">("all");
+  const [status, setStatus] = useState<EventStatus | "all">(initialStatus);
   const [windowFilter, setWindowFilter] = useState<WindowFilter>("upcoming");
   const [sorting, setSorting] = useState<SortingState>([
     { id: "startsAt", desc: false },
@@ -437,10 +454,7 @@ export function EventsPageClient({
         <div className="ms-auto flex items-center gap-2">
           <Button
             size="sm"
-            onClick={() => {
-              setEditing(null);
-              setEditorOpen(true);
-            }}
+            onClick={() => openQuickCreate("event")}
             disabled={!canPersist}
             title={!canPersist ? t("noPersistTitle") : undefined}
           >

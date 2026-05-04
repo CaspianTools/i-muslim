@@ -18,7 +18,7 @@ const categoryEnum = z.enum([
   "community",
   "other",
 ]);
-const statusEnum = z.enum(["draft", "published", "cancelled"]);
+const statusEnum = z.enum(["under_review", "draft", "published", "cancelled"]);
 const locationModeEnum = z.enum(["in-person", "online", "hybrid"]);
 const prayerAnchorEnum = z.enum(["fajr", "dhuhr", "asr", "maghrib", "isha"]);
 
@@ -38,6 +38,8 @@ const eventInputSchema = z
       lat: z.number().optional(),
       lng: z.number().optional(),
       url: z.string().url().optional().or(z.literal("").transform(() => undefined)),
+      platform: z.string().max(60).optional(),
+      dialIn: z.string().max(200).optional(),
     }),
     organizer: z.object({
       name: z.string().min(1),

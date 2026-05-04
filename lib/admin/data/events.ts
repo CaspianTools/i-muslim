@@ -29,7 +29,7 @@ const CATEGORIES: EventCategory[] = [
   "community",
   "other",
 ];
-const STATUSES: EventStatus[] = ["draft", "published", "cancelled"];
+const STATUSES: EventStatus[] = ["under_review", "draft", "published", "cancelled"];
 const LOCATION_MODES: EventLocationMode[] = ["in-person", "online", "hybrid"];
 const PRAYER_ANCHORS: PrayerAnchor[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
 
@@ -99,6 +99,8 @@ function asLocation(raw: unknown): EventLocation {
     lat: asOptionalNumber(r.lat),
     lng: asOptionalNumber(r.lng),
     url: asOptionalString(r.url),
+    platform: asOptionalString(r.platform),
+    dialIn: asOptionalString(r.dialIn),
   };
 }
 
@@ -121,6 +123,16 @@ export function normalizeEvent(id: string, raw: Record<string, unknown>): AdminE
 
   const organizerRaw = (raw.organizer ?? {}) as Record<string, unknown>;
 
+  const submittedByRaw = (raw.submittedBy ?? undefined) as
+    | { uid?: unknown; email?: unknown }
+    | undefined;
+  const submittedBy = submittedByRaw
+    ? {
+        uid: typeof submittedByRaw.uid === "string" ? submittedByRaw.uid : undefined,
+        email: typeof submittedByRaw.email === "string" ? submittedByRaw.email : undefined,
+      }
+    : undefined;
+
   return {
     id,
     title,
@@ -140,6 +152,7 @@ export function normalizeEvent(id: string, raw: Record<string, unknown>): AdminE
     recurrence: asOptionalString(raw.recurrence),
     startAnchor: asStartAnchor(raw.startAnchor),
     hijriAnchor: asHijriAnchor(raw.hijriAnchor),
+    submittedBy,
     createdAt: asIso(raw.createdAt),
     updatedAt: asIso(raw.updatedAt ?? raw.createdAt),
   };
@@ -208,3 +221,4 @@ function projectUpcoming(
     rsvpCount: event.rsvpCount,
   }));
 }
+

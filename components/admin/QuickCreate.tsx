@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -33,6 +33,19 @@ import { ArticleEditorClient } from "./articles/ArticleEditorClient";
 import type { BusinessCategory } from "@/types/business";
 
 type ViewId = "selector" | "event" | "business" | "mosque" | "article";
+
+export const QUICK_CREATE_OPEN_EVENT = "quick-create:open";
+
+interface QuickCreateOpenDetail {
+  view?: Exclude<ViewId, "selector">;
+}
+
+export function openQuickCreate(view?: Exclude<ViewId, "selector">) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(
+    new CustomEvent<QuickCreateOpenDetail>(QUICK_CREATE_OPEN_EVENT, { detail: { view } }),
+  );
+}
 
 interface QuickCreateProps {
   categories: BusinessCategory[];
@@ -79,6 +92,16 @@ export function QuickCreate({ categories, canPersist, adminEmail }: QuickCreateP
     }
   }
 
+  useEffect(() => {
+    function onOpen(e: Event) {
+      const detail = (e as CustomEvent<QuickCreateOpenDetail>).detail;
+      setView(detail?.view ?? "selector");
+      setOpen(true);
+    }
+    window.addEventListener(QUICK_CREATE_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(QUICK_CREATE_OPEN_EVENT, onOpen);
+  }, []);
+
   const isForm = view !== "selector";
 
   return (
@@ -96,8 +119,10 @@ export function QuickCreate({ categories, canPersist, adminEmail }: QuickCreateP
       <EditorDialog open={open} onOpenChange={handleOpenChange}>
         <EditorDialogContent
           className={cn(
-            !isForm &&
-              "h-auto max-h-[80vh] w-[92vw] max-w-2xl rounded-2xl sm:max-h-[80vh]",
+            "w-[92vw] rounded-2xl",
+            isForm
+              ? "h-[80vh] max-h-[80vh] max-w-3xl"
+              : "h-auto max-h-[80vh] max-w-2xl sm:max-h-[80vh]",
           )}
           hideClose={!isForm}
           onEscapeKeyDown={(e) => {
@@ -221,7 +246,7 @@ function FormView({
 
   if (view === "event") {
     return (
-      <FormShell backButton={BackButton} title={titleFor("event")}>
+      <FormShell backButton={BackButton} title={titleFor("event")} fillHeight>
         <SubmitEventForm
           adminMode
           userEmail={adminEmail}
@@ -237,7 +262,7 @@ function FormView({
 
   if (view === "business") {
     return (
-      <FormShell backButton={BackButton} title={titleFor("business")}>
+      <FormShell backButton={BackButton} title={titleFor("business")} fillHeight>
         <SubmitBusinessForm
           adminMode
           categories={categories}
@@ -299,10 +324,19 @@ function FormShell({
   backButton,
   title,
   children,
+  fillHeight = false,
 }: {
   backButton: React.ReactNode;
   title: string;
   children: React.ReactNode;
+  /**
+   * When true, the body wrapper is bare (no padding, no scroll) so the form
+   * itself can be a `flex h-full flex-col` container with its own internal
+   * scrolling step content and a non-scrolling footer pinned to the bottom.
+   * When false (default), FormShell provides padding + vertical scroll —
+   * suited to forms that don't manage their own layout.
+   */
+  fillHeight?: boolean;
 }) {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
@@ -312,7 +346,13 @@ function FormShell({
           {title}
         </EditorDialogTitle>
       </div>
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6">
+      <div
+        className={
+          fillHeight
+            ? "flex-1 min-h-0 overflow-hidden"
+            : "flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6"
+        }
+      >
         {children}
       </div>
     </div>

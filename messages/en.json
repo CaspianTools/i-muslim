@@ -822,6 +822,7 @@
     },
     "statuses": {
       "all": "All statuses",
+      "under_review": "Pending Review",
       "draft": "Draft",
       "published": "Published",
       "cancelled": "Cancelled"
@@ -1167,7 +1168,7 @@
       },
       "kpi": {
         "active": "Active profiles",
-        "pending": "Pending review",
+        "pending": "Pending Review",
         "matchesWeek": "Matches this week",
         "openReports": "Open reports"
       },
@@ -1243,7 +1244,7 @@
     "statuses": {
       "all": "All statuses",
       "draft": "Draft",
-      "pending": "Pending",
+      "pending": "Pending Review",
       "active": "Active",
       "suspended": "Suspended",
       "hidden": "Hidden"
@@ -1376,8 +1377,7 @@
         "website": "Website",
         "email": "Email",
         "languages": "Languages spoken",
-        "description": "Description",
-        "submitterEmail": "Your email"
+        "description": "Description"
       },
       "actions": {
         "submit": "Submit for review",
@@ -1390,8 +1390,7 @@
         "cityRequired": "City is required.",
         "countryRequired": "Country is required (use ISO code).",
         "emailInvalid": "Enter a valid email.",
-        "websiteInvalid": "Enter a valid URL.",
-        "submitterEmailRequired": "Please provide your email so we can follow up."
+        "websiteInvalid": "Enter a valid URL."
       },
       "success": "Thank you — your submission is under review and will appear in the directory once approved.",
       "errorRate": "You've submitted several mosques recently. Please try again later.",
@@ -1477,7 +1476,7 @@
     "statuses": {
       "all": "All statuses",
       "draft": "Draft",
-      "pending_review": "Pending review",
+      "pending_review": "Pending Review",
       "published": "Published",
       "suspended": "Suspended"
     },
@@ -1659,7 +1658,7 @@
     },
     "statuses": {
       "all": "All statuses",
-      "submitted": "Submitted",
+      "submitted": "Pending Review",
       "draft": "Draft",
       "published": "Published",
       "archived": "Archived"
@@ -1835,7 +1834,7 @@
       "submissions": {
         "queueTitle": "Business submissions",
         "queueSubtitle": "User-suggested halal businesses awaiting review.",
-        "tabPending": "Pending",
+        "tabPending": "Pending Review",
         "tabApproved": "Approved",
         "tabRejected": "Rejected",
         "noSubmissions": "Nothing here.",
@@ -1944,9 +1943,18 @@
     "tabOpen": "Open",
     "tabResolved": "Resolved",
     "empty": "No messages here.",
+    "search": "Search messages…",
+    "filterByStatus": "Filter by status",
+    "statuses": {
+      "all": "All statuses",
+      "open": "Open",
+      "resolved": "Resolved"
+    },
+    "noResults": "No messages match these filters.",
     "columns": {
       "from": "From",
       "subject": "Subject",
+      "status": "Status",
       "received": "Received",
       "actions": "Actions"
     },
@@ -2112,8 +2120,8 @@
       "mosques": "Mosques"
     },
     "statuses": {
-      "under_review": "Under review",
-      "pending_review": "Pending review",
+      "under_review": "Pending Review",
+      "pending_review": "Pending Review",
       "draft": "Draft",
       "published": "Published",
       "approved": "Approved",

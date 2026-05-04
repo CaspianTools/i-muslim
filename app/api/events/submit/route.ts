@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
-import { Timestamp } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { getDb } from "@/lib/firebase/admin";
 import { getSiteSession } from "@/lib/auth/session";
-import { EVENT_SUBMISSIONS_COLLECTION, eventSubmitSchema } from "@/lib/events/submit-schema";
+import { eventSubmitSchema } from "@/lib/events/submit-schema";
 import { createNotification } from "@/lib/admin/data/notifications";
+import { buildRRule } from "@/lib/admin/recurrence";
 
 export const runtime = "nodejs";
 
+const EVENTS_COLLECTION = "events";
 const RATE_LIMIT_PER_DAY = 5;
 
 export async function POST(req: Request) {
@@ -43,7 +45,7 @@ export async function POST(req: Request) {
   const since = Timestamp.fromDate(new Date(Date.now() - 24 * 60 * 60 * 1000));
   try {
     const recent = await db
-      .collection(EVENT_SUBMISSIONS_COLLECTION)
+      .collection(EVENTS_COLLECTION)
       .where("submittedBy.uid", "==", session.uid)
       .where("createdAt", ">", since)
       .count()
@@ -55,38 +57,48 @@ export async function POST(req: Request) {
     // count() requires a composite index; if missing, skip rate limit rather than block submission.
   }
 
-  const payload = stripUndefined({
+  const startsAtDate = new Date(data.startsAt);
+  const recurrenceRRule =
+    data.recurrence && data.recurrence !== "none"
+      ? buildRRule(data.recurrence, startsAtDate)
+      : undefined;
+
+  const eventDoc = stripUndefined({
     title: data.title,
     description: data.description,
     category: data.category,
-    startsAt: new Date(data.startsAt),
+    status: "under_review",
+    startsAt: startsAtDate,
     endsAt: data.endsAt ? new Date(data.endsAt) : undefined,
     timezone: data.timezone,
+    recurrence: recurrenceRRule,
     location: {
       mode: data.location.mode,
       venue: data.location.venue,
       address: data.location.address,
+      country: data.location.country?.toUpperCase(),
       url: data.location.url,
+      platform: data.location.platform,
+      dialIn: data.location.dialIn,
     },
     organizer: {
       name: data.organizer.name,
       contact: data.organizer.contact,
     },
+    rsvpCount: 0,
+    submittedBy: { uid: session.uid, email: data.submitterEmail },
+    createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
   });
 
   try {
-    const docRef = await db.collection(EVENT_SUBMISSIONS_COLLECTION).add({
-      status: "pending_review",
-      payload,
-      submittedBy: { uid: session.uid, email: data.submitterEmail },
-      createdAt: Timestamp.now(),
-    });
+    const docRef = await db.collection(EVENTS_COLLECTION).add(eventDoc);
     await createNotification({
       type: "submission",
       title: "New event submission",
       body: data.title,
-      link: "/admin/events",
-      sourceCollection: EVENT_SUBMISSIONS_COLLECTION,
+      link: "/admin/events?status=under_review",
+      sourceCollection: EVENTS_COLLECTION,
       sourceId: docRef.id,
     });
     return NextResponse.json({ ok: true, id: docRef.id });

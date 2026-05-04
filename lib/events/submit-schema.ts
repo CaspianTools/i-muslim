@@ -2,22 +2,29 @@ import { z } from "zod";
 
 export const EVENT_SUBMISSIONS_COLLECTION = "eventSubmissions";
 
-const categoryEnum = z.enum([
-  "prayer",
-  "lecture",
-  "iftar",
-  "janazah",
-  "class",
-  "fundraiser",
-  "community",
-  "other",
-]);
+const MAX_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
+
+// Slug shape only — admin-managed categories live in Firestore
+// (`eventCategories` collection). Slug-existence is enforced at the action
+// layer via fetchEventCategories().
+const categoryEnum = z
+  .string()
+  .min(2)
+  .regex(/^[a-z0-9-]+$/, "Invalid category");
 
 const locationModeEnum = z.enum(["in-person", "online", "hybrid"]);
+
+const recurrenceEnum = z.enum(["none", "weekly", "monthly"]);
 
 const optionalUrl = z
   .string()
   .url()
+  .optional()
+  .or(z.literal("").transform(() => undefined));
+
+const optionalTrimmed = z
+  .string()
+  .trim()
   .optional()
   .or(z.literal("").transform(() => undefined));
 
@@ -29,15 +36,23 @@ export const eventSubmitSchema = z
     startsAt: z.string().min(1),
     endsAt: z.string().optional().or(z.literal("").transform(() => undefined)),
     timezone: z.string().min(1),
+    recurrence: recurrenceEnum.optional(),
     location: z.object({
       mode: locationModeEnum,
-      venue: z.string().trim().optional(),
-      address: z.string().trim().optional(),
+      venue: optionalTrimmed,
+      address: optionalTrimmed,
+      country: z
+        .string()
+        .regex(/^[A-Za-z]{2}$/)
+        .optional()
+        .or(z.literal("").transform(() => undefined)),
       url: optionalUrl,
+      platform: z.string().trim().max(60).optional().or(z.literal("").transform(() => undefined)),
+      dialIn: z.string().trim().max(200).optional().or(z.literal("").transform(() => undefined)),
     }),
     organizer: z.object({
       name: z.string().trim().min(1),
-      contact: z.string().trim().optional(),
+      contact: optionalTrimmed,
     }),
     submitterEmail: z.string().email(),
     website_url_secondary: z.string().optional(),
@@ -45,6 +60,12 @@ export const eventSubmitSchema = z
   .refine(
     (v) => !v.endsAt || new Date(v.endsAt).getTime() >= new Date(v.startsAt).getTime(),
     { message: "endsAt must be after startsAt", path: ["endsAt"] },
+  )
+  .refine(
+    (v) =>
+      !v.endsAt ||
+      new Date(v.endsAt).getTime() - new Date(v.startsAt).getTime() <= MAX_DURATION_MS,
+    { message: "Event duration cannot exceed 30 days", path: ["endsAt"] },
   )
   .refine(
     (v) => v.location.mode === "online" || Boolean(v.location.venue || v.location.address),

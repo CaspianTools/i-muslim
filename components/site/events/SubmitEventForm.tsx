@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
+import { cn } from "@/lib/utils";
 import { suggestTimezoneForCountry } from "@/lib/events/country-tz";
 import { buildIcs } from "@/lib/events/ics";
 import { createEventAction, type EventInput } from "@/lib/admin/actions/events";
@@ -381,7 +382,10 @@ export function SubmitEventForm({
   const showOnlineFields = state.locationMode !== "in-person";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className={cn("space-y-6", adminMode && "flex h-full flex-col space-y-0")}
+    >
       {!adminMode && (
         <input
           type="text"
@@ -394,13 +398,18 @@ export function SubmitEventForm({
         />
       )}
 
-      <ol className="flex flex-wrap items-center gap-2 text-xs">
+      <div
+        className={cn(
+          adminMode && "border-b border-border px-4 pb-3 pt-4 md:px-6",
+        )}
+      >
+        <ol className="flex items-center gap-2 text-xs">
         {STEPS.map((s, i) => {
           const active = i === stepIdx;
           const completed = i < stepIdx;
           const stepLabel = s === "admin" ? tQuick("steps.admin") : t(`steps.${s}`);
           return (
-            <li key={s} className="flex items-center gap-2">
+            <li key={s} className="flex shrink-0 items-center gap-2">
               <button
                 type="button"
                 onClick={() => jumpToStep(i)}
@@ -431,7 +440,14 @@ export function SubmitEventForm({
             </li>
           );
         })}
-      </ol>
+        </ol>
+      </div>
+
+      <div
+        className={cn(
+          adminMode && "flex-1 min-h-0 space-y-6 overflow-y-auto px-4 py-4 md:px-6",
+        )}
+      >
 
       {liveStep === "basics" && (
         <div className="space-y-5">
@@ -808,7 +824,14 @@ export function SubmitEventForm({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
+      </div>
+
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-2 border-t border-border pt-4",
+          adminMode && "border-t border-border bg-card px-4 pb-4 pt-3 md:px-6",
+        )}
+      >
         {adminMode && (
           <Button
             type="button"

@@ -13,7 +13,7 @@ import { SearchableMultiCombobox } from "@/components/common/SearchableMultiComb
 import { MosqueMap } from "@/components/mosque/MosqueMap";
 import { getCallingCode } from "@/lib/countries/calling-codes";
 import { suggestCountryForTimezone } from "@/lib/countries/tz-to-country";
-import { pickLocalized } from "@/lib/utils";
+import { cn, pickLocalized } from "@/lib/utils";
 import { createBusinessAction } from "@/lib/admin/actions/businesses";
 import type { BusinessInput } from "@/lib/businesses/schemas";
 import type { BusinessCategory, BusinessStatus, HalalStatus } from "@/types/business";
@@ -371,7 +371,10 @@ export function SubmitBusinessForm({
   const isLast = stepIdx === STEPS.length - 1;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className={cn("space-y-6", adminMode && "flex h-full flex-col space-y-0")}
+    >
         {!adminMode && (
           <input
             type="text"
@@ -384,13 +387,18 @@ export function SubmitBusinessForm({
           />
         )}
 
-        <ol className="flex items-center gap-2 text-xs">
+        <div
+          className={cn(
+            adminMode && "border-b border-border px-4 pb-3 pt-4 md:px-6",
+          )}
+        >
+          <ol className="flex items-center gap-2 text-xs">
           {STEPS.map((s, i) => {
             const active = i === stepIdx;
             const completed = i < stepIdx;
             const stepLabel = s === "admin" ? tQuick("steps.admin") : t(`steps.${s}`);
             return (
-              <li key={s} className="flex items-center gap-2">
+              <li key={s} className="flex shrink-0 items-center gap-2">
                 <button
                   type="button"
                   onClick={() => jumpToStep(i)}
@@ -421,7 +429,14 @@ export function SubmitBusinessForm({
               </li>
             );
           })}
-        </ol>
+          </ol>
+        </div>
+
+        <div
+          className={cn(
+            adminMode && "flex-1 min-h-0 space-y-6 overflow-y-auto px-4 py-4 md:px-6",
+          )}
+        >
 
         {step === "basics" && (
           <div className="space-y-5">
@@ -777,7 +792,14 @@ export function SubmitBusinessForm({
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
+        </div>
+
+        <div
+          className={cn(
+            "flex flex-wrap items-center gap-2 border-t border-border pt-4",
+            adminMode && "border-t border-border bg-card px-4 pb-4 pt-3 md:px-6",
+          )}
+        >
           {adminMode && (
             <Button
               type="button"

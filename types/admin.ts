@@ -56,17 +56,12 @@ export interface UpcomingEvent {
   rsvpCount: number;
 }
 
-export type EventCategory =
-  | "prayer"
-  | "lecture"
-  | "iftar"
-  | "janazah"
-  | "class"
-  | "fundraiser"
-  | "community"
-  | "other";
+// Stored on each event as a slug pointing into the `eventCategories` Firestore
+// collection (managed at /admin/events/categories). Kept as a free-form string
+// so admin-defined custom categories type-check the same as built-ins.
+export type EventCategory = string;
 
-export type EventStatus = "draft" | "published" | "cancelled";
+export type EventStatus = "under_review" | "draft" | "published" | "cancelled";
 
 export type EventLocationMode = "in-person" | "online" | "hybrid";
 
@@ -77,6 +72,8 @@ export interface EventLocation {
   lat?: number;
   lng?: number;
   url?: string;
+  platform?: string;
+  dialIn?: string;
 }
 
 export type PrayerAnchor = "fajr" | "dhuhr" | "asr" | "maghrib" | "isha";
@@ -109,6 +106,7 @@ export interface AdminEvent {
   recurrence?: string;
   startAnchor?: EventStartAnchor;
   hijriAnchor?: HijriAnchor;
+  submittedBy?: { uid?: string; email?: string };
   createdAt: string;
   updatedAt: string;
 }
