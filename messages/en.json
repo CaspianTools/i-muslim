@@ -1463,7 +1463,6 @@
     "subtitleLive": "Live from Firestore.",
     "subtitleMock": "Sample data — configure Firebase Admin to manage real mosques.",
     "newMosque": "New mosque",
-    "queue": "Moderation queue",
     "import": "Bulk import",
     "back": "Back to mosques",
     "search": "Search by name, city, or country…",

@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Inbox, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { fetchAllMosquesAdmin } from "@/lib/admin/data/mosques";
 import { MosquesPageClient } from "@/components/admin/mosques/MosquesPageClient";
 import { NewMosqueButton } from "@/components/admin/mosques/NewMosqueButton";
@@ -24,11 +24,6 @@ export default async function AdminMosquesPage() {
         subtitle={source === "firestore" ? t("subtitleLive") : t("subtitleMock")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="secondary" size="sm" asChild>
-              <Link href="/admin/mosques/queue">
-                <Inbox /> {t("queue")}
-              </Link>
-            </Button>
             <Button variant="secondary" size="sm" asChild>
               <Link href="/admin/mosques/import">
                 <Upload /> {t("import")}
