@@ -1476,7 +1476,7 @@
     "pageTitle": "Direktori Bisnis Halal",
     "subtitleLive": "Langsung dari Firestore.",
     "subtitleMock": "Data sampel — konfigurasi Firebase Admin untuk mengelola entri sungguhan.",
-    "publicTitle": "Bisnis halal di {city}",
+    "publicTitle": "Bisnis halal",
     "publicSubtitle": "Daftar terverifikasi, dikurasi oleh tim i-muslim.",
     "publicEmpty": "Belum ada entri yang cocok dengan filter ini.",
     "publicEmptyHint": "Coba bersihkan filter, atau kembali nanti seiring direktori berkembang.",

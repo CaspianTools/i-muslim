@@ -53,16 +53,16 @@ export function BusinessFilters({ categories, amenities, total }: Props) {
 
   return (
     <div className="space-y-3">
-      <div className="relative max-w-md">
-        <Search className="absolute start-2 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          defaultValue={q}
-          onChange={(e) => update({ q: e.target.value || undefined })}
-          placeholder={tCommon("publicSearchPlaceholder")}
-          className="ps-8"
-        />
-      </div>
       <div className="flex flex-wrap items-center gap-2">
+        <div className="relative w-full sm:w-64 md:w-72">
+          <Search className="absolute start-2 top-2.5 size-4 text-muted-foreground" />
+          <Input
+            defaultValue={q}
+            onChange={(e) => update({ q: e.target.value || undefined })}
+            placeholder={tCommon("publicSearchPlaceholder")}
+            className="ps-8"
+          />
+        </div>
         <select
           className="flex h-9 rounded-md border border-input bg-background px-2 text-sm"
           value={cat}

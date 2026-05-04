@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Plus, Store } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { listPublishedByCity } from "@/lib/businesses/public";
+import { listPublished } from "@/lib/businesses/public";
 import {
   fetchAmenities,
   fetchCategories,
@@ -13,11 +13,9 @@ import { BusinessCard } from "@/components/businesses/BusinessCard";
 import { BusinessFilters } from "@/components/businesses/BusinessFilters";
 import type { HalalStatus, PriceTier } from "@/types/business";
 
-const ANCHOR_CITY = "London";
-
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("businesses");
-  const title = t("publicTitle", { city: ANCHOR_CITY });
+  const title = t("publicTitle");
   return {
     title,
     description: t("publicSubtitle"),
@@ -43,7 +41,7 @@ export default async function BusinessesPage({
       : undefined;
 
   const [{ businesses }, { categories }, { amenities }, { certBodies }] = await Promise.all([
-    listPublishedByCity({ city: ANCHOR_CITY, categoryId: category }),
+    listPublished({ categoryId: category }),
     fetchCategories(),
     fetchAmenities(),
     fetchCertBodies(),
@@ -66,11 +64,8 @@ export default async function BusinessesPage({
     <div className="mx-auto max-w-6xl px-4 py-8">
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-            <Store className="size-3.5" /> {t("pageTitle")}
-          </div>
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            {t("publicTitle", { city: ANCHOR_CITY })}
+            {t("publicTitle")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("publicSubtitle")}</p>
         </div>

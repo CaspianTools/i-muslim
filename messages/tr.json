@@ -1476,7 +1476,7 @@
     "pageTitle": "Helal İşletme Rehberi",
     "subtitleLive": "Firestore'dan canlı.",
     "subtitleMock": "Örnek veri — gerçek kayıtları yönetmek için Firebase Admin'i yapılandırın.",
-    "publicTitle": "{city} şehrindeki helal işletmeler",
+    "publicTitle": "Helal işletmeler",
     "publicSubtitle": "i-muslim ekibi tarafından doğrulanmış kayıtlar.",
     "publicEmpty": "Bu filtrelerle eşleşen kayıt yok.",
     "publicEmptyHint": "Filtreleri temizlemeyi deneyin veya rehberimiz büyüdükçe tekrar uğrayın.",

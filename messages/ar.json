@@ -1476,7 +1476,7 @@
     "pageTitle": "دليل الأعمال الحلال",
     "subtitleLive": "مباشر من Firestore.",
     "subtitleMock": "بيانات تجريبية — قم بتهيئة Firebase Admin لإدارة قوائم حقيقية.",
-    "publicTitle": "أعمال حلال في {city}",
+    "publicTitle": "أعمال حلال",
     "publicSubtitle": "قوائم موثوقة، مختارة بعناية من فريق i-muslim.",
     "publicEmpty": "لا توجد قوائم تطابق هذه المرشحات بعد.",
     "publicEmptyHint": "حاول مسح المرشحات، أو عد لاحقاً مع توسيع الدليل.",

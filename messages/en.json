@@ -736,7 +736,28 @@
     "filterByStatus": "Filter by status",
     "filterByWindow": "Filter by time",
     "newEvent": "New event",
+    "tabSubmissions": "Submissions",
     "noPersistTitle": "Configure Firebase Admin to create events.",
+    "submissions": {
+      "queueTitle": "Event submissions",
+      "queueSubtitle": "Review community-proposed events and promote them to the public calendar.",
+      "tabPending": "Pending",
+      "tabApproved": "Approved",
+      "tabRejected": "Rejected",
+      "noSubmissions": "No submissions in this bucket.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "cancel": "Cancel",
+      "promoteSuccess": "Submission promoted. The new event is in Draft — review and publish from the events list.",
+      "rejectSuccess": "Submission rejected.",
+      "rejectDialogTitle": "Reject submission",
+      "rejectDialogDescription": "Optionally tell us why \"{name}\" doesn't qualify. The reason is logged but not emailed to the submitter.",
+      "rejectReasonLabel": "Reason (optional)",
+      "rejectedFor": "Rejected: {reason}",
+      "viewPromoted": "View draft event",
+      "anonymous": "Anonymous",
+      "noPersistToast": "Cannot save: Firestore is not configured."
+    },
     "rowActions": "Actions for {name}",
     "rowsPerPage": "Rows per page",
     "previousPage": "Previous page",
@@ -887,6 +908,23 @@
       "title": "Submit an event",
       "subtitle": "Propose a community event for review.",
       "guideline": "Submissions are reviewed by an admin before appearing on the public calendar.",
+      "draftRestored": "Draft restored.",
+      "draftCleared": "Draft cleared.",
+      "discardDraft": "Discard draft",
+      "steps": {
+        "basics": "Basics",
+        "when": "When",
+        "where": "Where",
+        "who": "Organizer",
+        "review": "Review"
+      },
+      "review": {
+        "heading": "Review your submission",
+        "subheading": "Check these details before submitting. An admin will review before publishing.",
+        "editStep": "Edit",
+        "publicSection": "Public — shown to attendees",
+        "privateSection": "Private — only the admin sees this"
+      },
       "fields": {
         "title": "Event title",
         "description": "Description",
@@ -894,20 +932,50 @@
         "startsAt": "Starts at",
         "endsAt": "Ends at (optional)",
         "timezone": "Timezone",
+        "recurrence": "Repeats",
         "locationMode": "Location",
         "venue": "Venue name",
         "address": "Address",
-        "url": "Online URL",
+        "country": "Venue country",
+        "url": "Meeting URL",
+        "platform": "Platform",
+        "dialIn": "Dial-in info",
         "organizerName": "Organizer name",
         "organizerContact": "Organizer contact (optional)",
         "submitterEmail": "Your email"
+      },
+      "placeholders": {
+        "platform": "e.g. Zoom, Google Meet, MS Teams",
+        "dialIn": "e.g. +1 (555) 555-0100, ID 123 4567",
+        "organizerContact": "Phone, email, or social handle attendees can use"
+      },
+      "helpers": {
+        "organizerName": "Shown publicly on the event page.",
+        "organizerContact": "Shown publicly so attendees can reach the organizer.",
+        "submitterEmail": "Private — only the admin sees this. Defaults to your account email; edit if you'd like correspondence to go elsewhere.",
+        "timezoneSuggested": "Set timezone to {tz} based on the venue country.",
+        "categoryHintPrefix": "Tip:"
+      },
+      "categoryHints": {
+        "janazah": "Please include the deceased's name and the relevant funeral home if known.",
+        "iftar": "Confirm whether food is provided and any RSVP requirement.",
+        "lecture": "Include the speaker's name and the language of the lecture.",
+        "class": "Mention the level (beginner / intermediate / advanced) and any prerequisites.",
+        "fundraiser": "State the cause and how funds will be used."
       },
       "locationModes": {
         "in-person": "In person",
         "online": "Online",
         "hybrid": "Hybrid"
       },
+      "recurrencePresets": {
+        "none": "Does not repeat",
+        "weekly": "Weekly",
+        "monthly": "Monthly"
+      },
       "actions": {
+        "back": "Back",
+        "next": "Next",
         "submit": "Submit for review",
         "submitting": "Submitting…"
       },
@@ -918,9 +986,18 @@
         "organizerRequired": "Please provide an organizer name.",
         "submitterEmailRequired": "Please provide a valid email.",
         "venueRequired": "Venue or address is required for in-person events.",
-        "urlRequired": "Meeting URL is required for online events."
+        "urlRequired": "Meeting URL is required for online events.",
+        "fixStep": "Fix the highlighted fields before continuing.",
+        "startInPast": "Start is in the past — double-check before submitting.",
+        "maxDuration": "Duration is over 30 days — double-check the end time."
       },
-      "success": "Thank you — your event was submitted for review.",
+      "success": {
+        "headline": "Thank you — your event was submitted for review.",
+        "tabTitle": "{title} — Submitted",
+        "startsAtLine": "Starts {when} ({tz})",
+        "downloadIcs": "Download .ics preview",
+        "icsHint": "Open the file in your calendar app to verify the timezone."
+      },
       "errorGeneric": "Could not submit event. Please try again.",
       "errorRate": "You've submitted several events recently. Please try again later.",
       "errorAuth": "Please sign in to submit an event."
@@ -1529,9 +1606,7 @@
   },
   "businesses": {
     "pageTitle": "Halal Business Directory",
-    "subtitleLive": "Live from Firestore.",
-    "subtitleMock": "Firebase Admin is not configured — connect it to manage real listings.",
-    "publicTitle": "Halal businesses in {city}",
+    "publicTitle": "Halal businesses",
     "publicSubtitle": "Verified listings, curated by the i-muslim team.",
     "publicEmpty": "No listings match these filters yet.",
     "publicEmptyHint": "Try clearing the filters, or check back as we expand the directory.",
@@ -1588,6 +1663,7 @@
     },
     "statuses": {
       "all": "All statuses",
+      "submitted": "Submitted",
       "draft": "Draft",
       "published": "Published",
       "archived": "Archived"
@@ -1657,6 +1733,7 @@
       "filterByHalal": "Filter by halal status",
       "filterByCategory": "Filter by category",
       "noResults": "No listings match these filters.",
+      "reviewCta": "Review",
       "createTitle": "New listing",
       "editTitle": "Edit listing",
       "createDescription": "Add a new halal business to the directory.",

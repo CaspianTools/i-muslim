@@ -4,12 +4,12 @@ import { normalizeBusiness } from "@/lib/admin/data/businesses";
 import type { Business } from "@/types/business";
 
 export interface PublicListOptions {
-  city: string;
+  city?: string;
   categoryId?: string;
   limit?: number;
 }
 
-export async function listPublishedByCity(opts: PublicListOptions): Promise<{
+export async function listPublished(opts: PublicListOptions = {}): Promise<{
   businesses: Business[];
   source: "firestore" | "unavailable";
 }> {
@@ -19,8 +19,10 @@ export async function listPublishedByCity(opts: PublicListOptions): Promise<{
   try {
     let q = db
       .collection("businesses")
-      .where("status", "==", "published")
-      .where("address.city", "==", opts.city) as FirebaseFirestore.Query;
+      .where("status", "==", "published") as FirebaseFirestore.Query;
+    if (opts.city) {
+      q = q.where("address.city", "==", opts.city);
+    }
     if (opts.categoryId) {
       q = q.where("categoryIds", "array-contains", opts.categoryId);
     }
@@ -30,7 +32,7 @@ export async function listPublishedByCity(opts: PublicListOptions): Promise<{
       .filter((b): b is Business => b !== null);
     return { businesses, source: "firestore" };
   } catch (err) {
-    console.warn("[businesses/public] listPublishedByCity failed:", err);
+    console.warn("[businesses/public] listPublished failed:", err);
     return { businesses: [], source: "unavailable" };
   }
 }
