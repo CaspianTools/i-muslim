@@ -338,7 +338,7 @@ export async function rejectSubmission(submissionId: string, reason: string): Pr
     decidedAt: Timestamp.now(),
     rejectionReason: reason,
   });
-  revalidatePath("/admin/mosques/queue");
+  revalidatePath("/admin/mosques");
   return { ok: true };
 }
 
@@ -365,7 +365,7 @@ export async function promoteSubmission(submissionId: string): Promise<ActionRes
     decidedAt: Timestamp.now(),
     promotedSlug: result.slug,
   });
-  revalidatePath("/admin/mosques/queue");
+  revalidatePath("/admin/mosques");
   return result;
 }
 

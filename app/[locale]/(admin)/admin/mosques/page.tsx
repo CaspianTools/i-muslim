@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AdminMosquesPage() {
-  const { mosques, source } = await fetchAllMosquesAdmin();
+  const { rows, source } = await fetchAllMosquesAdmin();
   const t = await getTranslations("mosquesAdmin");
 
   return (
@@ -19,7 +19,7 @@ export default async function AdminMosquesPage() {
         title={t("pageTitle")}
         subtitle={source === "firestore" ? t("subtitleLive") : t("subtitleMock")}
       />
-      <MosquesPageClient initialMosques={mosques} />
+      <MosquesPageClient initialRows={rows} />
     </div>
   );
 }

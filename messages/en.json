@@ -1542,6 +1542,7 @@
       "country": "Country",
       "status": "Status",
       "denomination": "Tradition",
+      "type": "Type",
       "updatedAt": "Updated"
     },
     "statuses": {
@@ -1639,20 +1640,52 @@
       "rejectedToast": "Submission rejected.",
       "errorGeneric": "Couldn't save. Try again."
     },
-    "queueTitle": "Moderation queue",
-    "queueSubtitle": "Submissions and pending edits awaiting review.",
-    "queueEmpty": "Nothing to review right now.",
-    "queueColumns": {
-      "name": "Name",
+    "viewDialog": {
+      "badgeMosque": "Mosque",
+      "badgeSubmission": "Submission",
+      "submittedMeta": "Submitted by {who} · {when}",
+      "anonymous": "anonymous",
+      "sectionLocation": "Location",
+      "sectionIdentity": "Identity",
+      "sectionContact": "Contact",
+      "sectionServices": "Services",
+      "address": "Address",
       "city": "City",
-      "submittedBy": "Submitted by",
-      "submittedAt": "Submitted",
-      "actions": "Actions"
-    },
-    "queueActions": {
-      "promote": "Approve & publish",
+      "country": "Country",
+      "coordinates": "Coordinates",
+      "denomination": "Tradition",
+      "denominations": {
+        "sunni": "Sunni",
+        "shia": "Shia",
+        "ibadi": "Ibadi",
+        "ahmadi": "Ahmadi",
+        "other": "Other",
+        "unspecified": "Unspecified"
+      },
+      "languages": "Languages",
+      "description": "Description",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "noServices": "No services listed.",
+      "services": {
+        "fridayPrayer": "Friday prayer",
+        "womenSection": "Women's section",
+        "wuduFacilities": "Wudu facilities",
+        "wheelchairAccess": "Wheelchair access",
+        "parking": "Parking",
+        "quranClasses": "Quran classes",
+        "library": "Library",
+        "funeralServices": "Funeral services",
+        "nikahServices": "Nikah services",
+        "accommodatesItikaf": "Accommodates I'tikaf"
+      },
+      "approve": "Approve & publish",
       "reject": "Reject",
-      "view": "Review"
+      "rejectConfirm": "Confirm reject",
+      "rejectReasonLabel": "Reason",
+      "rejectReasonPlaceholder": "Tell the submitter why this was rejected…",
+      "edit": "Edit"
     },
     "deleteTitle": "Delete mosque",
     "deleteDescription": "This permanently removes \"{name}\" from the directory. This cannot be undone.",

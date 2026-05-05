@@ -25,7 +25,9 @@ export async function loadPaletteIndex(): Promise<PaletteIndex> {
 
   const items: PaletteEntity[] = [];
 
-  for (const m of mosqueRes.mosques) {
+  for (const row of mosqueRes.rows) {
+    if (row.kind !== "mosque") continue;
+    const m = row.mosque;
     const hint = [m.city, m.country].filter(Boolean).join(", ");
     items.push({
       id: m.slug,
