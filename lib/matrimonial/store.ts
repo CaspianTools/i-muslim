@@ -87,7 +87,7 @@ function normalizeProfile(id: string, raw: Record<string, unknown>): Matrimonial
       madhhabs: [],
       sects: [],
       prayerMin: "sometimes",
-      polygamyAcceptable: true,
+      polygamyAcceptable: "na",
     },
 
     bio: (raw.bio as string) ?? "",

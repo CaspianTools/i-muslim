@@ -1167,8 +1167,8 @@
     },
     "genders": {
       "all": "All",
-      "male": "Brother",
-      "female": "Sister"
+      "male": "Man",
+      "female": "Woman"
     },
     "madhhabs": {
       "all": "Any madhhab",

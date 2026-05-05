@@ -91,15 +91,18 @@ export function mutualFilter(
     return false;
   }
 
+  // polygamyAcceptable is the preferred polygamy stance for a match;
+  // "na" acts as a wildcard (no filter), otherwise it must equal the
+  // candidate's own stance.
   if (
-    !viewer.preferences.polygamyAcceptable &&
-    candidate.polygamyStance === "open"
+    viewer.preferences.polygamyAcceptable !== "na" &&
+    viewer.preferences.polygamyAcceptable !== candidate.polygamyStance
   ) {
     return false;
   }
   if (
-    !candidate.preferences.polygamyAcceptable &&
-    viewer.polygamyStance === "open"
+    candidate.preferences.polygamyAcceptable !== "na" &&
+    candidate.preferences.polygamyAcceptable !== viewer.polygamyStance
   ) {
     return false;
   }

@@ -138,7 +138,7 @@ function buildProfile(
       madhhabs: rand() > 0.6 ? [madhhab] : [],
       sects: [],
       prayerMin: rand() > 0.5 ? "mostly" : "sometimes",
-      polygamyAcceptable: gender === "female" ? rand() > 0.85 : true,
+      polygamyAcceptable: pick(rand, ["open", "neutral", "closed", "na"] as const),
     },
 
     bio: `Practicing Muslim from ${city}, looking for a spouse who values deen and family.`,

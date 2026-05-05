@@ -6,7 +6,6 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/sonner";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
 import { MadhhabCombobox } from "@/components/common/MadhhabCombobox";
@@ -47,7 +46,7 @@ export function MatrimonialEnableForm({ defaultLookingFor = "female" }: Props) {
       preferredCountries: [],
       preferredMadhhabs: [],
       prayerMin: "sometimes",
-      polygamyAcceptable: false,
+      polygamyAcceptable: "na",
       photoStubs: [],
     },
   });
@@ -147,12 +146,15 @@ export function MatrimonialEnableForm({ defaultLookingFor = "female" }: Props) {
             ))}
           </Select>
         </Field>
-        <div className="flex items-center gap-2 pt-2 sm:col-span-2">
-          <Checkbox id="polygamyAcceptable" {...register("polygamyAcceptable")} />
-          <label htmlFor="polygamyAcceptable" className="text-sm">
-            {t("polygamyAcceptable")}
-          </label>
-        </div>
+        <Field label={t("polygamyAcceptable")}>
+          <Select {...register("polygamyAcceptable")}>
+            {(["open", "neutral", "closed", "na"] as const).map((p) => (
+              <option key={p} value={p}>
+                {tPolygamy(p)}
+              </option>
+            ))}
+          </Select>
+        </Field>
       </Section>
 
       <div className="flex items-center justify-end gap-3">

@@ -51,7 +51,7 @@ export const matrimonialFieldsSchema = z
       .array(z.enum(["hanafi", "maliki", "shafii", "hanbali", "other", "none"]))
       .max(6),
     prayerMin: z.enum(["always", "mostly", "sometimes", "rarely", "learning"]),
-    polygamyAcceptable: z.boolean(),
+    polygamyAcceptable: z.enum(["open", "neutral", "closed", "na"]),
     photoStubs: z.array(z.string().url()).max(6),
   })
   .refine((v) => v.ageMax >= v.ageMin, {

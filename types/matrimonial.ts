@@ -56,7 +56,7 @@ export interface MatrimonialPreferences {
   madhhabs: Madhhab[];
   sects: Sect[];
   prayerMin: PrayerCommitment;
-  polygamyAcceptable: boolean;
+  polygamyAcceptable: PolygamyStance;
 }
 
 export interface MatrimonialVerification {

@@ -1305,8 +1305,8 @@
     },
     "genders": {
       "all": "All",
-      "male": "Brother",
-      "female": "Sister"
+      "male": "Man",
+      "female": "Woman"
     },
     "madhhabs": {
       "all": "Any madhhab",
@@ -1645,41 +1645,6 @@
       "badgeSubmission": "Submission",
       "submittedMeta": "Submitted by {who} · {when}",
       "anonymous": "anonymous",
-      "sectionLocation": "Location",
-      "sectionIdentity": "Identity",
-      "sectionContact": "Contact",
-      "sectionServices": "Services",
-      "address": "Address",
-      "city": "City",
-      "country": "Country",
-      "coordinates": "Coordinates",
-      "denomination": "Tradition",
-      "denominations": {
-        "sunni": "Sunni",
-        "shia": "Shia",
-        "ibadi": "Ibadi",
-        "ahmadi": "Ahmadi",
-        "other": "Other",
-        "unspecified": "Unspecified"
-      },
-      "languages": "Languages",
-      "description": "Description",
-      "phone": "Phone",
-      "email": "Email",
-      "website": "Website",
-      "noServices": "No services listed.",
-      "services": {
-        "fridayPrayer": "Friday prayer",
-        "womenSection": "Women's section",
-        "wuduFacilities": "Wudu facilities",
-        "wheelchairAccess": "Wheelchair access",
-        "parking": "Parking",
-        "quranClasses": "Quran classes",
-        "library": "Library",
-        "funeralServices": "Funeral services",
-        "nikahServices": "Nikah services",
-        "accommodatesItikaf": "Accommodates I'tikaf"
-      },
       "approve": "Approve & publish",
       "reject": "Reject",
       "rejectConfirm": "Confirm reject",
@@ -2293,7 +2258,7 @@
       "preferredMadhhabs": "Preferred madhhabs",
       "prayerMin": "Minimum prayer commitment",
       "polygamyStance": "Polygamy stance",
-      "polygamyAcceptable": "Open to a polygamous match",
+      "polygamyAcceptable": "Polygamy stance",
       "enable": "Enable matrimonial",
       "enabling": "Enabling…",
       "enabledToast": "Matrimonial enabled — you're now visible to potential matches."
