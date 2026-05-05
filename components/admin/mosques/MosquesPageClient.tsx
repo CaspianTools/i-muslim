@@ -101,11 +101,27 @@ export function MosquesPageClient({
   const mosques = initialMosques;
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<MosqueStatus | "all">("all");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [countryFilter, setCountryFilter] = useState<string>("all");
   const [sortKey, setSortKey] = useState<SortKey>("updatedAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(25);
   const [deleteTarget, setDeleteTarget] = useState<Mosque | null>(null);
+
+  const cityOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const m of mosques) if (m.city) set.add(m.city);
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [mosques]);
+
+  const countryOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const m of mosques) if (m.country) set.add(m.country);
+    return Array.from(set)
+      .map((code) => ({ code, label: countryName(code) }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [mosques]);
 
   // Auto-open the dialog when arriving via a notification deep-link
   // (?slug=<slug>). Initialized once per mount; the URL param is
@@ -124,6 +140,8 @@ export function MosquesPageClient({
   const filtered = useMemo(() => {
     const list = mosques.filter((m) => {
       if (status !== "all" && m.status !== status) return false;
+      if (cityFilter !== "all" && m.city !== cityFilter) return false;
+      if (countryFilter !== "all" && m.country !== countryFilter) return false;
       if (query) {
         const q = query.toLowerCase();
         if (
@@ -149,7 +167,7 @@ export function MosquesPageClient({
       if (cmp !== 0) return cmp * sign;
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
-  }, [mosques, query, status, sortKey, sortDir]);
+  }, [mosques, query, status, cityFilter, countryFilter, sortKey, sortDir]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -245,6 +263,38 @@ export function MosquesPageClient({
           {STATUS_VALUES.map((v) => (
             <option key={v} value={v}>
               {tStatuses(v)}
+            </option>
+          ))}
+        </select>
+        <select
+          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          value={cityFilter}
+          onChange={(e) => {
+            setCityFilter(e.target.value);
+            setPageIndex(0);
+          }}
+          aria-label={t("filterByCity")}
+        >
+          <option value="all">{t("allCities")}</option>
+          {cityOptions.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+        <select
+          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          value={countryFilter}
+          onChange={(e) => {
+            setCountryFilter(e.target.value);
+            setPageIndex(0);
+          }}
+          aria-label={t("filterByCountry")}
+        >
+          <option value="all">{t("allCountries")}</option>
+          {countryOptions.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.label}
             </option>
           ))}
         </select>

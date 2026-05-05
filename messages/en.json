@@ -1554,6 +1554,10 @@
       "suspended": "Suspended"
     },
     "filterByStatus": "Filter by status",
+    "filterByCity": "Filter by city",
+    "filterByCountry": "Filter by country",
+    "allCities": "All cities",
+    "allCountries": "All countries",
     "noResults": "No mosques match these filters.",
     "form": {
       "createTitle": "New mosque",
