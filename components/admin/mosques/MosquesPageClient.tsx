@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { NewMosqueButton } from "@/components/admin/mosques/NewMosqueButton";
 import { toast } from "sonner";
 import { cn, formatRelative } from "@/lib/utils";
 import type { Mosque, MosqueStatus } from "@/types/mosque";
@@ -45,10 +46,8 @@ function statusVariant(status: MosqueStatus): "success" | "warning" | "danger" |
 
 export function MosquesPageClient({
   initialMosques,
-  source,
 }: {
   initialMosques: Mosque[];
-  source: "firestore" | "mock";
 }) {
   const router = useRouter();
   const t = useTranslations("mosquesAdmin");
@@ -154,11 +153,14 @@ export function MosquesPageClient({
             </option>
           ))}
         </select>
-        {source === "mock" && (
-          <p className="ms-auto text-xs text-muted-foreground">
-            {t("noPersistTitle")}
-          </p>
-        )}
+        <div className="ms-auto flex items-center gap-2">
+          <Button variant="secondary" size="sm" asChild>
+            <Link href="/admin/mosques/import">
+              <Upload /> {t("importCta")}
+            </Link>
+          </Button>
+          <NewMosqueButton label={t("newMosque")} />
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-lg border border-border bg-card">

@@ -1545,7 +1545,6 @@
     },
     "filterByStatus": "Filter by status",
     "noResults": "No mosques match these filters.",
-    "noPersistTitle": "Configure Firebase Admin to create mosques.",
     "form": {
       "createTitle": "New mosque",
       "editTitle": "Edit mosque",
