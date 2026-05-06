@@ -1,5 +1,8 @@
 import { getTranslations } from "next-intl/server";
-import { LanguagesForm } from "@/components/admin/settings/LanguagesForm";
+import {
+  LanguagesForm,
+  type LanguagesScope,
+} from "@/components/admin/settings/LanguagesForm";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { listReservedLocaleDocs } from "@/lib/admin/data/ui-locales";
 import { getContentTranslationStats } from "@/lib/admin/data/content-translation-stats";
@@ -24,21 +27,40 @@ function isBundledLocale(code: string): code is BundledLocale {
   return (BUNDLED_LOCALES as readonly string[]).includes(code);
 }
 
-export default async function Page() {
-  const [settings, reservedDocs, contentStats, t] = await Promise.all([
+function resolveScope(raw: string | string[] | undefined): LanguagesScope {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value === "quran" || value === "hadith" ? value : "interface";
+}
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ scope?: string | string[] }>;
+}) {
+  const [params, settings, reservedDocs, contentStats, t] = await Promise.all([
+    searchParams,
     getLanguageSettings(),
     listReservedLocaleDocs(),
     getContentTranslationStats(),
     getTranslations("adminSettings.languages"),
   ]);
+  const scope = resolveScope(params.scope);
+  const tNav = await getTranslations("adminSettings.nav");
+  const heading =
+    scope === "quran"
+      ? tNav("languagesQuran")
+      : scope === "hadith"
+        ? tNav("languagesHadith")
+        : tNav("languagesInterface");
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold tracking-tight">{t("title")}</h2>
+        <h2 className="text-xl font-semibold tracking-tight">{heading}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       </div>
       <LanguagesForm
+        scope={scope}
         initial={{
           uiEnabled: settings.uiEnabled,
           quranEnabled: settings.quranEnabled,

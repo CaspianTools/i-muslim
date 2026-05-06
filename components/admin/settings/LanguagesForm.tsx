@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Pencil, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   LOCALES,
   LOCALE_META,
@@ -86,7 +85,10 @@ export type HadithStats = ContentStats & {
   >;
 };
 
+export type LanguagesScope = "interface" | "quran" | "hadith";
+
 export type LanguagesFormProps = {
+  scope: LanguagesScope;
   initial: {
     uiEnabled: Locale[];
     quranEnabled: LangCode[];
@@ -103,7 +105,7 @@ function setEqual<T>(a: readonly T[], b: readonly T[]): boolean {
   return b.every((v) => set.has(v));
 }
 
-export function LanguagesForm({ initial }: LanguagesFormProps) {
+export function LanguagesForm({ scope, initial }: LanguagesFormProps) {
   const t = useTranslations("adminSettings.languages");
   const tCommon = useTranslations("common");
 
@@ -302,14 +304,9 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
   // ── Render ──────────────────────────────────────────────────────────────
 
   return (
-    <Tabs defaultValue="interface" className="space-y-4">
-      <TabsList>
-        <TabsTrigger value="interface">{t("tabs.interface")}</TabsTrigger>
-        <TabsTrigger value="quran">{t("tabs.quran")}</TabsTrigger>
-        <TabsTrigger value="hadith">{t("tabs.hadith")}</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="interface" className="space-y-4">
+    <div className="space-y-4">
+      {scope === "interface" && (
+        <div className="space-y-4">
         <ul className="divide-y divide-border rounded-lg border border-border bg-card">
           {LOCALES.map((code) => {
             const isDefault = code === DEFAULT_LOCALE;
@@ -414,45 +411,50 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
           tCommon={tCommon}
           t={t}
         />
-      </TabsContent>
+        </div>
+      )}
 
-      <TabsContent value="quran" className="space-y-4">
-        <ContentLangList
-          enabled={quranEnabled}
-          stats={initial.quranStats}
-          onToggle={(c) => toggleContent(setQuranEnabled, c)}
-          onRowClick={(c) => openContentDialog("quran", c)}
-          defaultHint={t("defaultLockedHint")}
-          chipLabel={(percent) => t("progressChipLabel", { percent })}
-        />
+      {scope === "quran" && (
+        <div className="space-y-4">
+          <ContentLangList
+            enabled={quranEnabled}
+            stats={initial.quranStats}
+            onToggle={(c) => toggleContent(setQuranEnabled, c)}
+            onRowClick={(c) => openContentDialog("quran", c)}
+            defaultHint={t("defaultLockedHint")}
+            chipLabel={(percent) => t("progressChipLabel", { percent })}
+          />
 
-        <SaveBar
-          dirty={quranDirty}
-          pending={pending && pendingTab === "quran"}
-          onSave={() => save("quran")}
-          tCommon={tCommon}
-          t={t}
-        />
-      </TabsContent>
+          <SaveBar
+            dirty={quranDirty}
+            pending={pending && pendingTab === "quran"}
+            onSave={() => save("quran")}
+            tCommon={tCommon}
+            t={t}
+          />
+        </div>
+      )}
 
-      <TabsContent value="hadith" className="space-y-4">
-        <ContentLangList
-          enabled={hadithEnabled}
-          stats={initial.hadithStats}
-          onToggle={(c) => toggleContent(setHadithEnabled, c)}
-          onRowClick={(c) => openContentDialog("hadith", c)}
-          defaultHint={t("defaultLockedHint")}
-          chipLabel={(percent) => t("progressChipLabel", { percent })}
-        />
+      {scope === "hadith" && (
+        <div className="space-y-4">
+          <ContentLangList
+            enabled={hadithEnabled}
+            stats={initial.hadithStats}
+            onToggle={(c) => toggleContent(setHadithEnabled, c)}
+            onRowClick={(c) => openContentDialog("hadith", c)}
+            defaultHint={t("defaultLockedHint")}
+            chipLabel={(percent) => t("progressChipLabel", { percent })}
+          />
 
-        <SaveBar
-          dirty={hadithDirty}
-          pending={pending && pendingTab === "hadith"}
-          onSave={() => save("hadith")}
-          tCommon={tCommon}
-          t={t}
-        />
-      </TabsContent>
+          <SaveBar
+            dirty={hadithDirty}
+            pending={pending && pendingTab === "hadith"}
+            onSave={() => save("hadith")}
+            tCommon={tCommon}
+            t={t}
+          />
+        </div>
+      )}
 
       <ContentLangDialog
         key={`content:${contentDialogKind}:${contentDialogCode ?? "none"}`}
@@ -512,7 +514,7 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
           onSaved={onEditorSaved}
         />
       )}
-    </Tabs>
+    </div>
   );
 }
 

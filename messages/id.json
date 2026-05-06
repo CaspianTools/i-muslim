@@ -2144,9 +2144,9 @@
       "media": "Media",
       "typography": "Tipografi",
       "languages": "Bahasa",
-      "languagesInterface": "Interface",
-      "languagesQuran": "Qur'an",
-      "languagesHadith": "Hadith"
+      "languagesInterface": "Antarmuka",
+      "languagesQuran": "Al-Qur'an",
+      "languagesHadith": "Hadis"
     },
     "general": {
       "title": "Identitas situs",
