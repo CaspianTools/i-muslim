@@ -52,11 +52,6 @@ export async function Footer() {
           <h2 className={headingClass}>{t("colWorship")}</h2>
           <ul className="space-y-2">
             <li>
-              <Link href="/prayer-times" className={linkClass}>
-                {t("prayerTimes")}
-              </Link>
-            </li>
-            <li>
               <Link href="/quran" className={linkClass}>
                 {t("quran")}
               </Link>
@@ -105,6 +100,11 @@ export async function Footer() {
         <nav aria-label={t("colTools")} className="space-y-3">
           <h2 className={headingClass}>{t("colTools")}</h2>
           <ul className="space-y-2">
+            <li>
+              <Link href="/prayer-times" className={linkClass}>
+                {t("prayerTimes")}
+              </Link>
+            </li>
             <li>
               <Link href="/zakat" className={linkClass}>
                 {t("zakat")}
