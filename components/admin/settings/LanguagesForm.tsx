@@ -302,38 +302,37 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
   // ── Render ──────────────────────────────────────────────────────────────
 
   return (
-    <Tabs
-      defaultValue="interface"
-      orientation="vertical"
-      className="flex flex-col gap-4 sm:flex-row sm:gap-6"
-    >
-      <TabsList
-        // Override the default horizontal-pill list with a vertical stack so
-        // the language sub-sections sit alongside content as a tertiary nav.
-        // On narrow viewports it falls back to a horizontal scroll-strip.
-        className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 sm:w-44 sm:shrink-0 sm:flex-col sm:items-stretch sm:overflow-visible"
-      >
-        <TabsTrigger
-          value="interface"
-          className="w-full justify-start whitespace-nowrap"
+    <Tabs defaultValue="interface" orientation="vertical">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+        <TabsList
+          // Override the default horizontal-pill list with a vertical stack so
+          // the language sub-sections sit alongside content as a tertiary nav.
+          // On narrow viewports it falls back to a horizontal scroll-strip.
+          // The explicit `flex` wins over the default `inline-flex` (which
+          // would otherwise shrinkwrap the column to its content width).
+          className="flex h-auto w-full flex-row justify-start gap-1 overflow-x-auto bg-transparent p-0 sm:w-44 sm:shrink-0 sm:flex-col sm:items-stretch sm:overflow-visible"
         >
-          {t("tabs.interface")}
-        </TabsTrigger>
-        <TabsTrigger
-          value="quran"
-          className="w-full justify-start whitespace-nowrap"
-        >
-          {t("tabs.quran")}
-        </TabsTrigger>
-        <TabsTrigger
-          value="hadith"
-          className="w-full justify-start whitespace-nowrap"
-        >
-          {t("tabs.hadith")}
-        </TabsTrigger>
-      </TabsList>
+          <TabsTrigger
+            value="interface"
+            className="w-full justify-start whitespace-nowrap"
+          >
+            {t("tabs.interface")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="quran"
+            className="w-full justify-start whitespace-nowrap"
+          >
+            {t("tabs.quran")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="hadith"
+            className="w-full justify-start whitespace-nowrap"
+          >
+            {t("tabs.hadith")}
+          </TabsTrigger>
+        </TabsList>
 
-      <div className="min-w-0 flex-1 space-y-4">
+        <div className="min-w-0 flex-1 space-y-4">
 
       <TabsContent value="interface" className="space-y-4">
         <ul className="divide-y divide-border rounded-lg border border-border bg-card">
@@ -480,6 +479,7 @@ export function LanguagesForm({ initial }: LanguagesFormProps) {
         />
       </TabsContent>
 
+        </div>
       </div>
 
       <ContentLangDialog
