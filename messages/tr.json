@@ -1,4 +1,7 @@
 {
+  "_meta": {
+    "_review": "Machine-drafted Turkish translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Hutbe, Tefsir, Zekat) and tone (formal vs casual). 2026-05-06 update: filled 611 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
+  },
   "common": {
     "cancel": "İptal",
     "save": "Kaydet",
@@ -2141,9 +2144,9 @@
       "media": "Medya",
       "typography": "Tipografi",
       "languages": "Diller",
-      "languagesInterface": "Interface",
-      "languagesQuran": "Qur'an",
-      "languagesHadith": "Hadith"
+      "languagesInterface": "Arayüz",
+      "languagesQuran": "Kur'an",
+      "languagesHadith": "Hadis"
     },
     "general": {
       "title": "Site kimliği",
@@ -2663,8 +2666,5 @@
     "edited": "düzenlendi",
     "replies": "{count, plural, one {1 yanıt} other {# yanıt}}",
     "flags": "{count, plural, one {1 bildiri} other {# bildiri}}"
-  },
-  "_meta": {
-    "_review": "Machine-drafted Turkish translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Hutbe, Tefsir, Zekat) and tone (formal vs casual). 2026-05-06 update: filled 611 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   }
 }

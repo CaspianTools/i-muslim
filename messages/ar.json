@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "_review": "Machine-drafted Arabic translations — please have a native speaker review before shipping. Pay particular attention to: sacred terms (Quran, Hadith, Khutbah), greetings (Assalamu alaikum), and the formality register."
+    "_review": "Machine-drafted Arabic translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (الصلاة، القرآن، الحديث، المذهب، الزواج), tone (formal vs casual), and ICU plural arms in comments.* and profileComments.*. 2026-05-06 update: filled 610 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   },
   "common": {
     "cancel": "إلغاء",
@@ -25,6 +25,13 @@
     "searchPlaceholder": "ابحث عن دولة…",
     "noResults": "لم يتم العثور على دولة.",
     "moreCountries": "+{count} أخرى",
+    "removeChip": "إزالة {name}"
+  },
+  "madhhabCombobox": {
+    "selectMadhhabs": "اختر المذاهب",
+    "searchPlaceholder": "ابحث عن مذهب…",
+    "noResults": "لم يُعثر على مذهب.",
+    "moreMadhhabs": "+{count} المزيد",
     "removeChip": "إزالة {name}"
   },
   "languageCombobox": {
@@ -151,13 +158,13 @@
     "newButton": "جديد",
     "expand": "توسيع",
     "collapse": "طيّ الشريط الجانبي",
+    "soonBadge": "قريبًا",
     "groups": {
       "overview": "نظرة عامة",
       "community": "المجتمع",
       "content": "المحتوى",
       "worship": "العبادة والتقويم",
       "engagement": "التفاعل",
-      "services": "الخدمات",
       "system": "النظام"
     },
     "items": {
@@ -179,6 +186,7 @@
       "events": "الفعاليات",
       "eventsCategories": "الفئات",
       "mosques": "المساجد",
+      "mosquesFacilities": "المرافق",
       "qa": "الأسئلة",
       "announcements": "الإعلانات",
       "newsletter": "النشرة",
@@ -186,6 +194,10 @@
       "comments": "التعليقات",
       "donations": "التبرعات",
       "businesses": "الأعمال",
+      "businessesCategories": "الفئات",
+      "businessesReports": "البلاغات",
+      "businessesCertBodies": "هيئات التصديق",
+      "businessesAmenities": "المرافق",
       "courses": "الدورات",
       "matrimonial": "الزواج",
       "contactMessages": "التواصل",
@@ -251,6 +263,49 @@
     "in": "بعد {countdown}",
     "allComplete": "اكتملت صلوات اليوم"
   },
+  "hijri": {
+    "months": {
+      "1": "محرم",
+      "2": "صفر",
+      "3": "ربيع الأول",
+      "4": "ربيع الآخر",
+      "5": "جمادى الأولى",
+      "6": "جمادى الآخرة",
+      "7": "رجب",
+      "8": "شعبان",
+      "9": "رمضان",
+      "10": "شوال",
+      "11": "ذو القعدة",
+      "12": "ذو الحجة"
+    }
+  },
+  "hijriConverter": {
+    "title": "محوّل التاريخ الهجري",
+    "subtitle": "حوّل بين التقويمين الميلادي والهجري.",
+    "today": {
+      "label": "اليوم",
+      "ahSuffix": "هـ",
+      "ceSuffix": "م"
+    },
+    "gregorianToHijri": {
+      "title": "ميلادي ← هجري",
+      "dateLabel": "التاريخ الميلادي",
+      "resultLabel": "التاريخ الهجري",
+      "useToday": "اليوم"
+    },
+    "hijriToGregorian": {
+      "title": "هجري ← ميلادي",
+      "yearLabel": "السنة (هـ)",
+      "monthLabel": "الشهر",
+      "dayLabel": "اليوم",
+      "resultLabel": "التاريخ الميلادي",
+      "useToday": "اليوم"
+    },
+    "errors": {
+      "invalidDate": "هذا اليوم غير موجود في الشهر الهجري المحدد.",
+      "outOfRange": "التاريخ خارج النطاق الهجري المدعوم."
+    }
+  },
   "prayer": {
     "pageTitle": "أوقات الصلاة",
     "pageSubtitleCity": "صلوات اليوم الخمس في {city}، {country}.",
@@ -315,49 +370,6 @@
     "exportIcsHint": "نزّل ملف تقويم لمدة 30 يوماً يمكن استيراده إلى تقويم Apple أو Google أو Outlook.",
     "monthlyTitle": "الجدول الشهري",
     "monthlySubtitle": "الـ30 يوماً القادمة للموقع المحدد."
-  },
-  "hijri": {
-    "months": {
-      "1": "محرم",
-      "2": "صفر",
-      "3": "ربيع الأول",
-      "4": "ربيع الآخر",
-      "5": "جمادى الأولى",
-      "6": "جمادى الآخرة",
-      "7": "رجب",
-      "8": "شعبان",
-      "9": "رمضان",
-      "10": "شوال",
-      "11": "ذو القعدة",
-      "12": "ذو الحجة"
-    }
-  },
-  "hijriConverter": {
-    "title": "محوّل التاريخ الهجري",
-    "subtitle": "حوّل بين التقويمين الميلادي والهجري.",
-    "today": {
-      "label": "اليوم",
-      "ahSuffix": "هـ",
-      "ceSuffix": "م"
-    },
-    "gregorianToHijri": {
-      "title": "ميلادي ← هجري",
-      "dateLabel": "التاريخ الميلادي",
-      "resultLabel": "التاريخ الهجري",
-      "useToday": "اليوم"
-    },
-    "hijriToGregorian": {
-      "title": "هجري ← ميلادي",
-      "yearLabel": "السنة (هـ)",
-      "monthLabel": "الشهر",
-      "dayLabel": "اليوم",
-      "resultLabel": "التاريخ الميلادي",
-      "useToday": "اليوم"
-    },
-    "errors": {
-      "invalidDate": "هذا اليوم غير موجود في الشهر الهجري المحدد.",
-      "outOfRange": "التاريخ خارج النطاق الهجري المدعوم."
-    }
   },
   "users": {
     "pageTitle": "المستخدمون",
@@ -456,12 +468,40 @@
   "nav": {
     "quran": "القرآن",
     "hadith": "الحديث",
+    "prayer": "الصلاة",
     "prayerTimes": "أوقات الصلاة",
     "zakat": "الزكاة",
     "matrimonial": "Matrimonial",
     "events": "الفعاليات",
     "mosques": "المساجد",
-    "articles": "مقالات"
+    "articles": "مقالات",
+    "more": "المزيد",
+    "primary": "التنقل الرئيسي",
+    "search": "بحث",
+    "searchTitle": "بحث",
+    "searchDescription": "ابحث عن آيات في القرآن وأحاديث في مجموعات الحديث.",
+    "searchPlaceholder": "ابحث في القرآن والحديث…",
+    "searchHint": "اضغط Enter للبحث."
+  },
+  "more": {
+    "title": "المزيد",
+    "description": "الأدوات والمجتمع والحساب والتفضيلات.",
+    "sectionCommunity": "المجتمع",
+    "sectionTools": "الأدوات",
+    "sectionAccount": "الحساب",
+    "sectionPreferences": "التفضيلات",
+    "businesses": "الأعمال",
+    "zakat": "حاسبة الزكاة",
+    "hijriConverter": "محوّل التاريخ الهجري",
+    "profile": "الملف الشخصي",
+    "account": "تسجيل الدخول / الخروج",
+    "language": "اللغة",
+    "theme": "المظهر"
+  },
+  "prayerBar": {
+    "viewAll": "كل أوقات الصلاة",
+    "viewAllAria": "عرض كل أوقات الصلاة",
+    "inCountdown": "خلال {countdown}"
   },
   "footer": {
     "tagline": "اقرأ القرآن والسنة، واعرف أوقات الصلاة والمساجد والحياة الحلال — كل ذلك في مكان واحد.",
@@ -665,6 +705,8 @@
     "subtitle": "حاسبة تطهير المال",
     "settingsButton": "الإعدادات",
     "nisabLabel": "النصاب",
+    "nisabGoldGrams": "{grams}غ ذهب",
+    "nisabSilverGrams": "{grams}غ فضة",
     "subtotalUsd": "المجموع الفرعي بالدولار",
     "subtotalOwed": "المستحق بالدولار",
     "currencySearchPlaceholder": "ابحث عن عملة…",
@@ -800,7 +842,28 @@
     "filterByStatus": "تصفية حسب الحالة",
     "filterByWindow": "تصفية حسب الوقت",
     "newEvent": "فعالية جديدة",
+    "tabSubmissions": "الإرسالات",
     "noPersistTitle": "قم بإعداد Firebase Admin لإنشاء فعاليات.",
+    "submissions": {
+      "queueTitle": "إرسالات الفعاليات",
+      "queueSubtitle": "راجع الفعاليات المقترحة من المجتمع وروّج لها إلى التقويم العام.",
+      "tabPending": "قيد الانتظار",
+      "tabApproved": "موافق عليها",
+      "tabRejected": "مرفوضة",
+      "noSubmissions": "لا توجد إرسالات في هذه الفئة.",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "cancel": "إلغاء",
+      "promoteSuccess": "تمت الترقية. الفعالية الجديدة في وضع المسودة — راجعها وانشرها من قائمة الفعاليات.",
+      "rejectSuccess": "تم رفض الإرسال.",
+      "rejectDialogTitle": "رفض الإرسال",
+      "rejectDialogDescription": "اختياريًا أخبرنا لماذا لا تستوفي \"{name}\" الشروط. يُسجَّل السبب لكنه لا يُرسل بالبريد إلى المُرسِل.",
+      "rejectReasonLabel": "السبب (اختياري)",
+      "rejectedFor": "مرفوض: {reason}",
+      "viewPromoted": "عرض مسودة الفعالية",
+      "anonymous": "مجهول",
+      "noPersistToast": "تعذّر الحفظ: Firestore غير مهيأ."
+    },
     "rowActions": "إجراءات على {name}",
     "rowsPerPage": "صفوف لكل صفحة",
     "previousPage": "الصفحة السابقة",
@@ -865,6 +928,7 @@
     },
     "statuses": {
       "all": "كل الحالات",
+      "under_review": "قيد المراجعة",
       "draft": "مسودة",
       "published": "منشور",
       "cancelled": "ملغي"
@@ -967,6 +1031,102 @@
     "featuredHeading": "الفعاليات القادمة",
     "featuredSubheading": "ما يجري خلال الأسبوعين القادمين.",
     "viewAll": "عرض جميع الفعاليات",
+    "submitCta": "إرسال فعالية",
+    "submit": {
+      "title": "إرسال فعالية",
+      "subtitle": "اقترح فعالية مجتمعية للمراجعة.",
+      "guideline": "تخضع الإرسالات لمراجعة المشرف قبل ظهورها على التقويم العام.",
+      "steps": {
+        "basics": "الأساسيات",
+        "when": "متى",
+        "where": "أين",
+        "who": "المنظم",
+        "review": "المراجعة"
+      },
+      "review": {
+        "heading": "راجع إرسالك",
+        "subheading": "تأكد من هذه التفاصيل قبل الإرسال. سيراجع المشرف قبل النشر.",
+        "editStep": "تعديل",
+        "publicSection": "عام — يظهر للمشاركين",
+        "privateSection": "خاص — يراه المشرف فقط"
+      },
+      "fields": {
+        "title": "عنوان الفعالية",
+        "description": "الوصف",
+        "category": "الفئة",
+        "startsAt": "تبدأ في",
+        "endsAt": "تنتهي في (اختياري)",
+        "timezone": "المنطقة الزمنية",
+        "recurrence": "التكرار",
+        "locationMode": "الموقع",
+        "venue": "اسم المكان",
+        "address": "العنوان",
+        "country": "بلد المكان",
+        "url": "رابط الاجتماع",
+        "platform": "المنصة",
+        "dialIn": "معلومات الاتصال الهاتفي",
+        "organizerName": "اسم المنظم",
+        "organizerContact": "تواصل المنظم (اختياري)",
+        "submitterEmail": "بريدك الإلكتروني"
+      },
+      "placeholders": {
+        "platform": "مثل Zoom, Google Meet, MS Teams",
+        "dialIn": "مثل +1 (555) 555-0100, ID 123 4567",
+        "organizerContact": "هاتف أو بريد إلكتروني أو حساب تواصل اجتماعي يمكن للمشاركين استخدامه"
+      },
+      "helpers": {
+        "organizerName": "يظهر علنًا في صفحة الفعالية.",
+        "organizerContact": "يظهر علنًا حتى يتمكن المشاركون من التواصل مع المنظم.",
+        "submitterEmail": "خاص — يراه المشرف فقط. يأخذ القيمة الافتراضية من بريد حسابك؛ عدّله إذا أردت أن تصلك المراسلات إلى عنوان آخر.",
+        "timezoneSuggested": "تم ضبط المنطقة الزمنية إلى {tz} بناءً على بلد المكان.",
+        "categoryHintPrefix": "تلميح:"
+      },
+      "categoryHints": {
+        "janazah": "يرجى ذكر اسم المتوفى ودار العزاء ذات الصلة إذا كانت معروفة.",
+        "iftar": "أكّد ما إذا كان الطعام متوفرًا وأي شرط للتأكيد المسبق.",
+        "lecture": "اذكر اسم المتحدث ولغة المحاضرة.",
+        "class": "اذكر المستوى (مبتدئ / متوسط / متقدم) والمتطلبات السابقة.",
+        "fundraiser": "اذكر القضية وكيف ستُستخدم الأموال."
+      },
+      "locationModes": {
+        "in-person": "حضوري",
+        "online": "عبر الإنترنت",
+        "hybrid": "هجين"
+      },
+      "recurrencePresets": {
+        "none": "لا يتكرر",
+        "weekly": "أسبوعي",
+        "monthly": "شهري"
+      },
+      "actions": {
+        "back": "رجوع",
+        "next": "التالي",
+        "submit": "إرسال للمراجعة",
+        "submitting": "جارٍ الإرسال…"
+      },
+      "validation": {
+        "titleRequired": "يرجى إدخال عنوان.",
+        "startRequired": "يرجى اختيار تاريخ ووقت البدء.",
+        "endsBeforeStart": "يجب أن يكون وقت الانتهاء بعد وقت البدء.",
+        "organizerRequired": "يرجى تقديم اسم منظم.",
+        "submitterEmailRequired": "يرجى تقديم بريد إلكتروني صالح.",
+        "venueRequired": "المكان أو العنوان مطلوب للفعاليات الحضورية.",
+        "urlRequired": "رابط الاجتماع مطلوب للفعاليات عبر الإنترنت.",
+        "fixStep": "أصلح الحقول المظللة قبل المتابعة.",
+        "startInPast": "وقت البدء في الماضي — تحقق مرة أخرى قبل الإرسال.",
+        "maxDuration": "المدة تتجاوز 30 يومًا — تحقق مرة أخرى من وقت الانتهاء."
+      },
+      "success": {
+        "headline": "شكرًا لك — تم إرسال فعاليتك للمراجعة.",
+        "tabTitle": "{title} — تم الإرسال",
+        "startsAtLine": "تبدأ {when} ({tz})",
+        "downloadIcs": "تنزيل معاينة .ics",
+        "icsHint": "افتح الملف في تطبيق التقويم للتحقق من المنطقة الزمنية."
+      },
+      "errorGeneric": "تعذّر إرسال الفعالية. حاول مرة أخرى.",
+      "errorRate": "أرسلت عدة فعاليات مؤخرًا. حاول مرة أخرى لاحقًا.",
+      "errorAuth": "يرجى تسجيل الدخول لإرسال فعالية."
+    },
     "rsvp": {
       "rsvp": "تأكيد الحضور",
       "rsvped": "أنت مسجل للحضور",
@@ -987,7 +1147,6 @@
     }
   },
   "matrimonial": {
-    "_translatorNote": "Awaiting native Arabic review — English placeholders.",
     "brand": "Matrimonial",
     "landing": {
       "title": "Find a spouse, the halal way.",
@@ -1329,36 +1488,48 @@
       "title": "إضافة مسجد",
       "subtitle": "ساعدنا في بناء خريطة المجتمع. تتم مراجعة الإضافات قبل نشرها.",
       "guideline": "أضف فقط المساجد التي تأكدت من وجودها. قدّم اسماً وعنواناً وبيانات اتصال صحيحة.",
+      "steps": {
+        "basics": "الأساسيات",
+        "location": "الموقع",
+        "contact": "التواصل",
+        "review": "المراجعة"
+      },
       "fields": {
         "nameEn": "الاسم (إنجليزي)",
         "nameAr": "الاسم (عربي)",
-        "nameTr": "الاسم (تركي)",
-        "nameId": "الاسم (إندونيسي)",
         "addressLine1": "عنوان الشارع",
-        "addressLine2": "العنوان (سطر إضافي)",
         "city": "المدينة",
+        "region": "المنطقة / المحافظة",
         "country": "الدولة",
+        "postalCode": "الرمز البريدي",
         "denomination": "المذهب",
         "phone": "الهاتف",
         "website": "الموقع الإلكتروني",
         "email": "البريد الإلكتروني",
         "languages": "اللغات",
-        "description": "الوصف",
-        "submitterEmail": "بريدك الإلكتروني"
+        "description": "الوصف"
+      },
+      "review": {
+        "editSection": "تعديل {section}",
+        "geocodeFailed": "تعذّر تحديد هذا العنوان على الخريطة. الإرسال يعمل — سيتحقق فريقنا من الموقع قبل النشر."
       },
       "actions": {
+        "back": "رجوع",
+        "next": "التالي",
         "submit": "إرسال للمراجعة",
         "submitting": "جارٍ الإرسال…",
         "cancel": "إلغاء"
       },
       "validation": {
         "nameRequired": "الاسم بالإنجليزية مطلوب.",
+        "descriptionMax": "يجب ألا يتجاوز الوصف 500 حرف.",
         "addressRequired": "عنوان الشارع مطلوب.",
         "cityRequired": "المدينة مطلوبة.",
         "countryRequired": "الدولة مطلوبة (استخدم رمز ISO).",
+        "phoneInvalid": "أدخل رقم هاتف صالحًا.",
         "emailInvalid": "أدخل بريداً إلكترونياً صحيحاً.",
         "websiteInvalid": "أدخل رابطاً صحيحاً.",
-        "submitterEmailRequired": "يرجى تقديم بريدك الإلكتروني للمتابعة."
+        "fixStep": "أصلح الحقول المظللة قبل المتابعة."
       },
       "success": "شكراً — إضافتك قيد المراجعة وستظهر في الدليل بعد الموافقة.",
       "errorRate": "أرسلت عدة مساجد مؤخراً. يرجى المحاولة لاحقاً.",
@@ -1373,8 +1544,6 @@
       "facilities": "المرافق",
       "prayerTimes": "أوقات الصلاة اليوم",
       "prayerTimesNote": "أوقات الأذان محسوبة، وأوقات الإقامة من إعداد المسجد.",
-      "noIqamahNote": "لم يقم هذا المسجد بنشر أوقات الإقامة.",
-      "iqamah": "الإقامة",
       "adhan": "الأذان",
       "noTime": "—",
       "denomination": "المذهب",
@@ -1437,6 +1606,7 @@
       "country": "الدولة",
       "status": "الحالة",
       "denomination": "المذهب",
+      "type": "النوع",
       "updatedAt": "آخر تحديث"
     },
     "statuses": {
@@ -1444,11 +1614,15 @@
       "draft": "مسودة",
       "pending_review": "قيد المراجعة",
       "published": "منشور",
+      "rejected": "مرفوض",
       "suspended": "موقوف"
     },
     "filterByStatus": "تصفية حسب الحالة",
+    "filterByCity": "تصفية حسب المدينة",
+    "filterByCountry": "تصفية حسب الدولة",
+    "allCities": "جميع المدن",
+    "allCountries": "جميع الدول",
     "noResults": "لا توجد مساجد تطابق التصفية.",
-    "noPersistTitle": "قم بإعداد Firebase Admin لإنشاء المساجد.",
     "form": {
       "createTitle": "مسجد جديد",
       "editTitle": "تعديل مسجد",
@@ -1457,17 +1631,16 @@
       "sectionIdentity": "الهوية",
       "sectionLocation": "الموقع",
       "sectionContact": "التواصل والتواصل الاجتماعي",
-      "sectionServices": "الخدمات",
+      "sectionFacilities": "المرافق",
+      "sectionFacilitiesHint": "حدّد المرافق والخدمات التي يقدمها هذا المسجد.",
       "sectionPrayer": "الصلاة والإقامة",
+      "sectionPrayerHint": "تُحسب أوقات الصلاة من موقع المسجد ومنطقته الزمنية. عدّل طريقة الحساب إذا لم تتطابق الإعدادات الافتراضية مع ممارسة هذا المسجد.",
       "sectionMedia": "الوسائط",
       "nameEn": "الاسم (إنجليزي)",
       "nameAr": "الاسم (عربي)",
-      "nameTr": "الاسم (تركي)",
-      "nameId": "الاسم (إندونيسي)",
       "legalName": "الاسم القانوني",
       "denomination": "المذهب",
       "descriptionEn": "الوصف (إنجليزي)",
-      "descriptionAr": "الوصف (عربي)",
       "addressLine1": "عنوان الشارع",
       "addressLine2": "العنوان (سطر إضافي)",
       "postalCode": "الرمز البريدي",
@@ -1493,15 +1666,11 @@
       "calcMethod": "طريقة الحساب",
       "asrMethod": "حساب العصر",
       "highLatRule": "قاعدة العرض المرتفع",
-      "iqamahLabel": "إقامة {prayer}",
-      "iqamahMode": "النمط",
-      "iqamahModeNone": "غير محدّد",
-      "iqamahModeOffset": "إضافة دقائق بعد الأذان",
-      "iqamahModeFixed": "وقت ثابت",
-      "iqamahOffsetMinutes": "دقائق بعد الأذان",
-      "iqamahFixedTime": "الوقت (HH:mm بتوقيت المسجد)",
       "coverImageUrl": "رابط صورة الغلاف",
       "logoUrl": "رابط الشعار",
+      "coverImageLabel": "صورة الغلاف",
+      "logoLabel": "الشعار",
+      "facilitiesEmpty": "لم تُعرَّف مرافق بعد. أضف بعضها ضمن /admin/mosques/facilities أولاً.",
       "status": "الحالة",
       "actions": {
         "save": "حفظ التغييرات",
@@ -1520,7 +1689,6 @@
         "addressRequired": "عنوان الشارع مطلوب.",
         "coordsRequired": "الإحداثيات مطلوبة.",
         "coordsRange": "الإحداثيات خارج النطاق.",
-        "iqamahFormat": "الوقت يجب أن يكون بصيغة HH:mm.",
         "urlInvalid": "أدخل رابطاً صحيحاً.",
         "emailInvalid": "أدخل بريداً صحيحاً."
       }
@@ -1535,20 +1703,17 @@
       "rejectedToast": "تم رفض الإرسال.",
       "errorGeneric": "تعذّر الحفظ. حاول مرة أخرى."
     },
-    "queueTitle": "قائمة المراجعة",
-    "queueSubtitle": "الإرسالات والتعديلات بانتظار المراجعة.",
-    "queueEmpty": "لا يوجد ما يستوجب المراجعة.",
-    "queueColumns": {
-      "name": "الاسم",
-      "city": "المدينة",
-      "submittedBy": "أرسله",
-      "submittedAt": "تاريخ الإرسال",
-      "actions": "إجراءات"
-    },
-    "queueActions": {
-      "promote": "موافقة ونشر",
+    "viewDialog": {
+      "badgeMosque": "مسجد",
+      "badgeSubmission": "إرسال",
+      "submittedMeta": "أُرسل بواسطة {who} · {when}",
+      "anonymous": "مجهول",
+      "approve": "موافقة ونشر",
       "reject": "رفض",
-      "view": "مراجعة"
+      "rejectConfirm": "تأكيد الرفض",
+      "rejectReasonLabel": "السبب",
+      "rejectReasonPlaceholder": "أخبر المُرسِل لماذا تم الرفض…",
+      "edit": "تعديل"
     },
     "deleteTitle": "حذف مسجد",
     "deleteDescription": "سيتم حذف \"{name}\" نهائياً من الدليل. لا يمكن التراجع.",
@@ -1563,6 +1728,37 @@
       "importing": "جارٍ الاستيراد…",
       "successToast": "تم استيراد {count} مسجد.",
       "noPersistNote": "يتطلب الاستيراد إعداد Firebase Admin."
+    },
+    "facilities": {
+      "pageTitle": "مرافق المساجد",
+      "addCta": "إضافة مرفق",
+      "empty": "لا توجد مرافق بعد. أضف الأول لتعبئة نموذج المسجد.",
+      "editTitle": "تعديل المرفق",
+      "deleteTitle": "حذف المرفق",
+      "deleteDescription": "إزالة \"{name}\" من قائمة المرافق. ستحتفظ المساجد التي تشير إليه بالمعرّف حتى يُعاد حفظها.",
+      "deleteCta": "حذف",
+      "name": "الاسم",
+      "slug": "المعرّف",
+      "slugHint": "أحرف صغيرة بنمط kebab-case. يُستخدم كمعرّف للمستند ومفتاح مرجعي.",
+      "iconKey": "مفتاح الأيقونة",
+      "sortOrder": "الترتيب",
+      "save": "حفظ التغييرات",
+      "create": "إنشاء مرفق",
+      "saving": "جارٍ الحفظ…",
+      "createdToast": "تم إنشاء المرفق.",
+      "updatedToast": "تم تحديث المرفق.",
+      "deletedToast": "تم حذف المرفق.",
+      "noPersistToast": "يجب تهيئة Firebase Admin لحفظ المرافق."
+    },
+    "media": {
+      "typeError": "استخدم JPEG أو PNG أو WebP.",
+      "sizeError": "يجب أن تكون الصورة أقل من 5 ميغابايت.",
+      "uploadFailed": "فشل الرفع. حاول مرة أخرى.",
+      "uploading": "جارٍ الرفع…",
+      "upload": "رفع",
+      "replace": "استبدال",
+      "remove": "إزالة الصورة",
+      "limitHint": "JPEG / PNG / WebP، حتى 5 ميغابايت."
     }
   },
   "businesses": {
@@ -1574,6 +1770,7 @@
     "publicAllCategories": "جميع الفئات",
     "publicSearchPlaceholder": "ابحث بالاسم…",
     "claimSuggestNote": "هل تدير عملاً حلالاً في {city}؟ سجّل قائمتك.",
+    "submitCta": "اقترح عملاً",
     "createCta": "إنشاء قائمة",
     "editCta": "تعديل",
     "archiveCta": "أرشفة",
@@ -1623,16 +1820,17 @@
     },
     "statuses": {
       "all": "جميع الحالات",
+      "submitted": "قيد المراجعة",
       "draft": "مسودة",
       "published": "منشور",
       "archived": "مؤرشف"
     },
     "priceTiers": {
-      "any": "أي سعر",
       "1": "$",
       "2": "$$",
       "3": "$$$",
-      "4": "$$$$"
+      "4": "$$$$",
+      "any": "أي سعر"
     },
     "weekdays": {
       "mon": "الإثنين",
@@ -1681,7 +1879,8 @@
       }
     },
     "admin": {
-      "tabListings": "القوائم",
+      "tabDirectory": "الدليل",
+      "tabSubmissions": "الإرسالات",
       "tabReports": "البلاغات",
       "tabCategories": "الفئات",
       "tabCertBodies": "هيئات الاعتماد",
@@ -1691,6 +1890,7 @@
       "filterByHalal": "تصفية حسب حالة الحلال",
       "filterByCategory": "تصفية حسب الفئة",
       "noResults": "لا توجد قوائم مطابقة لهذه المرشحات.",
+      "reviewCta": "مراجعة",
       "createTitle": "قائمة جديدة",
       "editTitle": "تعديل القائمة",
       "createDescription": "أضف عملاً حلالاً جديداً إلى الدليل.",
@@ -1745,9 +1945,8 @@
       "reportsPageTitle": "بلاغات القوائم",
       "reportsPageSubtitle": "بلاغات عامة من الزوار. قم بأرشفة القوائم هنا عندما تكون البلاغات صحيحة.",
       "reportsEmpty": "لا توجد بلاغات.",
-      "reportsTabOpen": "مفتوحة",
-      "reportsTabResolved": "تم حلها",
-      "reportsTabDismissed": "مرفوضة",
+      "reportsNoResults": "لا توجد بلاغات تطابق هذه التصفيات.",
+      "reportsSearch": "ابحث في العمل أو السبب أو المُبلِّغ…",
       "reportsResolveCta": "حل",
       "reportsDismissCta": "رفض",
       "reportsArchiveBusiness": "أرشفة القائمة",
@@ -1762,6 +1961,7 @@
       "reportsColActions": "إجراءات",
       "reportsAnonymous": "مجهول",
       "reportStatuses": {
+        "all": "جميع الحالات",
         "open": "مفتوح",
         "resolved": "تم حله",
         "dismissed": "مرفوض"
@@ -1792,7 +1992,101 @@
       "photoLimit": "حتى 6 صور.",
       "photoTypeError": "صور JPEG أو PNG أو WebP فقط.",
       "photoSizeError": "يجب أن تكون الصورة أقل من 5 ميغابايت.",
-      "uploadFailedToast": "فشل الرفع."
+      "uploadFailedToast": "فشل الرفع.",
+      "submissions": {
+        "queueTitle": "إرسالات الأعمال",
+        "queueSubtitle": "أعمال حلال اقترحها المستخدمون بانتظار المراجعة.",
+        "tabPending": "قيد المراجعة",
+        "tabApproved": "موافق عليها",
+        "tabRejected": "مرفوضة",
+        "noSubmissions": "لا شيء هنا.",
+        "approve": "موافقة",
+        "reject": "رفض",
+        "cancel": "إلغاء",
+        "promoteSuccess": "تمت الموافقة — تم إنشاء قائمة مسودة. عدّلها لإضافة الإحداثيات والنشر.",
+        "rejectSuccess": "تم رفض الإرسال.",
+        "rejectDialogTitle": "رفض الإرسال",
+        "rejectDialogDescription": "اختياريًا أخبرنا لماذا لا تستوفي \"{name}\" الشروط. يُسجَّل السبب لكنه لا يُرسل بالبريد إلى المُرسِل.",
+        "rejectReasonLabel": "السبب (اختياري)",
+        "rejectedFor": "مرفوض: {reason}",
+        "viewPromoted": "عرض القائمة المسودة",
+        "anonymous": "مجهول",
+        "muslimOwnedBadge": "ملكية مسلمة",
+        "ownerBadge": "أُرسل من قِبل المالك",
+        "fieldPhone": "الهاتف",
+        "fieldEmail": "البريد الإلكتروني",
+        "fieldWebsite": "الموقع الإلكتروني",
+        "fieldInstagram": "Instagram",
+        "fieldWhatsapp": "WhatsApp",
+        "fieldCertBody": "شهادة مُدّعاة"
+      }
+    },
+    "submit": {
+      "title": "إرسال عمل حلال",
+      "subtitle": "ساعد في توسيع الدليل. يراجع فريقنا كل إرسال قبل نشره.",
+      "noCategoriesYet": "لم يتم إعداد الفئات بعد. يرجى التحقق لاحقًا.",
+      "steps": {
+        "basics": "الأساسيات",
+        "halal": "الحلال",
+        "location": "الموقع",
+        "review": "المراجعة"
+      },
+      "review": {
+        "heading": "راجع إرسالك",
+        "subheading": "تأكد من صحة هذه التفاصيل قبل الإرسال. سنتحقق قبل النشر.",
+        "editSection": "تعديل {section}",
+        "geocodeFailed": "تعذّر تحديد هذا العنوان على الخريطة. الإرسال يعمل — سيتحقق فريقنا من الموقع قبل النشر."
+      },
+      "fields": {
+        "name": "اسم العمل",
+        "description": "ماذا يقدم هذا العمل؟",
+        "category": "الفئة",
+        "categoryHint": "اختر حتى 3.",
+        "categoryPlaceholder": "اختر الفئات…",
+        "categorySearchPlaceholder": "ابحث عن فئات…",
+        "categoryNoResults": "لم يُعثر على فئة.",
+        "categoryMoreItems": "+{count} المزيد",
+        "categoryRemoveChip": "إزالة {name}",
+        "halalStatus": "حالة الحلال",
+        "certBody": "اسم هيئة التصديق",
+        "certBodyPlaceholder": "مثل HFA, HMC",
+        "isOwner": "أنا مالك أو ممثل لهذا العمل",
+        "addressLine1": "عنوان الشارع",
+        "city": "المدينة",
+        "region": "المنطقة / المحافظة",
+        "country": "الدولة",
+        "postalCode": "الرمز البريدي",
+        "phone": "الهاتف",
+        "email": "البريد الإلكتروني",
+        "website": "الموقع الإلكتروني",
+        "instagram": "Instagram",
+        "whatsapp": "WhatsApp"
+      },
+      "ownerNotice": "التحقق من المالك: قد نتواصل معك على {email} لتأكيد الملكية قبل النشر.",
+      "validation": {
+        "nameRequired": "اسم العمل مطلوب.",
+        "descriptionMin": "يجب أن يكون الوصف 40 حرفًا على الأقل — أضف جملة عما يقدمه العمل.",
+        "descriptionMax": "يجب ألا يتجاوز الوصف 500 حرف.",
+        "categoryRequired": "اختر فئة واحدة على الأقل.",
+        "certBodyRequired": "اسم هيئة التصديق مطلوب لحالة الحلال المُصدَّقة.",
+        "addressRequired": "عنوان الشارع مطلوب.",
+        "cityRequired": "المدينة مطلوبة.",
+        "countryRequired": "الدولة مطلوبة.",
+        "phoneInvalid": "أدخل رقم هاتف صالحًا.",
+        "emailInvalid": "أدخل عنوان بريد إلكتروني صالحًا.",
+        "websiteInvalid": "أدخل عنوان URL صالحًا (مثل https://example.com).",
+        "fixStep": "أصلح الحقول المظللة قبل المتابعة."
+      },
+      "actions": {
+        "back": "رجوع",
+        "next": "التالي",
+        "submit": "إرسال للمراجعة",
+        "submitting": "جارٍ الإرسال…"
+      },
+      "success": "شكرًا — سنراجع إرسالك قريبًا.",
+      "errorGeneric": "تعذّر الإرسال. حاول مرة أخرى.",
+      "errorRate": "أرسلت عدة قوائم مؤخرًا. حاول مرة أخرى غدًا.",
+      "errorTurnstile": "فشل التحقق من الروبوتات. حاول مرة أخرى."
     },
     "weekdayShort": {
       "mon": "إث",
@@ -1809,9 +2103,18 @@
     "tabOpen": "مفتوحة",
     "tabResolved": "تم الرد",
     "empty": "لا توجد رسائل هنا.",
+    "search": "ابحث في الرسائل…",
+    "filterByStatus": "تصفية حسب الحالة",
+    "statuses": {
+      "all": "جميع الحالات",
+      "open": "مفتوحة",
+      "resolved": "مُحلَّة"
+    },
+    "noResults": "لا توجد رسائل تطابق هذه التصفيات.",
     "columns": {
       "from": "المُرسِل",
       "subject": "الموضوع",
+      "status": "الحالة",
       "received": "وقت الاستلام",
       "actions": "إجراءات"
     },
@@ -1833,6 +2136,65 @@
     "noPersistToast": "قم بإعداد Firebase Admin لإدارة رسائل التواصل."
   },
   "adminSettings": {
+    "title": "الإعدادات",
+    "description": "أدر هوية الموقع، وأصول الوسائط، وتوفر اللغات.",
+    "nav": {
+      "ariaLabel": "أقسام الإعدادات",
+      "general": "عام",
+      "media": "الوسائط",
+      "typography": "الطباعة",
+      "languages": "اللغات",
+      "languagesInterface": "الواجهة",
+      "languagesQuran": "القرآن",
+      "languagesHadith": "الحديث"
+    },
+    "general": {
+      "title": "هوية الموقع",
+      "description": "اسم الموقع والشعار النصي. يظهر اسم الموقع في تبويب المتصفح ورأس الموقع والتذييل.",
+      "siteNameLabel": "اسم الموقع",
+      "siteNameHint": "يظهر في تبويب المتصفح ورأس الموقع العام والتذييل.",
+      "taglineLabel": "الشعار النصي",
+      "taglineHint": "وصف قصير يُستخدم كوصف افتراضي للموقع وفي التذييل.",
+      "save": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ…",
+      "savedToast": "تم حفظ هوية الموقع.",
+      "errorToast": "تعذّر حفظ هوية الموقع.",
+      "unsavedChanges": "تغييرات غير محفوظة"
+    },
+    "media": {
+      "title": "الوسائط",
+      "description": "ارفع صور الموقع الكاملة. يُحفظ كل رفع فورًا.",
+      "logoLabel": "الشعار",
+      "logoHint": "يظهر بجوار اسم الموقع في الرأس والتذييل وشريط الإدارة الجانبي. مُستحسن: PNG أو SVG مربع بخلفية شفافة، ≥256×256.",
+      "faviconLabel": "أيقونة المفضلة",
+      "faviconHint": "أيقونة تبويب المتصفح. ICO أو PNG أو SVG، حتى 256 كيلوبايت. تخزّن المتصفحات أيقونات المفضلة بشكل عدواني — قد يلزم إعادة تحميل قسرية لرؤية التغيير.",
+      "ogImageLabel": "صورة المشاركة الاجتماعية الافتراضية",
+      "ogImageHint": "تُستخدم كصورة Open Graph الافتراضية عندما لا توفر الصفحة صورتها الخاصة. مُستحسن: 1200×630 PNG أو JPEG.",
+      "articlePlaceholderLabel": "صورة بديلة للمقال",
+      "articlePlaceholderHint": "البديل المعروض للمقالات التي ليس لها صورة مميزة.",
+      "upload": "رفع",
+      "replace": "استبدال",
+      "remove": "إزالة",
+      "uploading": "جارٍ الرفع…",
+      "typeError": "نوع الملف غير مدعوم لهذه الفتحة.",
+      "sizeError": "الملف كبير جدًا لهذه الفتحة.",
+      "uploadFailed": "فشل الرفع. حاول مرة أخرى.",
+      "savedToast": "تم الحفظ.",
+      "savedError": "تعذّر الحفظ. حاول مرة أخرى."
+    },
+    "typography": {
+      "title": "الطباعة",
+      "description": "اختر خط النص العادي وخط العرض العربي. تُطبَّق التغييرات عبر الموقع العام بعد الحفظ.",
+      "bodyLabel": "خط النص وواجهة المستخدم",
+      "bodyHint": "يُستخدم للنصوص الإنجليزية والروسية والأذرية والتركية والإندونيسية في الموقع.",
+      "arabicLabel": "خط العرض العربي",
+      "arabicHint": "يُستخدم للقرآن والحديث والنصوص العربية الأخرى المعروضة بنمط .font-arabic.",
+      "save": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ…",
+      "savedToast": "تم حفظ الطباعة.",
+      "errorToast": "تعذّر حفظ الطباعة.",
+      "unsavedChanges": "تغييرات غير محفوظة"
+    },
     "languages": {
       "title": "اللغات",
       "description": "اختر اللغات المتاحة للزوار. تختفي اللغات المعطّلة من قوائم التبديل العامة، لكن روابط URL الحالية تبقى تعمل.",
@@ -1918,5 +2280,391 @@
         "errorToast": "تعذّر حفظ الترجمات."
       }
     }
+  },
+  "quranSidebar": {
+    "title": "التصفيات",
+    "menu": "التصفيات",
+    "collapse": "طيّ",
+    "expand": "توسيع",
+    "sections": {
+      "translations": "الترجمات"
+    }
+  },
+  "quranLanguageFilter": {
+    "label": "الترجمات",
+    "placeholder": "اختر اللغات",
+    "searchPlaceholder": "ابحث عن لغة…",
+    "noResults": "لم يُعثر على لغة.",
+    "moreItems": "+{count} المزيد",
+    "removeChip": "إزالة {name}"
+  },
+  "hadithSidebar": {
+    "title": "التصفيات",
+    "menu": "التصفيات",
+    "collapse": "طيّ",
+    "expand": "توسيع",
+    "sections": {
+      "translations": "الترجمات"
+    }
+  },
+  "hadithLanguageFilter": {
+    "label": "الترجمات",
+    "placeholder": "اختر اللغات",
+    "searchPlaceholder": "ابحث عن لغة…",
+    "noResults": "لم يُعثر على لغة.",
+    "moreItems": "+{count} المزيد",
+    "removeChip": "إزالة {name}"
+  },
+  "profileNav": {
+    "title": "الملف الشخصي",
+    "items": {
+      "overview": "نظرة عامة",
+      "reading": "تقدم القراءة",
+      "favorites": "المفضلة",
+      "notes": "ملاحظاتي",
+      "comments": "تعليقاتي",
+      "submissions": "إرسالاتي",
+      "matrimonial": "الزواج"
+    },
+    "collapse": "طيّ",
+    "expand": "توسيع"
+  },
+  "profileSubmissions": {
+    "pageTitle": "إرسالاتي",
+    "pageDescription": "تتبع حالة الفعاليات والأعمال والمساجد التي أرسلتها.",
+    "empty": "لم ترسل أي شيء بعد. شارك فعالية أو اقترح عملاً أو اقترح مسجدًا لتراه هنا.",
+    "emptySection": "لا شيء هنا بعد.",
+    "viewLive": "عرض المباشر",
+    "sections": {
+      "events": "الفعاليات",
+      "businesses": "الأعمال",
+      "mosques": "المساجد"
+    },
+    "statuses": {
+      "under_review": "قيد المراجعة",
+      "pending_review": "قيد المراجعة",
+      "draft": "مسودة",
+      "published": "منشور",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض",
+      "cancelled": "مُلغى"
+    }
+  },
+  "profileForm": {
+    "save": "حفظ التغييرات",
+    "saving": "جارٍ الحفظ…",
+    "savedToast": "تم حفظ الملف الشخصي",
+    "unsavedChanges": "تغييرات غير محفوظة",
+    "sections": {
+      "identity": "الهوية",
+      "identityDescription": "معلومات أساسية تظهر على ملفك الشخصي وتُستخدم في التطبيق.",
+      "religion": "الدين",
+      "background": "الخلفية",
+      "bio": "عنك",
+      "bioDescription": "فقرة قصيرة تصف نفسك. تظهر في ملفك للزواج إذا فعّلت ميزة الزواج."
+    },
+    "displayName": "الاسم الظاهر",
+    "displayNamePlaceholder": "كيف تود أن تُنادى",
+    "gender": "الجنس",
+    "dateOfBirth": "تاريخ الميلاد",
+    "country": "الدولة",
+    "city": "المدينة",
+    "ethnicity": "العِرق",
+    "languages": "اللغات",
+    "madhhab": "المذهب",
+    "sect": "الطائفة",
+    "prayerCommitment": "الالتزام بالصلاة",
+    "hijab": "الحجاب",
+    "beard": "اللحية",
+    "revert": "أنا حديث الإسلام",
+    "education": "التعليم",
+    "profession": "المهنة",
+    "maritalHistory": "الحالة الاجتماعية",
+    "hasChildren": "لديّ أطفال",
+    "wantsChildren": "أرغب في الأطفال",
+    "bio": "السيرة الذاتية",
+    "bioPlaceholder": "ما الذي تبحث عنه، ما الذي يميزك، رحلة إيمانك…"
+  },
+  "profileMatrimonial": {
+    "pageTitle": "الزواج",
+    "pageDescription": "أدر إمكانية اكتشافك للزواج وشاهد الاهتمامات الواردة والمُرسَلة والتطابقات.",
+    "statusEnabled": "الزواج مُفعَّل",
+    "statusDisabled": "الزواج معطَّل",
+    "missingProfileTitle": "أكمل ملفك الشخصي أولاً",
+    "missingProfileBody": "املأ حقول الهوية والدين في ملفك قبل تفعيل الزواج — تُستخدم البيانات نفسها لعرض ملفك للزواج للآخرين.",
+    "missingProfileCta": "اذهب إلى ملفي",
+    "disable": "تعطيل الزواج",
+    "disabling": "جارٍ التعطيل…",
+    "disableConfirm": "تعطيل الزواج؟ سيُزال ملفك من الدليل. يمكنك إعادة التفعيل في أي وقت.",
+    "disabledToast": "تم تعطيل الزواج",
+    "disableFailed": "تعذّر التعطيل — حاول مرة أخرى.",
+    "enable": {
+      "aboutYouTitle": "عنك",
+      "aboutYouDescription": "حقائق ملفك الشخصي — تُعرض على بطاقتك للأزواج المحتملين.",
+      "matchPreferencesTitle": "تفضيلات التطابق",
+      "matchPreferencesDescription": "تصفيات تُستخدم لتضييق من تراه ومن يراك.",
+      "lookingForGender": "أبحث عن",
+      "ageRange": "نطاق العمر",
+      "preferredCountries": "الدول المفضلة",
+      "preferredMadhhabs": "المذاهب المفضلة",
+      "prayerMin": "الحد الأدنى للالتزام بالصلاة",
+      "polygamyStance": "الموقف من تعدد الزوجات",
+      "polygamyAcceptable": "الموقف من تعدد الزوجات",
+      "enable": "تفعيل الزواج",
+      "enabling": "جارٍ التفعيل…",
+      "enabledToast": "تم تفعيل الزواج — أنت الآن مرئي للأزواج المحتملين."
+    }
+  },
+  "favorites": {
+    "pageTitle": "المفضلة",
+    "pageDescription": "الآيات والأحاديث والمقالات والفعاليات والملفات التي حفظتها.",
+    "save": "حفظ",
+    "saved": "محفوظ",
+    "remove": "إزالة",
+    "open": "فتح",
+    "signInRequired": "سجّل الدخول لحفظ المفضلة",
+    "signInCta": "تسجيل الدخول",
+    "savedToast": "أُضيف إلى المفضلة",
+    "removedToast": "أُزيل من المفضلة",
+    "saveFailed": "تعذّر الحفظ — حاول مرة أخرى.",
+    "matrimonial": {
+      "save": "حفظ الملف",
+      "saved": "محفوظ"
+    },
+    "tabs": {
+      "all": "الكل",
+      "ayah": "آيات",
+      "surah": "سور",
+      "hadith": "أحاديث",
+      "article": "مقالات",
+      "event": "فعاليات",
+      "matrimonialProfile": "ملفات"
+    },
+    "empty": "لم يُحفظ شيء بعد."
+  },
+  "notes": {
+    "addNote": "إضافة ملاحظة",
+    "editNote": "تعديل الملاحظة",
+    "saveNote": "حفظ",
+    "cancelNote": "إلغاء",
+    "deleteNote": "حذف",
+    "confirmDelete": "حذف هذه الملاحظة؟",
+    "placeholder": "ملاحظتك الخاصة…",
+    "charLimit": "{count} / {max}",
+    "savedToast": "تم حفظ الملاحظة",
+    "deletedToast": "تم حذف الملاحظة",
+    "saveFailed": "تعذّر حفظ الملاحظة — حاول مرة أخرى.",
+    "deleteFailed": "تعذّر الحذف — حاول مرة أخرى.",
+    "tooLong": "الملاحظة طويلة جدًا.",
+    "signInRequired": "سجّل الدخول لحفظ الملاحظات",
+    "signInCta": "تسجيل الدخول",
+    "editedAt": "عُدِّلت {when}",
+    "yourNote": "ملاحظتك"
+  },
+  "profileNotes": {
+    "pageTitle": "ملاحظاتي",
+    "pageDescription": "ملاحظاتك الخاصة عن الآيات والأحاديث. أنت وحدك من يراها.",
+    "empty": "لا توجد ملاحظات بعد. أضف واحدة من أي صفحة آية أو حديث.",
+    "open": "فتح",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "tabs": {
+      "all": "الكل",
+      "ayah": "آيات",
+      "hadith": "أحاديث"
+    }
+  },
+  "reading": {
+    "title": "تقدم القراءة",
+    "pageDescription": "استأنف من حيث توقفت — يُحفظ تلقائيًا عند إغلاق التبويب أو الانتقال.",
+    "lastQuranAyah": "آخر آية مقروءة",
+    "lastSurah": "آخر سورة معروضة",
+    "lastHadith": "آخر حديث مقروء",
+    "viewedAt": "عُرض {when}",
+    "resume": "استئناف",
+    "empty": "لا يوجد سجل قراءة بعد — ابدأ بقسم القرآن أو الحديث."
+  },
+  "quickCreate": {
+    "trigger": "إنشاء سريع",
+    "title": "إنشاء جديد",
+    "searchPlaceholder": "ابحث عن عناصر للإنشاء…",
+    "empty": "لا توجد تطابقات",
+    "back": "رجوع",
+    "cancel": "إلغاء",
+    "create": "إنشاء",
+    "types": {
+      "event": {
+        "name": "فعالية",
+        "description": "صلاة أو محاضرة أو إفطار أو جمع تبرعات أو لقاء مجتمعي."
+      },
+      "business": {
+        "name": "عمل",
+        "description": "أضف عملاً صديقًا للحلال إلى الدليل."
+      },
+      "mosque": {
+        "name": "مسجد",
+        "description": "أضف مسجدًا مع أوقات الصلاة والخدمات."
+      },
+      "article": {
+        "name": "مقال",
+        "description": "صُغ مسودة مقال جديد. انشره لكل لغة عند الجهوزية."
+      },
+      "articleCategory": {
+        "name": "فئة المقال",
+        "description": "أضف فئة يمكن وسم المقالات بها."
+      },
+      "eventCategory": {
+        "name": "فئة الفعالية",
+        "description": "أضف فئة يمكن وسم الفعاليات بها."
+      },
+      "businessCategory": {
+        "name": "فئة العمل",
+        "description": "أضف فئة يمكن وسم الأعمال بها."
+      },
+      "businessAmenity": {
+        "name": "مرفق العمل",
+        "description": "أضف مرفقًا يمكن للأعمال الإعلان عنه."
+      },
+      "businessCertBody": {
+        "name": "هيئة التصديق",
+        "description": "أضف هيئة تصديق حلال يمكن للأعمال ادّعاؤها."
+      },
+      "mosqueFacility": {
+        "name": "مرفق المسجد",
+        "description": "أضف مرفقًا يمكن للمساجد الإعلان عنه (مثل قسم النساء، المواقف)."
+      }
+    },
+    "formTitles": {
+      "event": "فعالية جديدة",
+      "business": "عمل جديد",
+      "mosque": "مسجد جديد",
+      "article": "مقال جديد",
+      "articleCategory": "فئة مقال جديدة",
+      "eventCategory": "فئة فعالية جديدة",
+      "businessCategory": "فئة عمل جديدة",
+      "businessAmenity": "مرفق عمل جديد",
+      "businessCertBody": "هيئة تصديق جديدة",
+      "mosqueFacility": "مرفق مسجد جديد"
+    },
+    "steps": {
+      "admin": "إدارة"
+    },
+    "adminFields": {
+      "status": "الحالة",
+      "statusHintEvent": "تخفي المسودة الفعالية من التقويم العام. النشر يجعلها مباشرة.",
+      "statusHintBusiness": "تخفي المسودة القائمة من البحث العام. النشر يجعلها مباشرة.",
+      "statusHintMosque": "تخفي المسودة القائمة. قيد المراجعة يضعها في طابور التحقق الإداري. النشر يجعلها مباشرة.",
+      "coordsMissingHint": "حُفظ بدون إحداثيات الخريطة — اضبطها في المحرر قبل النشر."
+    }
+  },
+  "comments": {
+    "title": "التعليقات",
+    "empty": "كن أول من يشارك تأملاً بنّاءً.",
+    "loading": "جارٍ تحميل التعليقات…",
+    "anonymousAuthor": "عضو",
+    "deletedTombstone": "[تم حذف التعليق]",
+    "deletedToast": "تم حذف التعليق",
+    "savedToast": "تم تحديث التعليق",
+    "deleteConfirm": "حذف هذا التعليق؟",
+    "signInPrompt": "سجّل الدخول لمشاركة تأملك.",
+    "signInCta": "تسجيل الدخول",
+    "placeholder": "شارك تأملاً بنّاءً…",
+    "disclaimer": "التعليقات وجهات نظر شخصية (تُراجَع للجودة) ولا ينبغي اعتبارها مرجعًا.",
+    "ayahButtonAria": "{count, plural, =0 {لا تعليقات بعد — افتح المحادثة} one {تعليق واحد — افتح المحادثة} other {# تعليقات — افتح المحادثة}}",
+    "ayahDialogTitle": "{reference}",
+    "hadithButtonAria": "{count, plural, =0 {لا تعليقات بعد — افتح المحادثة} one {تعليق واحد — افتح المحادثة} other {# تعليقات — افتح المحادثة}}",
+    "hadithDialogTitle": "{reference}",
+    "popupButtonAria": "{count, plural, =0 {لا تعليقات بعد — افتح المحادثة} one {تعليق واحد — افتح المحادثة} other {# تعليقات — افتح المحادثة}}",
+    "actions": {
+      "post": "نشر",
+      "cancel": "إلغاء",
+      "edit": "تعديل",
+      "save": "حفظ",
+      "delete": "حذف",
+      "reply": "رد",
+      "flag": "إبلاغ",
+      "more": "إجراءات أخرى",
+      "loadMore": "تحميل المزيد",
+      "viewReplies": "{count, plural, one {عرض رد واحد} other {عرض # ردود}}",
+      "hideReplies": "إخفاء الردود",
+      "edited": "مُعدَّل"
+    },
+    "reactions": {
+      "heart": "إعجاب",
+      "dua": "دعاء",
+      "insightful": "مفيد"
+    },
+    "flag": {
+      "title": "أبلغ عن هذا التعليق",
+      "description": "أخبرنا باختصار لماذا هذا التعليق غير مناسب. سيراجعه مشرفونا.",
+      "reasonLabel": "السبب (اختياري)",
+      "reasonPlaceholder": "إزعاج، خطاب كراهية، خارج الموضوع…",
+      "submit": "إرسال البلاغ",
+      "submittedToast": "شكرًا — سيراجع فريقنا هذا التعليق."
+    },
+    "statuses": {
+      "visible": "ظاهر",
+      "auto_hidden": "قيد المراجعة",
+      "hidden": "مخفي",
+      "deleted": "محذوف"
+    },
+    "errors": {
+      "loadFailed": "تعذّر تحميل التعليقات. حاول مرة أخرى.",
+      "tooLong": "التعليق طويل جدًا.",
+      "signInRequired": "سجّل الدخول للتعليق.",
+      "notOwner": "يمكنك تعديل تعليقك فقط.",
+      "reactionFailed": "تعذّر تحديث التفاعل."
+    }
+  },
+  "commentsAdmin": {
+    "pageTitle": "التعليقات",
+    "subtitle": "ابحث وصفِّ ووجِّه تعليقات المستخدمين عبر الموقع.",
+    "search": "ابحث عن تعليقات أو مؤلفين أو كيانات…",
+    "filterByStatus": "تصفية حسب الحالة",
+    "filterByEntityType": "تصفية حسب نوع الكيان",
+    "statusAll": "جميع الحالات",
+    "entityAll": "جميع الكيانات",
+    "empty": "لا توجد تعليقات بعد.",
+    "noResults": "لا توجد تعليقات تطابق تصفياتك.",
+    "anonymous": "عضو",
+    "emptyBody": "(لا يوجد محتوى)",
+    "hide": "إخفاء",
+    "restore": "استعادة",
+    "dismissFlags": "تجاهل البلاغات",
+    "openSource": "فتح المصدر",
+    "viewDialogTitle": "تعليق بواسطة {name}",
+    "deleteConfirmTitle": "حذف هذا التعليق نهائيًا؟",
+    "deleteConfirmDescription": "هذا يُزيل التعليق وتفاعلاته وبلاغاته نهائيًا. اكتب DELETE للتأكيد.",
+    "statusUpdatedToast": "تم تحديث حالة التعليق.",
+    "flagsDismissedToast": "تم تجاهل البلاغات.",
+    "deletedToast": "تم حذف التعليق نهائيًا.",
+    "columns": {
+      "author": "المؤلف",
+      "body": "التعليق",
+      "entity": "أين",
+      "status": "الحالة",
+      "flags": "البلاغات",
+      "created": "أُنشئ"
+    },
+    "entityTypes": {
+      "ayah": "آية",
+      "hadith": "حديث",
+      "surah": "سورة",
+      "article": "مقال",
+      "mosque": "مسجد",
+      "event": "فعالية",
+      "business": "عمل"
+    }
+  },
+  "profileComments": {
+    "pageTitle": "تعليقاتي",
+    "pageDescription": "كل تعليق نشرته عبر الموقع، مع حالته الإشرافية الحالية.",
+    "empty": "لم تنشر أي تعليقات بعد.",
+    "emptyBody": "(لا يوجد محتوى)",
+    "edited": "مُعدَّل",
+    "replies": "{count, plural, one {رد واحد} other {# ردود}}",
+    "flags": "{count, plural, one {بلاغ واحد} other {# بلاغات}}"
   }
 }

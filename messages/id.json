@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "_review": "Machine-drafted Indonesian (Bahasa) translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Khutbah, Tafsir, Zakat, Sedekah) and the formality register."
+    "_review": "Machine-drafted Bahasa Indonesia translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Salat, Al-Qur'an, Hadis, Mazhab, Mualaf, Ta'aruf), tone (formal vs casual), and ICU plural arms in comments.* and profileComments.*. 2026-05-06 update: filled 611 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   },
   "common": {
     "cancel": "Batal",
@@ -25,6 +25,13 @@
     "searchPlaceholder": "Cari negara…",
     "noResults": "Negara tidak ditemukan.",
     "moreCountries": "+{count} lainnya",
+    "removeChip": "Hapus {name}"
+  },
+  "madhhabCombobox": {
+    "selectMadhhabs": "Pilih mazhab",
+    "searchPlaceholder": "Cari mazhab…",
+    "noResults": "Mazhab tidak ditemukan.",
+    "moreMadhhabs": "+{count} lainnya",
     "removeChip": "Hapus {name}"
   },
   "languageCombobox": {
@@ -151,13 +158,13 @@
     "newButton": "Baru",
     "expand": "Perluas",
     "collapse": "Ciutkan bilah samping",
+    "soonBadge": "Segera",
     "groups": {
       "overview": "Ikhtisar",
       "community": "Komunitas",
       "content": "Konten",
       "worship": "Ibadah & Kalender",
       "engagement": "Keterlibatan",
-      "services": "Layanan",
       "system": "Sistem"
     },
     "items": {
@@ -179,12 +186,18 @@
       "events": "Acara",
       "eventsCategories": "Kategori",
       "mosques": "Masjid",
+      "mosquesFacilities": "Fasilitas",
       "qa": "Pertanyaan",
       "announcements": "Pengumuman",
       "newsletter": "Buletin",
       "moderation": "Moderasi",
+      "comments": "Komentar",
       "donations": "Donasi",
       "businesses": "Bisnis",
+      "businessesCategories": "Kategori",
+      "businessesReports": "Laporan",
+      "businessesCertBodies": "Lembaga sertifikasi",
+      "businessesAmenities": "Fasilitas",
       "courses": "Kursus",
       "matrimonial": "Perjodohan",
       "contactMessages": "Kontak",
@@ -250,6 +263,49 @@
     "in": "dalam {countdown}",
     "allComplete": "Semua salat hari ini telah selesai"
   },
+  "hijri": {
+    "months": {
+      "1": "Muharram",
+      "2": "Safar",
+      "3": "Rabiulawal",
+      "4": "Rabiulakhir",
+      "5": "Jumadilawal",
+      "6": "Jumadilakhir",
+      "7": "Rajab",
+      "8": "Syakban",
+      "9": "Ramadan",
+      "10": "Syawal",
+      "11": "Zulkaidah",
+      "12": "Zulhijah"
+    }
+  },
+  "hijriConverter": {
+    "title": "Konverter Tanggal Hijriah",
+    "subtitle": "Konversi antara kalender Masehi dan Hijriah.",
+    "today": {
+      "label": "Hari ini",
+      "ahSuffix": "H",
+      "ceSuffix": "M"
+    },
+    "gregorianToHijri": {
+      "title": "Masehi → Hijriah",
+      "dateLabel": "Tanggal Masehi",
+      "resultLabel": "Tanggal Hijriah",
+      "useToday": "Hari ini"
+    },
+    "hijriToGregorian": {
+      "title": "Hijriah → Masehi",
+      "yearLabel": "Tahun (H)",
+      "monthLabel": "Bulan",
+      "dayLabel": "Tanggal",
+      "resultLabel": "Tanggal Masehi",
+      "useToday": "Hari ini"
+    },
+    "errors": {
+      "invalidDate": "Tanggal tersebut tidak ada pada bulan Hijriah yang dipilih.",
+      "outOfRange": "Tanggal di luar rentang Hijriah yang didukung."
+    }
+  },
   "prayer": {
     "pageTitle": "Waktu Salat",
     "pageSubtitleCity": "Lima waktu salat hari ini untuk {city}, {country}.",
@@ -314,49 +370,6 @@
     "exportIcsHint": "Unduh berkas kalender 30 hari yang dapat diimpor ke Apple, Google, atau Outlook calendar.",
     "monthlyTitle": "Jadwal bulanan",
     "monthlySubtitle": "30 hari ke depan untuk lokasi yang ditentukan."
-  },
-  "hijri": {
-    "months": {
-      "1": "Muharram",
-      "2": "Safar",
-      "3": "Rabiulawal",
-      "4": "Rabiulakhir",
-      "5": "Jumadilawal",
-      "6": "Jumadilakhir",
-      "7": "Rajab",
-      "8": "Syakban",
-      "9": "Ramadan",
-      "10": "Syawal",
-      "11": "Zulkaidah",
-      "12": "Zulhijah"
-    }
-  },
-  "hijriConverter": {
-    "title": "Konverter Tanggal Hijriah",
-    "subtitle": "Konversi antara kalender Masehi dan Hijriah.",
-    "today": {
-      "label": "Hari ini",
-      "ahSuffix": "H",
-      "ceSuffix": "M"
-    },
-    "gregorianToHijri": {
-      "title": "Masehi → Hijriah",
-      "dateLabel": "Tanggal Masehi",
-      "resultLabel": "Tanggal Hijriah",
-      "useToday": "Hari ini"
-    },
-    "hijriToGregorian": {
-      "title": "Hijriah → Masehi",
-      "yearLabel": "Tahun (H)",
-      "monthLabel": "Bulan",
-      "dayLabel": "Tanggal",
-      "resultLabel": "Tanggal Masehi",
-      "useToday": "Hari ini"
-    },
-    "errors": {
-      "invalidDate": "Tanggal tersebut tidak ada pada bulan Hijriah yang dipilih.",
-      "outOfRange": "Tanggal di luar rentang Hijriah yang didukung."
-    }
   },
   "users": {
     "pageTitle": "Pengguna",
@@ -452,209 +465,43 @@
     "typePromptPrefix": "Ketik",
     "typePromptSuffix": "untuk mengonfirmasi"
   },
-  "events": {
-    "pageTitle": "Acara",
-    "searchAria": "Cari acara",
-    "searchPlaceholder": "Cari judul, penyelenggara, tempat…",
-    "filterByCategory": "Saring berdasarkan kategori",
-    "filterByStatus": "Saring berdasarkan status",
-    "filterByWindow": "Saring berdasarkan waktu",
-    "newEvent": "Acara baru",
-    "noPersistTitle": "Atur Firebase Admin untuk membuat acara.",
-    "rowActions": "Tindakan untuk {name}",
-    "rowsPerPage": "Baris per halaman",
-    "previousPage": "Halaman sebelumnya",
-    "nextPage": "Halaman berikutnya",
-    "rangeOf": "{start}–{end} dari {total}",
-    "noResults": "Tidak ada acara yang cocok dengan filter ini.",
-    "createdToast": "\"{name}\" dibuat.",
-    "updatedToast": "\"{name}\" diperbarui.",
-    "deletedToast": "\"{name}\" dihapus.",
-    "rsvpCount": "{count, plural, one {# RSVP} other {# RSVP}}",
-    "rsvpOfCapacity": "{count} / {capacity}",
-    "deleteTitle": "Hapus acara",
-    "deleteDescription": "Tindakan ini menghapus \"{name}\" secara permanen. Tidak dapat dibatalkan.",
-    "viewTable": "Tabel",
-    "viewCalendar": "Kalender",
-    "recurrenceHijri": "Berdasarkan tanggal Hijriah",
-    "anchorIndicator": "Terikat ke {prayer}",
-    "recurrence": {
-      "modeLabel": "Pengulangan",
-      "modeHint": "Opsional. Ulangi acara ini secara otomatis.",
-      "none": "Tidak diulang",
-      "weekly": "Mingguan (hari yang sama)",
-      "daily": "Harian",
-      "monthly": "Bulanan",
-      "hijriAnchor": "Tanggal Hijriah (tahunan)",
-      "countLabel": "Jumlah pengulangan",
-      "countHint": "Opsional. Kosongkan untuk tanpa batas.",
-      "countPlaceholder": "mis. 12",
-      "hijriMonthLabel": "Bulan Hijriah",
-      "hijriDayLabel": "Tanggal Hijriah",
-      "prayerAnchorLabel": "Ikat ke waktu salat",
-      "prayerAnchorHint": "Hitung mulai sebagai selisih dari waktu salat (mis. 5 menit setelah Magrib untuk berbuka).",
-      "prayerLabel": "Salat",
-      "offsetLabel": "Selisih (menit)",
-      "offsetHint": "Negatif untuk sebelum, positif untuk sesudah."
-    },
-    "calendar": {
-      "today": "Hari ini",
-      "prevMonth": "Bulan sebelumnya",
-      "nextMonth": "Bulan berikutnya",
-      "more": "+{count} lainnya"
-    },
-    "columns": {
-      "title": "Judul",
-      "category": "Kategori",
-      "status": "Status",
-      "when": "Waktu",
-      "location": "Lokasi",
-      "organizer": "Penyelenggara",
-      "rsvp": "RSVP"
-    },
-    "categories": {
-      "all": "Semua kategori",
-      "prayer": "Salat",
-      "lecture": "Kajian",
-      "iftar": "Ifthar",
-      "janazah": "Jenazah",
-      "class": "Kelas",
-      "fundraiser": "Penggalangan dana",
-      "community": "Komunitas",
-      "other": "Lainnya"
-    },
-    "statuses": {
-      "all": "Semua status",
-      "draft": "Draf",
-      "published": "Diterbitkan",
-      "cancelled": "Dibatalkan"
-    },
-    "windows": {
-      "upcoming": "Mendatang",
-      "past": "Lalu",
-      "all": "Sepanjang waktu"
-    },
-    "locationModes": {
-      "in-person": "Tatap muka",
-      "online": "Daring",
-      "hybrid": "Hibrida"
-    },
-    "editor": {
-      "createTitle": "Acara baru",
-      "editTitle": "Sunting acara",
-      "createDescription": "Tambahkan acara baru ke kalender komunitas.",
-      "editDescription": "Perbarui detail acara ini.",
-      "sectionBasics": "Dasar",
-      "sectionWhen": "Waktu",
-      "sectionWhere": "Lokasi",
-      "sectionOrganizer": "Penyelenggara",
-      "title": "Judul",
-      "category": "Kategori",
-      "status": "Status",
-      "description": "Deskripsi",
-      "startsAt": "Mulai",
-      "endsAt": "Selesai",
-      "timezone": "Zona waktu",
-      "timezoneHint": "Zona waktu IANA, mis. Asia/Jakarta.",
-      "locationMode": "Mode lokasi",
-      "venue": "Tempat",
-      "address": "Alamat",
-      "meetingUrl": "URL pertemuan",
-      "organizerName": "Nama penyelenggara",
-      "organizerContact": "Kontak (email atau telepon)",
-      "capacity": "Kapasitas",
-      "capacityHint": "Opsional. Kosongkan untuk tanpa batas.",
-      "save": "Simpan perubahan",
-      "create": "Buat acara",
-      "noPersistNote": "Penyimpanan dinonaktifkan dalam mode data contoh. Atur Firebase Admin untuk menyimpan acara.",
-      "noPersistToast": "Tidak dapat menyimpan: Firestore belum dikonfigurasi.",
-      "errorTitle": "Judul minimal 2 karakter.",
-      "errorStartsAt": "Pilih tanggal dan waktu mulai.",
-      "errorTimezone": "Masukkan zona waktu IANA.",
-      "errorEndsAfterStart": "Selesai harus pada atau setelah waktu mulai.",
-      "errorVenue": "Tempat wajib untuk acara tatap muka dan hibrida.",
-      "errorMeetingUrl": "URL pertemuan wajib untuk acara daring dan hibrida.",
-      "errorUrl": "Masukkan URL http(s) yang valid.",
-      "errorOrganizer": "Nama penyelenggara wajib diisi.",
-      "errorCapacity": "Kapasitas harus berupa bilangan bulat tak negatif.",
-      "errorRecurrenceCount": "Jumlah harus antara 1 dan 999.",
-      "errorOffsetMinutes": "Selisih harus berupa bilangan bulat menit."
-    },
-    "admin": {
-      "categoriesPageTitle": "Kategori",
-      "taxonomyEmpty": "Belum ada apa-apa di sini.",
-      "taxonomyAddCta": "Tambah",
-      "taxonomyEditCta": "Edit",
-      "taxonomyDeleteCta": "Hapus",
-      "taxonomyDeleteTitle": "Hapus kategori",
-      "taxonomyDeleteDescription": "Ini menghapus \"{name}\" secara permanen. Acara yang ditandai dengan slug ini akan ditampilkan sebagai slug mentah. Tidak dapat dibatalkan.",
-      "taxonomyCreatedToast": "Dibuat.",
-      "taxonomyUpdatedToast": "Diperbarui.",
-      "taxonomyDeletedToast": "Dihapus.",
-      "noPersistToast": "Tidak dapat menyimpan: Firestore tidak dikonfigurasi.",
-      "saving": "Menyimpan…",
-      "save": "Simpan perubahan",
-      "create": "Buat",
-      "slug": "Slug",
-      "iconKey": "Nama ikon",
-      "sortOrder": "Urutan",
-      "isActive": "Aktif",
-      "nameLocale": "Nama ({locale})"
-    }
-  },
-  "eventsPublic": {
-    "metaTitle": "Acara — i-muslim",
-    "metaDetailTitle": "{name} — Acara i-muslim",
-    "metaDescription": "Temukan Jum'at, kajian, ifthar, halaqah, dan lainnya di area Anda.",
-    "heading": "Acara komunitas",
-    "subheading": "Jum'at, kajian, ifthar, halaqah, dan lainnya.",
-    "searchAria": "Cari acara",
-    "searchPlaceholder": "Cari judul, penyelenggara, tempat…",
-    "filterByCategory": "Saring berdasarkan kategori",
-    "nearMe": "Dekat saya",
-    "nearMeOn": "Diurutkan berdasarkan jarak",
-    "locating": "Mencari lokasi…",
-    "locationDenied": "Akses lokasi ditolak. Menampilkan semua acara.",
-    "locationUnsupported": "Lokasi tidak didukung di peramban ini.",
-    "kmAway": "{km} km",
-    "noResults": "Tidak ada acara mendatang.",
-    "anchorNote": "Mulai pada waktu {prayer}",
-    "backToEvents": "Kembali ke acara",
-    "addToCalendar": "Tambahkan ke kalender (.ics)",
-    "about": "Tentang acara ini",
-    "nextOccurrences": "Tanggal mendatang",
-    "recurrenceHijri": "Setiap {day} {month} (Hijriah)",
-    "featuredHeading": "Acara mendatang",
-    "featuredSubheading": "Yang berlangsung dalam dua minggu mendatang.",
-    "viewAll": "Lihat semua acara",
-    "rsvp": {
-      "rsvp": "RSVP",
-      "rsvped": "Anda akan hadir",
-      "full": "Acara penuh",
-      "signInToRsvp": "Masuk untuk RSVP",
-      "signInFailed": "Gagal masuk.",
-      "rsvpedToast": "RSVP dikonfirmasi.",
-      "removedToast": "RSVP dibatalkan.",
-      "rsvpCount": "{count, plural, one {# hadir} other {# hadir}}",
-      "rsvpOfCapacity": "{count} / {capacity}",
-      "notConfigured": "RSVP memerlukan Firebase Auth — belum dikonfigurasi."
-    },
-    "share": {
-      "share": "Bagikan",
-      "copyLink": "Salin tautan",
-      "copied": "Tautan disalin.",
-      "copyFailed": "Gagal menyalin."
-    }
-  },
   "nav": {
     "quran": "Al-Qur'an",
     "hadith": "Hadis",
+    "prayer": "Salat",
     "prayerTimes": "Waktu Salat",
     "zakat": "Zakat",
     "matrimonial": "Matrimonial",
     "events": "Acara",
     "mosques": "Masjid",
-    "articles": "Artikel"
+    "articles": "Artikel",
+    "more": "Lainnya",
+    "primary": "Navigasi utama",
+    "search": "Cari",
+    "searchTitle": "Cari",
+    "searchDescription": "Temukan ayat di Al-Qur'an dan riwayat di koleksi Hadis.",
+    "searchPlaceholder": "Cari Al-Qur'an dan Hadis…",
+    "searchHint": "Tekan Enter untuk mencari."
+  },
+  "more": {
+    "title": "Lainnya",
+    "description": "Alat, komunitas, akun, dan preferensi.",
+    "sectionCommunity": "Komunitas",
+    "sectionTools": "Alat",
+    "sectionAccount": "Akun",
+    "sectionPreferences": "Preferensi",
+    "businesses": "Bisnis",
+    "zakat": "Kalkulator Zakat",
+    "hijriConverter": "Konverter Tanggal Hijriah",
+    "profile": "Profil",
+    "account": "Masuk / Keluar",
+    "language": "Bahasa",
+    "theme": "Tema"
+  },
+  "prayerBar": {
+    "viewAll": "Semua waktu salat",
+    "viewAllAria": "Lihat semua waktu salat",
+    "inCountdown": "dalam {countdown}"
   },
   "footer": {
     "tagline": "Baca Al-Qur'an dan Sunnah, temukan waktu salat, masjid, dan kehidupan halal — semuanya di satu tempat.",
@@ -858,6 +705,8 @@
     "subtitle": "Kalkulator Penyucian Harta",
     "settingsButton": "Pengaturan",
     "nisabLabel": "Nisab",
+    "nisabGoldGrams": "{grams}g emas",
+    "nisabSilverGrams": "{grams}g perak",
     "subtotalUsd": "Subtotal dalam USD",
     "subtotalOwed": "Subtotal Piutang (USD)",
     "currencySearchPlaceholder": "Cari mata uang…",
@@ -985,8 +834,319 @@
       "OMR": "Riyal Oman"
     }
   },
+  "events": {
+    "pageTitle": "Acara",
+    "searchAria": "Cari acara",
+    "searchPlaceholder": "Cari judul, penyelenggara, tempat…",
+    "filterByCategory": "Saring berdasarkan kategori",
+    "filterByStatus": "Saring berdasarkan status",
+    "filterByWindow": "Saring berdasarkan waktu",
+    "newEvent": "Acara baru",
+    "tabSubmissions": "Kiriman",
+    "noPersistTitle": "Atur Firebase Admin untuk membuat acara.",
+    "submissions": {
+      "queueTitle": "Kiriman acara",
+      "queueSubtitle": "Tinjau acara yang diusulkan komunitas dan promosikan ke kalender publik.",
+      "tabPending": "Menunggu",
+      "tabApproved": "Disetujui",
+      "tabRejected": "Ditolak",
+      "noSubmissions": "Tidak ada kiriman di kategori ini.",
+      "approve": "Setujui",
+      "reject": "Tolak",
+      "cancel": "Batal",
+      "promoteSuccess": "Kiriman dipromosikan. Acara baru berstatus Draf — tinjau dan publikasikan dari daftar acara.",
+      "rejectSuccess": "Kiriman ditolak.",
+      "rejectDialogTitle": "Tolak kiriman",
+      "rejectDialogDescription": "Opsional, beri tahu kami mengapa \"{name}\" tidak memenuhi syarat. Alasan dicatat tetapi tidak dikirim ke pengirim.",
+      "rejectReasonLabel": "Alasan (opsional)",
+      "rejectedFor": "Ditolak: {reason}",
+      "viewPromoted": "Lihat draf acara",
+      "anonymous": "Anonim",
+      "noPersistToast": "Tidak dapat menyimpan: Firestore belum dikonfigurasi."
+    },
+    "rowActions": "Tindakan untuk {name}",
+    "rowsPerPage": "Baris per halaman",
+    "previousPage": "Halaman sebelumnya",
+    "nextPage": "Halaman berikutnya",
+    "rangeOf": "{start}–{end} dari {total}",
+    "noResults": "Tidak ada acara yang cocok dengan filter ini.",
+    "createdToast": "\"{name}\" dibuat.",
+    "updatedToast": "\"{name}\" diperbarui.",
+    "deletedToast": "\"{name}\" dihapus.",
+    "rsvpCount": "{count, plural, one {# RSVP} other {# RSVP}}",
+    "rsvpOfCapacity": "{count} / {capacity}",
+    "deleteTitle": "Hapus acara",
+    "deleteDescription": "Tindakan ini menghapus \"{name}\" secara permanen. Tidak dapat dibatalkan.",
+    "viewTable": "Tabel",
+    "viewCalendar": "Kalender",
+    "recurrenceHijri": "Berdasarkan tanggal Hijriah",
+    "anchorIndicator": "Terikat ke {prayer}",
+    "recurrence": {
+      "modeLabel": "Pengulangan",
+      "modeHint": "Opsional. Ulangi acara ini secara otomatis.",
+      "none": "Tidak diulang",
+      "weekly": "Mingguan (hari yang sama)",
+      "daily": "Harian",
+      "monthly": "Bulanan",
+      "hijriAnchor": "Tanggal Hijriah (tahunan)",
+      "countLabel": "Jumlah pengulangan",
+      "countHint": "Opsional. Kosongkan untuk tanpa batas.",
+      "countPlaceholder": "mis. 12",
+      "hijriMonthLabel": "Bulan Hijriah",
+      "hijriDayLabel": "Tanggal Hijriah",
+      "prayerAnchorLabel": "Ikat ke waktu salat",
+      "prayerAnchorHint": "Hitung mulai sebagai selisih dari waktu salat (mis. 5 menit setelah Magrib untuk berbuka).",
+      "prayerLabel": "Salat",
+      "offsetLabel": "Selisih (menit)",
+      "offsetHint": "Negatif untuk sebelum, positif untuk sesudah."
+    },
+    "calendar": {
+      "today": "Hari ini",
+      "prevMonth": "Bulan sebelumnya",
+      "nextMonth": "Bulan berikutnya",
+      "more": "+{count} lainnya"
+    },
+    "columns": {
+      "title": "Judul",
+      "category": "Kategori",
+      "status": "Status",
+      "when": "Waktu",
+      "location": "Lokasi",
+      "organizer": "Penyelenggara",
+      "rsvp": "RSVP"
+    },
+    "categories": {
+      "all": "Semua kategori",
+      "prayer": "Salat",
+      "lecture": "Kajian",
+      "iftar": "Ifthar",
+      "janazah": "Jenazah",
+      "class": "Kelas",
+      "fundraiser": "Penggalangan dana",
+      "community": "Komunitas",
+      "other": "Lainnya"
+    },
+    "statuses": {
+      "all": "Semua status",
+      "under_review": "Menunggu Tinjauan",
+      "draft": "Draf",
+      "published": "Diterbitkan",
+      "cancelled": "Dibatalkan"
+    },
+    "windows": {
+      "upcoming": "Mendatang",
+      "past": "Lalu",
+      "all": "Sepanjang waktu"
+    },
+    "locationModes": {
+      "in-person": "Tatap muka",
+      "online": "Daring",
+      "hybrid": "Hibrida"
+    },
+    "editor": {
+      "createTitle": "Acara baru",
+      "editTitle": "Sunting acara",
+      "createDescription": "Tambahkan acara baru ke kalender komunitas.",
+      "editDescription": "Perbarui detail acara ini.",
+      "sectionBasics": "Dasar",
+      "sectionWhen": "Waktu",
+      "sectionWhere": "Lokasi",
+      "sectionOrganizer": "Penyelenggara",
+      "title": "Judul",
+      "category": "Kategori",
+      "status": "Status",
+      "description": "Deskripsi",
+      "startsAt": "Mulai",
+      "endsAt": "Selesai",
+      "timezone": "Zona waktu",
+      "timezoneHint": "Zona waktu IANA, mis. Asia/Jakarta.",
+      "locationMode": "Mode lokasi",
+      "venue": "Tempat",
+      "address": "Alamat",
+      "meetingUrl": "URL pertemuan",
+      "organizerName": "Nama penyelenggara",
+      "organizerContact": "Kontak (email atau telepon)",
+      "capacity": "Kapasitas",
+      "capacityHint": "Opsional. Kosongkan untuk tanpa batas.",
+      "save": "Simpan perubahan",
+      "create": "Buat acara",
+      "noPersistNote": "Penyimpanan dinonaktifkan dalam mode data contoh. Atur Firebase Admin untuk menyimpan acara.",
+      "noPersistToast": "Tidak dapat menyimpan: Firestore belum dikonfigurasi.",
+      "errorTitle": "Judul minimal 2 karakter.",
+      "errorStartsAt": "Pilih tanggal dan waktu mulai.",
+      "errorTimezone": "Masukkan zona waktu IANA.",
+      "errorEndsAfterStart": "Selesai harus pada atau setelah waktu mulai.",
+      "errorVenue": "Tempat wajib untuk acara tatap muka dan hibrida.",
+      "errorMeetingUrl": "URL pertemuan wajib untuk acara daring dan hibrida.",
+      "errorUrl": "Masukkan URL http(s) yang valid.",
+      "errorOrganizer": "Nama penyelenggara wajib diisi.",
+      "errorCapacity": "Kapasitas harus berupa bilangan bulat tak negatif.",
+      "errorRecurrenceCount": "Jumlah harus antara 1 dan 999.",
+      "errorOffsetMinutes": "Selisih harus berupa bilangan bulat menit."
+    },
+    "admin": {
+      "categoriesPageTitle": "Kategori",
+      "taxonomyEmpty": "Belum ada apa-apa di sini.",
+      "taxonomyAddCta": "Tambah",
+      "taxonomyEditCta": "Edit",
+      "taxonomyDeleteCta": "Hapus",
+      "taxonomyDeleteTitle": "Hapus kategori",
+      "taxonomyDeleteDescription": "Ini menghapus \"{name}\" secara permanen. Acara yang ditandai dengan slug ini akan ditampilkan sebagai slug mentah. Tidak dapat dibatalkan.",
+      "taxonomyCreatedToast": "Dibuat.",
+      "taxonomyUpdatedToast": "Diperbarui.",
+      "taxonomyDeletedToast": "Dihapus.",
+      "noPersistToast": "Tidak dapat menyimpan: Firestore tidak dikonfigurasi.",
+      "saving": "Menyimpan…",
+      "save": "Simpan perubahan",
+      "create": "Buat",
+      "slug": "Slug",
+      "iconKey": "Nama ikon",
+      "sortOrder": "Urutan",
+      "isActive": "Aktif",
+      "nameLocale": "Nama ({locale})"
+    }
+  },
+  "eventsPublic": {
+    "metaTitle": "Acara — i-muslim",
+    "metaDetailTitle": "{name} — Acara i-muslim",
+    "metaDescription": "Temukan Jum'at, kajian, ifthar, halaqah, dan lainnya di area Anda.",
+    "heading": "Acara komunitas",
+    "subheading": "Jum'at, kajian, ifthar, halaqah, dan lainnya.",
+    "searchAria": "Cari acara",
+    "searchPlaceholder": "Cari judul, penyelenggara, tempat…",
+    "filterByCategory": "Saring berdasarkan kategori",
+    "nearMe": "Dekat saya",
+    "nearMeOn": "Diurutkan berdasarkan jarak",
+    "locating": "Mencari lokasi…",
+    "locationDenied": "Akses lokasi ditolak. Menampilkan semua acara.",
+    "locationUnsupported": "Lokasi tidak didukung di peramban ini.",
+    "kmAway": "{km} km",
+    "noResults": "Tidak ada acara mendatang.",
+    "anchorNote": "Mulai pada waktu {prayer}",
+    "backToEvents": "Kembali ke acara",
+    "addToCalendar": "Tambahkan ke kalender (.ics)",
+    "about": "Tentang acara ini",
+    "nextOccurrences": "Tanggal mendatang",
+    "recurrenceHijri": "Setiap {day} {month} (Hijriah)",
+    "featuredHeading": "Acara mendatang",
+    "featuredSubheading": "Yang berlangsung dalam dua minggu mendatang.",
+    "viewAll": "Lihat semua acara",
+    "submitCta": "Kirim acara",
+    "submit": {
+      "title": "Kirim acara",
+      "subtitle": "Usulkan acara komunitas untuk ditinjau.",
+      "guideline": "Kiriman ditinjau oleh admin sebelum tampil di kalender publik.",
+      "steps": {
+        "basics": "Dasar",
+        "when": "Kapan",
+        "where": "Di mana",
+        "who": "Penyelenggara",
+        "review": "Tinjau"
+      },
+      "review": {
+        "heading": "Tinjau kiriman Anda",
+        "subheading": "Periksa detail ini sebelum mengirim. Admin akan meninjau sebelum mempublikasikan.",
+        "editStep": "Ubah",
+        "publicSection": "Publik — ditampilkan kepada peserta",
+        "privateSection": "Privat — hanya dilihat admin"
+      },
+      "fields": {
+        "title": "Judul acara",
+        "description": "Deskripsi",
+        "category": "Kategori",
+        "startsAt": "Mulai pada",
+        "endsAt": "Berakhir pada (opsional)",
+        "timezone": "Zona waktu",
+        "recurrence": "Pengulangan",
+        "locationMode": "Lokasi",
+        "venue": "Nama tempat",
+        "address": "Alamat",
+        "country": "Negara tempat",
+        "url": "URL pertemuan",
+        "platform": "Platform",
+        "dialIn": "Info dial-in",
+        "organizerName": "Nama penyelenggara",
+        "organizerContact": "Kontak penyelenggara (opsional)",
+        "submitterEmail": "Email Anda"
+      },
+      "placeholders": {
+        "platform": "mis. Zoom, Google Meet, MS Teams",
+        "dialIn": "mis. +1 (555) 555-0100, ID 123 4567",
+        "organizerContact": "Telepon, email, atau akun sosial yang dapat digunakan peserta"
+      },
+      "helpers": {
+        "organizerName": "Ditampilkan secara publik di halaman acara.",
+        "organizerContact": "Ditampilkan secara publik agar peserta dapat menghubungi penyelenggara.",
+        "submitterEmail": "Privat — hanya dilihat admin. Default ke email akun Anda; ubah jika ingin korespondensi dikirim ke alamat lain.",
+        "timezoneSuggested": "Zona waktu disetel ke {tz} berdasarkan negara tempat.",
+        "categoryHintPrefix": "Tip:"
+      },
+      "categoryHints": {
+        "janazah": "Mohon sertakan nama almarhum dan rumah duka jika diketahui.",
+        "iftar": "Konfirmasikan apakah makanan disediakan dan persyaratan RSVP.",
+        "lecture": "Sertakan nama pembicara dan bahasa ceramah.",
+        "class": "Sebutkan tingkat (pemula / menengah / lanjut) dan prasyarat.",
+        "fundraiser": "Nyatakan tujuan dan bagaimana dana akan digunakan."
+      },
+      "locationModes": {
+        "in-person": "Tatap muka",
+        "online": "Daring",
+        "hybrid": "Hibrida"
+      },
+      "recurrencePresets": {
+        "none": "Tidak berulang",
+        "weekly": "Mingguan",
+        "monthly": "Bulanan"
+      },
+      "actions": {
+        "back": "Kembali",
+        "next": "Lanjut",
+        "submit": "Kirim untuk ditinjau",
+        "submitting": "Mengirim…"
+      },
+      "validation": {
+        "titleRequired": "Mohon masukkan judul.",
+        "startRequired": "Mohon pilih tanggal dan waktu mulai.",
+        "endsBeforeStart": "Waktu berakhir harus setelah waktu mulai.",
+        "organizerRequired": "Mohon berikan nama penyelenggara.",
+        "submitterEmailRequired": "Mohon berikan email yang valid.",
+        "venueRequired": "Tempat atau alamat wajib untuk acara tatap muka.",
+        "urlRequired": "URL pertemuan wajib untuk acara daring.",
+        "fixStep": "Perbaiki kolom yang ditandai sebelum melanjutkan.",
+        "startInPast": "Waktu mulai sudah berlalu — periksa kembali sebelum mengirim.",
+        "maxDuration": "Durasi lebih dari 30 hari — periksa kembali waktu berakhir."
+      },
+      "success": {
+        "headline": "Terima kasih — acara Anda telah dikirim untuk ditinjau.",
+        "tabTitle": "{title} — Terkirim",
+        "startsAtLine": "Mulai {when} ({tz})",
+        "downloadIcs": "Unduh pratinjau .ics",
+        "icsHint": "Buka file di aplikasi kalender untuk memverifikasi zona waktu."
+      },
+      "errorGeneric": "Tidak dapat mengirim acara. Silakan coba lagi.",
+      "errorRate": "Anda telah mengirim beberapa acara baru-baru ini. Silakan coba lagi nanti.",
+      "errorAuth": "Silakan masuk untuk mengirim acara."
+    },
+    "rsvp": {
+      "rsvp": "RSVP",
+      "rsvped": "Anda akan hadir",
+      "full": "Acara penuh",
+      "signInToRsvp": "Masuk untuk RSVP",
+      "signInFailed": "Gagal masuk.",
+      "rsvpedToast": "RSVP dikonfirmasi.",
+      "removedToast": "RSVP dibatalkan.",
+      "rsvpCount": "{count, plural, one {# hadir} other {# hadir}}",
+      "rsvpOfCapacity": "{count} / {capacity}",
+      "notConfigured": "RSVP memerlukan Firebase Auth — belum dikonfigurasi."
+    },
+    "share": {
+      "share": "Bagikan",
+      "copyLink": "Salin tautan",
+      "copied": "Tautan disalin.",
+      "copyFailed": "Gagal menyalin."
+    }
+  },
   "matrimonial": {
-    "_translatorNote": "Awaiting Indonesian review — English placeholders.",
     "brand": "Matrimonial",
     "landing": {
       "title": "Find a spouse, the halal way.",
@@ -1328,36 +1488,48 @@
       "title": "Kirim masjid",
       "subtitle": "Bantu kami membangun peta komunitas. Kiriman akan ditinjau sebelum tayang.",
       "guideline": "Hanya tambahkan masjid yang Anda yakin keberadaannya. Berikan nama, alamat, dan kontak yang akurat.",
+      "steps": {
+        "basics": "Dasar",
+        "location": "Lokasi",
+        "contact": "Kontak",
+        "review": "Tinjau"
+      },
       "fields": {
         "nameEn": "Nama (Inggris)",
         "nameAr": "Nama (Arab)",
-        "nameTr": "Nama (Turki)",
-        "nameId": "Nama (Indonesia)",
         "addressLine1": "Alamat jalan",
-        "addressLine2": "Baris alamat 2",
         "city": "Kota",
+        "region": "Wilayah / provinsi",
         "country": "Negara",
+        "postalCode": "Kode pos",
         "denomination": "Mazhab",
         "phone": "Telepon",
         "website": "Situs web",
         "email": "Email",
         "languages": "Bahasa",
-        "description": "Deskripsi",
-        "submitterEmail": "Email Anda"
+        "description": "Deskripsi"
+      },
+      "review": {
+        "editSection": "Ubah {section}",
+        "geocodeFailed": "Kami tidak dapat menentukan lokasi alamat ini di peta. Pengiriman tetap berjalan — tim kami akan memverifikasi lokasi sebelum publikasi."
       },
       "actions": {
+        "back": "Kembali",
+        "next": "Lanjut",
         "submit": "Kirim untuk ditinjau",
         "submitting": "Mengirim…",
         "cancel": "Batal"
       },
       "validation": {
         "nameRequired": "Nama Inggris wajib diisi.",
+        "descriptionMax": "Deskripsi maksimal 500 karakter.",
         "addressRequired": "Alamat jalan wajib diisi.",
         "cityRequired": "Kota wajib diisi.",
         "countryRequired": "Negara wajib diisi (gunakan kode ISO).",
+        "phoneInvalid": "Masukkan nomor telepon yang valid.",
         "emailInvalid": "Masukkan email yang valid.",
         "websiteInvalid": "Masukkan URL yang valid.",
-        "submitterEmailRequired": "Mohon berikan email Anda untuk tindak lanjut."
+        "fixStep": "Perbaiki kolom yang ditandai sebelum melanjutkan."
       },
       "success": "Terima kasih — kiriman Anda sedang ditinjau dan akan tampil di direktori setelah disetujui.",
       "errorRate": "Anda telah mengirim beberapa masjid. Silakan coba lagi nanti.",
@@ -1372,8 +1544,6 @@
       "facilities": "Fasilitas",
       "prayerTimes": "Jadwal salat hari ini",
       "prayerTimesNote": "Jadwal azan dihitung; jadwal iqamah ditetapkan oleh masjid.",
-      "noIqamahNote": "Jadwal iqamah belum dipublikasikan oleh masjid ini.",
-      "iqamah": "Iqamah",
       "adhan": "Azan",
       "noTime": "—",
       "denomination": "Mazhab",
@@ -1436,6 +1606,7 @@
       "country": "Negara",
       "status": "Status",
       "denomination": "Mazhab",
+      "type": "Jenis",
       "updatedAt": "Diperbarui"
     },
     "statuses": {
@@ -1443,11 +1614,15 @@
       "draft": "Draf",
       "pending_review": "Menunggu tinjauan",
       "published": "Terbit",
+      "rejected": "Ditolak",
       "suspended": "Ditangguhkan"
     },
     "filterByStatus": "Filter berdasarkan status",
+    "filterByCity": "Filter berdasarkan kota",
+    "filterByCountry": "Filter berdasarkan negara",
+    "allCities": "Semua kota",
+    "allCountries": "Semua negara",
     "noResults": "Tidak ada masjid yang cocok dengan filter ini.",
-    "noPersistTitle": "Konfigurasi Firebase Admin untuk membuat masjid.",
     "form": {
       "createTitle": "Masjid baru",
       "editTitle": "Edit masjid",
@@ -1456,17 +1631,16 @@
       "sectionIdentity": "Identitas",
       "sectionLocation": "Lokasi",
       "sectionContact": "Kontak & sosial",
-      "sectionServices": "Layanan",
+      "sectionFacilities": "Fasilitas",
+      "sectionFacilitiesHint": "Centang fasilitas dan layanan yang ditawarkan masjid ini.",
       "sectionPrayer": "Jadwal salat & iqamah",
+      "sectionPrayerHint": "Waktu salat dihitung dari lokasi dan zona waktu masjid. Sesuaikan metode perhitungan jika default tidak cocok dengan praktik masjid ini.",
       "sectionMedia": "Media",
       "nameEn": "Nama (Inggris)",
       "nameAr": "Nama (Arab)",
-      "nameTr": "Nama (Turki)",
-      "nameId": "Nama (Indonesia)",
       "legalName": "Nama resmi / terdaftar",
       "denomination": "Mazhab",
       "descriptionEn": "Deskripsi (Inggris)",
-      "descriptionAr": "Deskripsi (Arab)",
       "addressLine1": "Alamat jalan",
       "addressLine2": "Baris alamat 2",
       "postalCode": "Kode pos",
@@ -1492,15 +1666,11 @@
       "calcMethod": "Metode perhitungan",
       "asrMethod": "Metode Asar",
       "highLatRule": "Aturan lintang tinggi",
-      "iqamahLabel": "Iqamah {prayer}",
-      "iqamahMode": "Mode",
-      "iqamahModeNone": "Tidak ditetapkan",
-      "iqamahModeOffset": "Selisih dari azan",
-      "iqamahModeFixed": "Waktu tetap",
-      "iqamahOffsetMinutes": "Menit setelah azan",
-      "iqamahFixedTime": "Waktu (HH:mm, lokal masjid)",
       "coverImageUrl": "URL gambar sampul",
       "logoUrl": "URL logo",
+      "coverImageLabel": "Gambar sampul",
+      "logoLabel": "Logo",
+      "facilitiesEmpty": "Belum ada fasilitas. Tambahkan di /admin/mosques/facilities terlebih dahulu.",
       "status": "Status",
       "actions": {
         "save": "Simpan perubahan",
@@ -1519,7 +1689,6 @@
         "addressRequired": "Alamat jalan wajib diisi.",
         "coordsRequired": "Koordinat wajib diisi.",
         "coordsRange": "Koordinat di luar rentang.",
-        "iqamahFormat": "Waktu harus dalam format HH:mm.",
         "urlInvalid": "Masukkan URL yang valid.",
         "emailInvalid": "Masukkan email yang valid."
       }
@@ -1534,20 +1703,17 @@
       "rejectedToast": "Kiriman ditolak.",
       "errorGeneric": "Tidak dapat menyimpan. Coba lagi."
     },
-    "queueTitle": "Antrian moderasi",
-    "queueSubtitle": "Kiriman dan suntingan menunggu tinjauan.",
-    "queueEmpty": "Tidak ada yang perlu ditinjau saat ini.",
-    "queueColumns": {
-      "name": "Nama",
-      "city": "Kota",
-      "submittedBy": "Dikirim oleh",
-      "submittedAt": "Dikirim",
-      "actions": "Aksi"
-    },
-    "queueActions": {
-      "promote": "Setujui & terbitkan",
+    "viewDialog": {
+      "badgeMosque": "Masjid",
+      "badgeSubmission": "Kiriman",
+      "submittedMeta": "Dikirim oleh {who} · {when}",
+      "anonymous": "anonim",
+      "approve": "Setujui & publikasikan",
       "reject": "Tolak",
-      "view": "Tinjau"
+      "rejectConfirm": "Konfirmasi penolakan",
+      "rejectReasonLabel": "Alasan",
+      "rejectReasonPlaceholder": "Beri tahu pengirim mengapa kiriman ini ditolak…",
+      "edit": "Ubah"
     },
     "deleteTitle": "Hapus masjid",
     "deleteDescription": "Ini akan menghapus \"{name}\" dari direktori secara permanen. Tidak dapat dibatalkan.",
@@ -1562,6 +1728,37 @@
       "importing": "Mengimpor…",
       "successToast": "Mengimpor {count} masjid.",
       "noPersistNote": "Mengimpor memerlukan Firebase Admin yang dikonfigurasi."
+    },
+    "facilities": {
+      "pageTitle": "Fasilitas Masjid",
+      "addCta": "Tambah fasilitas",
+      "empty": "Belum ada fasilitas. Tambahkan yang pertama untuk mengisi formulir masjid.",
+      "editTitle": "Ubah fasilitas",
+      "deleteTitle": "Hapus fasilitas",
+      "deleteDescription": "Hapus \"{name}\" dari daftar fasilitas. Masjid yang merujuk fasilitas ini akan tetap menyimpan slug-nya hingga disimpan ulang.",
+      "deleteCta": "Hapus",
+      "name": "Nama",
+      "slug": "Slug",
+      "slugHint": "Kebab-case huruf kecil. Digunakan sebagai ID dokumen dan kunci referensi.",
+      "iconKey": "Kunci ikon",
+      "sortOrder": "Urutan",
+      "save": "Simpan perubahan",
+      "create": "Buat fasilitas",
+      "saving": "Menyimpan…",
+      "createdToast": "Fasilitas dibuat.",
+      "updatedToast": "Fasilitas diperbarui.",
+      "deletedToast": "Fasilitas dihapus.",
+      "noPersistToast": "Firebase Admin harus dikonfigurasi untuk menyimpan fasilitas."
+    },
+    "media": {
+      "typeError": "Gunakan JPEG, PNG, atau WebP.",
+      "sizeError": "Ukuran gambar harus di bawah 5 MB.",
+      "uploadFailed": "Unggah gagal. Silakan coba lagi.",
+      "uploading": "Mengunggah…",
+      "upload": "Unggah",
+      "replace": "Ganti",
+      "remove": "Hapus gambar",
+      "limitHint": "JPEG / PNG / WebP, hingga 5 MB."
     }
   },
   "businesses": {
@@ -1573,6 +1770,7 @@
     "publicAllCategories": "Semua kategori",
     "publicSearchPlaceholder": "Cari berdasarkan nama…",
     "claimSuggestNote": "Punya bisnis halal di {city}? Daftarkan.",
+    "submitCta": "Sarankan bisnis",
     "createCta": "Buat entri",
     "editCta": "Edit",
     "archiveCta": "Arsipkan",
@@ -1622,16 +1820,17 @@
     },
     "statuses": {
       "all": "Semua status",
+      "submitted": "Menunggu Tinjauan",
       "draft": "Draf",
       "published": "Diterbitkan",
       "archived": "Diarsipkan"
     },
     "priceTiers": {
-      "any": "Harga apa saja",
       "1": "$",
       "2": "$$",
       "3": "$$$",
-      "4": "$$$$"
+      "4": "$$$$",
+      "any": "Harga apa saja"
     },
     "weekdays": {
       "mon": "Senin",
@@ -1680,7 +1879,8 @@
       }
     },
     "admin": {
-      "tabListings": "Entri",
+      "tabDirectory": "Direktori",
+      "tabSubmissions": "Kiriman",
       "tabReports": "Laporan",
       "tabCategories": "Kategori",
       "tabCertBodies": "Lembaga sertifikasi",
@@ -1690,6 +1890,7 @@
       "filterByHalal": "Filter berdasarkan status halal",
       "filterByCategory": "Filter berdasarkan kategori",
       "noResults": "Tidak ada entri cocok dengan filter ini.",
+      "reviewCta": "Tinjau",
       "createTitle": "Entri baru",
       "editTitle": "Edit entri",
       "createDescription": "Tambahkan bisnis halal baru ke direktori.",
@@ -1744,9 +1945,8 @@
       "reportsPageTitle": "Laporan entri",
       "reportsPageSubtitle": "Laporan publik dari pengunjung. Arsipkan entri di sini jika valid.",
       "reportsEmpty": "Tidak ada laporan.",
-      "reportsTabOpen": "Terbuka",
-      "reportsTabResolved": "Diselesaikan",
-      "reportsTabDismissed": "Ditolak",
+      "reportsNoResults": "Tidak ada laporan yang cocok dengan filter ini.",
+      "reportsSearch": "Cari bisnis, alasan, pelapor…",
       "reportsResolveCta": "Selesaikan",
       "reportsDismissCta": "Tolak",
       "reportsArchiveBusiness": "Arsipkan entri",
@@ -1761,6 +1961,7 @@
       "reportsColActions": "Aksi",
       "reportsAnonymous": "Anonim",
       "reportStatuses": {
+        "all": "Semua status",
         "open": "Terbuka",
         "resolved": "Diselesaikan",
         "dismissed": "Ditolak"
@@ -1791,7 +1992,101 @@
       "photoLimit": "Hingga 6 foto.",
       "photoTypeError": "Hanya gambar JPEG, PNG, atau WebP.",
       "photoSizeError": "Foto harus di bawah 5 MB.",
-      "uploadFailedToast": "Unggah gagal."
+      "uploadFailedToast": "Unggah gagal.",
+      "submissions": {
+        "queueTitle": "Kiriman bisnis",
+        "queueSubtitle": "Bisnis halal yang disarankan pengguna menunggu tinjauan.",
+        "tabPending": "Menunggu Tinjauan",
+        "tabApproved": "Disetujui",
+        "tabRejected": "Ditolak",
+        "noSubmissions": "Tidak ada di sini.",
+        "approve": "Setujui",
+        "reject": "Tolak",
+        "cancel": "Batal",
+        "promoteSuccess": "Disetujui — daftar draf telah dibuat. Ubah untuk menambahkan koordinat dan publikasikan.",
+        "rejectSuccess": "Kiriman ditolak.",
+        "rejectDialogTitle": "Tolak kiriman",
+        "rejectDialogDescription": "Opsional, beri tahu kami mengapa \"{name}\" tidak memenuhi syarat. Alasan dicatat tetapi tidak dikirim ke pengirim.",
+        "rejectReasonLabel": "Alasan (opsional)",
+        "rejectedFor": "Ditolak: {reason}",
+        "viewPromoted": "Lihat draf daftar",
+        "anonymous": "Anonim",
+        "muslimOwnedBadge": "Milik Muslim",
+        "ownerBadge": "Dikirim oleh pemilik",
+        "fieldPhone": "Telepon",
+        "fieldEmail": "Email",
+        "fieldWebsite": "Situs web",
+        "fieldInstagram": "Instagram",
+        "fieldWhatsapp": "WhatsApp",
+        "fieldCertBody": "Sertifikasi yang diklaim"
+      }
+    },
+    "submit": {
+      "title": "Kirim bisnis halal",
+      "subtitle": "Bantu memperluas direktori. Tim kami meninjau setiap kiriman sebelum dipublikasikan.",
+      "noCategoriesYet": "Kategori belum disiapkan. Silakan periksa kembali nanti.",
+      "steps": {
+        "basics": "Dasar",
+        "halal": "Halal",
+        "location": "Lokasi",
+        "review": "Tinjau"
+      },
+      "review": {
+        "heading": "Tinjau kiriman Anda",
+        "subheading": "Pastikan detail ini benar sebelum mengirim. Kami akan memverifikasi sebelum publikasi.",
+        "editSection": "Ubah {section}",
+        "geocodeFailed": "Kami tidak dapat menentukan lokasi alamat ini di peta. Pengiriman tetap berjalan — tim kami akan memverifikasi lokasi sebelum publikasi."
+      },
+      "fields": {
+        "name": "Nama bisnis",
+        "description": "Apa yang dilakukan bisnis ini?",
+        "category": "Kategori",
+        "categoryHint": "Pilih hingga 3.",
+        "categoryPlaceholder": "Pilih kategori…",
+        "categorySearchPlaceholder": "Cari kategori…",
+        "categoryNoResults": "Kategori tidak ditemukan.",
+        "categoryMoreItems": "+{count} lainnya",
+        "categoryRemoveChip": "Hapus {name}",
+        "halalStatus": "Status halal",
+        "certBody": "Nama lembaga sertifikasi",
+        "certBodyPlaceholder": "mis. HFA, HMC",
+        "isOwner": "Saya pemilik atau perwakilan bisnis ini",
+        "addressLine1": "Alamat jalan",
+        "city": "Kota",
+        "region": "Wilayah / provinsi",
+        "country": "Negara",
+        "postalCode": "Kode pos",
+        "phone": "Telepon",
+        "email": "Email",
+        "website": "Situs web",
+        "instagram": "Instagram",
+        "whatsapp": "WhatsApp"
+      },
+      "ownerNotice": "Verifikasi pemilik: kami mungkin menghubungi Anda di {email} untuk mengonfirmasi kepemilikan sebelum publikasi.",
+      "validation": {
+        "nameRequired": "Nama bisnis wajib diisi.",
+        "descriptionMin": "Deskripsi minimal 40 karakter — tambahkan kalimat tentang apa yang dilakukan bisnis ini.",
+        "descriptionMax": "Deskripsi maksimal 500 karakter.",
+        "categoryRequired": "Pilih setidaknya satu kategori.",
+        "certBodyRequired": "Nama lembaga sertifikasi wajib diisi untuk status halal bersertifikat.",
+        "addressRequired": "Alamat jalan wajib diisi.",
+        "cityRequired": "Kota wajib diisi.",
+        "countryRequired": "Negara wajib diisi.",
+        "phoneInvalid": "Masukkan nomor telepon yang valid.",
+        "emailInvalid": "Masukkan alamat email yang valid.",
+        "websiteInvalid": "Masukkan URL yang valid (mis. https://example.com).",
+        "fixStep": "Perbaiki kolom yang ditandai sebelum melanjutkan."
+      },
+      "actions": {
+        "back": "Kembali",
+        "next": "Lanjut",
+        "submit": "Kirim untuk ditinjau",
+        "submitting": "Mengirim…"
+      },
+      "success": "Terima kasih — kami akan meninjau kiriman Anda segera.",
+      "errorGeneric": "Tidak dapat mengirim. Silakan coba lagi.",
+      "errorRate": "Anda telah mengirim beberapa daftar baru-baru ini. Coba lagi besok.",
+      "errorTurnstile": "Pemeriksaan bot gagal. Silakan coba lagi."
     },
     "weekdayShort": {
       "mon": "Sen",
@@ -1808,9 +2103,18 @@
     "tabOpen": "Terbuka",
     "tabResolved": "Selesai",
     "empty": "Tidak ada pesan di sini.",
+    "search": "Cari pesan…",
+    "filterByStatus": "Filter berdasarkan status",
+    "statuses": {
+      "all": "Semua status",
+      "open": "Terbuka",
+      "resolved": "Selesai"
+    },
+    "noResults": "Tidak ada pesan yang cocok dengan filter ini.",
     "columns": {
       "from": "Dari",
       "subject": "Subjek",
+      "status": "Status",
       "received": "Diterima",
       "actions": "Tindakan"
     },
@@ -1832,6 +2136,65 @@
     "noPersistToast": "Konfigurasikan Firebase Admin untuk mengelola pesan kontak."
   },
   "adminSettings": {
+    "title": "Pengaturan",
+    "description": "Kelola identitas situs, aset media, dan ketersediaan bahasa.",
+    "nav": {
+      "ariaLabel": "Bagian pengaturan",
+      "general": "Umum",
+      "media": "Media",
+      "typography": "Tipografi",
+      "languages": "Bahasa",
+      "languagesInterface": "Interface",
+      "languagesQuran": "Qur'an",
+      "languagesHadith": "Hadith"
+    },
+    "general": {
+      "title": "Identitas situs",
+      "description": "Nama dan tagline situs. Nama situs muncul di tab browser, header situs, dan footer.",
+      "siteNameLabel": "Nama situs",
+      "siteNameHint": "Ditampilkan di tab browser, header publik, dan footer.",
+      "taglineLabel": "Tagline",
+      "taglineHint": "Deskripsi singkat yang digunakan sebagai deskripsi default situs dan di footer.",
+      "save": "Simpan perubahan",
+      "saving": "Menyimpan…",
+      "savedToast": "Identitas situs disimpan.",
+      "errorToast": "Tidak dapat menyimpan identitas situs.",
+      "unsavedChanges": "Perubahan belum disimpan"
+    },
+    "media": {
+      "title": "Media",
+      "description": "Unggah gambar untuk seluruh situs. Setiap unggahan langsung tersimpan.",
+      "logoLabel": "Logo",
+      "logoHint": "Ditampilkan di samping nama situs di header, footer, dan sidebar admin. Disarankan: PNG atau SVG kotak dengan latar transparan, ≥256×256.",
+      "faviconLabel": "Favicon",
+      "faviconHint": "Ikon tab browser. ICO, PNG, atau SVG, hingga 256 KB. Browser menyimpan favicon secara agresif — muat ulang paksa mungkin diperlukan untuk melihat perubahan.",
+      "ogImageLabel": "Gambar bagi sosial default",
+      "ogImageHint": "Digunakan sebagai gambar Open Graph default ketika halaman tidak menyediakannya. Disarankan: 1200×630 PNG atau JPEG.",
+      "articlePlaceholderLabel": "Gambar placeholder artikel",
+      "articlePlaceholderHint": "Ditampilkan untuk artikel yang tidak memiliki gambar utama.",
+      "upload": "Unggah",
+      "replace": "Ganti",
+      "remove": "Hapus",
+      "uploading": "Mengunggah…",
+      "typeError": "Jenis file tidak didukung untuk slot ini.",
+      "sizeError": "File terlalu besar untuk slot ini.",
+      "uploadFailed": "Unggah gagal. Silakan coba lagi.",
+      "savedToast": "Disimpan.",
+      "savedError": "Tidak dapat menyimpan. Silakan coba lagi."
+    },
+    "typography": {
+      "title": "Tipografi",
+      "description": "Pilih font teks dan font tampilan Arab. Perubahan diterapkan di seluruh situs publik setelah disimpan.",
+      "bodyLabel": "Font teks dan UI",
+      "bodyHint": "Digunakan untuk teks Inggris, Rusia, Azerbaijan, Turki, dan Indonesia di situs.",
+      "arabicLabel": "Font tampilan Arab",
+      "arabicHint": "Digunakan untuk Al-Qur'an, Hadis, dan teks Arab lainnya yang dirender dengan gaya .font-arabic.",
+      "save": "Simpan perubahan",
+      "saving": "Menyimpan…",
+      "savedToast": "Tipografi disimpan.",
+      "errorToast": "Tidak dapat menyimpan tipografi.",
+      "unsavedChanges": "Perubahan belum disimpan"
+    },
     "languages": {
       "title": "Bahasa",
       "description": "Pilih bahasa yang terlihat oleh pengunjung. Bahasa yang dinonaktifkan akan hilang dari pemilih bahasa publik, namun URL yang ada tetap berfungsi.",
@@ -1917,5 +2280,391 @@
         "errorToast": "Tidak dapat menyimpan terjemahan."
       }
     }
+  },
+  "quranSidebar": {
+    "title": "Filter",
+    "menu": "Filter",
+    "collapse": "Lipat",
+    "expand": "Bentangkan",
+    "sections": {
+      "translations": "Terjemahan"
+    }
+  },
+  "quranLanguageFilter": {
+    "label": "Terjemahan",
+    "placeholder": "Pilih bahasa",
+    "searchPlaceholder": "Cari bahasa…",
+    "noResults": "Bahasa tidak ditemukan.",
+    "moreItems": "+{count} lainnya",
+    "removeChip": "Hapus {name}"
+  },
+  "hadithSidebar": {
+    "title": "Filter",
+    "menu": "Filter",
+    "collapse": "Lipat",
+    "expand": "Bentangkan",
+    "sections": {
+      "translations": "Terjemahan"
+    }
+  },
+  "hadithLanguageFilter": {
+    "label": "Terjemahan",
+    "placeholder": "Pilih bahasa",
+    "searchPlaceholder": "Cari bahasa…",
+    "noResults": "Bahasa tidak ditemukan.",
+    "moreItems": "+{count} lainnya",
+    "removeChip": "Hapus {name}"
+  },
+  "profileNav": {
+    "title": "Profil",
+    "items": {
+      "overview": "Ringkasan",
+      "reading": "Progres bacaan",
+      "favorites": "Favorit",
+      "notes": "Catatan saya",
+      "comments": "Komentar saya",
+      "submissions": "Kiriman saya",
+      "matrimonial": "Ta'aruf"
+    },
+    "collapse": "Lipat",
+    "expand": "Bentangkan"
+  },
+  "profileSubmissions": {
+    "pageTitle": "Kiriman saya",
+    "pageDescription": "Lacak status acara, bisnis, dan masjid yang Anda kirimkan.",
+    "empty": "Anda belum mengirim apa pun. Bagikan acara, sarankan bisnis, atau usulkan masjid untuk melihatnya di sini.",
+    "emptySection": "Belum ada di sini.",
+    "viewLive": "Lihat langsung",
+    "sections": {
+      "events": "Acara",
+      "businesses": "Bisnis",
+      "mosques": "Masjid"
+    },
+    "statuses": {
+      "under_review": "Menunggu Tinjauan",
+      "pending_review": "Menunggu Tinjauan",
+      "draft": "Draf",
+      "published": "Dipublikasikan",
+      "approved": "Disetujui",
+      "rejected": "Ditolak",
+      "cancelled": "Dibatalkan"
+    }
+  },
+  "profileForm": {
+    "save": "Simpan perubahan",
+    "saving": "Menyimpan…",
+    "savedToast": "Profil disimpan",
+    "unsavedChanges": "Perubahan belum disimpan",
+    "sections": {
+      "identity": "Identitas",
+      "identityDescription": "Info dasar yang ditampilkan di profil Anda dan digunakan di seluruh aplikasi.",
+      "religion": "Agama",
+      "background": "Latar belakang",
+      "bio": "Tentang Anda",
+      "bioDescription": "Paragraf singkat yang menggambarkan diri Anda. Terlihat di profil ta'aruf jika Anda mengaktifkan ta'aruf."
+    },
+    "displayName": "Nama tampilan",
+    "displayNamePlaceholder": "Bagaimana Anda ingin disapa",
+    "gender": "Jenis kelamin",
+    "dateOfBirth": "Tanggal lahir",
+    "country": "Negara",
+    "city": "Kota",
+    "ethnicity": "Etnis",
+    "languages": "Bahasa",
+    "madhhab": "Mazhab",
+    "sect": "Aliran",
+    "prayerCommitment": "Komitmen salat",
+    "hijab": "Hijab",
+    "beard": "Janggut",
+    "revert": "Saya seorang mualaf",
+    "education": "Pendidikan",
+    "profession": "Profesi",
+    "maritalHistory": "Riwayat pernikahan",
+    "hasChildren": "Saya memiliki anak",
+    "wantsChildren": "Ingin memiliki anak",
+    "bio": "Bio",
+    "bioPlaceholder": "Apa yang Anda cari, apa yang membuat Anda berbeda, perjalanan iman Anda…"
+  },
+  "profileMatrimonial": {
+    "pageTitle": "Ta'aruf",
+    "pageDescription": "Kelola visibilitas ta'aruf Anda dan lihat ketertarikan masuk, ketertarikan terkirim, dan kecocokan.",
+    "statusEnabled": "Ta'aruf aktif",
+    "statusDisabled": "Ta'aruf nonaktif",
+    "missingProfileTitle": "Lengkapi profil terlebih dahulu",
+    "missingProfileBody": "Isi kolom identitas dan deen di profil Anda sebelum mengaktifkan ta'aruf — data yang sama digunakan untuk menampilkan profil ta'aruf Anda kepada orang lain.",
+    "missingProfileCta": "Buka profil saya",
+    "disable": "Nonaktifkan ta'aruf",
+    "disabling": "Menonaktifkan…",
+    "disableConfirm": "Nonaktifkan ta'aruf? Profil Anda akan dihapus dari direktori. Anda dapat mengaktifkannya kembali kapan saja.",
+    "disabledToast": "Ta'aruf dinonaktifkan",
+    "disableFailed": "Tidak dapat menonaktifkan — silakan coba lagi.",
+    "enable": {
+      "aboutYouTitle": "Tentang Anda",
+      "aboutYouDescription": "Fakta profil Anda sendiri — ini ditampilkan di kartu Anda untuk calon pasangan.",
+      "matchPreferencesTitle": "Preferensi pasangan",
+      "matchPreferencesDescription": "Filter yang digunakan untuk menyaring siapa yang Anda lihat dan siapa yang melihat Anda.",
+      "lookingForGender": "Mencari",
+      "ageRange": "Rentang usia",
+      "preferredCountries": "Negara yang disukai",
+      "preferredMadhhabs": "Mazhab yang disukai",
+      "prayerMin": "Komitmen salat minimum",
+      "polygamyStance": "Sikap terhadap poligami",
+      "polygamyAcceptable": "Sikap terhadap poligami",
+      "enable": "Aktifkan ta'aruf",
+      "enabling": "Mengaktifkan…",
+      "enabledToast": "Ta'aruf diaktifkan — Anda kini terlihat oleh calon pasangan."
+    }
+  },
+  "favorites": {
+    "pageTitle": "Favorit",
+    "pageDescription": "Ayat, hadis, artikel, acara, dan profil yang Anda simpan.",
+    "save": "Simpan",
+    "saved": "Tersimpan",
+    "remove": "Hapus",
+    "open": "Buka",
+    "signInRequired": "Masuk untuk menyimpan favorit",
+    "signInCta": "Masuk",
+    "savedToast": "Ditambahkan ke favorit",
+    "removedToast": "Dihapus dari favorit",
+    "saveFailed": "Tidak dapat menyimpan — silakan coba lagi.",
+    "matrimonial": {
+      "save": "Simpan profil",
+      "saved": "Tersimpan"
+    },
+    "tabs": {
+      "all": "Semua",
+      "ayah": "Ayat",
+      "surah": "Surah",
+      "hadith": "Hadis",
+      "article": "Artikel",
+      "event": "Acara",
+      "matrimonialProfile": "Profil"
+    },
+    "empty": "Belum ada yang disimpan."
+  },
+  "notes": {
+    "addNote": "Tambah catatan",
+    "editNote": "Ubah catatan",
+    "saveNote": "Simpan",
+    "cancelNote": "Batal",
+    "deleteNote": "Hapus",
+    "confirmDelete": "Hapus catatan ini?",
+    "placeholder": "Catatan pribadi Anda…",
+    "charLimit": "{count} / {max}",
+    "savedToast": "Catatan disimpan",
+    "deletedToast": "Catatan dihapus",
+    "saveFailed": "Tidak dapat menyimpan catatan — silakan coba lagi.",
+    "deleteFailed": "Tidak dapat menghapus — silakan coba lagi.",
+    "tooLong": "Catatan terlalu panjang.",
+    "signInRequired": "Masuk untuk menyimpan catatan",
+    "signInCta": "Masuk",
+    "editedAt": "Diubah {when}",
+    "yourNote": "Catatan Anda"
+  },
+  "profileNotes": {
+    "pageTitle": "Catatan saya",
+    "pageDescription": "Catatan pribadi Anda untuk ayat dan hadis. Hanya Anda yang dapat melihatnya.",
+    "empty": "Belum ada catatan. Tambahkan dari halaman ayat atau hadis mana saja.",
+    "open": "Buka",
+    "edit": "Ubah",
+    "delete": "Hapus",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "tabs": {
+      "all": "Semua",
+      "ayah": "Ayat",
+      "hadith": "Hadis"
+    }
+  },
+  "reading": {
+    "title": "Progres bacaan",
+    "pageDescription": "Lanjutkan dari tempat terakhir Anda — disimpan otomatis saat Anda menutup tab atau berpindah halaman.",
+    "lastQuranAyah": "Ayat terakhir dibaca",
+    "lastSurah": "Surah terakhir dilihat",
+    "lastHadith": "Hadis terakhir dibaca",
+    "viewedAt": "Dilihat {when}",
+    "resume": "Lanjutkan",
+    "empty": "Belum ada riwayat bacaan — mulailah dengan bagian Al-Qur'an atau Hadis."
+  },
+  "quickCreate": {
+    "trigger": "Buat cepat",
+    "title": "Buat baru",
+    "searchPlaceholder": "Cari item untuk dibuat…",
+    "empty": "Tidak ada hasil",
+    "back": "Kembali",
+    "cancel": "Batal",
+    "create": "Buat",
+    "types": {
+      "event": {
+        "name": "Acara",
+        "description": "Salat, ceramah, iftar, penggalangan dana, atau pertemuan komunitas."
+      },
+      "business": {
+        "name": "Bisnis",
+        "description": "Tambahkan bisnis ramah halal ke direktori."
+      },
+      "mosque": {
+        "name": "Masjid",
+        "description": "Tambahkan masjid dengan waktu salat dan layanan."
+      },
+      "article": {
+        "name": "Artikel",
+        "description": "Buat draf artikel baru. Publikasikan per locale setelah siap."
+      },
+      "articleCategory": {
+        "name": "Kategori Artikel",
+        "description": "Tambahkan kategori yang dapat ditandai pada artikel."
+      },
+      "eventCategory": {
+        "name": "Kategori Acara",
+        "description": "Tambahkan kategori yang dapat ditandai pada acara."
+      },
+      "businessCategory": {
+        "name": "Kategori Bisnis",
+        "description": "Tambahkan kategori yang dapat ditandai pada bisnis."
+      },
+      "businessAmenity": {
+        "name": "Fasilitas Bisnis",
+        "description": "Tambahkan fasilitas yang dapat diiklankan oleh bisnis."
+      },
+      "businessCertBody": {
+        "name": "Lembaga Sertifikasi",
+        "description": "Tambahkan lembaga sertifikasi halal yang dapat diklaim bisnis."
+      },
+      "mosqueFacility": {
+        "name": "Fasilitas Masjid",
+        "description": "Tambahkan fasilitas yang dapat diiklankan masjid (mis. ruang wanita, parkir)."
+      }
+    },
+    "formTitles": {
+      "event": "Acara baru",
+      "business": "Bisnis baru",
+      "mosque": "Masjid baru",
+      "article": "Artikel baru",
+      "articleCategory": "Kategori artikel baru",
+      "eventCategory": "Kategori acara baru",
+      "businessCategory": "Kategori bisnis baru",
+      "businessAmenity": "Fasilitas bisnis baru",
+      "businessCertBody": "Lembaga sertifikasi baru",
+      "mosqueFacility": "Fasilitas masjid baru"
+    },
+    "steps": {
+      "admin": "Admin"
+    },
+    "adminFields": {
+      "status": "Status",
+      "statusHintEvent": "Draf menyembunyikan acara dari kalender publik. Dipublikasikan membuatnya tampil.",
+      "statusHintBusiness": "Draf menyembunyikan daftar dari pencarian publik. Dipublikasikan membuatnya tampil.",
+      "statusHintMosque": "Draf menyembunyikan daftar. Menunggu tinjauan mengantrekan untuk verifikasi admin. Dipublikasikan membuatnya tampil.",
+      "coordsMissingHint": "Disimpan tanpa koordinat peta — atur di editor sebelum publikasi."
+    }
+  },
+  "comments": {
+    "title": "Komentar",
+    "empty": "Jadilah yang pertama berbagi refleksi yang bermakna.",
+    "loading": "Memuat komentar…",
+    "anonymousAuthor": "Anggota",
+    "deletedTombstone": "[Komentar dihapus]",
+    "deletedToast": "Komentar dihapus",
+    "savedToast": "Komentar diperbarui",
+    "deleteConfirm": "Hapus komentar ini?",
+    "signInPrompt": "Masuk untuk berbagi refleksi Anda.",
+    "signInCta": "Masuk",
+    "placeholder": "Bagikan refleksi yang bermakna…",
+    "disclaimer": "Komentar adalah perspektif pribadi (ditinjau untuk kualitas) dan tidak boleh dianggap sebagai sumber otoritatif.",
+    "ayahButtonAria": "{count, plural, =0 {Belum ada komentar — buka utas} one {1 komentar — buka utas} other {# komentar — buka utas}}",
+    "ayahDialogTitle": "{reference}",
+    "hadithButtonAria": "{count, plural, =0 {Belum ada komentar — buka utas} one {1 komentar — buka utas} other {# komentar — buka utas}}",
+    "hadithDialogTitle": "{reference}",
+    "popupButtonAria": "{count, plural, =0 {Belum ada komentar — buka utas} one {1 komentar — buka utas} other {# komentar — buka utas}}",
+    "actions": {
+      "post": "Kirim",
+      "cancel": "Batal",
+      "edit": "Ubah",
+      "save": "Simpan",
+      "delete": "Hapus",
+      "reply": "Balas",
+      "flag": "Laporkan",
+      "more": "Tindakan lain",
+      "loadMore": "Muat lainnya",
+      "viewReplies": "{count, plural, one {Lihat 1 balasan} other {Lihat # balasan}}",
+      "hideReplies": "Sembunyikan balasan",
+      "edited": "diubah"
+    },
+    "reactions": {
+      "heart": "Suka",
+      "dua": "Doa",
+      "insightful": "Bermanfaat"
+    },
+    "flag": {
+      "title": "Laporkan komentar ini",
+      "description": "Beri tahu kami secara singkat mengapa komentar ini tidak pantas. Moderator kami akan meninjaunya.",
+      "reasonLabel": "Alasan (opsional)",
+      "reasonPlaceholder": "Spam, ujaran kebencian, di luar topik…",
+      "submit": "Kirim laporan",
+      "submittedToast": "Terima kasih — tim kami akan meninjau komentar ini."
+    },
+    "statuses": {
+      "visible": "Terlihat",
+      "auto_hidden": "Menunggu tinjauan",
+      "hidden": "Tersembunyi",
+      "deleted": "Dihapus"
+    },
+    "errors": {
+      "loadFailed": "Tidak dapat memuat komentar. Silakan coba lagi.",
+      "tooLong": "Komentar terlalu panjang.",
+      "signInRequired": "Masuk untuk berkomentar.",
+      "notOwner": "Anda hanya dapat mengubah komentar Anda sendiri.",
+      "reactionFailed": "Tidak dapat memperbarui reaksi."
+    }
+  },
+  "commentsAdmin": {
+    "pageTitle": "Komentar",
+    "subtitle": "Cari, filter, dan moderasi komentar pengguna di seluruh situs.",
+    "search": "Cari komentar, penulis, entitas…",
+    "filterByStatus": "Filter berdasarkan status",
+    "filterByEntityType": "Filter berdasarkan jenis entitas",
+    "statusAll": "Semua status",
+    "entityAll": "Semua entitas",
+    "empty": "Belum ada komentar.",
+    "noResults": "Tidak ada komentar yang cocok dengan filter Anda.",
+    "anonymous": "Anggota",
+    "emptyBody": "(tidak ada isi)",
+    "hide": "Sembunyikan",
+    "restore": "Pulihkan",
+    "dismissFlags": "Abaikan laporan",
+    "openSource": "Buka sumber",
+    "viewDialogTitle": "Komentar oleh {name}",
+    "deleteConfirmTitle": "Hapus permanen komentar ini?",
+    "deleteConfirmDescription": "Ini menghapus komentar, reaksinya, dan laporannya secara permanen. Ketik DELETE untuk mengonfirmasi.",
+    "statusUpdatedToast": "Status komentar diperbarui.",
+    "flagsDismissedToast": "Laporan diabaikan.",
+    "deletedToast": "Komentar dihapus permanen.",
+    "columns": {
+      "author": "Penulis",
+      "body": "Komentar",
+      "entity": "Di mana",
+      "status": "Status",
+      "flags": "Laporan",
+      "created": "Dibuat"
+    },
+    "entityTypes": {
+      "ayah": "Ayat",
+      "hadith": "Hadis",
+      "surah": "Surah",
+      "article": "Artikel",
+      "mosque": "Masjid",
+      "event": "Acara",
+      "business": "Bisnis"
+    }
+  },
+  "profileComments": {
+    "pageTitle": "Komentar saya",
+    "pageDescription": "Setiap komentar yang Anda posting di seluruh situs, dengan status moderasinya saat ini.",
+    "empty": "Anda belum memposting komentar apa pun.",
+    "emptyBody": "(tidak ada isi)",
+    "edited": "diubah",
+    "replies": "{count, plural, one {1 balasan} other {# balasan}}",
+    "flags": "{count, plural, one {1 laporan} other {# laporan}}"
   }
 }

@@ -1,10 +1,9 @@
 /**
- * Mirror activated reserved UI locales' translation docs to the current
- * `messages/<base>.json` shape.
+ * Keep every locale's translation tree shaped like the base (`en`) locale.
  *
  * Run: npm run sync:locales
  *
- * For each activated locale doc at `config/uiLocales/locales/{code}`:
+ * Two passes — both apply the same shape-mirroring rules:
  *   - Add missing keys with the base locale's value as a placeholder so the
  *     locale stops falling back partial-English at runtime — the placeholder
  *     itself is rendered, which gives the admin a visible "needs translation"
@@ -12,14 +11,22 @@
  *   - Remove keys that no longer exist in the base (avoids stale accumulation).
  *   - Leave already-translated values untouched.
  *
- * Idempotent. No writes happen if the patched object equals the existing one.
+ * Pass 1 — disk-locales: rewrites `messages/<code>.json` for every bundled
+ * locale on disk except the base. Runs offline; no Firestore credentials
+ * needed. Prevents fully-missing keys from rendering as raw `foo.bar` paths
+ * when en.json grows but a developer forgets to mirror the new keys.
  *
- * The script reads message JSON files synchronously from disk so the admin
- * doesn't need to bundle them — it runs in node directly via tsx.
+ * Pass 2 — Firestore-locales: rewrites `config/uiLocales/locales/{code}`
+ * docs for activated reserved locales. Requires Firebase admin env vars; if
+ * they are missing, this pass is skipped with a warning and the disk pass
+ * still completes.
+ *
+ * Both passes are idempotent. No writes happen if the patched value equals
+ * the existing one.
  */
 import { config as loadEnv } from "dotenv";
 import { resolve } from "node:path";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { cert, getApps, getApp, initializeApp } from "firebase-admin/app";
 import {
   Timestamp,
@@ -32,20 +39,21 @@ loadEnv({ path: resolve(process.cwd(), ".env.local") });
 type Json = unknown;
 type JsonObject = Record<string, Json>;
 
-function required(name: string): string {
-  const v = process.env[name];
-  if (!v) {
-    console.error(`Missing env var: ${name} (check .env.local)`);
-    process.exit(1);
-  }
-  return v;
+const FIRESTORE_ENV_VARS = [
+  "FIREBASE_PROJECT_ID",
+  "FIREBASE_CLIENT_EMAIL",
+  "FIREBASE_PRIVATE_KEY",
+] as const;
+
+function missingFirestoreEnv(): string[] {
+  return FIRESTORE_ENV_VARS.filter((n) => !process.env[n]);
 }
 
 function db(): Firestore {
   if (!getApps().length) {
-    const projectId = required("FIREBASE_PROJECT_ID");
-    const clientEmail = required("FIREBASE_CLIENT_EMAIL");
-    const privateKey = required("FIREBASE_PRIVATE_KEY").replace(/\\n/g, "\n");
+    const projectId = process.env.FIREBASE_PROJECT_ID!;
+    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL!;
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, "\n");
     initializeApp({ credential: cert({ projectId, clientEmail, privateKey }) });
   }
   return getFirestore(getApp(), process.env.FIREBASE_DATABASE_ID ?? "main");
@@ -67,6 +75,26 @@ type Counts = { added: number; removed: number; preserved: number };
 
 function emptyCounts(): Counts {
   return { added: 0, removed: 0, preserved: 0 };
+}
+
+// Top-level keys starting with `_` (e.g. `_meta`) are per-locale metadata —
+// not translation keys — and shouldn't be subject to base-shape mirroring.
+// Strip them off the overlay before reshape, then re-attach them on the
+// patched output so they survive sync runs.
+function reshapeWithMeta(
+  base: JsonObject,
+  overlay: JsonObject,
+  counts: Counts,
+): JsonObject {
+  const meta: JsonObject = {};
+  const stripped: JsonObject = {};
+  for (const [k, v] of Object.entries(overlay)) {
+    if (k.startsWith("_")) meta[k] = v;
+    else stripped[k] = v;
+  }
+  const patched = reshape(base, stripped, counts) as JsonObject;
+  // Prepend meta keys so they stay at the top of the JSON file.
+  return { ...meta, ...patched };
 }
 
 // Walk `base` and produce a patched object shaped like `base` but with values
@@ -131,10 +159,61 @@ function deepEqual(a: Json, b: Json): boolean {
   return false;
 }
 
-async function main() {
+const BASE_LOCALE = "en";
+
+function listOnDiskLocales(): string[] {
+  const dir = resolve(process.cwd(), "messages");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => f.slice(0, -".json".length))
+    .filter((code) => code !== BASE_LOCALE)
+    .sort();
+}
+
+function syncDiskLocales(base: JsonObject): void {
+  const codes = listOnDiskLocales();
+  if (codes.length === 0) {
+    console.log("[disk] no on-disk locales beyond base — skipping disk pass.");
+    return;
+  }
+  console.log(
+    `[disk] reshaping ${codes.length} on-disk locale${codes.length === 1 ? "" : "s"} against ${BASE_LOCALE}: ${codes.join(", ")}`,
+  );
+
+  let touched = 0;
+  for (const code of codes) {
+    const filePath = resolve(process.cwd(), "messages", `${code}.json`);
+    let overlay: JsonObject;
+    try {
+      overlay = JSON.parse(readFileSync(filePath, "utf8")) as JsonObject;
+    } catch (err) {
+      console.warn(`[disk:${code}] could not parse — skipping. (${(err as Error).message})`);
+      continue;
+    }
+    const counts = emptyCounts();
+    const patched = reshapeWithMeta(base, overlay, counts);
+    if (deepEqual(patched, overlay)) {
+      console.log(`[disk:${code}] up to date (${counts.preserved} preserved).`);
+      continue;
+    }
+    writeFileSync(filePath, JSON.stringify(patched, null, 2) + "\n", "utf8");
+    touched++;
+    console.log(
+      `[disk:${code}] wrote — added ${counts.added}, removed ${counts.removed}, preserved ${counts.preserved}.`,
+    );
+  }
+  console.log(
+    touched === 0
+      ? "[disk] done. Nothing to write."
+      : `[disk] done. Wrote ${touched} locale file${touched === 1 ? "" : "s"}.`,
+  );
+}
+
+async function syncFirestoreLocales(base: JsonObject): Promise<void> {
   const firestore = db();
   console.log(
-    `Connecting to Firestore project=${process.env.FIREBASE_PROJECT_ID} db=${process.env.FIREBASE_DATABASE_ID ?? "main"}`,
+    `[fs] connecting to Firestore project=${process.env.FIREBASE_PROJECT_ID} db=${process.env.FIREBASE_DATABASE_ID ?? "main"}`,
   );
 
   const localesCol = firestore
@@ -145,15 +224,16 @@ async function main() {
   const activated = snap.docs.filter((d) => d.data()?.activated === true);
 
   if (activated.length === 0) {
-    console.log("No activated reserved locales — nothing to sync.");
+    console.log("[fs] no activated reserved locales — nothing to sync.");
     return;
   }
   console.log(
-    `Found ${activated.length} activated locale${activated.length === 1 ? "" : "s"}: ${activated.map((d) => d.id).join(", ")}`,
+    `[fs] found ${activated.length} activated locale${activated.length === 1 ? "" : "s"}: ${activated.map((d) => d.id).join(", ")}`,
   );
 
   // Cache base JSONs since multiple locales likely share `en` as their base.
-  const baseCache = new Map<string, JsonObject>();
+  // The default base is already loaded; lazy-load any other base locales referenced.
+  const baseCache = new Map<string, JsonObject>([[BASE_LOCALE, base]]);
   function getBase(code: string): JsonObject {
     let m = baseCache.get(code);
     if (!m) {
@@ -170,23 +250,23 @@ async function main() {
     const baseLocale =
       typeof data.baseLocale === "string" && data.baseLocale.length > 0
         ? data.baseLocale
-        : "en";
-    let base: JsonObject;
+        : BASE_LOCALE;
+    let docBase: JsonObject;
     try {
-      base = getBase(baseLocale);
+      docBase = getBase(baseLocale);
     } catch (err) {
       console.warn(
-        `[${code}] base locale "${baseLocale}" not found on disk — skipping. (${(err as Error).message})`,
+        `[fs:${code}] base locale "${baseLocale}" not found on disk — skipping. (${(err as Error).message})`,
       );
       continue;
     }
 
     const overlay = isPlainObject(data.messages) ? (data.messages as JsonObject) : {};
     const counts = emptyCounts();
-    const patched = reshape(base, overlay, counts) as JsonObject;
+    const patched = reshapeWithMeta(docBase, overlay, counts);
 
     if (deepEqual(patched, overlay)) {
-      console.log(`[${code}] up to date (${counts.preserved} preserved).`);
+      console.log(`[fs:${code}] up to date (${counts.preserved} preserved).`);
       continue;
     }
 
@@ -199,15 +279,31 @@ async function main() {
     );
     touched++;
     console.log(
-      `[${code}] synced — added ${counts.added}, removed ${counts.removed}, preserved ${counts.preserved}.`,
+      `[fs:${code}] synced — added ${counts.added}, removed ${counts.removed}, preserved ${counts.preserved}.`,
     );
   }
 
   console.log(
     touched === 0
-      ? "Done. Nothing to write."
-      : `Done. Wrote ${touched} locale doc${touched === 1 ? "" : "s"}.`,
+      ? "[fs] done. Nothing to write."
+      : `[fs] done. Wrote ${touched} locale doc${touched === 1 ? "" : "s"}.`,
   );
+}
+
+async function main() {
+  const base = loadBundled(BASE_LOCALE);
+
+  syncDiskLocales(base);
+
+  const missingEnv = missingFirestoreEnv();
+  if (missingEnv.length > 0) {
+    console.warn(
+      `[fs] skipping Firestore pass — missing env: ${missingEnv.join(", ")} (check .env.local).`,
+    );
+    process.exit(0);
+  }
+
+  await syncFirestoreLocales(base);
   process.exit(0);
 }
 
