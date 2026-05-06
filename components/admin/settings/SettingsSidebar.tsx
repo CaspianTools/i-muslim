@@ -18,12 +18,9 @@ export function SettingsSidebar() {
     <nav
       aria-label={t("ariaLabel")}
       className={cn(
-        // Mobile: horizontal scroll-tabs strip above content.
-        "-mx-1 flex gap-1 overflow-x-auto pb-2",
-        // Desktop: vertical list, fixed width.
-        "md:mx-0 md:w-56 md:shrink-0 md:flex-col md:gap-0.5 md:overflow-visible md:pb-0",
-        // Desktop: card chrome around the stacked nav buttons.
-        "md:self-start md:rounded-lg md:border md:border-border md:bg-card md:p-2",
+        // Vertical card with stacked nav buttons, fixed width on the start edge.
+        "flex w-full flex-col gap-0.5 self-start rounded-lg border border-border bg-card p-2",
+        "sm:w-56 sm:shrink-0",
       )}
     >
       {SETTINGS_NAV.map((item) => {
@@ -41,7 +38,7 @@ export function SettingsSidebar() {
             aria-current={active ? "page" : undefined}
           >
             {active && (
-              <span className="absolute start-0 top-1 bottom-1 hidden w-0.5 rounded-full bg-primary md:block" />
+              <span className="absolute start-0 top-1 bottom-1 w-0.5 rounded-full bg-primary" />
             )}
             <item.icon
               className={cn(
