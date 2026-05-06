@@ -3,8 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { requireDb } from "@/lib/firebase/admin";
-import { requireAdminSession } from "@/lib/auth/session";
-import { isAdminEmail } from "@/lib/auth/allowlist";
+import { requirePermission } from "@/lib/permissions/server";
 import { businessInputSchema, type BusinessInput } from "@/lib/businesses/schemas";
 import { slugify, withCollisionSuffix, buildSearchTokens } from "@/lib/businesses/slug";
 import { createUploadUrl, deleteStorageObject } from "@/lib/businesses/storage";
@@ -59,9 +58,7 @@ function revalidateAdmin() {
 }
 
 async function authorizeAdmin() {
-  const session = await requireAdminSession();
-  if (!isAdminEmail(session.email)) throw new Error("Unauthorized");
-  return session;
+  return await requirePermission("businesses.write");
 }
 
 async function reserveSlug(

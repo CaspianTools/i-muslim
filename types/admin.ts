@@ -1,4 +1,7 @@
-export type AdminRole = "admin" | "moderator" | "scholar" | "member";
+// A role id pointing at `roles/{roleId}` in Firestore. Built-in seeded roles
+// use the ids "keymaster", "admin", "moderator", "translator", "member";
+// admins can create custom ids (e.g. "translator-ru") via the Roles UI.
+export type AdminRole = string;
 
 export type AdminUserStatus = "active" | "pending" | "suspended" | "banned";
 
@@ -8,6 +11,10 @@ export interface AdminUser {
   email: string;
   avatarUrl: string | null;
   role: AdminRole;
+  // Languages this user is approved to translate, e.g. ["ru", "az"]. Only
+  // consulted for `*.translate` permissions. Empty/undefined means
+  // "unrestricted" — the role's permission alone is sufficient.
+  languages?: string[];
   status: AdminUserStatus;
   verified: boolean;
   joinedAt: string; // ISO

@@ -1,15 +1,17 @@
 "use client";
 
 import { Link, usePathname } from "@/i18n/navigation";
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronLeft } from "lucide-react";
-import { ADMIN_NAV, type NavItem } from "@/lib/admin/nav";
+import { ADMIN_NAV, type NavItem, type NavGroup } from "@/lib/admin/nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { hasPermission } from "@/lib/permissions/check";
+import type { RolePermissions } from "@/lib/permissions/catalog";
 
 const COLLAPSE_KEY = "admin:sidebar-collapsed";
 const COLLAPSE_EVENT = "admin:sidebar-collapsed-change";
@@ -57,9 +59,33 @@ interface SidebarProps {
   variant?: "desktop" | "drawer";
   onNavigate?: () => void;
   logoUrl?: string | null;
+  permissions: RolePermissions;
 }
 
-export function Sidebar({ badges = {}, variant = "desktop", onNavigate, logoUrl }: SidebarProps) {
+function filterNav(groups: readonly NavGroup[], permissions: RolePermissions): NavGroup[] {
+  // Coming-soon items render as disabled chrome; we keep them visible to
+  // anyone who can see the admin shell so they're discoverable.
+  function visible(item: NavItem): boolean {
+    if (item.comingSoon) return true;
+    if (!item.requiredPermission) return true;
+    return hasPermission(permissions, item.requiredPermission);
+  }
+
+  const out: NavGroup[] = [];
+  for (const group of groups) {
+    const items = group.items
+      .filter(visible)
+      .map((item) =>
+        item.children
+          ? { ...item, children: item.children.filter(visible) }
+          : item,
+      );
+    if (items.length > 0) out.push({ ...group, items });
+  }
+  return out;
+}
+
+export function Sidebar({ badges = {}, variant = "desktop", onNavigate, logoUrl, permissions }: SidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useCollapse(variant === "desktop");
   const t = useTranslations("sidebar");
@@ -67,6 +93,8 @@ export function Sidebar({ badges = {}, variant = "desktop", onNavigate, logoUrl 
   const tHeader = useTranslations("header");
 
   const showLabels = variant === "drawer" || !collapsed;
+
+  const nav = useMemo(() => filterNav(ADMIN_NAV, permissions), [permissions]);
 
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
@@ -124,7 +152,7 @@ export function Sidebar({ badges = {}, variant = "desktop", onNavigate, logoUrl 
 
         <ScrollArea className="flex-1">
           <nav className={cn("space-y-5 pt-3 pb-6", showLabels ? "px-3" : "px-2")}>
-            {ADMIN_NAV.map((group) => (
+            {nav.map((group) => (
               <div key={group.id}>
                 {showLabels && (
                   <div className="px-2 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">

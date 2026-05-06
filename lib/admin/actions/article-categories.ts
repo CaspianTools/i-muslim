@@ -3,8 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
 import { requireDb } from "@/lib/firebase/admin";
-import { requireAdminSession } from "@/lib/auth/session";
-import { isAdminEmail } from "@/lib/auth/allowlist";
+import { requirePermission } from "@/lib/permissions/server";
 import {
   articleCategoryInputSchema,
   type ArticleCategoryInput,
@@ -15,8 +14,7 @@ export type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string
 const COLLECTION = "articleCategories";
 
 async function authorizeAdmin() {
-  const session = await requireAdminSession();
-  if (!isAdminEmail(session.email)) throw new Error("Unauthorized");
+  await requirePermission("articles.write");
 }
 
 function revalidate() {

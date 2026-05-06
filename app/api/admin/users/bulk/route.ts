@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { FieldValue } from "firebase-admin/firestore";
-import { requireAdmin, badRequest, serverError } from "@/lib/admin/api";
+import { requirePermission, badRequest, serverError } from "@/lib/admin/api";
 import { requireAdminAuth, requireDb } from "@/lib/firebase/admin";
+import { getRole, KEYMASTER_ROLE_ID } from "@/lib/admin/data/roles";
 
 export const runtime = "nodejs";
 
@@ -10,13 +11,15 @@ const BulkSchema = z
   .object({
     ids: z.array(z.string().min(1).max(200)).min(1).max(500),
     op: z.enum(["role", "status", "delete"]),
-    role: z.enum(["admin", "moderator", "scholar", "member"]).optional(),
+    role: z.string().regex(/^[a-z0-9][a-z0-9-]{1,40}$/).optional(),
     status: z.enum(["active", "pending", "suspended", "banned"]).optional(),
   })
   .strict();
 
 export async function POST(req: Request) {
-  const auth = await requireAdmin();
+  // Bulk endpoint accepts multiple op types; gate on the broadest one needed,
+  // then re-check below for ops that need a stricter perm.
+  const auth = await requirePermission("users.edit");
   if (!auth.ok) return auth.response;
 
   let body: unknown;
@@ -36,11 +39,27 @@ export async function POST(req: Request) {
   const { ids, op, role, status } = parsed.data;
   if (op === "role" && !role) return badRequest("role required for op=role");
   if (op === "status" && !status) return badRequest("status required for op=status");
-  if (op === "delete" && ids.includes(auth.session.uid)) {
-    return NextResponse.json(
-      { error: "Cannot delete your own account in a bulk operation" },
-      { status: 400 },
-    );
+  if (op === "delete") {
+    if (ids.includes(auth.session.uid)) {
+      return NextResponse.json(
+        { error: "Cannot delete your own account in a bulk operation" },
+        { status: 400 },
+      );
+    }
+    const deleteAuth = await requirePermission("users.delete");
+    if (!deleteAuth.ok) return deleteAuth.response;
+  }
+  if (op === "status") {
+    const suspendAuth = await requirePermission("users.suspend");
+    if (!suspendAuth.ok) return suspendAuth.response;
+  }
+
+  if (op === "role" && role) {
+    if (role === KEYMASTER_ROLE_ID) {
+      return badRequest("Keymaster role cannot be assigned through the API.");
+    }
+    const roleDoc = await getRole(role);
+    if (!roleDoc) return badRequest(`Role "${role}" not found.`);
   }
 
   try {

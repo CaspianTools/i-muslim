@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/admin/api";
+import { requirePermission } from "@/lib/admin/api";
 import { markAllNotificationsRead } from "@/lib/admin/data/notifications";
 
 export const runtime = "nodejs";
 
 export async function POST() {
-  const auth = await requireAdmin();
+  const auth = await requirePermission("notifications.read");
   if (!auth.ok) return auth.response;
 
   const count = await markAllNotificationsRead();

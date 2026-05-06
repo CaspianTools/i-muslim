@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { FieldValue } from "firebase-admin/firestore";
-import { requireAdmin, badRequest, notFound, serverError } from "@/lib/admin/api";
+import {
+  requirePermission,
+  requirePermissionForLanguage,
+  badRequest,
+  notFound,
+  serverError,
+} from "@/lib/admin/api";
 import { requireDb } from "@/lib/firebase/admin";
 import { revalidateHadithCollection } from "@/lib/hadith/db";
 import { ALL_LANGS } from "@/lib/translations";
@@ -43,7 +49,9 @@ export async function PATCH(
   req: Request,
   ctx: { params: Promise<{ collection: string; number: string }> },
 ) {
-  const auth = await requireAdmin();
+  // Read access is the floor; every PATCH writer must at minimum be allowed
+  // to view the hadith they're editing.
+  const auth = await requirePermission("hadith.read");
   if (!auth.ok) return auth.response;
 
   const { collection, number: numberParam } = await ctx.params;
@@ -66,6 +74,31 @@ export async function PATCH(
     );
   }
 
+  const p = parsed.data;
+
+  // Per-language gate for translations payload.
+  if (p.translations) {
+    for (const [lang, value] of Object.entries(p.translations)) {
+      if (typeof value !== "string") continue;
+      const langAuth = await requirePermissionForLanguage("hadith.translate", lang);
+      if (!langAuth.ok) return langAuth.response;
+    }
+  }
+
+  // Anything that affects publish state — `publishedTranslations`, the global
+  // `published` flag, or curated metadata fields — requires the publish perm.
+  const touchesPublishState =
+    !!p.publishedTranslations ||
+    p.published !== undefined ||
+    p.narrator !== undefined ||
+    p.grade !== undefined ||
+    p.tags !== undefined ||
+    p.notes !== undefined;
+  if (touchesPublishState) {
+    const publishAuth = await requirePermission("hadith.publish");
+    if (!publishAuth.ok) return publishAuth.response;
+  }
+
   const id = `${collection}:${number}`;
   try {
     const db = requireDb();
@@ -78,7 +111,6 @@ export async function PATCH(
       updatedAt: FieldValue.serverTimestamp(),
       updatedBy: auth.session.email,
     };
-    const p = parsed.data;
     if (p.translations) {
       const existing = (snap.data()?.translations as Record<string, string | undefined>) ?? {};
       const existingEdited = (snap.data()?.editedTranslations as Record<string, boolean> | undefined) ?? {};

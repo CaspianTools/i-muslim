@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import tzlookup from "tz-lookup";
-import { getAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/admin/api";
 import { getDb } from "@/lib/firebase/admin";
 import { MOSQUE_GEOCODE_CACHE_COLLECTION } from "@/lib/mosques/constants";
 import { Timestamp } from "firebase-admin/firestore";
@@ -21,8 +21,8 @@ function hash(input: string): string {
 }
 
 export async function GET(req: Request) {
-  const session = await getAdminSession();
-  if (!session) return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+  const auth = await requirePermission("mosques.write");
+  if (!auth.ok) return auth.response;
 
   const url = new URL(req.url);
   const q = url.searchParams.get("q")?.trim();

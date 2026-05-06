@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/permissions/server";
 import {
   LOCALES,
   RESERVED_LOCALES,
@@ -47,7 +47,7 @@ export type UpdateLanguageSettingsResult =
 export async function updateLanguageSettings(
   rawInput: unknown,
 ): Promise<UpdateLanguageSettingsResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("settings.write");
   const parsed = inputSchema.safeParse(rawInput);
   if (!parsed.success) {
     return { ok: false, error: "invalid-input" };
@@ -90,7 +90,7 @@ export type ActivateUiLocaleResult =
 export async function activateUiLocale(
   rawInput: unknown,
 ): Promise<ActivateUiLocaleResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("settings.write");
   const parsed = activateLocaleSchema.safeParse(rawInput);
   if (!parsed.success) {
     return { ok: false, error: "invalid-input" };
@@ -121,7 +121,7 @@ export type UpdateUiLocaleMessagesResult =
 export async function updateUiLocaleMessagesAction(
   rawInput: unknown,
 ): Promise<UpdateUiLocaleMessagesResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("uiLocales.translate");
   const parsed = updateMessagesSchema.safeParse(rawInput);
   if (!parsed.success) {
     return { ok: false, error: "invalid-input" };
@@ -152,7 +152,7 @@ export type UpdateSiteIdentityResult =
 export async function updateSiteIdentityAction(
   rawInput: unknown,
 ): Promise<UpdateSiteIdentityResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("settings.write");
   const parsed = siteIdentitySchema.safeParse(rawInput);
   if (!parsed.success) {
     return { ok: false, error: "invalid-input" };
@@ -182,7 +182,7 @@ export type UpdateTypographyResult =
 export async function updateTypographyAction(
   rawInput: unknown,
 ): Promise<UpdateTypographyResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("settings.write");
   const parsed = typographySchema.safeParse(rawInput);
   if (!parsed.success) {
     return { ok: false, error: "invalid-input" };
@@ -201,7 +201,7 @@ export async function updateTypographyAction(
 export async function deactivateUiLocaleAction(
   code: string,
 ): Promise<DeactivateUiLocaleResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("settings.write");
   const parsed = reservedLocaleEnum.safeParse(code);
   if (!parsed.success) {
     return { ok: false, error: "invalid-locale" };

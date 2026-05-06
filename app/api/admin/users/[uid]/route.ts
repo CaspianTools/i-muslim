@@ -1,15 +1,22 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { FieldValue } from "firebase-admin/firestore";
-import { requireAdmin, badRequest, serverError } from "@/lib/admin/api";
+import { requirePermission, badRequest, serverError } from "@/lib/admin/api";
 import { requireAdminAuth, requireDb } from "@/lib/firebase/admin";
+import { getRole, KEYMASTER_ROLE_ID } from "@/lib/admin/data/roles";
 
 export const runtime = "nodejs";
+
+const roleIdSchema = z.string().regex(
+  /^[a-z0-9][a-z0-9-]{1,40}$/,
+  "Invalid role id",
+);
 
 const PatchSchema = z
   .object({
     name: z.string().min(1).max(120).optional(),
-    role: z.enum(["admin", "moderator", "scholar", "member"]).optional(),
+    role: roleIdSchema.optional(),
+    languages: z.array(z.string().min(2).max(10)).max(20).optional(),
     status: z.enum(["active", "pending", "suspended", "banned"]).optional(),
   })
   .strict();
@@ -18,7 +25,7 @@ export async function PATCH(
   req: Request,
   ctx: { params: Promise<{ uid: string }> },
 ) {
-  const auth = await requireAdmin();
+  const auth = await requirePermission("users.edit");
   if (!auth.ok) return auth.response;
 
   const { uid } = await ctx.params;
@@ -38,6 +45,14 @@ export async function PATCH(
     );
   }
 
+  if (parsed.data.role === KEYMASTER_ROLE_ID) {
+    return badRequest("Keymaster role cannot be assigned through the API.");
+  }
+  if (parsed.data.role) {
+    const role = await getRole(parsed.data.role);
+    if (!role) return badRequest(`Role "${parsed.data.role}" not found.`);
+  }
+
   try {
     const db = requireDb();
     const updates: Record<string, unknown> = {
@@ -55,7 +70,7 @@ export async function DELETE(
   _req: Request,
   ctx: { params: Promise<{ uid: string }> },
 ) {
-  const auth = await requireAdmin();
+  const auth = await requirePermission("users.delete");
   if (!auth.ok) return auth.response;
 
   const { uid } = await ctx.params;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import {
   flexRender,
@@ -39,18 +39,30 @@ import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { toast } from "@/components/ui/sonner";
 import { cn, formatRelative, initials } from "@/lib/utils";
 import type { AdminUser, AdminRole, AdminUserStatus } from "@/types/admin";
+import type { AdminRoleDoc } from "@/lib/admin/data/roles";
+import { WILDCARD } from "@/lib/permissions/catalog";
+import { ALL_LANGS, LANG_LABELS } from "@/lib/translations";
 import { InviteUserDrawer } from "./InviteUserDrawer";
 
 const PAGE_SIZES = [10, 25, 50, 100];
 
-const ROLE_VALUES = ["all", "admin", "moderator", "scholar", "member"] as const;
 const STATUS_VALUES = ["all", "active", "pending", "suspended", "banned"] as const;
 
-function roleVariant(role: AdminRole): "accent" | "info" | "success" | "neutral" {
-  if (role === "admin") return "accent";
+const ASSIGNABLE_LANGS = ALL_LANGS.filter((l) => l !== "ar");
+
+function roleVariant(role: string): "accent" | "info" | "success" | "neutral" {
+  if (role === "keymaster" || role === "admin") return "accent";
   if (role === "moderator") return "info";
-  if (role === "scholar") return "success";
+  if (role === "scholar" || role === "translator" || role.startsWith("translator-")) {
+    return "success";
+  }
   return "neutral";
+}
+
+function roleHasTranslate(role: AdminRoleDoc | undefined): boolean {
+  if (!role) return false;
+  if (role.permissions === WILDCARD) return false;
+  return role.permissions.some((p) => p.endsWith(".translate"));
 }
 
 function statusVariant(status: AdminUserStatus): "success" | "warning" | "danger" | "neutral" {
@@ -63,14 +75,23 @@ function statusVariant(status: AdminUserStatus): "success" | "warning" | "danger
 export function UsersPageClient({
   initialUsers,
   source,
+  roles,
 }: {
   initialUsers: AdminUser[];
   source: "firestore" | "mock";
+  roles: AdminRoleDoc[];
 }) {
   const [users, setUsers] = useState<AdminUser[]>(initialUsers);
   const [query, setQuery] = useState("");
   const [role, setRole] = useState<AdminRole | "all">("all");
   const [status, setStatus] = useState<AdminUserStatus | "all">("all");
+
+  const roleMap = useMemo(() => new Map(roles.map((r) => [r.id, r])), [roles]);
+  const assignableRoles = useMemo(
+    () => roles.filter((r) => r.id !== "keymaster"),
+    [roles],
+  );
+  const roleLabel = (id: string) => roleMap.get(id)?.name ?? id;
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -160,7 +181,7 @@ export function UsersPageClient({
         header: t("columns.role"),
         cell: ({ row }) => (
           <Badge variant={roleVariant(row.original.role)}>
-            {tRoles(row.original.role)}
+            {roleLabel(row.original.role)}
           </Badge>
         ),
       },
@@ -254,7 +275,7 @@ export function UsersPageClient({
         size: 48,
       },
     ],
-    [t, tCommon, tRoles, tStatuses],
+    [t, tCommon, tStatuses, roleMap],
   );
 
   const table = useReactTable({
@@ -390,8 +411,9 @@ export function UsersPageClient({
           onChange={(e) => setRole(e.target.value as AdminRole | "all")}
           aria-label={t("filterByRole")}
         >
-          {ROLE_VALUES.map((v) => (
-            <option key={v} value={v}>{tRoles(v)}</option>
+          <option value="all">{tRoles("all")}</option>
+          {roles.map((r) => (
+            <option key={r.id} value={r.id}>{r.name}</option>
           ))}
         </select>
         <select
@@ -435,9 +457,9 @@ export function UsersPageClient({
                 <Button variant="secondary" size="sm">{t("changeRole")}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {(["admin", "moderator", "scholar", "member"] as const).map((r) => (
-                  <DropdownMenuItem key={r} onClick={() => applyBulkRole(r)}>
-                    {tRoles(r)}
+                {assignableRoles.map((r) => (
+                  <DropdownMenuItem key={r.id} onClick={() => applyBulkRole(r.id)}>
+                    {r.name}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -597,6 +619,7 @@ export function UsersPageClient({
       <InviteUserDrawer
         open={inviteOpen}
         onOpenChange={setInviteOpen}
+        roles={assignableRoles}
         onInvite={(u) => {
           setUsers((prev) => [u, ...prev]);
           toast.success(t("inviteSentToast", { email: u.email }));
@@ -605,7 +628,15 @@ export function UsersPageClient({
 
       <UserDetailSheet
         user={detailUser}
+        roles={assignableRoles}
+        roleMap={roleMap}
         onOpenChange={(next) => !next && setDetailUser(null)}
+        onUpdated={(updated) => {
+          setUsers((prev) =>
+            prev.map((u) => (u.id === updated.id ? { ...u, ...updated } : u)),
+          );
+          setDetailUser((cur) => (cur && cur.id === updated.id ? { ...cur, ...updated } : cur));
+        }}
         onDelete={(u) => {
           setDetailUser(null);
           setDeleteTarget(u);
@@ -637,18 +668,26 @@ export function UsersPageClient({
 
 function UserDetailSheet({
   user,
+  roles,
+  roleMap,
   onOpenChange,
   onDelete,
+  onUpdated,
 }: {
   user: AdminUser | null;
+  roles: AdminRoleDoc[];
+  roleMap: Map<string, AdminRoleDoc>;
   onOpenChange: (open: boolean) => void;
   onDelete: (u: AdminUser) => void;
+  onUpdated: (next: Partial<AdminUser> & { id: string }) => void;
 }) {
   const t = useTranslations("users");
   const tDrawer = useTranslations("users.drawer");
-  const tRoles = useTranslations("users.roles");
   const tStatuses = useTranslations("users.statuses");
   const tCommon = useTranslations("common");
+
+  const currentRoleDoc = user ? roleMap.get(user.role) : undefined;
+
   return (
     <Sheet open={Boolean(user)} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0">
@@ -672,9 +711,26 @@ function UserDetailSheet({
               </div>
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <Badge variant={roleVariant(user.role)}>{tRoles(user.role)}</Badge>
+              <Badge variant={roleVariant(user.role)}>
+                {currentRoleDoc?.name ?? user.role}
+              </Badge>
               <Badge variant={statusVariant(user.status)}>{tStatuses(user.status)}</Badge>
+              {(user.languages?.length ?? 0) > 0 && (
+                <span className="text-xs text-muted-foreground">
+                  {user.languages!
+                    .map((l) => LANG_LABELS[l] ?? l)
+                    .join(", ")}
+                </span>
+              )}
             </div>
+
+            <RoleAssignmentEditor
+              key={user.id}
+              user={user}
+              roles={roles}
+              roleMap={roleMap}
+              onUpdated={onUpdated}
+            />
 
             <Tabs defaultValue="profile" className="mt-6">
               <TabsList>
@@ -724,6 +780,133 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
     <div className="flex items-start justify-between gap-3 text-sm">
       <span className="text-muted-foreground">{label}</span>
       <span className={cn("text-foreground", mono && "font-mono text-xs")}>{value}</span>
+    </div>
+  );
+}
+
+// Local editor for a single user's role + per-translator language scope. The
+// parent keys this on `user.id` so swapping users inside the open sheet
+// remounts it — that gives us a clean initial state without a useEffect sync.
+function RoleAssignmentEditor({
+  user,
+  roles,
+  roleMap,
+  onUpdated,
+}: {
+  user: AdminUser;
+  roles: AdminRoleDoc[];
+  roleMap: Map<string, AdminRoleDoc>;
+  onUpdated: (next: Partial<AdminUser> & { id: string }) => void;
+}) {
+  const tCommon = useTranslations("common");
+  const [pendingRole, setPendingRole] = useState<string>(user.role);
+  const [pendingLangs, setPendingLangs] = useState<string[]>([...(user.languages ?? [])]);
+  const [savingAssignment, startSaveTransition] = useTransition();
+
+  const currentRoleDoc = roleMap.get(user.role);
+  const pendingRoleDoc = pendingRole ? roleMap.get(pendingRole) : undefined;
+  const showLanguagesPicker = roleHasTranslate(pendingRoleDoc);
+  const isProtectedAssignment = currentRoleDoc?.protected ?? false;
+
+  const dirty =
+    pendingRole !== user.role ||
+    JSON.stringify([...pendingLangs].sort()) !==
+      JSON.stringify([...(user.languages ?? [])].sort());
+
+  function toggleLang(lang: string, on: boolean) {
+    setPendingLangs((prev) => {
+      const next = new Set(prev);
+      if (on) next.add(lang);
+      else next.delete(lang);
+      return Array.from(next);
+    });
+  }
+
+  async function saveAssignment() {
+    if (!dirty) return;
+    startSaveTransition(async () => {
+      try {
+        const body: Record<string, unknown> = {};
+        if (pendingRole !== user.role) body.role = pendingRole;
+        if (
+          JSON.stringify([...pendingLangs].sort()) !==
+          JSON.stringify([...(user.languages ?? [])].sort())
+        ) {
+          body.languages = pendingLangs;
+        }
+        const res = await fetch(`/api/admin/users/${user.id}`, {
+          method: "PATCH",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error((await res.json()).error || "Failed");
+        onUpdated({ id: user.id, role: pendingRole, languages: pendingLangs });
+        toast.success(`Updated ${user.name}.`);
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Failed");
+      }
+    });
+  }
+
+  return (
+    <div className="mt-5 rounded-md border border-border p-4 space-y-3">
+      <h3 className="text-sm font-semibold">Role & languages</h3>
+      {isProtectedAssignment ? (
+        <p className="text-sm text-muted-foreground">
+          This user holds a protected role. Reassignment is managed by the
+          <code className="mx-1 rounded bg-muted px-1 py-0.5 font-mono">npm run seed:roles</code>
+          script.
+        </p>
+      ) : (
+        <>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium" htmlFor="user-role">
+              Role
+            </label>
+            <select
+              id="user-role"
+              className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
+              value={pendingRole}
+              onChange={(e) => setPendingRole(e.target.value)}
+              disabled={savingAssignment}
+            >
+              {roles.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {showLanguagesPicker && (
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Approved languages</label>
+              <p className="text-xs text-muted-foreground">
+                Leave all unchecked to grant access to every language.
+              </p>
+              <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
+                {ASSIGNABLE_LANGS.map((lang) => {
+                  const checked = pendingLangs.includes(lang);
+                  return (
+                    <label key={lang} className="flex items-center gap-2 text-sm cursor-pointer">
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={(v) => toggleLang(lang, !!v)}
+                        disabled={savingAssignment}
+                      />
+                      <span>{LANG_LABELS[lang] ?? lang}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          <div className="flex justify-end">
+            <Button size="sm" onClick={saveAssignment} disabled={!dirty || savingAssignment}>
+              {savingAssignment ? tCommon("working") : "Save"}
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

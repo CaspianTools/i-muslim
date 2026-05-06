@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { FieldValue } from "firebase-admin/firestore";
 import { requireDb } from "@/lib/firebase/admin";
-import { requireAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/permissions/server";
 import { normalizeEvent } from "@/lib/admin/data/events";
 import { fetchEventCategories } from "@/lib/admin/data/event-categories";
 import type { AdminEvent } from "@/types/admin";
@@ -103,7 +103,7 @@ function toFirestorePayload(input: EventInput) {
 }
 
 async function authorize() {
-  await requireAdminSession();
+  await requirePermission("events.write");
 }
 
 async function assertActiveCategorySlug(slug: string): Promise<string | null> {

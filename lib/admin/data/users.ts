@@ -1,7 +1,6 @@
 import "server-only";
 import type { UserRecord } from "firebase-admin/auth";
 import { getAdminAuth, getDb } from "@/lib/firebase/admin";
-import { isAdminEmail } from "@/lib/auth/allowlist";
 import { MOCK_USERS } from "@/lib/admin/mock/users";
 import type { AdminUser, AdminRole, AdminUserStatus } from "@/types/admin";
 
@@ -10,7 +9,6 @@ export type UsersResult = {
   source: "firestore" | "mock";
 };
 
-const ROLES: AdminRole[] = ["admin", "moderator", "scholar", "member"];
 const STATUSES: AdminUserStatus[] = ["active", "pending", "suspended", "banned"];
 
 function asIso(v: unknown): string {
@@ -38,11 +36,16 @@ function compose(
   const email = authUser.email ?? "";
 
   const overlayRole = overlay?.role;
-  const role: AdminRole = ROLES.includes(overlayRole as AdminRole)
-    ? (overlayRole as AdminRole)
-    : isAdminEmail(email)
-      ? "admin"
+  const role: AdminRole =
+    typeof overlayRole === "string" && overlayRole.length > 0
+      ? overlayRole
       : "member";
+
+  const overlayLanguages = Array.isArray(overlay?.languages)
+    ? (overlay.languages as unknown[]).filter(
+        (v): v is string => typeof v === "string" && v.length > 0,
+      )
+    : undefined;
 
   const overlayStatus = overlay?.status;
   let status: AdminUserStatus = STATUSES.includes(overlayStatus as AdminUserStatus)
@@ -68,6 +71,7 @@ function compose(
     email,
     avatarUrl: authUser.photoURL ?? overlayAvatar ?? null,
     role,
+    languages: overlayLanguages,
     status,
     verified: Boolean(authUser.emailVerified),
     joinedAt: asIso(authUser.metadata.creationTime ?? overlay?.joinedAt ?? overlay?.createdAt),

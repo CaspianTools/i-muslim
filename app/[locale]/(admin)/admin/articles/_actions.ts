@@ -3,8 +3,9 @@
 import { revalidatePath, updateTag } from "next/cache";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
-import { getAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/permissions/server";
 import { requireDb } from "@/lib/firebase/admin";
+import type { Permission } from "@/lib/permissions/catalog";
 import { LOCALES, type Locale } from "@/i18n/config";
 import { CACHE_TAGS } from "@/lib/blog/cache-tags";
 import { isValidSlug } from "@/lib/blog/slug";
@@ -41,10 +42,8 @@ const articleInputSchema = z.object({
 
 export type ArticleInput = z.infer<typeof articleInputSchema>;
 
-async function requireSession() {
-  const session = await getAdminSession();
-  if (!session) throw new Error("unauthorized");
-  return session;
+async function requireSession(perm: Permission = "articles.write") {
+  return await requirePermission(perm);
 }
 
 function invalidateAll() {
@@ -165,7 +164,7 @@ async function setTranslationStatus(
   locale: Locale,
   next: ArticleStatus,
 ): Promise<void> {
-  await requireSession();
+  await requireSession("articles.publish");
   if (!(LOCALES as readonly string[]).includes(locale)) {
     throw new Error("invalid-locale");
   }

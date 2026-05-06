@@ -25,6 +25,7 @@ interface AdminHeaderProps {
 }
 
 export async function AdminHeader({ session, badges, logoUrl }: AdminHeaderProps) {
+  const permissions = session.permissions;
   const [
     activated,
     { items: notifications },
@@ -44,7 +45,7 @@ export async function AdminHeader({ session, badges, logoUrl }: AdminHeaderProps
   const canPersist = getFirebaseAdminStatus().configured;
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
-      <MobileSidebarDrawer badges={badges} logoUrl={logoUrl} />
+      <MobileSidebarDrawer badges={badges} logoUrl={logoUrl} permissions={permissions} />
       <div className="hidden md:flex flex-1 min-w-0 items-center gap-4">
         <Breadcrumbs />
       </div>

@@ -81,11 +81,15 @@ export function AyahList({
   ayahs,
   surah,
   availableLangs,
+  editableLanguages,
+  canPublish,
   aiConfigured,
 }: {
   ayahs: AdminAyah[];
   surah: number;
   availableLangs: string[];
+  editableLanguages: string[];
+  canPublish: boolean;
   aiConfigured: boolean;
 }) {
   const [items, setItems] = useState(ayahs);
@@ -94,11 +98,18 @@ export function AyahList({
   const locale = useLocale();
   const tFilter = useTranslations("quranLanguageFilter");
 
-  // Editor only ever shows langs that are both supported (FormLang union) and
-  // currently activated in /admin/settings → Languages → Qur'an.
+  // Tabs the editor renders: union of "language enabled in settings" AND
+  // a member of the FormLang union. View-only state is layered on top via
+  // `permittedLangs` further below.
   const editableLangs = useMemo<FormLang[]>(
     () => NON_ARABIC_LANGS.filter((l) => availableLangs.includes(l)),
     [availableLangs],
+  );
+
+  // Subset of `editableLangs` the current user has permission to write.
+  const permittedLangs = useMemo<FormLang[]>(
+    () => editableLangs.filter((l) => editableLanguages.includes(l)),
+    [editableLangs, editableLanguages],
   );
 
   // Persist the per-admin "which translations to display" selection in
@@ -250,6 +261,8 @@ export function AyahList({
         surah={surah}
         ayah={editing}
         editableLangs={editableLangs}
+        permittedLangs={permittedLangs}
+        canPublish={canPublish}
         aiConfigured={aiConfigured}
         onClose={() => setEditing(null)}
         onSaved={(updated) => {
@@ -278,6 +291,8 @@ function EditAyahDrawer({
   surah,
   ayah,
   editableLangs,
+  permittedLangs,
+  canPublish,
   aiConfigured,
   onClose,
   onSaved,
@@ -285,6 +300,8 @@ function EditAyahDrawer({
   surah: number;
   ayah: AdminAyah | null;
   editableLangs: FormLang[];
+  permittedLangs: FormLang[];
+  canPublish: boolean;
   aiConfigured: boolean;
   onClose: () => void;
   onSaved: (a: AdminAyah) => void;
@@ -300,33 +317,33 @@ function EditAyahDrawer({
     if (!ayah) return;
     setSubmitting(true);
     try {
-      // Only submit langs the admin can actually edit — disabled langs in
-      // settings shouldn't be touched, so the per-language seeder can keep
-      // owning them on re-seed.
+      // Only submit langs the user is *permitted* to write. Disabled langs
+      // in settings or unpermitted langs for this user are left untouched.
       const translationsPayload: Record<string, string> = {};
-      for (const lang of editableLangs) {
+      for (const lang of permittedLangs) {
         translationsPayload[lang] = values[lang];
+      }
+      const body: Record<string, unknown> = { translations: translationsPayload };
+      if (canPublish) {
+        body.text_translit = values.text_translit || null;
+        body.notes = values.notes || null;
+        body.tags = values.tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
+        body.published = values.published;
       }
       const res = await fetch(`/api/admin/quran/${surah}/${ayah.ayah}`, {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          translations: translationsPayload,
-          text_translit: values.text_translit || null,
-          notes: values.notes || null,
-          tags: values.tags
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean),
-          published: values.published,
-        }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to save");
 
       const mergedTranslations: Record<string, string> = { ...ayah.translations };
       const editedNext: Record<string, boolean> = { ...ayah.editedTranslations };
-      for (const lang of editableLangs) {
+      for (const lang of permittedLangs) {
         mergedTranslations[lang] = values[lang];
         if (values[lang] !== (ayah.translations[lang] ?? "")) {
           editedNext[lang] = true;
@@ -336,13 +353,15 @@ function EditAyahDrawer({
         ...ayah,
         translations: mergedTranslations,
         editedTranslations: editedNext,
-        text_translit: values.text_translit || null,
-        notes: values.notes || null,
-        tags: values.tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-        published: values.published,
+        text_translit: canPublish ? values.text_translit || null : ayah.text_translit,
+        notes: canPublish ? values.notes || null : ayah.notes,
+        tags: canPublish
+          ? values.tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : ayah.tags,
+        published: canPublish ? values.published : ayah.published,
         editedByAdmin: true,
       };
       onSaved(updated);
@@ -372,31 +391,39 @@ function EditAyahDrawer({
             <EditorDialogBody className="overflow-hidden p-0">
               <div className="grid h-full grid-cols-1 lg:grid-cols-[30%_1fr]">
                 <div className="space-y-4 overflow-y-auto p-5 lg:border-e lg:border-border">
+                  {!canPublish && (
+                    <p className="rounded-md border border-amber-500/40 bg-amber-500/5 p-2 text-xs text-amber-700 dark:text-amber-400">
+                      Metadata fields are read-only — you don&apos;t have quran.publish.
+                    </p>
+                  )}
                   <div className="space-y-1.5">
                     <Label htmlFor="ayah-translit">Transliteration</Label>
                     <textarea
                       id="ayah-translit"
                       rows={3}
-                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
+                      disabled={!canPublish}
+                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm disabled:opacity-50"
                       {...form.register("text_translit")}
                     />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="ayah-tags">Tags (comma-separated)</Label>
-                    <Input id="ayah-tags" {...form.register("tags")} />
+                    <Input id="ayah-tags" disabled={!canPublish} {...form.register("tags")} />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="ayah-notes">Internal notes</Label>
                     <textarea
                       id="ayah-notes"
                       rows={4}
-                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
+                      disabled={!canPublish}
+                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm disabled:opacity-50"
                       {...form.register("notes")}
                     />
                   </div>
                   <label className="flex items-center gap-2 text-sm">
                     <input
                       type="checkbox"
+                      disabled={!canPublish}
                       {...form.register("published")}
                       className="size-4"
                     />
@@ -408,11 +435,19 @@ function EditAyahDrawer({
                   <div className="-mx-5 overflow-x-auto px-5 pb-1">
                     <TabsList>
                       <TabsTrigger value="ar">Arabic</TabsTrigger>
-                      {editableLangs.map((lang) => (
-                        <TabsTrigger key={lang} value={lang}>
-                          {LANG_LABELS[lang] ?? lang.toUpperCase()}
-                        </TabsTrigger>
-                      ))}
+                      {editableLangs.map((lang) => {
+                        const editable = permittedLangs.includes(lang);
+                        return (
+                          <TabsTrigger key={lang} value={lang}>
+                            {LANG_LABELS[lang] ?? lang.toUpperCase()}
+                            {!editable && (
+                              <span className="ms-1 text-[10px] uppercase tracking-wide text-muted-foreground">
+                                view-only
+                              </span>
+                            )}
+                          </TabsTrigger>
+                        );
+                      })}
                     </TabsList>
                   </div>
                   <TabsContent value="ar" className="mt-3 flex-1 overflow-y-auto">
@@ -444,6 +479,7 @@ function EditAyahDrawer({
                         surah={surah}
                         ayah={ayah.ayah}
                         aiConfigured={aiConfigured}
+                        editable={permittedLangs.includes(lang)}
                       />
                     </TabsContent>
                   ))}
@@ -478,6 +514,7 @@ function TranslationField({
   surah,
   ayah,
   aiConfigured,
+  editable,
 }: {
   lang: FormLang;
   register: UseFormRegister<Values>;
@@ -485,6 +522,7 @@ function TranslationField({
   surah: number;
   ayah: number;
   aiConfigured: boolean;
+  editable: boolean;
 }) {
   const [translating, startTranslate] = useTransition();
   const label = LANG_LABELS[lang] ?? lang;
@@ -516,23 +554,31 @@ function TranslationField({
       <div className="flex items-center justify-between gap-2">
         <Label htmlFor={`ayah-${lang}`} className="text-xs uppercase tracking-wide text-muted-foreground">
           {label}
+          {!editable && (
+            <span className="ms-2 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+              view-only
+            </span>
+          )}
         </Label>
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          onClick={onAiTranslate}
-          disabled={translating}
-          aria-busy={translating}
-          title={aiConfigured ? `Translate to ${label} with Gemini` : "Configure a Gemini key in /admin/settings first"}
-        >
-          <Sparkles />
-          {translating ? "Translating…" : "Translate with AI"}
-        </Button>
+        {editable && (
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={onAiTranslate}
+            disabled={translating}
+            aria-busy={translating}
+            title={aiConfigured ? `Translate to ${label} with Gemini` : "Configure a Gemini key in /admin/settings first"}
+          >
+            <Sparkles />
+            {translating ? "Translating…" : "Translate with AI"}
+          </Button>
+        )}
       </div>
       <textarea
         id={`ayah-${lang}`}
-        className="flex h-full min-h-[240px] w-full flex-1 resize-none rounded-md border border-input bg-background p-3 text-sm"
+        readOnly={!editable}
+        className="flex h-full min-h-[240px] w-full flex-1 resize-none rounded-md border border-input bg-background p-3 text-sm read-only:opacity-70 read-only:bg-muted/30"
         {...register(lang)}
       />
     </>

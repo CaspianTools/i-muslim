@@ -20,33 +20,39 @@ import {
 } from "@/components/ui/editor-dialog";
 import { FormGrid } from "@/components/admin/ui/form-layout";
 import type { AdminUser } from "@/types/admin";
+import type { AdminRoleDoc } from "@/lib/admin/data/roles";
 
 type Values = {
   name: string;
   email: string;
-  role: "admin" | "moderator" | "scholar" | "member";
+  role: string;
 };
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  roles: AdminRoleDoc[];
   onInvite: (user: AdminUser) => void;
 }
 
-export function InviteUserDrawer({ open, onOpenChange, onInvite }: Props) {
+export function InviteUserDrawer({ open, onOpenChange, roles, onInvite }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const t = useTranslations("users.invite");
   const tCommon = useTranslations("common");
-  const tRoles = useTranslations("users.roles");
+
+  const roleIds = useMemo(() => roles.map((r) => r.id), [roles]);
+  const defaultRole = roleIds.includes("member") ? "member" : (roleIds[0] ?? "member");
 
   const schema = useMemo(
     () =>
       z.object({
         name: z.string().min(2, t("errorName")),
         email: z.string().email(t("errorEmail")),
-        role: z.enum(["admin", "moderator", "scholar", "member"]),
+        role: z.string().refine((v) => roleIds.includes(v), {
+          message: "Unknown role",
+        }),
       }),
-    [t],
+    [t, roleIds],
   );
 
   const {
@@ -56,7 +62,7 @@ export function InviteUserDrawer({ open, onOpenChange, onInvite }: Props) {
     formState: { errors },
   } = useForm<Values>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", email: "", role: "member" },
+    defaultValues: { name: "", email: "", role: defaultRole },
   });
 
   async function onSubmit(values: Values) {
@@ -70,7 +76,7 @@ export function InviteUserDrawer({ open, onOpenChange, onInvite }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to invite user");
       onInvite(data.user as AdminUser);
-      reset();
+      reset({ name: "", email: "", role: defaultRole });
       onOpenChange(false);
     } catch (err) {
       const { toast } = await import("@/components/ui/sonner");
@@ -107,10 +113,9 @@ export function InviteUserDrawer({ open, onOpenChange, onInvite }: Props) {
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm"
                   {...register("role")}
                 >
-                  <option value="member">{tRoles("member")}</option>
-                  <option value="scholar">{tRoles("scholar")}</option>
-                  <option value="moderator">{tRoles("moderator")}</option>
-                  <option value="admin">{tRoles("admin")}</option>
+                  {roles.map((r) => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
                 </select>
               </div>
             </FormGrid>

@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { requireAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/permissions/server";
 import {
   setGeminiConfig,
   clearGeminiKey,
@@ -21,7 +21,7 @@ export type UpdateGeminiConfigResult =
 export async function updateGeminiConfigAction(
   rawInput: unknown,
 ): Promise<UpdateGeminiConfigResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("integrations.write");
   const parsed = geminiConfigSchema.safeParse(rawInput);
   if (!parsed.success) {
     return { ok: false, error: "invalid-input" };
@@ -42,7 +42,7 @@ export async function updateGeminiConfigAction(
 }
 
 export async function clearGeminiKeyAction(): Promise<UpdateGeminiConfigResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("integrations.write");
   try {
     const status = await clearGeminiKey(session.email);
     return { ok: true, status };

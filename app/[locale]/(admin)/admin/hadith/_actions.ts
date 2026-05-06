@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { requireAdminSession } from "@/lib/auth/session";
+import { requirePermissionForLanguage } from "@/lib/permissions/server";
 import { requireDb } from "@/lib/firebase/admin";
 import { getGeminiConfig } from "@/lib/admin/data/secrets";
 import { translateSacredText } from "@/lib/admin/ai/gemini-translate";
@@ -22,11 +22,11 @@ export type TranslateHadithFieldResult =
 export async function translateHadithFieldAction(
   rawInput: unknown,
 ): Promise<TranslateHadithFieldResult> {
-  await requireAdminSession();
   const parsed = translateSchema.safeParse(rawInput);
   if (!parsed.success) {
     return { ok: false, error: "Invalid input." };
   }
+  await requirePermissionForLanguage("hadith.translate", parsed.data.targetLang);
 
   const config = await getGeminiConfig();
   if (!config) {

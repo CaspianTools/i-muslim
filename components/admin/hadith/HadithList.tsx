@@ -94,10 +94,14 @@ export function HadithList({
   entries,
   collection,
   aiConfigured,
+  editableLanguages,
+  canPublish,
 }: {
   entries: AdminHadith[];
   collection: string;
   aiConfigured: boolean;
+  editableLanguages: string[];
+  canPublish: boolean;
 }) {
   const [items, setItems] = useState(entries);
   const [editing, setEditing] = useState<AdminHadith | null>(null);
@@ -285,6 +289,8 @@ export function HadithList({
         collection={collection}
         hadith={editing}
         aiConfigured={aiConfigured}
+        editableLanguages={editableLanguages}
+        canPublish={canPublish}
         onClose={() => setEditing(null)}
         onSaved={(updated) => {
           setItems((prev) => prev.map((h) => (h.id === updated.id ? updated : h)));
@@ -317,12 +323,16 @@ function EditHadithDrawer({
   collection,
   hadith,
   aiConfigured,
+  editableLanguages,
+  canPublish,
   onClose,
   onSaved,
 }: {
   collection: string;
   hadith: AdminHadith | null;
   aiConfigured: boolean;
+  editableLanguages: string[];
+  canPublish: boolean;
   onClose: () => void;
   onSaved: (h: AdminHadith) => void;
 }) {
@@ -337,50 +347,70 @@ function EditHadithDrawer({
     if (!hadith) return;
     setSubmitting(true);
     try {
+      // Send only the translations this user is allowed to write so the
+      // backend's per-language gate doesn't reject the request just because
+      // an untouched untranslatable lang was included in the payload.
       const translationsPayload: Record<string, string> = {};
-      const publishedTranslationsPayload: Record<string, boolean> = {};
       for (const lang of NON_ARABIC_LANGS) {
-        translationsPayload[lang] = values[lang];
-        publishedTranslationsPayload[lang] = values[PUBLISHED_KEY[lang]];
+        if (editableLanguages.includes(lang)) {
+          translationsPayload[lang] = values[lang];
+        }
+      }
+      const body: Record<string, unknown> = {
+        translations: translationsPayload,
+      };
+      if (canPublish) {
+        const publishedTranslationsPayload: Record<string, boolean> = {};
+        for (const lang of NON_ARABIC_LANGS) {
+          publishedTranslationsPayload[lang] = values[PUBLISHED_KEY[lang]];
+        }
+        body.publishedTranslations = publishedTranslationsPayload;
+        body.narrator = values.narrator || null;
+        body.grade = values.grade || null;
+        body.notes = values.notes || null;
+        body.tags = values.tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
+        body.published = values.published;
       }
       const res = await fetch(`/api/admin/hadith/${collection}/${hadith.number}`, {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          translations: translationsPayload,
-          publishedTranslations: publishedTranslationsPayload,
-          narrator: values.narrator || null,
-          grade: values.grade || null,
-          notes: values.notes || null,
-          tags: values.tags
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean),
-          published: values.published,
-        }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to save");
 
       const editedNext: Record<string, boolean> = { ...hadith.editedTranslations };
+      const mergedTranslations: Record<string, string> = { ...hadith.translations };
       for (const lang of NON_ARABIC_LANGS) {
+        if (!editableLanguages.includes(lang)) continue;
+        mergedTranslations[lang] = translationsPayload[lang] ?? hadith.translations[lang] ?? "";
         if (values[lang] !== (hadith.translations[lang] ?? "")) {
           editedNext[lang] = true;
         }
       }
+      const mergedPublishedTranslations: Record<string, boolean> = canPublish
+        ? Object.fromEntries(
+            NON_ARABIC_LANGS.map((lang) => [lang, values[PUBLISHED_KEY[lang]]]),
+          )
+        : (hadith.publishedTranslations ?? {});
       const updated: AdminHadith = {
         ...hadith,
-        translations: translationsPayload,
+        translations: mergedTranslations,
         editedTranslations: editedNext,
-        publishedTranslations: publishedTranslationsPayload,
-        narrator: values.narrator || null,
-        grade: values.grade || null,
-        notes: values.notes || null,
-        tags: values.tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-        published: values.published,
+        publishedTranslations: mergedPublishedTranslations,
+        narrator: canPublish ? values.narrator || null : hadith.narrator,
+        grade: canPublish ? values.grade || null : hadith.grade,
+        notes: canPublish ? values.notes || null : hadith.notes,
+        tags: canPublish
+          ? values.tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : hadith.tags,
+        published: canPublish ? values.published : hadith.published,
         editedByAdmin: true,
       };
       onSaved(updated);
@@ -412,30 +442,37 @@ function EditHadithDrawer({
             <EditorDialogBody className="overflow-hidden p-0">
               <div className="grid h-full grid-cols-1 lg:grid-cols-[30%_1fr]">
                 <div className="space-y-4 overflow-y-auto p-5 lg:border-e lg:border-border">
+                  {!canPublish && (
+                    <p className="rounded-md border border-amber-500/40 bg-amber-500/5 p-2 text-xs text-amber-700 dark:text-amber-400">
+                      Metadata fields are read-only — you don&apos;t have hadith.publish.
+                    </p>
+                  )}
                   <div className="space-y-1.5">
                     <Label htmlFor="hadith-narrator">Narrator</Label>
-                    <Input id="hadith-narrator" {...form.register("narrator")} />
+                    <Input id="hadith-narrator" disabled={!canPublish} {...form.register("narrator")} />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="hadith-grade">Grade</Label>
-                    <Input id="hadith-grade" {...form.register("grade")} />
+                    <Input id="hadith-grade" disabled={!canPublish} {...form.register("grade")} />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="hadith-tags">Tags (comma-separated)</Label>
-                    <Input id="hadith-tags" {...form.register("tags")} />
+                    <Input id="hadith-tags" disabled={!canPublish} {...form.register("tags")} />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="hadith-notes">Internal notes</Label>
                     <textarea
                       id="hadith-notes"
                       rows={4}
-                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm"
+                      disabled={!canPublish}
+                      className="flex w-full rounded-md border border-input bg-background p-2 text-sm disabled:opacity-50"
                       {...form.register("notes")}
                     />
                   </div>
                   <label className="flex items-center gap-2 text-sm">
                     <input
                       type="checkbox"
+                      disabled={!canPublish}
                       {...form.register("published")}
                       className="size-4"
                     />
@@ -447,11 +484,19 @@ function EditHadithDrawer({
                   <div className="-mx-5 overflow-x-auto px-5 pb-1">
                     <TabsList>
                       <TabsTrigger value="ar">Arabic</TabsTrigger>
-                      {NON_ARABIC_LANGS.map((lang) => (
-                        <TabsTrigger key={lang} value={lang}>
-                          {LANG_LABELS[lang] ?? lang.toUpperCase()}
-                        </TabsTrigger>
-                      ))}
+                      {NON_ARABIC_LANGS.map((lang) => {
+                        const editable = editableLanguages.includes(lang);
+                        return (
+                          <TabsTrigger key={lang} value={lang}>
+                            {LANG_LABELS[lang] ?? lang.toUpperCase()}
+                            {!editable && (
+                              <span className="ms-1 text-[10px] uppercase tracking-wide text-muted-foreground">
+                                view-only
+                              </span>
+                            )}
+                          </TabsTrigger>
+                        );
+                      })}
                     </TabsList>
                   </div>
                   <TabsContent value="ar" className="mt-3 flex-1 overflow-y-auto">
@@ -468,31 +513,36 @@ function EditHadithDrawer({
                       </p>
                     </div>
                   </TabsContent>
-                  {NON_ARABIC_LANGS.map((lang) => (
-                    <TabsContent
-                      key={lang}
-                      value={lang}
-                      className="mt-3 flex flex-1 flex-col gap-2"
-                    >
-                      <TranslationField
-                        lang={lang}
-                        register={form.register}
-                        setValue={(text) =>
-                          form.setValue(lang, text, { shouldDirty: true, shouldValidate: true })
-                        }
-                        collection={collection}
-                        number={hadith.number}
-                        aiConfigured={aiConfigured}
-                        publishedValue={form.watch(PUBLISHED_KEY[lang])}
-                        onPublishedChange={(next) =>
-                          form.setValue(PUBLISHED_KEY[lang], next, {
-                            shouldDirty: true,
-                            shouldValidate: true,
-                          })
-                        }
-                      />
-                    </TabsContent>
-                  ))}
+                  {NON_ARABIC_LANGS.map((lang) => {
+                    const editable = editableLanguages.includes(lang);
+                    return (
+                      <TabsContent
+                        key={lang}
+                        value={lang}
+                        className="mt-3 flex flex-1 flex-col gap-2"
+                      >
+                        <TranslationField
+                          lang={lang}
+                          register={form.register}
+                          setValue={(text) =>
+                            form.setValue(lang, text, { shouldDirty: true, shouldValidate: true })
+                          }
+                          collection={collection}
+                          number={hadith.number}
+                          aiConfigured={aiConfigured}
+                          editable={editable}
+                          canPublish={canPublish}
+                          publishedValue={form.watch(PUBLISHED_KEY[lang])}
+                          onPublishedChange={(next) =>
+                            form.setValue(PUBLISHED_KEY[lang], next, {
+                              shouldDirty: true,
+                              shouldValidate: true,
+                            })
+                          }
+                        />
+                      </TabsContent>
+                    );
+                  })}
                 </Tabs>
               </div>
             </EditorDialogBody>
@@ -524,6 +574,8 @@ function TranslationField({
   collection,
   number,
   aiConfigured,
+  editable,
+  canPublish,
   publishedValue,
   onPublishedChange,
 }: {
@@ -533,6 +585,8 @@ function TranslationField({
   collection: string;
   number: number;
   aiConfigured: boolean;
+  editable: boolean;
+  canPublish: boolean;
   publishedValue: boolean;
   onPublishedChange: (next: boolean) => void;
 }) {
@@ -566,30 +620,40 @@ function TranslationField({
       <div className="flex items-center justify-between gap-2">
         <Label htmlFor={`hadith-${lang}`} className="text-xs uppercase tracking-wide text-muted-foreground">
           {label}
+          {!editable && (
+            <span className="ms-2 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+              view-only
+            </span>
+          )}
         </Label>
         <div className="flex items-center gap-2">
-          <PublishToggle
-            value={publishedValue}
-            onChange={onPublishedChange}
-            ariaLabel={`Publish status for ${label} translation`}
-          />
-          <Button
-            type="button"
-            size="sm"
-            variant="ghost"
-            onClick={onAiTranslate}
-            disabled={translating}
-            aria-busy={translating}
-            title={aiConfigured ? `Translate to ${label} with Gemini` : "Configure a Gemini key in /admin/settings first"}
-          >
-            <Sparkles />
-            {translating ? "Translating…" : "Translate with AI"}
-          </Button>
+          {canPublish && (
+            <PublishToggle
+              value={publishedValue}
+              onChange={onPublishedChange}
+              ariaLabel={`Publish status for ${label} translation`}
+            />
+          )}
+          {editable && (
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={onAiTranslate}
+              disabled={translating}
+              aria-busy={translating}
+              title={aiConfigured ? `Translate to ${label} with Gemini` : "Configure a Gemini key in /admin/settings first"}
+            >
+              <Sparkles />
+              {translating ? "Translating…" : "Translate with AI"}
+            </Button>
+          )}
         </div>
       </div>
       <textarea
         id={`hadith-${lang}`}
-        className="flex h-full min-h-[240px] w-full flex-1 resize-none rounded-md border border-input bg-background p-3 text-sm"
+        readOnly={!editable}
+        className="flex h-full min-h-[240px] w-full flex-1 resize-none rounded-md border border-input bg-background p-3 text-sm read-only:opacity-70 read-only:bg-muted/30"
         {...register(lang)}
       />
     </>

@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { FieldValue } from "firebase-admin/firestore";
-import { requireAdmin, badRequest, notFound, serverError } from "@/lib/admin/api";
+import {
+  requirePermission,
+  requirePermissionForLanguage,
+  badRequest,
+  notFound,
+  serverError,
+} from "@/lib/admin/api";
 import { requireDb } from "@/lib/firebase/admin";
 import { revalidateSurah } from "@/lib/quran/db";
 import { ALL_LANGS } from "@/lib/translations";
@@ -31,7 +37,9 @@ export async function PATCH(
   req: Request,
   ctx: { params: Promise<{ surah: string; ayah: string }> },
 ) {
-  const auth = await requireAdmin();
+  // Read access is the floor; every PATCH writer must at minimum be allowed
+  // to view the ayah they're editing.
+  const auth = await requirePermission("quran.read");
   if (!auth.ok) return auth.response;
 
   const { surah: surahParam, ayah: ayahParam } = await ctx.params;
@@ -59,6 +67,27 @@ export async function PATCH(
     );
   }
 
+  const p = parsed.data;
+
+  if (p.translations) {
+    for (const [lang, value] of Object.entries(p.translations)) {
+      if (typeof value !== "string") continue;
+      const langAuth = await requirePermissionForLanguage("quran.translate", lang);
+      if (!langAuth.ok) return langAuth.response;
+    }
+  }
+
+  // Transliteration, tags, notes, and the global publish flag are admin-curated.
+  const touchesPublishState =
+    p.text_translit !== undefined ||
+    p.tags !== undefined ||
+    p.notes !== undefined ||
+    p.published !== undefined;
+  if (touchesPublishState) {
+    const publishAuth = await requirePermission("quran.publish");
+    if (!publishAuth.ok) return publishAuth.response;
+  }
+
   const id = `${surah}:${ayah}`;
   try {
     const db = requireDb();
@@ -72,7 +101,6 @@ export async function PATCH(
       updatedBy: auth.session.email,
     };
 
-    const p = parsed.data;
     if (p.translations) {
       const existing = (snap.data()?.translations as Record<string, string | undefined>) ?? {};
       const existingEdited = (snap.data()?.editedTranslations as Record<string, boolean> | undefined) ?? {};

@@ -6,7 +6,7 @@ import { StatCard } from "@/components/admin/StatCard";
 import { UserGrowthChart } from "@/components/admin/charts/UserGrowthChart";
 import { EngagementBarChart } from "@/components/admin/charts/EngagementBarChart";
 import { DonationDonutChart } from "@/components/admin/charts/DonationDonutChart";
-import { requireAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/permissions/server";
 import { fetchDashboard } from "@/lib/admin/data/dashboard";
 import { formatRelative, initials } from "@/lib/utils";
 
@@ -26,7 +26,7 @@ function formatUsd(value: number): string {
 }
 
 export default async function DashboardPage() {
-  const session = await requireAdminSession();
+  const session = await requirePermission("dashboard.read");
   const data = await fetchDashboard();
   const t = await getTranslations("dashboard");
   const locale = await getLocale();

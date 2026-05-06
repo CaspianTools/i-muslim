@@ -4,6 +4,8 @@ import { fetchSurahWithAyahs } from "@/lib/admin/data/quran";
 import { AyahList } from "@/components/admin/quran/AyahList";
 import { getGeminiConfigStatus } from "@/lib/admin/data/secrets";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
+import { getSiteSession } from "@/lib/auth/session";
+import { editableLanguagesFor, hasPermission } from "@/lib/permissions/check";
 
 export const dynamic = "force-dynamic";
 
@@ -16,14 +18,23 @@ export default async function AdminSurahPage({
   const num = Number(surahParam);
   if (!Number.isInteger(num) || num < 1 || num > 114) notFound();
 
-  const [{ surah, ayahs }, geminiStatus, languageSettings] = await Promise.all([
+  const [{ surah, ayahs }, geminiStatus, languageSettings, session] = await Promise.all([
     fetchSurahWithAyahs(num),
     getGeminiConfigStatus(),
     getLanguageSettings(),
+    getSiteSession(),
   ]);
   if (!surah) notFound();
 
   const availableLangs = languageSettings.quranEnabled.filter((l) => l !== "ar");
+  const permissions = session?.permissions ?? [];
+  const editableLanguages = editableLanguagesFor(
+    permissions,
+    session?.languages,
+    "quran.translate",
+    availableLangs,
+  );
+  const canPublish = hasPermission(permissions, "quran.publish");
 
   return (
     <div className="space-y-4">
@@ -58,6 +69,8 @@ export default async function AdminSurahPage({
           ayahs={ayahs}
           surah={num}
           availableLangs={availableLangs}
+          editableLanguages={editableLanguages}
+          canPublish={canPublish}
           aiConfigured={geminiStatus.configured}
         />
       )}

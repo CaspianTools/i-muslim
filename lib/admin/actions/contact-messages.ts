@@ -3,16 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
 import { requireDb } from "@/lib/firebase/admin";
-import { requireAdminSession } from "@/lib/auth/session";
-import { isAdminEmail } from "@/lib/auth/allowlist";
+import { requirePermission } from "@/lib/permissions/server";
 import { CONTACT_MESSAGES_COLLECTION } from "@/lib/admin/data/contact-messages";
 
 export type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string };
 
 async function authorizeAdmin() {
-  const session = await requireAdminSession();
-  if (!isAdminEmail(session.email)) throw new Error("Unauthorized");
-  return session;
+  return await requirePermission("contact.respond");
 }
 
 async function setStatus(

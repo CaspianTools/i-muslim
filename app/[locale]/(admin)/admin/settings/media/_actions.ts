@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/permissions/server";
 import {
   createSiteUploadUrl,
   deleteSiteStorageObject,
@@ -23,7 +23,7 @@ export async function getSiteUploadUrlAction(
   | { ok: false; error: string }
 > {
   try {
-    await requireAdminSession();
+    await requirePermission("settings.write");
   } catch {
     return { ok: false, error: "unauthorized" };
   }
@@ -40,7 +40,7 @@ export async function deleteSiteAssetAction(
   storagePath: string,
 ): Promise<{ ok: boolean; error?: string }> {
   try {
-    await requireAdminSession();
+    await requirePermission("settings.write");
   } catch {
     return { ok: false, error: "unauthorized" };
   }
@@ -63,7 +63,7 @@ export async function updateSiteAssetAction(
 ): Promise<UpdateSiteAssetResult> {
   let session;
   try {
-    session = await requireAdminSession();
+    session = await requirePermission("settings.write");
   } catch {
     return { ok: false, error: "unauthorized" };
   }

@@ -6,13 +6,16 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Sidebar, type SidebarBadges } from "./Sidebar";
+import type { RolePermissions } from "@/lib/permissions/catalog";
 
 export function MobileSidebarDrawer({
   badges,
   logoUrl,
+  permissions,
 }: {
   badges?: SidebarBadges;
   logoUrl?: string | null;
+  permissions: RolePermissions;
 }) {
   const [open, setOpen] = useState(false);
   const t = useTranslations("header");
@@ -34,6 +37,7 @@ export function MobileSidebarDrawer({
             variant="drawer"
             badges={badges}
             logoUrl={logoUrl}
+            permissions={permissions}
             onNavigate={() => setOpen(false)}
           />
         </SheetContent>

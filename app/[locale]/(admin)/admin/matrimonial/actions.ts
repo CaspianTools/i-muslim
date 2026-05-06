@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/permissions/server";
 import {
   deleteProfileById,
   getProfile,
@@ -11,8 +11,7 @@ import {
 import type { MatrimonialProfile, ReportStatus } from "@/types/matrimonial";
 
 async function ensureAdmin() {
-  const session = await requireAdminSession();
-  return session;
+  return await requirePermission("matrimonial.write");
 }
 
 export async function setProfileStatus(

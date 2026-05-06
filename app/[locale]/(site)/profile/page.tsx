@@ -6,7 +6,7 @@ import { SignOutButton } from "@/components/site/SignOutButton";
 import { ProfileForm } from "@/components/site/profile/ProfileForm";
 import { getSiteSession } from "@/lib/auth/session";
 import { getProfileFields } from "@/lib/profile/data";
-import { isAdminEmail } from "@/lib/auth/allowlist";
+import { hasPermission } from "@/lib/permissions/check";
 import { initials } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,7 +21,7 @@ export default async function ProfilePage() {
   const t = await getTranslations("profile");
   const session = await getSiteSession();
   if (!session) redirect("/login?callbackUrl=/profile");
-  const isAdmin = isAdminEmail(session.email);
+  const isAdmin = hasPermission(session.permissions, "dashboard.read");
   const initial = await getProfileFields(session.uid);
 
   return (

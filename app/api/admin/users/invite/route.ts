@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { FieldValue } from "firebase-admin/firestore";
-import { requireAdmin, badRequest, serverError } from "@/lib/admin/api";
+import { requirePermission, badRequest, serverError } from "@/lib/admin/api";
 import { requireAdminAuth, requireDb } from "@/lib/firebase/admin";
+import { getRole, KEYMASTER_ROLE_ID } from "@/lib/admin/data/roles";
 
 export const runtime = "nodejs";
 
@@ -10,12 +11,13 @@ const InviteSchema = z
   .object({
     name: z.string().min(2).max(120),
     email: z.string().email().max(320),
-    role: z.enum(["admin", "moderator", "scholar", "member"]),
+    role: z.string().regex(/^[a-z0-9][a-z0-9-]{1,40}$/, "Invalid role id"),
+    languages: z.array(z.string().min(2).max(10)).max(20).optional(),
   })
   .strict();
 
 export async function POST(req: Request) {
-  const auth = await requireAdmin();
+  const auth = await requirePermission("users.invite");
   if (!auth.ok) return auth.response;
 
   let body: unknown;
@@ -32,7 +34,13 @@ export async function POST(req: Request) {
     );
   }
 
-  const { name, email, role } = parsed.data;
+  const { name, email, role, languages } = parsed.data;
+
+  if (role === KEYMASTER_ROLE_ID) {
+    return badRequest("Keymaster role cannot be assigned through the API.");
+  }
+  const roleDoc = await getRole(role);
+  if (!roleDoc) return badRequest(`Role "${role}" not found.`);
 
   try {
     const fbAuth = requireAdminAuth();
@@ -60,6 +68,7 @@ export async function POST(req: Request) {
         name,
         email,
         role,
+        languages: languages ?? [],
         status: "pending",
         verified: false,
         joinedAt: now,
@@ -75,6 +84,7 @@ export async function POST(req: Request) {
         name,
         email,
         role,
+        languages: languages ?? [],
         status: "pending",
         verified: false,
         avatarUrl: null,

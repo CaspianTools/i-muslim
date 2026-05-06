@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/admin/api";
 import { renderMarkdown } from "@/lib/blog/markdown";
 import { LOCALES, dirFor, type Locale } from "@/i18n/config";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+  const auth = await requirePermission("articles.read");
+  if (!auth.ok) return auth.response;
   let body: { md?: string; locale?: string };
   try {
     body = await req.json();

@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import type { Permission } from "@/lib/permissions/catalog";
 import {
   Activity,
   BadgeCheck,
@@ -96,6 +97,10 @@ export interface NavItem {
     | "autoHiddenComments";
   children?: NavItem[];
   comingSoon?: boolean;
+  // Required permission to see this nav entry. If unset, the item is visible
+  // to anyone who can access the admin shell. Coming-soon items are exempt
+  // from filtering (they render disabled regardless).
+  requiredPermission?: Permission;
 }
 
 export interface NavGroup {
@@ -107,7 +112,7 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "overview",
     items: [
-      { labelKey: "dashboard", href: "/admin", icon: LayoutDashboard },
+      { labelKey: "dashboard", href: "/admin", icon: LayoutDashboard, requiredPermission: "dashboard.read" },
       { labelKey: "analytics", href: "/admin/analytics", icon: BarChart3, comingSoon: true },
       { labelKey: "activity", href: "/admin/activity", icon: Activity, comingSoon: true },
     ],
@@ -115,8 +120,8 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "community",
     items: [
-      { labelKey: "users", href: "/admin/users", icon: Users, badgeKey: "pendingUsers" },
-      { labelKey: "roles", href: "/admin/roles", icon: Shield, comingSoon: true },
+      { labelKey: "users", href: "/admin/users", icon: Users, badgeKey: "pendingUsers", requiredPermission: "users.read" },
+      { labelKey: "roles", href: "/admin/roles", icon: Shield, requiredPermission: "roles.read" },
       { labelKey: "scholars", href: "/admin/scholars", icon: GraduationCap, comingSoon: true },
       { labelKey: "groups", href: "/admin/groups", icon: Users2, comingSoon: true },
     ],
@@ -128,18 +133,20 @@ export const ADMIN_NAV: NavGroup[] = [
         labelKey: "articles",
         href: "/admin/articles",
         icon: FileText,
+        requiredPermission: "articles.read",
         children: [
-          { labelKey: "articlesCategories", href: "/admin/articles/categories", icon: Tags },
+          { labelKey: "articlesCategories", href: "/admin/articles/categories", icon: Tags, requiredPermission: "articles.read" },
         ],
       },
-      { labelKey: "quran", href: "/admin/quran", icon: BookOpen },
-      { labelKey: "hadith", href: "/admin/hadith", icon: BookMarked },
+      { labelKey: "quran", href: "/admin/quran", icon: BookOpen, requiredPermission: "quran.read" },
+      { labelKey: "hadith", href: "/admin/hadith", icon: BookMarked, requiredPermission: "hadith.read" },
       {
         labelKey: "events",
         href: "/admin/events",
         icon: CalendarDays,
+        requiredPermission: "events.read",
         children: [
-          { labelKey: "eventsCategories", href: "/admin/events/categories", icon: Tags },
+          { labelKey: "eventsCategories", href: "/admin/events/categories", icon: Tags, requiredPermission: "events.read" },
         ],
       },
       {
@@ -147,8 +154,9 @@ export const ADMIN_NAV: NavGroup[] = [
         href: "/admin/mosques",
         icon: Landmark,
         badgeKey: "pendingMosques",
+        requiredPermission: "mosques.read",
         children: [
-          { labelKey: "mosquesFacilities", href: "/admin/mosques/facilities", icon: ConciergeBell },
+          { labelKey: "mosquesFacilities", href: "/admin/mosques/facilities", icon: ConciergeBell, requiredPermission: "mosques.read" },
         ],
       },
       {
@@ -156,15 +164,16 @@ export const ADMIN_NAV: NavGroup[] = [
         href: "/admin/businesses",
         icon: Store,
         badgeKey: "openReports",
+        requiredPermission: "businesses.read",
         children: [
-          { labelKey: "businessesCategories", href: "/admin/businesses/categories", icon: Tags },
-          { labelKey: "businessesReports", href: "/admin/businesses/reports", icon: Flag },
-          { labelKey: "businessesCertBodies", href: "/admin/businesses/cert-bodies", icon: BadgeCheck },
-          { labelKey: "businessesAmenities", href: "/admin/businesses/amenities", icon: ConciergeBell },
+          { labelKey: "businessesCategories", href: "/admin/businesses/categories", icon: Tags, requiredPermission: "businesses.read" },
+          { labelKey: "businessesReports", href: "/admin/businesses/reports", icon: Flag, requiredPermission: "businesses.read" },
+          { labelKey: "businessesCertBodies", href: "/admin/businesses/cert-bodies", icon: BadgeCheck, requiredPermission: "businesses.read" },
+          { labelKey: "businessesAmenities", href: "/admin/businesses/amenities", icon: ConciergeBell, requiredPermission: "businesses.read" },
         ],
       },
       { labelKey: "courses", href: "/admin/courses", icon: BookOpenCheck },
-      { labelKey: "matrimonial", href: "/admin/matrimonial", icon: Heart, badgeKey: "pendingMatrimonial" },
+      { labelKey: "matrimonial", href: "/admin/matrimonial", icon: Heart, badgeKey: "pendingMatrimonial", requiredPermission: "matrimonial.read" },
       { labelKey: "duas", href: "/admin/duas", icon: Sparkles, comingSoon: true },
       { labelKey: "khutbahs", href: "/admin/khutbahs", icon: Mic2, comingSoon: true },
       { labelKey: "media", href: "/admin/media", icon: Image, comingSoon: true },
@@ -173,7 +182,7 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "worship",
     items: [
-      { labelKey: "prayerTimes", href: "/admin/prayer-times", icon: Clock },
+      { labelKey: "prayerTimes", href: "/admin/prayer-times", icon: Clock, requiredPermission: "prayerTimes.read" },
     ],
   },
   {
@@ -184,12 +193,14 @@ export const ADMIN_NAV: NavGroup[] = [
         href: "/admin/comments",
         icon: MessageCircle,
         badgeKey: "autoHiddenComments",
+        requiredPermission: "comments.read",
       },
       {
         labelKey: "contactMessages",
         href: "/admin/contact",
         icon: Inbox,
         badgeKey: "openContactMessages",
+        requiredPermission: "contact.read",
       },
       { labelKey: "qa", href: "/admin/qa", icon: MessageCircleQuestion, comingSoon: true },
       { labelKey: "announcements", href: "/admin/announcements", icon: Megaphone, comingSoon: true },
@@ -200,8 +211,8 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "system",
     items: [
-      { labelKey: "settings", href: "/admin/settings", icon: Settings },
-      { labelKey: "integrations", href: "/admin/integrations", icon: Plug },
+      { labelKey: "settings", href: "/admin/settings", icon: Settings, requiredPermission: "settings.read" },
+      { labelKey: "integrations", href: "/admin/integrations", icon: Plug, requiredPermission: "integrations.read" },
       { labelKey: "donations", href: "/admin/donations", icon: HandCoins, comingSoon: true },
       { labelKey: "reports", href: "/admin/reports", icon: FileBarChart, comingSoon: true },
       { labelKey: "audit", href: "/admin/audit", icon: ScrollText, comingSoon: true },

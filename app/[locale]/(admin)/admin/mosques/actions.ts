@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireAdminSession } from "@/lib/auth/session";
+import { requirePermission } from "@/lib/permissions/server";
 import { getDb } from "@/lib/firebase/admin";
 import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
 import { buildMosqueSlug, isReservedSlug, withCollisionSuffix } from "@/lib/mosques/slug";
@@ -215,7 +215,7 @@ function stripUndefinedTopLevel(obj: Record<string, unknown>): Record<string, un
 }
 
 export async function createMosque(rawInput: unknown): Promise<ActionResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("mosques.write");
   const parsed = mosqueInputSchema.safeParse(rawInput);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "invalid_input" };
   const input = parsed.data;
@@ -240,7 +240,7 @@ export async function createMosque(rawInput: unknown): Promise<ActionResult> {
 }
 
 export async function updateMosque(slug: string, rawInput: unknown): Promise<ActionResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("mosques.write");
   const parsed = mosqueInputSchema.safeParse(rawInput);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "invalid_input" };
   const input = parsed.data;
@@ -275,7 +275,7 @@ export async function updateMosque(slug: string, rawInput: unknown): Promise<Act
 }
 
 export async function setMosqueStatus(slug: string, status: MosqueStatus): Promise<ActionResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("mosques.publish");
   const db = getDb();
   if (!db) return { ok: false, error: "firestore_not_configured" };
   const ref = db.collection(MOSQUES_COLLECTION).doc(slug);
@@ -299,7 +299,7 @@ export async function setMosqueStatus(slug: string, status: MosqueStatus): Promi
 }
 
 export async function deleteMosque(slug: string): Promise<ActionResult> {
-  await requireAdminSession();
+  await requirePermission("mosques.write");
   const db = getDb();
   if (!db) return { ok: false, error: "firestore_not_configured" };
   await db.collection(MOSQUES_COLLECTION).doc(slug).delete();
@@ -310,7 +310,7 @@ export async function deleteMosque(slug: string): Promise<ActionResult> {
 }
 
 export async function rejectMosque(slug: string, reason: string): Promise<ActionResult> {
-  const session = await requireAdminSession();
+  const session = await requirePermission("mosques.publish");
   const db = getDb();
   if (!db) return { ok: false, error: "firestore_not_configured" };
   const ref = db.collection(MOSQUES_COLLECTION).doc(slug);
@@ -335,7 +335,7 @@ export async function getMosqueUploadUrlAction(
   | { ok: false; error: string }
 > {
   try {
-    await requireAdminSession();
+    await requirePermission("mosques.write");
   } catch {
     return { ok: false, error: "unauthorized" };
   }
@@ -353,7 +353,7 @@ export async function deleteMosqueImageAction(
   storagePath: string,
 ): Promise<{ ok: boolean; error?: string }> {
   try {
-    await requireAdminSession();
+    await requirePermission("mosques.write");
   } catch {
     return { ok: false, error: "unauthorized" };
   }
@@ -365,7 +365,7 @@ export async function deleteMosqueImageAction(
 }
 
 export async function bulkImport(rows: unknown[]): Promise<{ ok: boolean; created: number; failed: number; errors: string[] }> {
-  await requireAdminSession();
+  await requirePermission("mosques.write");
   const db = getDb();
   if (!db) return { ok: false, created: 0, failed: rows.length, errors: ["firestore_not_configured"] };
 

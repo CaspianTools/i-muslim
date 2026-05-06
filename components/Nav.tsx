@@ -4,7 +4,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { SearchButton } from "./SearchButton";
 import { SiteUserMenu } from "./site/SiteUserMenu";
 import { getSiteSession } from "@/lib/auth/session";
-import { isAdminEmail } from "@/lib/auth/allowlist";
+import { hasPermission } from "@/lib/permissions/check";
 import { getSiteConfig } from "@/lib/admin/data/site-config";
 
 export async function Nav() {
@@ -12,7 +12,7 @@ export async function Nav() {
   const locale = await getLocale();
   const session = await getSiteSession();
   const siteConfig = await getSiteConfig();
-  const isAdmin = isAdminEmail(session?.email);
+  const isAdmin = session ? hasPermission(session.permissions, "dashboard.read") : false;
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">

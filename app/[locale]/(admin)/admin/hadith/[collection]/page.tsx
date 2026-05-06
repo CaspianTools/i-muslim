@@ -3,10 +3,14 @@ import { notFound } from "next/navigation";
 import { fetchCollectionWithHadiths } from "@/lib/admin/data/hadith";
 import { HadithList } from "@/components/admin/hadith/HadithList";
 import { getGeminiConfigStatus } from "@/lib/admin/data/secrets";
+import { getSiteSession } from "@/lib/auth/session";
+import { editableLanguagesFor, hasPermission } from "@/lib/permissions/check";
+import { ALL_LANGS } from "@/lib/translations";
 
 export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 50;
+const NON_ARABIC_LANGS = ALL_LANGS.filter((l) => l !== "ar");
 
 export default async function AdminCollectionPage({
   params,
@@ -20,13 +24,23 @@ export default async function AdminCollectionPage({
   const page = Math.max(1, Number(sp.page) || 1);
   const book = sp.book ? Number(sp.book) : undefined;
 
-  const [{ collection: meta, entries, total }, geminiStatus] = await Promise.all([
+  const [{ collection: meta, entries, total }, geminiStatus, session] = await Promise.all([
     fetchCollectionWithHadiths(collection, { page, pageSize: PAGE_SIZE, book }),
     getGeminiConfigStatus(),
+    getSiteSession(),
   ]);
   if (!meta) notFound();
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const permissions = session?.permissions ?? [];
+  const editableLanguages = editableLanguagesFor(
+    permissions,
+    session?.languages,
+    "hadith.translate",
+    NON_ARABIC_LANGS,
+  );
+  const canPublish = hasPermission(permissions, "hadith.publish");
 
   return (
     <div className="space-y-4">
@@ -55,6 +69,8 @@ export default async function AdminCollectionPage({
         entries={entries}
         collection={collection}
         aiConfigured={geminiStatus.configured}
+        editableLanguages={editableLanguages}
+        canPublish={canPublish}
       />
 
       <nav className="flex items-center justify-between gap-2 text-sm">

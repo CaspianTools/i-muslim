@@ -4,8 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { FieldValue } from "firebase-admin/firestore";
 import { requireDb } from "@/lib/firebase/admin";
-import { requireAdminSession } from "@/lib/auth/session";
-import { isAdminEmail } from "@/lib/auth/allowlist";
+import { requirePermission } from "@/lib/permissions/server";
 import { MOSQUE_FACILITIES_COLLECTION } from "@/lib/mosques/constants";
 
 export type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string };
@@ -22,8 +21,7 @@ const facilityInputSchema = z.object({
 export type MosqueFacilityInput = z.infer<typeof facilityInputSchema>;
 
 async function authorizeAdmin() {
-  const session = await requireAdminSession();
-  if (!isAdminEmail(session.email)) throw new Error("Unauthorized");
+  await requirePermission("mosques.write");
 }
 
 function revalidate() {

@@ -77,7 +77,7 @@ export default async function AdminLayout({
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       <div className="hidden md:block shrink-0">
-        <Sidebar badges={badges} logoUrl={siteConfig.logoUrl} />
+        <Sidebar badges={badges} logoUrl={siteConfig.logoUrl} permissions={session.permissions} />
       </div>
       <div className="flex flex-1 flex-col min-w-0">
         <AdminHeader session={session} badges={badges} logoUrl={siteConfig.logoUrl} />
