@@ -22,6 +22,11 @@ import {
 } from "@/lib/admin/data/ui-locales";
 import {
   setSiteIdentity,
+  setSiteTypography,
+  BODY_FONT_OPTIONS,
+  ARABIC_FONT_OPTIONS,
+  type BodyFont,
+  type ArabicFont,
   type SiteConfig,
 } from "@/lib/admin/data/site-config";
 
@@ -159,6 +164,36 @@ export async function updateSiteIdentityAction(
     return { ok: true, config };
   } catch (err) {
     console.warn("[admin/settings/_actions] updateSiteIdentity failed:", err);
+    return { ok: false, error: "write-failed" };
+  }
+}
+
+const typographySchema = z.object({
+  bodyFont: z.enum(BODY_FONT_OPTIONS as unknown as [BodyFont, ...BodyFont[]]),
+  arabicFont: z.enum(
+    ARABIC_FONT_OPTIONS as unknown as [ArabicFont, ...ArabicFont[]],
+  ),
+});
+
+export type UpdateTypographyResult =
+  | { ok: true; config: SiteConfig }
+  | { ok: false; error: string };
+
+export async function updateTypographyAction(
+  rawInput: unknown,
+): Promise<UpdateTypographyResult> {
+  const session = await requireAdminSession();
+  const parsed = typographySchema.safeParse(rawInput);
+  if (!parsed.success) {
+    return { ok: false, error: "invalid-input" };
+  }
+  try {
+    const config = await setSiteTypography(parsed.data, session.email);
+    // Fonts apply at the root layout — invalidate broadly.
+    revalidatePath("/", "layout");
+    return { ok: true, config };
+  } catch (err) {
+    console.warn("[admin/settings/_actions] updateTypography failed:", err);
     return { ok: false, error: "write-failed" };
   }
 }

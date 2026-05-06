@@ -3,6 +3,24 @@ import { cache } from "react";
 import { Timestamp } from "firebase-admin/firestore";
 import { getDb, requireDb } from "@/lib/firebase/admin";
 import { publicUrlFor, type SiteUploadKind } from "@/lib/site-config/storage";
+import {
+  BODY_FONT_OPTIONS,
+  ARABIC_FONT_OPTIONS,
+  DEFAULT_BODY_FONT,
+  DEFAULT_ARABIC_FONT,
+  type BodyFont,
+  type ArabicFont,
+} from "@/lib/site-config/typography";
+
+// Re-export the shared constants/types so existing call sites that import
+// these from `@/lib/admin/data/site-config` keep compiling.
+export {
+  BODY_FONT_OPTIONS,
+  ARABIC_FONT_OPTIONS,
+  DEFAULT_BODY_FONT,
+  DEFAULT_ARABIC_FONT,
+};
+export type { BodyFont, ArabicFont };
 
 export const SITE_CONFIG_COLLECTION = "config";
 export const SITE_CONFIG_DOC = "site";
@@ -20,6 +38,8 @@ export interface SiteConfig {
   ogImageUrl: string | null;
   articlePlaceholderStoragePath: string | null;
   articlePlaceholderUrl: string | null;
+  bodyFont: BodyFont;
+  arabicFont: ArabicFont;
 }
 
 function emptyConfig(): SiteConfig {
@@ -34,7 +54,21 @@ function emptyConfig(): SiteConfig {
     ogImageUrl: null,
     articlePlaceholderStoragePath: null,
     articlePlaceholderUrl: null,
+    bodyFont: DEFAULT_BODY_FONT,
+    arabicFont: DEFAULT_ARABIC_FONT,
   };
+}
+
+function bodyFontField(raw: unknown): BodyFont {
+  return typeof raw === "string" && (BODY_FONT_OPTIONS as readonly string[]).includes(raw)
+    ? (raw as BodyFont)
+    : DEFAULT_BODY_FONT;
+}
+
+function arabicFontField(raw: unknown): ArabicFont {
+  return typeof raw === "string" && (ARABIC_FONT_OPTIONS as readonly string[]).includes(raw)
+    ? (raw as ArabicFont)
+    : DEFAULT_ARABIC_FONT;
 }
 
 function pathField(raw: unknown): string | null {
@@ -68,6 +102,8 @@ function shapeFromData(data: Record<string, unknown>): SiteConfig {
     ogImageUrl: urlFor(ogImageStoragePath),
     articlePlaceholderStoragePath,
     articlePlaceholderUrl: urlFor(articlePlaceholderStoragePath),
+    bodyFont: bodyFontField(data.bodyFont),
+    arabicFont: arabicFontField(data.arabicFont),
   };
 }
 
@@ -126,6 +162,31 @@ const KIND_TO_PATH_FIELD: Record<SiteUploadKind, string> = {
 export interface SetSiteAssetInput {
   kind: SiteUploadKind;
   storagePath: string | null;
+}
+
+export interface SiteTypographyInput {
+  bodyFont: BodyFont;
+  arabicFont: ArabicFont;
+}
+
+export async function setSiteTypography(
+  input: SiteTypographyInput,
+  adminEmail: string,
+): Promise<SiteConfig> {
+  const db = requireDb();
+  await db
+    .collection(SITE_CONFIG_COLLECTION)
+    .doc(SITE_CONFIG_DOC)
+    .set(
+      {
+        bodyFont: input.bodyFont,
+        arabicFont: input.arabicFont,
+        updatedAt: Timestamp.now(),
+        updatedBy: adminEmail,
+      },
+      { merge: true },
+    );
+  return readSiteConfig();
 }
 
 export async function setSiteAsset(

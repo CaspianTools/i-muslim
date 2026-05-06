@@ -2121,6 +2121,7 @@
       "ariaLabel": "Settings sections",
       "general": "General",
       "media": "Media",
+      "typography": "Typography",
       "languages": "Languages"
     },
     "general": {
@@ -2156,6 +2157,19 @@
       "uploadFailed": "Upload failed. Please try again.",
       "savedToast": "Saved.",
       "savedError": "Could not save. Please try again."
+    },
+    "typography": {
+      "title": "Typography",
+      "description": "Choose the body and Arabic display fonts. Changes apply across the public site after saving.",
+      "bodyLabel": "Body and UI font",
+      "bodyHint": "Used for English, Russian, Azerbaijani, Turkish, and Indonesian text on the site.",
+      "arabicLabel": "Arabic display font",
+      "arabicHint": "Used for the Quran, Hadith, and other Arabic text rendered with the .font-arabic style.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "savedToast": "Typography saved.",
+      "errorToast": "Could not save typography.",
+      "unsavedChanges": "Unsaved changes"
     },
     "languages": {
       "title": "Languages",
