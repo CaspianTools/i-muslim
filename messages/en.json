@@ -603,8 +603,8 @@
   },
   "home": {
     "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
-    "headline": "Read the Quran and Sunnah.",
-    "tagline": "A clean, fast reader for the Quran and the major Hadith collections, with Arabic alongside English, Russian, and Azerbaijani translations.",
+    "headline": "Read the Quran and Sunnah",
+    "tagline": "A clean, fast reader for the Quran and the major Hadith collections, with translations alongside the Arabic",
     "hero": {
       "ctaQuran": "Read the Quran",
       "ctaHadith": "Read Hadith"
