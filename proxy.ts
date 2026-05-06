@@ -16,7 +16,39 @@ function pickLocaleFromCookie(req: NextRequest): string {
   return isLocale(fromCookie) ? fromCookie : DEFAULT_LOCALE;
 }
 
+// On Firebase App Hosting (Cloud Run), the container listens on internal
+// :8080 while the public proxy serves :443. `req.nextUrl` reflects the
+// internal request, so any absolute redirect built from it leaks `:8080`
+// into the Location header. Rewrite it back to the external host using the
+// x-forwarded-* headers Cloud Run sets.
+function fixForwardedLocation(
+  res: NextResponse,
+  req: NextRequest,
+): NextResponse {
+  const location = res.headers.get("location");
+  if (!location) return res;
+
+  const forwardedHost = req.headers.get("x-forwarded-host");
+  if (!forwardedHost) return res;
+  const forwardedProto = req.headers.get("x-forwarded-proto");
+
+  try {
+    const url = new URL(location, req.nextUrl);
+    url.host = forwardedHost;
+    url.port = "";
+    if (forwardedProto) url.protocol = `${forwardedProto}:`;
+    res.headers.set("location", url.toString());
+  } catch {
+    // Pathological Location value — leave untouched.
+  }
+  return res;
+}
+
 export function proxy(req: NextRequest) {
+  return fixForwardedLocation(proxyImpl(req), req);
+}
+
+function proxyImpl(req: NextRequest): NextResponse {
   const { pathname } = req.nextUrl;
   const hasSession = Boolean(req.cookies.get(SESSION_COOKIE)?.value);
 
