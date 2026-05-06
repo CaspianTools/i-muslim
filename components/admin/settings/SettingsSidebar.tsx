@@ -19,8 +19,7 @@ export function SettingsSidebar() {
       aria-label={t("ariaLabel")}
       className={cn(
         // Vertical card with stacked nav buttons, fixed width on the start edge.
-        "flex w-full flex-col gap-0.5 self-start rounded-lg border border-border bg-card p-2",
-        "sm:w-56 sm:shrink-0",
+        "flex w-72 max-w-[300px] shrink-0 flex-col gap-0.5 self-start rounded-lg border border-border bg-card p-2",
       )}
     >
       {SETTINGS_NAV.map((item) => {
