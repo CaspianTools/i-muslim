@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Inter,
   IBM_Plex_Sans,
@@ -88,6 +88,15 @@ const ARABIC_FONT_VAR: Record<ArabicFont, string> = {
 const FALLBACK_TAGLINE =
   "A clean, fast reader for the Quran and major Hadith collections with Arabic, English, Russian, and Azerbaijani translations.";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // viewportFit:'cover' is required so env(safe-area-inset-*) returns non-zero
+  // on notched iPhones; without it, the bottom tab bar sits on the home
+  // indicator instead of above it.
+  viewportFit: "cover",
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getSiteConfig();
   const titleSuffix = config.siteName;
@@ -135,10 +144,10 @@ export default async function RootLayout({
       lang={locale}
       dir={dir}
       suppressHydrationWarning
-      className={`${inter.variable} ${plexSans.variable} ${roboto.variable} ${amiri.variable} ${scheherazade.variable} ${notoNaskh.variable} ${plexArabic.variable} h-full antialiased`}
+      className={`${inter.variable} ${plexSans.variable} ${roboto.variable} ${amiri.variable} ${scheherazade.variable} ${notoNaskh.variable} ${plexArabic.variable} antialiased`}
       style={fontStyle}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-dvh flex flex-col">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>{children}</ThemeProvider>
         </NextIntlClientProvider>

@@ -465,17 +465,35 @@
   "nav": {
     "quran": "Quran",
     "hadith": "Hadith",
+    "prayer": "Prayer",
     "prayerTimes": "Prayer Times",
     "zakat": "Zakat",
     "matrimonial": "Matrimonial",
     "events": "Events",
     "mosques": "Mosques",
     "articles": "Articles",
+    "more": "More",
+    "primary": "Primary navigation",
     "search": "Search",
     "searchTitle": "Search",
     "searchDescription": "Find verses in the Quran and narrations in the Hadith collections.",
     "searchPlaceholder": "Search Quran and Hadith…",
     "searchHint": "Press Enter to search."
+  },
+  "more": {
+    "title": "More",
+    "description": "Tools, community, account, and preferences.",
+    "sectionCommunity": "Community",
+    "sectionTools": "Tools",
+    "sectionAccount": "Account",
+    "sectionPreferences": "Preferences",
+    "businesses": "Businesses",
+    "zakat": "Zakat Calculator",
+    "hijriConverter": "Hijri Date Converter",
+    "profile": "Profile",
+    "account": "Sign in / out",
+    "language": "Language",
+    "theme": "Theme"
   },
   "prayerBar": {
     "viewAll": "All prayer times",
@@ -2122,7 +2140,10 @@
       "general": "General",
       "media": "Media",
       "typography": "Typography",
-      "languages": "Languages"
+      "languages": "Languages",
+      "languagesInterface": "Interface",
+      "languagesQuran": "Qur'an",
+      "languagesHadith": "Hadith"
     },
     "general": {
       "title": "Site identity",

@@ -327,6 +327,81 @@ body {
     border-radius: var(--radius-md);
     font-size: 0.875rem;
   }
+
+  /*
+   * Touch target floor. Apply to any icon-only or pill control that needs to be
+   * comfortable on a phone (44pt is the Apple HIG / WCAG 2.5.5 minimum).
+   * Wraps the visual hit area without bloating the visual size — pair with
+   * inline-flex centring.
+   */
+  .touch-target {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+  .touch-target-sm {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+
+  /*
+   * Mobile bottom tab bar shell. Fixed to the viewport bottom on phones,
+   * hidden at md+. Internal padding respects the iOS home indicator safe area
+   * so icons don't sit on the bar's lip.
+   */
+  .mobile-tabbar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    background-color: color-mix(in oklab, var(--background) 85%, transparent);
+    border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  @supports (backdrop-filter: blur(12px)) {
+    .mobile-tabbar {
+      background-color: color-mix(in oklab, var(--background) 70%, transparent);
+      backdrop-filter: blur(12px);
+    }
+  }
+  .mobile-tabbar-link {
+    flex: 1 1 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    padding: 0.5rem 0.25rem;
+    min-height: 3.5rem;
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
+    line-height: 1;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .mobile-tabbar-link[aria-current="page"] {
+    color: var(--selected-foreground);
+  }
+  .mobile-tabbar-link:hover {
+    color: var(--foreground);
+  }
+
+  /*
+   * Sticky action bar — pins a form's submit / total / etc. to the bottom of
+   * the viewport on mobile while the user types. Pair with `md:static` to let
+   * desktop layouts revert to document flow.
+   */
+  .sticky-save-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--background);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    z-index: 30;
+  }
 }
 
 .font-arabic {

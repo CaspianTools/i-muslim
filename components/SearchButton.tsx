@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import {
@@ -13,6 +13,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+const triggerClass =
+  "touch-target inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
 
 export function SearchButton() {
   const t = useTranslations("nav");
@@ -41,41 +44,55 @@ export function SearchButton() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        type="button"
+    <>
+      {/* Mobile: navigate to the full /search page where keyboard + recent
+          searches behave like a native search experience. The desktop Dialog
+          is too cramped at 390px and shows a desktop-specific "Press Enter"
+          hint that doesn't apply to touch keyboards. */}
+      <Link
+        href="/search"
         aria-label={t("search")}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        className={`md:hidden ${triggerClass}`}
       >
         <Search className="size-4" />
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t("searchTitle")}</DialogTitle>
-          <DialogDescription>{t("searchDescription")}</DialogDescription>
-        </DialogHeader>
-        <form onSubmit={onSubmit} role="search">
-          <label htmlFor="site-search-dialog" className="sr-only">
-            {t("searchPlaceholder")}
-          </label>
-          <div className="relative">
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-            />
-            <input
-              ref={inputRef}
-              id="site-search-dialog"
-              name="q"
-              type="search"
-              placeholder={t("searchPlaceholder")}
-              defaultValue={initial}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 pl-9 text-sm placeholder:text-muted-foreground focus:border-accent focus:outline-none"
-            />
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground">{t("searchHint")}</p>
-        </form>
-      </DialogContent>
-    </Dialog>
+      </Link>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger
+          type="button"
+          aria-label={t("search")}
+          className={`hidden md:inline-flex ${triggerClass}`}
+        >
+          <Search className="size-4" />
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("searchTitle")}</DialogTitle>
+            <DialogDescription>{t("searchDescription")}</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={onSubmit} role="search">
+            <label htmlFor="site-search-dialog" className="sr-only">
+              {t("searchPlaceholder")}
+            </label>
+            <div className="relative">
+              <Search
+                aria-hidden="true"
+                className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              />
+              <input
+                ref={inputRef}
+                id="site-search-dialog"
+                name="q"
+                type="search"
+                placeholder={t("searchPlaceholder")}
+                defaultValue={initial}
+                className="w-full rounded-md border border-border bg-background px-3 py-2 pl-9 text-sm placeholder:text-muted-foreground focus:border-accent focus:outline-none"
+              />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">{t("searchHint")}</p>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
