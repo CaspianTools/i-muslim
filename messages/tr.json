@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "_review": "Machine-drafted Turkish translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Hutbe, Tefsir, Zekat) and tone (formal vs casual)."
+    "_review": "Machine-drafted Turkish translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Hutbe, Tefsir, Zekat) and tone (formal vs casual). 2026-05-06 update: filled 611 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   },
   "common": {
     "cancel": "İptal",
@@ -25,6 +25,13 @@
     "searchPlaceholder": "Ülke ara…",
     "noResults": "Ülke bulunamadı.",
     "moreCountries": "+{count} daha",
+    "removeChip": "{name} sil"
+  },
+  "madhhabCombobox": {
+    "selectMadhhabs": "Mezhep seç",
+    "searchPlaceholder": "Mezhep ara…",
+    "noResults": "Mezhep bulunamadı.",
+    "moreMadhhabs": "+{count} daha",
     "removeChip": "{name} sil"
   },
   "languageCombobox": {
@@ -151,13 +158,13 @@
     "newButton": "Yeni",
     "expand": "Genişlet",
     "collapse": "Kenar çubuğunu daralt",
+    "soonBadge": "Yakında",
     "groups": {
       "overview": "Genel Bakış",
       "community": "Topluluk",
       "content": "İçerik",
       "worship": "İbadet ve Takvim",
       "engagement": "Etkileşim",
-      "services": "Hizmetler",
       "system": "Sistem"
     },
     "items": {
@@ -179,12 +186,18 @@
       "events": "Etkinlikler",
       "eventsCategories": "Kategoriler",
       "mosques": "Camiler",
+      "mosquesFacilities": "Olanaklar",
       "qa": "Sorular",
       "announcements": "Duyurular",
       "newsletter": "Bülten",
       "moderation": "Moderasyon",
+      "comments": "Yorumlar",
       "donations": "Bağışlar",
       "businesses": "İşletmeler",
+      "businessesCategories": "Kategoriler",
+      "businessesReports": "Raporlar",
+      "businessesCertBodies": "Sertifikasyon kuruluşları",
+      "businessesAmenities": "Olanaklar",
       "courses": "Kurslar",
       "matrimonial": "Evlilik",
       "contactMessages": "İletişim",
@@ -250,6 +263,49 @@
     "in": "{countdown} sonra",
     "allComplete": "Bugünkü tüm namazlar tamamlandı"
   },
+  "hijri": {
+    "months": {
+      "1": "Muharrem",
+      "2": "Safer",
+      "3": "Rebîülevvel",
+      "4": "Rebîülâhir",
+      "5": "Cemâziyelevvel",
+      "6": "Cemâziyelâhir",
+      "7": "Recep",
+      "8": "Şaban",
+      "9": "Ramazan",
+      "10": "Şevval",
+      "11": "Zilkâde",
+      "12": "Zilhicce"
+    }
+  },
+  "hijriConverter": {
+    "title": "Hicri Tarih Çevirici",
+    "subtitle": "Miladi ve Hicri takvimler arasında dönüşüm yapın.",
+    "today": {
+      "label": "Bugün",
+      "ahSuffix": "H",
+      "ceSuffix": "M"
+    },
+    "gregorianToHijri": {
+      "title": "Miladi → Hicri",
+      "dateLabel": "Miladi tarih",
+      "resultLabel": "Hicri tarih",
+      "useToday": "Bugün"
+    },
+    "hijriToGregorian": {
+      "title": "Hicri → Miladi",
+      "yearLabel": "Yıl (H)",
+      "monthLabel": "Ay",
+      "dayLabel": "Gün",
+      "resultLabel": "Miladi tarih",
+      "useToday": "Bugün"
+    },
+    "errors": {
+      "invalidDate": "Seçilen Hicri ayda bu gün bulunmamaktadır.",
+      "outOfRange": "Tarih, desteklenen Hicri aralığın dışında."
+    }
+  },
   "prayer": {
     "pageTitle": "Namaz Vakitleri",
     "pageSubtitleCity": "{city}, {country} için bugünün beş vakit namazı.",
@@ -314,49 +370,6 @@
     "exportIcsHint": "Apple, Google veya Outlook takvimine aktarabileceğiniz 30 günlük takvim dosyası indirin.",
     "monthlyTitle": "Aylık takvim",
     "monthlySubtitle": "Belirlenen konum için sonraki 30 gün."
-  },
-  "hijri": {
-    "months": {
-      "1": "Muharrem",
-      "2": "Safer",
-      "3": "Rebîülevvel",
-      "4": "Rebîülâhir",
-      "5": "Cemâziyelevvel",
-      "6": "Cemâziyelâhir",
-      "7": "Recep",
-      "8": "Şaban",
-      "9": "Ramazan",
-      "10": "Şevval",
-      "11": "Zilkâde",
-      "12": "Zilhicce"
-    }
-  },
-  "hijriConverter": {
-    "title": "Hicri Tarih Çevirici",
-    "subtitle": "Miladi ve Hicri takvimler arasında dönüşüm yapın.",
-    "today": {
-      "label": "Bugün",
-      "ahSuffix": "H",
-      "ceSuffix": "M"
-    },
-    "gregorianToHijri": {
-      "title": "Miladi → Hicri",
-      "dateLabel": "Miladi tarih",
-      "resultLabel": "Hicri tarih",
-      "useToday": "Bugün"
-    },
-    "hijriToGregorian": {
-      "title": "Hicri → Miladi",
-      "yearLabel": "Yıl (H)",
-      "monthLabel": "Ay",
-      "dayLabel": "Gün",
-      "resultLabel": "Miladi tarih",
-      "useToday": "Bugün"
-    },
-    "errors": {
-      "invalidDate": "Seçilen Hicri ayda bu gün bulunmamaktadır.",
-      "outOfRange": "Tarih, desteklenen Hicri aralığın dışında."
-    }
   },
   "users": {
     "pageTitle": "Kullanıcılar",
@@ -452,200 +465,6 @@
     "typePromptPrefix": "Onaylamak için",
     "typePromptSuffix": "yazın"
   },
-  "events": {
-    "pageTitle": "Etkinlikler",
-    "searchAria": "Etkinliklerde ara",
-    "searchPlaceholder": "Başlık, organizatör, mekân ara…",
-    "filterByCategory": "Kategoriye göre filtrele",
-    "filterByStatus": "Duruma göre filtrele",
-    "filterByWindow": "Zamana göre filtrele",
-    "newEvent": "Yeni etkinlik",
-    "noPersistTitle": "Etkinlik oluşturmak için Firebase Admin'i yapılandırın.",
-    "rowActions": "{name} için işlemler",
-    "rowsPerPage": "Sayfa başına satır",
-    "previousPage": "Önceki sayfa",
-    "nextPage": "Sonraki sayfa",
-    "rangeOf": "{start}–{end} / {total}",
-    "noResults": "Bu filtrelere uyan etkinlik yok.",
-    "createdToast": "\"{name}\" oluşturuldu.",
-    "updatedToast": "\"{name}\" güncellendi.",
-    "deletedToast": "\"{name}\" silindi.",
-    "rsvpCount": "{count, plural, one {# katılımcı} other {# katılımcı}}",
-    "rsvpOfCapacity": "{count} / {capacity}",
-    "deleteTitle": "Etkinliği sil",
-    "deleteDescription": "Bu işlem \"{name}\" etkinliğini kalıcı olarak siler. Geri alınamaz.",
-    "viewTable": "Tablo",
-    "viewCalendar": "Takvim",
-    "recurrenceHijri": "Hicri tarihli",
-    "anchorIndicator": "{prayer} vaktine bağlı",
-    "recurrence": {
-      "modeLabel": "Tekrar",
-      "modeHint": "İsteğe bağlı. Etkinliği otomatik olarak tekrarla.",
-      "none": "Tekrarlanmıyor",
-      "weekly": "Haftalık (aynı gün)",
-      "daily": "Günlük",
-      "monthly": "Aylık",
-      "hijriAnchor": "Hicri tarih (yıllık)",
-      "countLabel": "Tekrar sayısı",
-      "countHint": "İsteğe bağlı. Süresiz için boş bırakın.",
-      "countPlaceholder": "örn. 12",
-      "hijriMonthLabel": "Hicri ay",
-      "hijriDayLabel": "Hicri gün",
-      "prayerAnchorLabel": "Bir namaz vaktine bağla",
-      "prayerAnchorHint": "Başlangıcı bir namaz vaktine göre hesapla (ör. iftar için Akşam'dan 5 dk sonra).",
-      "prayerLabel": "Namaz",
-      "offsetLabel": "Sapma (dakika)",
-      "offsetHint": "Önce için negatif, sonra için pozitif kullanın."
-    },
-    "calendar": {
-      "today": "Bugün",
-      "prevMonth": "Önceki ay",
-      "nextMonth": "Sonraki ay",
-      "more": "+{count} daha"
-    },
-    "columns": {
-      "title": "Başlık",
-      "category": "Kategori",
-      "status": "Durum",
-      "when": "Tarih",
-      "location": "Yer",
-      "organizer": "Organizatör",
-      "rsvp": "Katılımcı"
-    },
-    "categories": {
-      "all": "Tüm kategoriler",
-      "prayer": "Namaz",
-      "lecture": "Sohbet",
-      "iftar": "İftar",
-      "janazah": "Cenaze",
-      "class": "Ders",
-      "fundraiser": "Bağış kampanyası",
-      "community": "Topluluk",
-      "other": "Diğer"
-    },
-    "statuses": {
-      "all": "Tüm durumlar",
-      "draft": "Taslak",
-      "published": "Yayında",
-      "cancelled": "İptal edildi"
-    },
-    "windows": {
-      "upcoming": "Yaklaşan",
-      "past": "Geçmiş",
-      "all": "Tüm zamanlar"
-    },
-    "locationModes": {
-      "in-person": "Yüz yüze",
-      "online": "Çevrimiçi",
-      "hybrid": "Hibrit"
-    },
-    "editor": {
-      "createTitle": "Yeni etkinlik",
-      "editTitle": "Etkinliği düzenle",
-      "createDescription": "Topluluk takvimine yeni bir etkinlik ekleyin.",
-      "editDescription": "Bu etkinliğin ayrıntılarını güncelleyin.",
-      "sectionBasics": "Temel bilgiler",
-      "sectionWhen": "Zaman",
-      "sectionWhere": "Yer",
-      "sectionOrganizer": "Organizatör",
-      "title": "Başlık",
-      "category": "Kategori",
-      "status": "Durum",
-      "description": "Açıklama",
-      "startsAt": "Başlangıç",
-      "endsAt": "Bitiş",
-      "timezone": "Saat dilimi",
-      "timezoneHint": "IANA saat dilimi, örn. Europe/Istanbul.",
-      "locationMode": "Yer türü",
-      "venue": "Mekân",
-      "address": "Adres",
-      "meetingUrl": "Toplantı bağlantısı",
-      "organizerName": "Organizatör adı",
-      "organizerContact": "İletişim (e-posta veya telefon)",
-      "capacity": "Kapasite",
-      "capacityHint": "İsteğe bağlı. Sınırsız için boş bırakın.",
-      "save": "Değişiklikleri kaydet",
-      "create": "Etkinliği oluştur",
-      "noPersistNote": "Kayıt, örnek veri modunda devre dışıdır. Etkinlikleri kaydetmek için Firebase Admin'i yapılandırın.",
-      "noPersistToast": "Kaydedilemiyor: Firestore yapılandırılmadı.",
-      "errorTitle": "Başlık en az 2 karakter olmalı.",
-      "errorStartsAt": "Başlangıç tarih ve saatini seçin.",
-      "errorTimezone": "Bir IANA saat dilimi girin.",
-      "errorEndsAfterStart": "Bitiş, başlangıçta veya sonrasında olmalı.",
-      "errorVenue": "Yüz yüze ve hibrit etkinlikler için mekân gerekli.",
-      "errorMeetingUrl": "Çevrimiçi ve hibrit etkinlikler için toplantı bağlantısı gerekli.",
-      "errorUrl": "Geçerli bir http(s) bağlantısı girin.",
-      "errorOrganizer": "Organizatör adı gerekli.",
-      "errorCapacity": "Kapasite, negatif olmayan bir tam sayı olmalı.",
-      "errorRecurrenceCount": "Sayı 1 ile 999 arasında olmalı.",
-      "errorOffsetMinutes": "Sapma tam sayı olmalı."
-    },
-    "admin": {
-      "categoriesPageTitle": "Kategoriler",
-      "taxonomyEmpty": "Henüz hiçbir şey yok.",
-      "taxonomyAddCta": "Ekle",
-      "taxonomyEditCta": "Düzenle",
-      "taxonomyDeleteCta": "Sil",
-      "taxonomyDeleteTitle": "Kategoriyi sil",
-      "taxonomyDeleteDescription": "Bu, \"{name}\" girdisini kalıcı olarak siler. Bu kategoriye etiketli mevcut etkinlikler ham slug değerine geri döner. Geri alınamaz.",
-      "taxonomyCreatedToast": "Oluşturuldu.",
-      "taxonomyUpdatedToast": "Güncellendi.",
-      "taxonomyDeletedToast": "Silindi.",
-      "noPersistToast": "Kaydedilemedi: Firestore yapılandırılmamış.",
-      "saving": "Kaydediliyor…",
-      "save": "Değişiklikleri kaydet",
-      "create": "Oluştur",
-      "slug": "Slug",
-      "iconKey": "İkon adı",
-      "sortOrder": "Sıralama",
-      "isActive": "Aktif",
-      "nameLocale": "Ad ({locale})"
-    }
-  },
-  "eventsPublic": {
-    "metaTitle": "Etkinlikler — i-muslim",
-    "metaDetailTitle": "{name} — i-muslim Etkinlikler",
-    "metaDescription": "Bölgenizdeki Cuma, sohbet, iftar, halka ve daha fazlasını keşfedin.",
-    "heading": "Topluluk etkinlikleri",
-    "subheading": "Cuma, sohbet, iftar, halka ve daha fazlası.",
-    "searchAria": "Etkinliklerde ara",
-    "searchPlaceholder": "Başlık, organizatör, mekân ara…",
-    "filterByCategory": "Kategoriye göre filtrele",
-    "nearMe": "Yakınımda",
-    "nearMeOn": "Mesafeye göre sıralı",
-    "locating": "Konum alınıyor…",
-    "locationDenied": "Konum erişimi reddedildi. Tüm etkinlikler gösteriliyor.",
-    "locationUnsupported": "Bu tarayıcıda konum desteklenmiyor.",
-    "kmAway": "{km} km",
-    "noResults": "Yaklaşan etkinlik yok.",
-    "anchorNote": "{prayer} vaktinde başlar",
-    "backToEvents": "Etkinliklere dön",
-    "addToCalendar": "Takvime ekle (.ics)",
-    "about": "Bu etkinlik hakkında",
-    "nextOccurrences": "Yaklaşan tarihler",
-    "recurrenceHijri": "Her {day} {month} (Hicri)",
-    "featuredHeading": "Yaklaşan etkinlikler",
-    "featuredSubheading": "Önümüzdeki iki haftada olanlar.",
-    "viewAll": "Tüm etkinlikleri gör",
-    "rsvp": {
-      "rsvp": "Katılacağım",
-      "rsvped": "Katılıyorsun",
-      "full": "Etkinlik dolu",
-      "signInToRsvp": "Katılmak için giriş yap",
-      "signInFailed": "Giriş yapılamadı.",
-      "rsvpedToast": "Katılım onaylandı.",
-      "removedToast": "Katılım iptal edildi.",
-      "rsvpCount": "{count, plural, one {# katılımcı} other {# katılımcı}}",
-      "rsvpOfCapacity": "{count} / {capacity}",
-      "notConfigured": "Katılım için Firebase Auth gerekiyor — henüz yapılandırılmadı."
-    },
-    "share": {
-      "share": "Paylaş",
-      "copyLink": "Bağlantıyı kopyala",
-      "copied": "Bağlantı kopyalandı.",
-      "copyFailed": "Kopyalanamadı."
-    }
-  },
   "nav": {
     "quran": "Kur'an",
     "hadith": "Hadis",
@@ -654,7 +473,17 @@
     "matrimonial": "Matrimonial",
     "events": "Etkinlikler",
     "mosques": "Camiler",
-    "articles": "Makaleler"
+    "articles": "Makaleler",
+    "search": "Ara",
+    "searchTitle": "Ara",
+    "searchDescription": "Kur'an'da ayetleri ve Hadis koleksiyonlarında rivayetleri bul.",
+    "searchPlaceholder": "Kur'an ve Hadis ara…",
+    "searchHint": "Aramak için Enter'a basın."
+  },
+  "prayerBar": {
+    "viewAll": "Tüm namaz vakitleri",
+    "viewAllAria": "Tüm namaz vakitlerini görüntüle",
+    "inCountdown": "{countdown} sonra"
   },
   "footer": {
     "tagline": "Kur'an ve Sünneti okuyun, namaz vakitlerini ve camileri bulun, helal hayatı keşfedin — hepsi tek yerde.",
@@ -858,6 +687,8 @@
     "subtitle": "Mal Temizleme Hesaplayıcısı",
     "settingsButton": "Ayarlar",
     "nisabLabel": "Nisab",
+    "nisabGoldGrams": "{grams}g altın",
+    "nisabSilverGrams": "{grams}g gümüş",
     "subtotalUsd": "Ara toplam (USD)",
     "subtotalOwed": "Borç ara toplamı (USD)",
     "currencySearchPlaceholder": "Para birimi ara…",
@@ -985,8 +816,319 @@
       "OMR": "Umman Riyali"
     }
   },
+  "events": {
+    "pageTitle": "Etkinlikler",
+    "searchAria": "Etkinliklerde ara",
+    "searchPlaceholder": "Başlık, organizatör, mekân ara…",
+    "filterByCategory": "Kategoriye göre filtrele",
+    "filterByStatus": "Duruma göre filtrele",
+    "filterByWindow": "Zamana göre filtrele",
+    "newEvent": "Yeni etkinlik",
+    "tabSubmissions": "Başvurular",
+    "noPersistTitle": "Etkinlik oluşturmak için Firebase Admin'i yapılandırın.",
+    "submissions": {
+      "queueTitle": "Etkinlik başvuruları",
+      "queueSubtitle": "Topluluk tarafından önerilen etkinlikleri inceleyin ve herkese açık takvime ekleyin.",
+      "tabPending": "Bekleyen",
+      "tabApproved": "Onaylanan",
+      "tabRejected": "Reddedilen",
+      "noSubmissions": "Bu kategoride başvuru yok.",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "cancel": "İptal",
+      "promoteSuccess": "Başvuru yayına alındı. Yeni etkinlik Taslak halinde — etkinlikler listesinden inceleyip yayınlayabilirsiniz.",
+      "rejectSuccess": "Başvuru reddedildi.",
+      "rejectDialogTitle": "Başvuruyu reddet",
+      "rejectDialogDescription": "İsteğe bağlı olarak \"{name}\" başvurusunun neden uygun olmadığını yazabilirsiniz. Sebep kayda alınır ancak başvurana e-posta ile gönderilmez.",
+      "rejectReasonLabel": "Sebep (isteğe bağlı)",
+      "rejectedFor": "Reddedildi: {reason}",
+      "viewPromoted": "Taslak etkinliği görüntüle",
+      "anonymous": "Anonim",
+      "noPersistToast": "Kaydedilemiyor: Firestore yapılandırılmamış."
+    },
+    "rowActions": "{name} için işlemler",
+    "rowsPerPage": "Sayfa başına satır",
+    "previousPage": "Önceki sayfa",
+    "nextPage": "Sonraki sayfa",
+    "rangeOf": "{start}–{end} / {total}",
+    "noResults": "Bu filtrelere uyan etkinlik yok.",
+    "createdToast": "\"{name}\" oluşturuldu.",
+    "updatedToast": "\"{name}\" güncellendi.",
+    "deletedToast": "\"{name}\" silindi.",
+    "rsvpCount": "{count, plural, one {# katılımcı} other {# katılımcı}}",
+    "rsvpOfCapacity": "{count} / {capacity}",
+    "deleteTitle": "Etkinliği sil",
+    "deleteDescription": "Bu işlem \"{name}\" etkinliğini kalıcı olarak siler. Geri alınamaz.",
+    "viewTable": "Tablo",
+    "viewCalendar": "Takvim",
+    "recurrenceHijri": "Hicri tarihli",
+    "anchorIndicator": "{prayer} vaktine bağlı",
+    "recurrence": {
+      "modeLabel": "Tekrar",
+      "modeHint": "İsteğe bağlı. Etkinliği otomatik olarak tekrarla.",
+      "none": "Tekrarlanmıyor",
+      "weekly": "Haftalık (aynı gün)",
+      "daily": "Günlük",
+      "monthly": "Aylık",
+      "hijriAnchor": "Hicri tarih (yıllık)",
+      "countLabel": "Tekrar sayısı",
+      "countHint": "İsteğe bağlı. Süresiz için boş bırakın.",
+      "countPlaceholder": "örn. 12",
+      "hijriMonthLabel": "Hicri ay",
+      "hijriDayLabel": "Hicri gün",
+      "prayerAnchorLabel": "Bir namaz vaktine bağla",
+      "prayerAnchorHint": "Başlangıcı bir namaz vaktine göre hesapla (ör. iftar için Akşam'dan 5 dk sonra).",
+      "prayerLabel": "Namaz",
+      "offsetLabel": "Sapma (dakika)",
+      "offsetHint": "Önce için negatif, sonra için pozitif kullanın."
+    },
+    "calendar": {
+      "today": "Bugün",
+      "prevMonth": "Önceki ay",
+      "nextMonth": "Sonraki ay",
+      "more": "+{count} daha"
+    },
+    "columns": {
+      "title": "Başlık",
+      "category": "Kategori",
+      "status": "Durum",
+      "when": "Tarih",
+      "location": "Yer",
+      "organizer": "Organizatör",
+      "rsvp": "Katılımcı"
+    },
+    "categories": {
+      "all": "Tüm kategoriler",
+      "prayer": "Namaz",
+      "lecture": "Sohbet",
+      "iftar": "İftar",
+      "janazah": "Cenaze",
+      "class": "Ders",
+      "fundraiser": "Bağış kampanyası",
+      "community": "Topluluk",
+      "other": "Diğer"
+    },
+    "statuses": {
+      "all": "Tüm durumlar",
+      "under_review": "İnceleme bekleniyor",
+      "draft": "Taslak",
+      "published": "Yayında",
+      "cancelled": "İptal edildi"
+    },
+    "windows": {
+      "upcoming": "Yaklaşan",
+      "past": "Geçmiş",
+      "all": "Tüm zamanlar"
+    },
+    "locationModes": {
+      "in-person": "Yüz yüze",
+      "online": "Çevrimiçi",
+      "hybrid": "Hibrit"
+    },
+    "editor": {
+      "createTitle": "Yeni etkinlik",
+      "editTitle": "Etkinliği düzenle",
+      "createDescription": "Topluluk takvimine yeni bir etkinlik ekleyin.",
+      "editDescription": "Bu etkinliğin ayrıntılarını güncelleyin.",
+      "sectionBasics": "Temel bilgiler",
+      "sectionWhen": "Zaman",
+      "sectionWhere": "Yer",
+      "sectionOrganizer": "Organizatör",
+      "title": "Başlık",
+      "category": "Kategori",
+      "status": "Durum",
+      "description": "Açıklama",
+      "startsAt": "Başlangıç",
+      "endsAt": "Bitiş",
+      "timezone": "Saat dilimi",
+      "timezoneHint": "IANA saat dilimi, örn. Europe/Istanbul.",
+      "locationMode": "Yer türü",
+      "venue": "Mekân",
+      "address": "Adres",
+      "meetingUrl": "Toplantı bağlantısı",
+      "organizerName": "Organizatör adı",
+      "organizerContact": "İletişim (e-posta veya telefon)",
+      "capacity": "Kapasite",
+      "capacityHint": "İsteğe bağlı. Sınırsız için boş bırakın.",
+      "save": "Değişiklikleri kaydet",
+      "create": "Etkinliği oluştur",
+      "noPersistNote": "Kayıt, örnek veri modunda devre dışıdır. Etkinlikleri kaydetmek için Firebase Admin'i yapılandırın.",
+      "noPersistToast": "Kaydedilemiyor: Firestore yapılandırılmadı.",
+      "errorTitle": "Başlık en az 2 karakter olmalı.",
+      "errorStartsAt": "Başlangıç tarih ve saatini seçin.",
+      "errorTimezone": "Bir IANA saat dilimi girin.",
+      "errorEndsAfterStart": "Bitiş, başlangıçta veya sonrasında olmalı.",
+      "errorVenue": "Yüz yüze ve hibrit etkinlikler için mekân gerekli.",
+      "errorMeetingUrl": "Çevrimiçi ve hibrit etkinlikler için toplantı bağlantısı gerekli.",
+      "errorUrl": "Geçerli bir http(s) bağlantısı girin.",
+      "errorOrganizer": "Organizatör adı gerekli.",
+      "errorCapacity": "Kapasite, negatif olmayan bir tam sayı olmalı.",
+      "errorRecurrenceCount": "Sayı 1 ile 999 arasında olmalı.",
+      "errorOffsetMinutes": "Sapma tam sayı olmalı."
+    },
+    "admin": {
+      "categoriesPageTitle": "Kategoriler",
+      "taxonomyEmpty": "Henüz hiçbir şey yok.",
+      "taxonomyAddCta": "Ekle",
+      "taxonomyEditCta": "Düzenle",
+      "taxonomyDeleteCta": "Sil",
+      "taxonomyDeleteTitle": "Kategoriyi sil",
+      "taxonomyDeleteDescription": "Bu, \"{name}\" girdisini kalıcı olarak siler. Bu kategoriye etiketli mevcut etkinlikler ham slug değerine geri döner. Geri alınamaz.",
+      "taxonomyCreatedToast": "Oluşturuldu.",
+      "taxonomyUpdatedToast": "Güncellendi.",
+      "taxonomyDeletedToast": "Silindi.",
+      "noPersistToast": "Kaydedilemedi: Firestore yapılandırılmamış.",
+      "saving": "Kaydediliyor…",
+      "save": "Değişiklikleri kaydet",
+      "create": "Oluştur",
+      "slug": "Slug",
+      "iconKey": "İkon adı",
+      "sortOrder": "Sıralama",
+      "isActive": "Aktif",
+      "nameLocale": "Ad ({locale})"
+    }
+  },
+  "eventsPublic": {
+    "metaTitle": "Etkinlikler — i-muslim",
+    "metaDetailTitle": "{name} — i-muslim Etkinlikler",
+    "metaDescription": "Bölgenizdeki Cuma, sohbet, iftar, halka ve daha fazlasını keşfedin.",
+    "heading": "Topluluk etkinlikleri",
+    "subheading": "Cuma, sohbet, iftar, halka ve daha fazlası.",
+    "searchAria": "Etkinliklerde ara",
+    "searchPlaceholder": "Başlık, organizatör, mekân ara…",
+    "filterByCategory": "Kategoriye göre filtrele",
+    "nearMe": "Yakınımda",
+    "nearMeOn": "Mesafeye göre sıralı",
+    "locating": "Konum alınıyor…",
+    "locationDenied": "Konum erişimi reddedildi. Tüm etkinlikler gösteriliyor.",
+    "locationUnsupported": "Bu tarayıcıda konum desteklenmiyor.",
+    "kmAway": "{km} km",
+    "noResults": "Yaklaşan etkinlik yok.",
+    "anchorNote": "{prayer} vaktinde başlar",
+    "backToEvents": "Etkinliklere dön",
+    "addToCalendar": "Takvime ekle (.ics)",
+    "about": "Bu etkinlik hakkında",
+    "nextOccurrences": "Yaklaşan tarihler",
+    "recurrenceHijri": "Her {day} {month} (Hicri)",
+    "featuredHeading": "Yaklaşan etkinlikler",
+    "featuredSubheading": "Önümüzdeki iki haftada olanlar.",
+    "viewAll": "Tüm etkinlikleri gör",
+    "submitCta": "Etkinlik gönder",
+    "submit": {
+      "title": "Etkinlik gönder",
+      "subtitle": "İncelenmek üzere bir topluluk etkinliği önerin.",
+      "guideline": "Başvurular, herkese açık takvimde görünmeden önce bir yönetici tarafından incelenir.",
+      "steps": {
+        "basics": "Temel bilgiler",
+        "when": "Ne zaman",
+        "where": "Nerede",
+        "who": "Düzenleyen",
+        "review": "İncele"
+      },
+      "review": {
+        "heading": "Başvurunuzu inceleyin",
+        "subheading": "Göndermeden önce bilgileri kontrol edin. Yayınlanmadan önce bir yönetici inceleyecektir.",
+        "editStep": "Düzenle",
+        "publicSection": "Herkese açık — katılımcılara gösterilir",
+        "privateSection": "Özel — yalnızca yönetici görür"
+      },
+      "fields": {
+        "title": "Etkinlik başlığı",
+        "description": "Açıklama",
+        "category": "Kategori",
+        "startsAt": "Başlangıç zamanı",
+        "endsAt": "Bitiş zamanı (isteğe bağlı)",
+        "timezone": "Zaman dilimi",
+        "recurrence": "Tekrar",
+        "locationMode": "Konum",
+        "venue": "Mekân adı",
+        "address": "Adres",
+        "country": "Mekânın bulunduğu ülke",
+        "url": "Toplantı bağlantısı",
+        "platform": "Platform",
+        "dialIn": "Telefonla katılım bilgisi",
+        "organizerName": "Düzenleyen adı",
+        "organizerContact": "Düzenleyen iletişim (isteğe bağlı)",
+        "submitterEmail": "E-posta adresiniz"
+      },
+      "placeholders": {
+        "platform": "ör. Zoom, Google Meet, MS Teams",
+        "dialIn": "ör. +1 (555) 555-0100, ID 123 4567",
+        "organizerContact": "Katılımcıların ulaşabileceği telefon, e-posta veya sosyal medya hesabı"
+      },
+      "helpers": {
+        "organizerName": "Etkinlik sayfasında herkese açık olarak gösterilir.",
+        "organizerContact": "Katılımcılar düzenleyene ulaşabilsin diye herkese açık gösterilir.",
+        "submitterEmail": "Özel — yalnızca yönetici görür. Hesabınızın e-postası varsayılan olarak kullanılır; yazışmaların başka adrese gitmesini istiyorsanız değiştirin.",
+        "timezoneSuggested": "Mekânın bulunduğu ülkeye göre zaman dilimi {tz} olarak ayarlanabilir.",
+        "categoryHintPrefix": "İpucu:"
+      },
+      "categoryHints": {
+        "janazah": "Lütfen vefat edenin adını ve biliniyorsa ilgili cenaze evini belirtin.",
+        "iftar": "İftar yemeği sağlanıp sağlanmadığını ve katılım onayı gerekiyorsa belirtin.",
+        "lecture": "Konuşmacının adını ve dersin dilini belirtin.",
+        "class": "Seviyeyi (başlangıç / orta / ileri) ve gerekli ön koşulları belirtin.",
+        "fundraiser": "Hangi amaç için ve toplanan paranın nasıl kullanılacağını belirtin."
+      },
+      "locationModes": {
+        "in-person": "Yüz yüze",
+        "online": "Çevrimiçi",
+        "hybrid": "Karma"
+      },
+      "recurrencePresets": {
+        "none": "Tekrar etmez",
+        "weekly": "Haftalık",
+        "monthly": "Aylık"
+      },
+      "actions": {
+        "back": "Geri",
+        "next": "İleri",
+        "submit": "İncelemeye gönder",
+        "submitting": "Gönderiliyor…"
+      },
+      "validation": {
+        "titleRequired": "Lütfen bir başlık girin.",
+        "startRequired": "Lütfen başlangıç tarihi ve saati seçin.",
+        "endsBeforeStart": "Bitiş zamanı başlangıç zamanından sonra olmalı.",
+        "organizerRequired": "Lütfen düzenleyen adını belirtin.",
+        "submitterEmailRequired": "Lütfen geçerli bir e-posta adresi girin.",
+        "venueRequired": "Yüz yüze etkinlikler için mekân veya adres gereklidir.",
+        "urlRequired": "Çevrimiçi etkinlikler için toplantı bağlantısı gereklidir.",
+        "fixStep": "Devam etmeden önce işaretli alanları düzeltin.",
+        "startInPast": "Başlangıç zamanı geçmişte — göndermeden önce kontrol edin.",
+        "maxDuration": "Süre 30 günden uzun — bitiş zamanını kontrol edin."
+      },
+      "success": {
+        "headline": "Teşekkürler — etkinliğiniz incelemeye gönderildi.",
+        "tabTitle": "{title} — Gönderildi",
+        "startsAtLine": "Başlangıç {when} ({tz})",
+        "downloadIcs": ".ics önizlemesini indir",
+        "icsHint": "Zaman dilimini doğrulamak için dosyayı takvim uygulamanızda açın."
+      },
+      "errorGeneric": "Etkinlik gönderilemedi. Lütfen tekrar deneyin.",
+      "errorRate": "Yakın zamanda birkaç etkinlik gönderdiniz. Lütfen daha sonra tekrar deneyin.",
+      "errorAuth": "Etkinlik göndermek için lütfen oturum açın."
+    },
+    "rsvp": {
+      "rsvp": "Katılacağım",
+      "rsvped": "Katılıyorsun",
+      "full": "Etkinlik dolu",
+      "signInToRsvp": "Katılmak için giriş yap",
+      "signInFailed": "Giriş yapılamadı.",
+      "rsvpedToast": "Katılım onaylandı.",
+      "removedToast": "Katılım iptal edildi.",
+      "rsvpCount": "{count, plural, one {# katılımcı} other {# katılımcı}}",
+      "rsvpOfCapacity": "{count} / {capacity}",
+      "notConfigured": "Katılım için Firebase Auth gerekiyor — henüz yapılandırılmadı."
+    },
+    "share": {
+      "share": "Paylaş",
+      "copyLink": "Bağlantıyı kopyala",
+      "copied": "Bağlantı kopyalandı.",
+      "copyFailed": "Kopyalanamadı."
+    }
+  },
   "matrimonial": {
-    "_translatorNote": "Awaiting Turkish review — English placeholders.",
     "brand": "Matrimonial",
     "landing": {
       "title": "Find a spouse, the halal way.",
@@ -1328,36 +1470,48 @@
       "title": "Cami ekleme",
       "subtitle": "Topluluk haritasını birlikte oluşturalım. Gönderiler ekibimizce incelenir.",
       "guideline": "Yalnızca varlığını doğruladığınız camileri ekleyin. Doğru isim, adres ve iletişim bilgileri sağlayın.",
+      "steps": {
+        "basics": "Temel bilgiler",
+        "location": "Konum",
+        "contact": "İletişim",
+        "review": "İncele"
+      },
       "fields": {
         "nameEn": "Ad (İngilizce)",
         "nameAr": "Ad (Arapça)",
-        "nameTr": "Ad (Türkçe)",
-        "nameId": "Ad (Endonezce)",
         "addressLine1": "Sokak adresi",
-        "addressLine2": "Adres satırı 2",
         "city": "Şehir",
+        "region": "Bölge / il",
         "country": "Ülke",
+        "postalCode": "Posta kodu",
         "denomination": "Mezhep",
         "phone": "Telefon",
         "website": "Web sitesi",
         "email": "E-posta",
         "languages": "Konuşulan diller",
-        "description": "Açıklama",
-        "submitterEmail": "E-posta adresiniz"
+        "description": "Açıklama"
+      },
+      "review": {
+        "editSection": "{section} düzenle",
+        "geocodeFailed": "Bu adresi haritada tam olarak konumlandıramadık. Başvuru yine de çalışır — yayına almadan önce ekibimiz konumu doğrulayacaktır."
       },
       "actions": {
+        "back": "Geri",
+        "next": "İleri",
         "submit": "İncelemeye gönder",
         "submitting": "Gönderiliyor…",
         "cancel": "İptal"
       },
       "validation": {
         "nameRequired": "İngilizce ad zorunludur.",
+        "descriptionMax": "Açıklama en fazla 500 karakter olmalı.",
         "addressRequired": "Sokak adresi zorunludur.",
         "cityRequired": "Şehir zorunludur.",
         "countryRequired": "Ülke zorunludur (ISO kodu).",
+        "phoneInvalid": "Geçerli bir telefon numarası girin.",
         "emailInvalid": "Geçerli bir e-posta girin.",
         "websiteInvalid": "Geçerli bir URL girin.",
-        "submitterEmailRequired": "Lütfen iletişim için e-postanızı girin."
+        "fixStep": "Devam etmeden önce işaretli alanları düzeltin."
       },
       "success": "Teşekkürler — gönderiniz incelemeye alındı, onay sonrası rehberde görünecektir.",
       "errorRate": "Yakın zamanda çok sayıda cami gönderdiniz. Lütfen daha sonra tekrar deneyin.",
@@ -1372,8 +1526,6 @@
       "facilities": "İmkânlar",
       "prayerTimes": "Bugünkü namaz vakitleri",
       "prayerTimesNote": "Ezan vakitleri hesaplanmıştır; kamet vakitleri cami tarafından belirlenir.",
-      "noIqamahNote": "Bu cami kamet vakitlerini henüz yayımlamamıştır.",
-      "iqamah": "Kamet",
       "adhan": "Ezan",
       "noTime": "—",
       "denomination": "Mezhep",
@@ -1436,6 +1588,7 @@
       "country": "Ülke",
       "status": "Durum",
       "denomination": "Mezhep",
+      "type": "Tür",
       "updatedAt": "Güncellendi"
     },
     "statuses": {
@@ -1443,11 +1596,15 @@
       "draft": "Taslak",
       "pending_review": "İnceleme bekliyor",
       "published": "Yayında",
+      "rejected": "Reddedildi",
       "suspended": "Askıda"
     },
     "filterByStatus": "Duruma göre filtrele",
+    "filterByCity": "Şehre göre filtrele",
+    "filterByCountry": "Ülkeye göre filtrele",
+    "allCities": "Tüm şehirler",
+    "allCountries": "Tüm ülkeler",
     "noResults": "Bu filtrelerle eşleşen cami yok.",
-    "noPersistTitle": "Cami oluşturmak için Firebase Admin'i yapılandırın.",
     "form": {
       "createTitle": "Yeni cami",
       "editTitle": "Camiyi düzenle",
@@ -1456,17 +1613,16 @@
       "sectionIdentity": "Kimlik",
       "sectionLocation": "Konum",
       "sectionContact": "İletişim ve sosyal",
-      "sectionServices": "Hizmetler",
+      "sectionFacilities": "Olanaklar",
+      "sectionFacilitiesHint": "Bu caminin sunduğu olanak ve hizmetleri işaretleyin.",
       "sectionPrayer": "Namaz vakitleri ve kamet",
+      "sectionPrayerHint": "Namaz vakitleri caminin konumu ve zaman dilimine göre hesaplanır. Varsayılanlar bu caminin uygulamasıyla örtüşmüyorsa hesaplama yöntemini değiştirin.",
       "sectionMedia": "Medya",
       "nameEn": "Ad (İngilizce)",
       "nameAr": "Ad (Arapça)",
-      "nameTr": "Ad (Türkçe)",
-      "nameId": "Ad (Endonezce)",
       "legalName": "Resmi / kayıtlı ad",
       "denomination": "Mezhep",
       "descriptionEn": "Açıklama (İngilizce)",
-      "descriptionAr": "Açıklama (Arapça)",
       "addressLine1": "Sokak adresi",
       "addressLine2": "Adres satırı 2",
       "postalCode": "Posta kodu",
@@ -1492,15 +1648,11 @@
       "calcMethod": "Hesaplama yöntemi",
       "asrMethod": "İkindi yöntemi",
       "highLatRule": "Yüksek enlem kuralı",
-      "iqamahLabel": "{prayer} kamet",
-      "iqamahMode": "Mod",
-      "iqamahModeNone": "Belirtilmemiş",
-      "iqamahModeOffset": "Ezandan sonra dakika",
-      "iqamahModeFixed": "Sabit saat",
-      "iqamahOffsetMinutes": "Ezandan sonraki dakika",
-      "iqamahFixedTime": "Saat (HH:mm, cami yerel)",
       "coverImageUrl": "Kapak görseli URL",
       "logoUrl": "Logo URL",
+      "coverImageLabel": "Kapak görseli",
+      "logoLabel": "Logo",
+      "facilitiesEmpty": "Henüz tanımlı olanak yok. Önce /admin/mosques/facilities altından ekleyin.",
       "status": "Durum",
       "actions": {
         "save": "Değişiklikleri kaydet",
@@ -1519,7 +1671,6 @@
         "addressRequired": "Sokak adresi zorunludur.",
         "coordsRequired": "Koordinatlar zorunludur.",
         "coordsRange": "Koordinatlar aralık dışı.",
-        "iqamahFormat": "Saat HH:mm formatında olmalıdır.",
         "urlInvalid": "Geçerli bir URL girin.",
         "emailInvalid": "Geçerli bir e-posta girin."
       }
@@ -1534,20 +1685,17 @@
       "rejectedToast": "Gönderi reddedildi.",
       "errorGeneric": "Kaydedilemedi. Tekrar deneyin."
     },
-    "queueTitle": "İnceleme kuyruğu",
-    "queueSubtitle": "İncelenmeyi bekleyen gönderiler ve düzenlemeler.",
-    "queueEmpty": "Şu anda incelenecek bir şey yok.",
-    "queueColumns": {
-      "name": "Ad",
-      "city": "Şehir",
-      "submittedBy": "Gönderen",
-      "submittedAt": "Gönderilme",
-      "actions": "İşlemler"
-    },
-    "queueActions": {
-      "promote": "Onayla ve yayımla",
+    "viewDialog": {
+      "badgeMosque": "Cami",
+      "badgeSubmission": "Başvuru",
+      "submittedMeta": "Gönderen: {who} · {when}",
+      "anonymous": "anonim",
+      "approve": "Onayla ve yayınla",
       "reject": "Reddet",
-      "view": "İncele"
+      "rejectConfirm": "Reddi onayla",
+      "rejectReasonLabel": "Sebep",
+      "rejectReasonPlaceholder": "Başvuranı bu başvurunun neden reddedildiği hakkında bilgilendirin…",
+      "edit": "Düzenle"
     },
     "deleteTitle": "Camiyi sil",
     "deleteDescription": "Bu, \"{name}\" camisini rehberden kalıcı olarak siler. Geri alınamaz.",
@@ -1562,6 +1710,37 @@
       "importing": "İçe aktarılıyor…",
       "successToast": "{count} cami içe aktarıldı.",
       "noPersistNote": "İçe aktarma için Firebase Admin gerekli."
+    },
+    "facilities": {
+      "pageTitle": "Cami Olanakları",
+      "addCta": "Olanak ekle",
+      "empty": "Henüz olanak yok. Cami formunu doldurabilmek için ilkini ekleyin.",
+      "editTitle": "Olanağı düzenle",
+      "deleteTitle": "Olanağı sil",
+      "deleteDescription": "\"{name}\" olanak listesinden kaldırılır. Bu olanağa atıfta bulunan camiler yeniden kaydedilene kadar slug'ı korur.",
+      "deleteCta": "Sil",
+      "name": "Ad",
+      "slug": "Slug",
+      "slugHint": "Küçük harfli kebab-case. Belge kimliği ve referans anahtarı olarak kullanılır.",
+      "iconKey": "Simge anahtarı",
+      "sortOrder": "Sıra",
+      "save": "Değişiklikleri kaydet",
+      "create": "Olanak oluştur",
+      "saving": "Kaydediliyor…",
+      "createdToast": "Olanak oluşturuldu.",
+      "updatedToast": "Olanak güncellendi.",
+      "deletedToast": "Olanak silindi.",
+      "noPersistToast": "Olanakları kaydetmek için Firebase Admin yapılandırılmış olmalı."
+    },
+    "media": {
+      "typeError": "JPEG, PNG veya WebP kullanın.",
+      "sizeError": "Görsel 5 MB'tan küçük olmalı.",
+      "uploadFailed": "Yükleme başarısız oldu. Lütfen tekrar deneyin.",
+      "uploading": "Yükleniyor…",
+      "upload": "Yükle",
+      "replace": "Değiştir",
+      "remove": "Görseli kaldır",
+      "limitHint": "JPEG / PNG / WebP, en fazla 5 MB."
     }
   },
   "businesses": {
@@ -1573,6 +1752,7 @@
     "publicAllCategories": "Tüm kategoriler",
     "publicSearchPlaceholder": "İsme göre ara…",
     "claimSuggestNote": "{city} şehrinde helal bir işletmeniz mi var? Kaydolun.",
+    "submitCta": "İşletme öner",
     "createCta": "Kayıt oluştur",
     "editCta": "Düzenle",
     "archiveCta": "Arşivle",
@@ -1622,16 +1802,17 @@
     },
     "statuses": {
       "all": "Tüm durumlar",
+      "submitted": "İnceleme bekleniyor",
       "draft": "Taslak",
       "published": "Yayında",
       "archived": "Arşivlenmiş"
     },
     "priceTiers": {
-      "any": "Herhangi bir fiyat",
       "1": "$",
       "2": "$$",
       "3": "$$$",
-      "4": "$$$$"
+      "4": "$$$$",
+      "any": "Herhangi bir fiyat"
     },
     "weekdays": {
       "mon": "Pazartesi",
@@ -1680,7 +1861,8 @@
       }
     },
     "admin": {
-      "tabListings": "Kayıtlar",
+      "tabDirectory": "Rehber",
+      "tabSubmissions": "Başvurular",
       "tabReports": "Bildirimler",
       "tabCategories": "Kategoriler",
       "tabCertBodies": "Sertifika kuruluşları",
@@ -1690,6 +1872,7 @@
       "filterByHalal": "Helal durumuna göre filtrele",
       "filterByCategory": "Kategoriye göre filtrele",
       "noResults": "Bu filtrelerle eşleşen kayıt yok.",
+      "reviewCta": "İncele",
       "createTitle": "Yeni kayıt",
       "editTitle": "Kaydı düzenle",
       "createDescription": "Rehbere yeni bir helal işletme ekleyin.",
@@ -1744,9 +1927,8 @@
       "reportsPageTitle": "Kayıt bildirimleri",
       "reportsPageSubtitle": "Ziyaretçilerin işaretlediği halka açık bildirimler. Geçerliyse kayıtları buradan arşivleyin.",
       "reportsEmpty": "Bildirim yok.",
-      "reportsTabOpen": "Açık",
-      "reportsTabResolved": "Çözüldü",
-      "reportsTabDismissed": "Reddedildi",
+      "reportsNoResults": "Bu filtrelerle eşleşen rapor yok.",
+      "reportsSearch": "İşletme, sebep, raporlayan ara…",
       "reportsResolveCta": "Çöz",
       "reportsDismissCta": "Reddet",
       "reportsArchiveBusiness": "Kaydı arşivle",
@@ -1761,6 +1943,7 @@
       "reportsColActions": "İşlemler",
       "reportsAnonymous": "Anonim",
       "reportStatuses": {
+        "all": "Tüm durumlar",
         "open": "Açık",
         "resolved": "Çözüldü",
         "dismissed": "Reddedildi"
@@ -1791,7 +1974,101 @@
       "photoLimit": "En fazla 6 fotoğraf.",
       "photoTypeError": "Yalnızca JPEG, PNG veya WebP görüntüleri.",
       "photoSizeError": "Fotoğraf 5 MB'tan küçük olmalı.",
-      "uploadFailedToast": "Yükleme başarısız."
+      "uploadFailedToast": "Yükleme başarısız.",
+      "submissions": {
+        "queueTitle": "İşletme başvuruları",
+        "queueSubtitle": "Kullanıcılar tarafından önerilen ve incelenmeyi bekleyen helal işletmeler.",
+        "tabPending": "İnceleme bekleyen",
+        "tabApproved": "Onaylanan",
+        "tabRejected": "Reddedilen",
+        "noSubmissions": "Burada hiçbir şey yok.",
+        "approve": "Onayla",
+        "reject": "Reddet",
+        "cancel": "İptal",
+        "promoteSuccess": "Onaylandı — taslak ilan oluşturuldu. Koordinatları ekleyip yayınlamak için düzenleyin.",
+        "rejectSuccess": "Başvuru reddedildi.",
+        "rejectDialogTitle": "Başvuruyu reddet",
+        "rejectDialogDescription": "İsteğe bağlı olarak \"{name}\" başvurusunun neden uygun olmadığını yazabilirsiniz. Sebep kayda alınır ancak başvurana e-posta ile gönderilmez.",
+        "rejectReasonLabel": "Sebep (isteğe bağlı)",
+        "rejectedFor": "Reddedildi: {reason}",
+        "viewPromoted": "Taslak ilanı görüntüle",
+        "anonymous": "Anonim",
+        "muslimOwnedBadge": "Müslüman sahipli",
+        "ownerBadge": "Sahibi tarafından gönderildi",
+        "fieldPhone": "Telefon",
+        "fieldEmail": "E-posta",
+        "fieldWebsite": "Web sitesi",
+        "fieldInstagram": "Instagram",
+        "fieldWhatsapp": "WhatsApp",
+        "fieldCertBody": "Belirtilen sertifikasyon"
+      }
+    },
+    "submit": {
+      "title": "Helal işletme öner",
+      "subtitle": "Rehberin büyümesine katkıda bulunun. Ekibimiz her başvuruyu yayına almadan önce inceler.",
+      "noCategoriesYet": "Kategoriler henüz tanımlanmamış. Lütfen kısa süre sonra tekrar bakın.",
+      "steps": {
+        "basics": "Temel bilgiler",
+        "halal": "Helal",
+        "location": "Konum",
+        "review": "İncele"
+      },
+      "review": {
+        "heading": "Başvurunuzu inceleyin",
+        "subheading": "Göndermeden önce bu bilgilerin doğru olduğundan emin olun. Yayınlanmadan önce doğrulayacağız.",
+        "editSection": "{section} düzenle",
+        "geocodeFailed": "Bu adresi haritada tam olarak konumlandıramadık. Başvuru yine de çalışır — yayına almadan önce ekibimiz konumu doğrulayacaktır."
+      },
+      "fields": {
+        "name": "İşletme adı",
+        "description": "Bu işletme ne yapıyor?",
+        "category": "Kategori",
+        "categoryHint": "En fazla 3 seçin.",
+        "categoryPlaceholder": "Kategori seç…",
+        "categorySearchPlaceholder": "Kategori ara…",
+        "categoryNoResults": "Kategori bulunamadı.",
+        "categoryMoreItems": "+{count} daha",
+        "categoryRemoveChip": "{name} sil",
+        "halalStatus": "Helal durumu",
+        "certBody": "Sertifikasyon kuruluşu adı",
+        "certBodyPlaceholder": "ör. HFA, HMC",
+        "isOwner": "Bu işletmenin sahibiyim veya temsilcisiyim",
+        "addressLine1": "Sokak adresi",
+        "city": "Şehir",
+        "region": "Bölge / il",
+        "country": "Ülke",
+        "postalCode": "Posta kodu",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "website": "Web sitesi",
+        "instagram": "Instagram",
+        "whatsapp": "WhatsApp"
+      },
+      "ownerNotice": "Sahip doğrulaması: yayına almadan önce sahipliği doğrulamak için sizinle {email} adresinden iletişime geçebiliriz.",
+      "validation": {
+        "nameRequired": "İşletme adı gereklidir.",
+        "descriptionMin": "Açıklama en az 40 karakter olmalı — işletmenin ne yaptığına dair bir cümle ekleyin.",
+        "descriptionMax": "Açıklama en fazla 500 karakter olmalı.",
+        "categoryRequired": "En az bir kategori seçin.",
+        "certBodyRequired": "Sertifikalı helal durumu için sertifikasyon kuruluşu adı gereklidir.",
+        "addressRequired": "Sokak adresi gereklidir.",
+        "cityRequired": "Şehir gereklidir.",
+        "countryRequired": "Ülke gereklidir.",
+        "phoneInvalid": "Geçerli bir telefon numarası girin.",
+        "emailInvalid": "Geçerli bir e-posta adresi girin.",
+        "websiteInvalid": "Geçerli bir URL girin (ör. https://ornek.com).",
+        "fixStep": "Devam etmeden önce işaretli alanları düzeltin."
+      },
+      "actions": {
+        "back": "Geri",
+        "next": "İleri",
+        "submit": "İncelemeye gönder",
+        "submitting": "Gönderiliyor…"
+      },
+      "success": "Teşekkürler — başvurunuzu kısa sürede inceleyeceğiz.",
+      "errorGeneric": "Gönderilemedi. Lütfen tekrar deneyin.",
+      "errorRate": "Yakın zamanda birkaç ilan gönderdiniz. Yarın tekrar deneyin.",
+      "errorTurnstile": "Bot kontrolü başarısız oldu. Lütfen tekrar deneyin."
     },
     "weekdayShort": {
       "mon": "Pzt",
@@ -1808,9 +2085,18 @@
     "tabOpen": "Açık",
     "tabResolved": "Kapatıldı",
     "empty": "Burada mesaj yok.",
+    "search": "Mesaj ara…",
+    "filterByStatus": "Duruma göre filtrele",
+    "statuses": {
+      "all": "Tüm durumlar",
+      "open": "Açık",
+      "resolved": "Çözüldü"
+    },
+    "noResults": "Bu filtrelerle eşleşen mesaj yok.",
     "columns": {
       "from": "Gönderen",
       "subject": "Konu",
+      "status": "Durum",
       "received": "Alındı",
       "actions": "İşlemler"
     },
@@ -1832,6 +2118,62 @@
     "noPersistToast": "İletişim mesajlarını yönetmek için Firebase Admin'i yapılandırın."
   },
   "adminSettings": {
+    "title": "Ayarlar",
+    "description": "Site kimliğini, medya öğelerini ve dil seçeneklerini yönetin.",
+    "nav": {
+      "ariaLabel": "Ayar bölümleri",
+      "general": "Genel",
+      "media": "Medya",
+      "typography": "Tipografi",
+      "languages": "Diller"
+    },
+    "general": {
+      "title": "Site kimliği",
+      "description": "Site adı ve sloganı. Site adı tarayıcı sekmesinde, site başlığında ve altbilgide görünür.",
+      "siteNameLabel": "Site adı",
+      "siteNameHint": "Tarayıcı sekmesinde, herkese açık başlıkta ve altbilgide gösterilir.",
+      "taglineLabel": "Slogan",
+      "taglineHint": "Varsayılan site açıklaması olarak ve altbilgide kullanılan kısa açıklama.",
+      "save": "Değişiklikleri kaydet",
+      "saving": "Kaydediliyor…",
+      "savedToast": "Site kimliği kaydedildi.",
+      "errorToast": "Site kimliği kaydedilemedi.",
+      "unsavedChanges": "Kaydedilmemiş değişiklikler"
+    },
+    "media": {
+      "title": "Medya",
+      "description": "Site genelinde kullanılan görselleri yükleyin. Her yükleme anında kaydedilir.",
+      "logoLabel": "Logo",
+      "logoHint": "Başlık, altbilgi ve yönetim kenar çubuğunda site adının yanında gösterilir. Önerilen: şeffaf arka planlı, ≥256×256 kare PNG veya SVG.",
+      "faviconLabel": "Favicon",
+      "faviconHint": "Tarayıcı sekmesi simgesi. ICO, PNG veya SVG, en fazla 256 KB. Tarayıcılar favicon'ları agresif şekilde önbelleğe alır — değişikliği görmek için sayfanın tamamen yenilenmesi gerekebilir.",
+      "ogImageLabel": "Varsayılan sosyal paylaşım görseli",
+      "ogImageHint": "Bir sayfa kendi görseli sağlamadığında varsayılan Open Graph görseli olarak kullanılır. Önerilen: 1200×630 PNG veya JPEG.",
+      "articlePlaceholderLabel": "Makale yer tutucu görseli",
+      "articlePlaceholderHint": "Öne çıkan görseli olmayan makaleler için yedek olarak gösterilir.",
+      "upload": "Yükle",
+      "replace": "Değiştir",
+      "remove": "Kaldır",
+      "uploading": "Yükleniyor…",
+      "typeError": "Bu alan için desteklenmeyen dosya türü.",
+      "sizeError": "Dosya bu alan için çok büyük.",
+      "uploadFailed": "Yükleme başarısız oldu. Lütfen tekrar deneyin.",
+      "savedToast": "Kaydedildi.",
+      "savedError": "Kaydedilemedi. Lütfen tekrar deneyin."
+    },
+    "typography": {
+      "title": "Tipografi",
+      "description": "Gövde ve Arapça gösterim yazı tiplerini seçin. Değişiklikler kaydettikten sonra herkese açık sitede uygulanır.",
+      "bodyLabel": "Gövde ve arayüz yazı tipi",
+      "bodyHint": "İngilizce, Rusça, Azerice, Türkçe ve Endonezce metinler için kullanılır.",
+      "arabicLabel": "Arapça gösterim yazı tipi",
+      "arabicHint": ".font-arabic stiliyle render edilen Kur'an, Hadis ve diğer Arapça metinler için kullanılır.",
+      "save": "Değişiklikleri kaydet",
+      "saving": "Kaydediliyor…",
+      "savedToast": "Tipografi kaydedildi.",
+      "errorToast": "Tipografi kaydedilemedi.",
+      "unsavedChanges": "Kaydedilmemiş değişiklikler"
+    },
     "languages": {
       "title": "Diller",
       "description": "Ziyaretçilerin görebileceği dilleri seçin. Devre dışı bırakılan diller herkese açık dil seçicilerinden kaldırılır; mevcut URL'leri çalışmaya devam eder.",
@@ -1917,5 +2259,391 @@
         "errorToast": "Çeviriler kaydedilemedi."
       }
     }
+  },
+  "quranSidebar": {
+    "title": "Filtreler",
+    "menu": "Filtreler",
+    "collapse": "Daralt",
+    "expand": "Genişlet",
+    "sections": {
+      "translations": "Çeviriler"
+    }
+  },
+  "quranLanguageFilter": {
+    "label": "Çeviriler",
+    "placeholder": "Dil seç",
+    "searchPlaceholder": "Dil ara…",
+    "noResults": "Dil bulunamadı.",
+    "moreItems": "+{count} daha",
+    "removeChip": "{name} sil"
+  },
+  "hadithSidebar": {
+    "title": "Filtreler",
+    "menu": "Filtreler",
+    "collapse": "Daralt",
+    "expand": "Genişlet",
+    "sections": {
+      "translations": "Çeviriler"
+    }
+  },
+  "hadithLanguageFilter": {
+    "label": "Çeviriler",
+    "placeholder": "Dil seç",
+    "searchPlaceholder": "Dil ara…",
+    "noResults": "Dil bulunamadı.",
+    "moreItems": "+{count} daha",
+    "removeChip": "{name} sil"
+  },
+  "profileNav": {
+    "title": "Profil",
+    "items": {
+      "overview": "Genel bakış",
+      "reading": "Okuma ilerlemesi",
+      "favorites": "Favoriler",
+      "notes": "Notlarım",
+      "comments": "Yorumlarım",
+      "submissions": "Başvurularım",
+      "matrimonial": "Evlilik"
+    },
+    "collapse": "Daralt",
+    "expand": "Genişlet"
+  },
+  "profileSubmissions": {
+    "pageTitle": "Başvurularım",
+    "pageDescription": "Gönderdiğiniz etkinlik, işletme ve cami başvurularının durumunu takip edin.",
+    "empty": "Henüz hiçbir şey göndermediniz. Bir etkinlik paylaşın, işletme önerin veya cami eklemek için başvurun.",
+    "emptySection": "Burada henüz hiçbir şey yok.",
+    "viewLive": "Yayında görüntüle",
+    "sections": {
+      "events": "Etkinlikler",
+      "businesses": "İşletmeler",
+      "mosques": "Camiler"
+    },
+    "statuses": {
+      "under_review": "İnceleme bekleniyor",
+      "pending_review": "İnceleme bekleniyor",
+      "draft": "Taslak",
+      "published": "Yayında",
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi",
+      "cancelled": "İptal edildi"
+    }
+  },
+  "profileForm": {
+    "save": "Değişiklikleri kaydet",
+    "saving": "Kaydediliyor…",
+    "savedToast": "Profil kaydedildi",
+    "unsavedChanges": "Kaydedilmemiş değişiklikler",
+    "sections": {
+      "identity": "Kimlik",
+      "identityDescription": "Profilinizde gösterilen ve uygulama genelinde kullanılan temel bilgiler.",
+      "religion": "Din",
+      "background": "Geçmiş",
+      "bio": "Hakkınızda",
+      "bioDescription": "Kendinizi anlatan kısa bir paragraf. Evlilik özelliğini etkinleştirirseniz evlilik profilinizde görünür."
+    },
+    "displayName": "Görünen ad",
+    "displayNamePlaceholder": "Size nasıl hitap edilmesini isterdiniz",
+    "gender": "Cinsiyet",
+    "dateOfBirth": "Doğum tarihi",
+    "country": "Ülke",
+    "city": "Şehir",
+    "ethnicity": "Etnik köken",
+    "languages": "Diller",
+    "madhhab": "Mezhep",
+    "sect": "Mezhep grubu",
+    "prayerCommitment": "Namaz bağlılığı",
+    "hijab": "Tesettür",
+    "beard": "Sakal",
+    "revert": "Sonradan Müslüman oldum",
+    "education": "Eğitim",
+    "profession": "Meslek",
+    "maritalHistory": "Evlilik geçmişi",
+    "hasChildren": "Çocuğum var",
+    "wantsChildren": "Çocuk istiyorum",
+    "bio": "Biyografi",
+    "bioPlaceholder": "Aradığınız nedir, sizi siz yapan nedir, iman yolculuğunuz…"
+  },
+  "profileMatrimonial": {
+    "pageTitle": "Evlilik",
+    "pageDescription": "Evlilik için görünürlüğünüzü yönetin; gelen ilgileri, gönderdiğiniz ilgileri ve eşleşmeleri görüntüleyin.",
+    "statusEnabled": "Evlilik etkin",
+    "statusDisabled": "Evlilik devre dışı",
+    "missingProfileTitle": "Önce profilinizi tamamlayın",
+    "missingProfileBody": "Evlilik özelliğini etkinleştirmeden önce profilinizdeki kimlik ve dini bilgi alanlarını doldurun — aynı bilgiler evlilik profilinizi başkalarına göstermek için kullanılır.",
+    "missingProfileCta": "Profilime git",
+    "disable": "Evliliği devre dışı bırak",
+    "disabling": "Devre dışı bırakılıyor…",
+    "disableConfirm": "Evlilik devre dışı bırakılsın mı? Profiliniz rehberden kaldırılacak. İstediğiniz zaman tekrar etkinleştirebilirsiniz.",
+    "disabledToast": "Evlilik devre dışı bırakıldı",
+    "disableFailed": "Devre dışı bırakılamadı — lütfen tekrar deneyin.",
+    "enable": {
+      "aboutYouTitle": "Hakkınızda",
+      "aboutYouDescription": "Kendi profil bilgileriniz — bunlar potansiyel eşleşmelere kartınızda gösterilir.",
+      "matchPreferencesTitle": "Eşleşme tercihleri",
+      "matchPreferencesDescription": "Kimi göreceğinizi ve kimin sizi göreceğini daraltmak için kullanılan filtreler.",
+      "lookingForGender": "Aradığınız",
+      "ageRange": "Yaş aralığı",
+      "preferredCountries": "Tercih edilen ülkeler",
+      "preferredMadhhabs": "Tercih edilen mezhepler",
+      "prayerMin": "Asgari namaz bağlılığı",
+      "polygamyStance": "Çok eşliliğe bakış",
+      "polygamyAcceptable": "Çok eşliliğe bakış",
+      "enable": "Evliliği etkinleştir",
+      "enabling": "Etkinleştiriliyor…",
+      "enabledToast": "Evlilik etkinleştirildi — artık potansiyel eşleşmelere görünüyorsunuz."
+    }
+  },
+  "favorites": {
+    "pageTitle": "Favoriler",
+    "pageDescription": "Kaydettiğiniz ayetler, hadisler, makaleler, etkinlikler ve profiller.",
+    "save": "Kaydet",
+    "saved": "Kaydedildi",
+    "remove": "Kaldır",
+    "open": "Aç",
+    "signInRequired": "Favorilere kaydetmek için oturum açın",
+    "signInCta": "Oturum aç",
+    "savedToast": "Favorilere eklendi",
+    "removedToast": "Favorilerden kaldırıldı",
+    "saveFailed": "Kaydedilemedi — lütfen tekrar deneyin.",
+    "matrimonial": {
+      "save": "Profili kaydet",
+      "saved": "Kaydedildi"
+    },
+    "tabs": {
+      "all": "Tümü",
+      "ayah": "Ayetler",
+      "surah": "Sureler",
+      "hadith": "Hadisler",
+      "article": "Makaleler",
+      "event": "Etkinlikler",
+      "matrimonialProfile": "Profiller"
+    },
+    "empty": "Henüz kaydedilmiş bir şey yok."
+  },
+  "notes": {
+    "addNote": "Not ekle",
+    "editNote": "Notu düzenle",
+    "saveNote": "Kaydet",
+    "cancelNote": "İptal",
+    "deleteNote": "Sil",
+    "confirmDelete": "Bu not silinsin mi?",
+    "placeholder": "Özel notunuz…",
+    "charLimit": "{count} / {max}",
+    "savedToast": "Not kaydedildi",
+    "deletedToast": "Not silindi",
+    "saveFailed": "Not kaydedilemedi — lütfen tekrar deneyin.",
+    "deleteFailed": "Silinemedi — lütfen tekrar deneyin.",
+    "tooLong": "Not çok uzun.",
+    "signInRequired": "Not kaydetmek için oturum açın",
+    "signInCta": "Oturum aç",
+    "editedAt": "Düzenlendi: {when}",
+    "yourNote": "Notunuz"
+  },
+  "profileNotes": {
+    "pageTitle": "Notlarım",
+    "pageDescription": "Ayetler ve hadisler hakkındaki özel notlarınız. Bunları yalnızca siz görebilirsiniz.",
+    "empty": "Henüz not yok. Herhangi bir ayet veya hadis sayfasından not ekleyin.",
+    "open": "Aç",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "tabs": {
+      "all": "Tümü",
+      "ayah": "Ayetler",
+      "hadith": "Hadisler"
+    }
+  },
+  "reading": {
+    "title": "Okuma ilerlemesi",
+    "pageDescription": "Kaldığınız yerden devam edin — sekmeyi kapattığınızda veya başka sekmeye geçtiğinizde otomatik olarak kaydedilir.",
+    "lastQuranAyah": "Son okunan ayet",
+    "lastSurah": "Son görüntülenen sure",
+    "lastHadith": "Son okunan hadis",
+    "viewedAt": "Görüntülenme: {when}",
+    "resume": "Devam et",
+    "empty": "Henüz okuma geçmişi yok — Kur'an veya Hadis bölümünden başlayın."
+  },
+  "quickCreate": {
+    "trigger": "Hızlı oluştur",
+    "title": "Yeni oluştur",
+    "searchPlaceholder": "Oluşturulacak öğeleri ara…",
+    "empty": "Eşleşme yok",
+    "back": "Geri",
+    "cancel": "İptal",
+    "create": "Oluştur",
+    "types": {
+      "event": {
+        "name": "Etkinlik",
+        "description": "Namaz, ders, iftar, bağış kampanyası veya topluluk buluşması."
+      },
+      "business": {
+        "name": "İşletme",
+        "description": "Rehbere helal dostu bir işletme ekleyin."
+      },
+      "mosque": {
+        "name": "Cami",
+        "description": "Namaz vakitleri ve hizmetleriyle birlikte cami ekleyin."
+      },
+      "article": {
+        "name": "Makale",
+        "description": "Yeni bir makale taslağı oluşturun. Hazır olduğunda dile göre yayınlayın."
+      },
+      "articleCategory": {
+        "name": "Makale Kategorisi",
+        "description": "Makalelere etiketlenebilecek bir kategori ekleyin."
+      },
+      "eventCategory": {
+        "name": "Etkinlik Kategorisi",
+        "description": "Etkinliklere etiketlenebilecek bir kategori ekleyin."
+      },
+      "businessCategory": {
+        "name": "İşletme Kategorisi",
+        "description": "İşletmelere etiketlenebilecek bir kategori ekleyin."
+      },
+      "businessAmenity": {
+        "name": "İşletme Olanağı",
+        "description": "İşletmelerin sunabileceği bir olanak ekleyin."
+      },
+      "businessCertBody": {
+        "name": "Sertifikasyon Kuruluşu",
+        "description": "İşletmelerin belirtebileceği bir helal sertifikasyon kuruluşu ekleyin."
+      },
+      "mosqueFacility": {
+        "name": "Cami Olanağı",
+        "description": "Camilerin sunabileceği bir olanak ekleyin (ör. kadınlar bölümü, otopark)."
+      }
+    },
+    "formTitles": {
+      "event": "Yeni etkinlik",
+      "business": "Yeni işletme",
+      "mosque": "Yeni cami",
+      "article": "Yeni makale",
+      "articleCategory": "Yeni makale kategorisi",
+      "eventCategory": "Yeni etkinlik kategorisi",
+      "businessCategory": "Yeni işletme kategorisi",
+      "businessAmenity": "Yeni işletme olanağı",
+      "businessCertBody": "Yeni sertifikasyon kuruluşu",
+      "mosqueFacility": "Yeni cami olanağı"
+    },
+    "steps": {
+      "admin": "Yönetim"
+    },
+    "adminFields": {
+      "status": "Durum",
+      "statusHintEvent": "Taslak, etkinliği herkese açık takvimden gizler. Yayında, canlı yapar.",
+      "statusHintBusiness": "Taslak, ilanı herkese açık aramadan gizler. Yayında, canlı yapar.",
+      "statusHintMosque": "Taslak ilanı gizler. İnceleme bekleyen, yönetici doğrulamasına gönderir. Yayında, canlı yapar.",
+      "coordsMissingHint": "Harita koordinatları olmadan kaydedildi — yayınlamadan önce düzenleyiciden ayarlayın."
+    }
+  },
+  "comments": {
+    "title": "Yorumlar",
+    "empty": "Düşünceli bir yorum paylaşan ilk kişi olun.",
+    "loading": "Yorumlar yükleniyor…",
+    "anonymousAuthor": "Üye",
+    "deletedTombstone": "[Yorum kaldırıldı]",
+    "deletedToast": "Yorum silindi",
+    "savedToast": "Yorum güncellendi",
+    "deleteConfirm": "Bu yorum silinsin mi?",
+    "signInPrompt": "Düşüncelerinizi paylaşmak için oturum açın.",
+    "signInCta": "Oturum aç",
+    "placeholder": "Düşünceli bir yorum paylaşın…",
+    "disclaimer": "Yorumlar kişisel görüşlerdir (kalite açısından incelenir) ve bağlayıcı kabul edilmemelidir.",
+    "ayahButtonAria": "{count, plural, =0 {Henüz yorum yok — konuyu aç} one {1 yorum — konuyu aç} other {# yorum — konuyu aç}}",
+    "ayahDialogTitle": "{reference}",
+    "hadithButtonAria": "{count, plural, =0 {Henüz yorum yok — konuyu aç} one {1 yorum — konuyu aç} other {# yorum — konuyu aç}}",
+    "hadithDialogTitle": "{reference}",
+    "popupButtonAria": "{count, plural, =0 {Henüz yorum yok — konuyu aç} one {1 yorum — konuyu aç} other {# yorum — konuyu aç}}",
+    "actions": {
+      "post": "Gönder",
+      "cancel": "İptal",
+      "edit": "Düzenle",
+      "save": "Kaydet",
+      "delete": "Sil",
+      "reply": "Yanıtla",
+      "flag": "Bildir",
+      "more": "Diğer işlemler",
+      "loadMore": "Daha fazla yükle",
+      "viewReplies": "{count, plural, one {1 yanıtı görüntüle} other {# yanıtı görüntüle}}",
+      "hideReplies": "Yanıtları gizle",
+      "edited": "düzenlendi"
+    },
+    "reactions": {
+      "heart": "Kalp",
+      "dua": "Dua",
+      "insightful": "Aydınlatıcı"
+    },
+    "flag": {
+      "title": "Bu yorumu bildir",
+      "description": "Bu yorumun neden uygunsuz olduğunu kısaca anlatın. Moderatörlerimiz inceleyecek.",
+      "reasonLabel": "Sebep (isteğe bağlı)",
+      "reasonPlaceholder": "Spam, nefret söylemi, konu dışı…",
+      "submit": "Bildirimi gönder",
+      "submittedToast": "Teşekkürler — ekibimiz bu yorumu inceleyecek."
+    },
+    "statuses": {
+      "visible": "Görünür",
+      "auto_hidden": "İnceleme bekleniyor",
+      "hidden": "Gizli",
+      "deleted": "Silindi"
+    },
+    "errors": {
+      "loadFailed": "Yorumlar yüklenemedi. Lütfen tekrar deneyin.",
+      "tooLong": "Yorum çok uzun.",
+      "signInRequired": "Yorum yapmak için oturum açın.",
+      "notOwner": "Yalnızca kendi yorumunuzu düzenleyebilirsiniz.",
+      "reactionFailed": "Tepki güncellenemedi."
+    }
+  },
+  "commentsAdmin": {
+    "pageTitle": "Yorumlar",
+    "subtitle": "Site genelindeki kullanıcı yorumlarını arayın, filtreleyin ve yönetin.",
+    "search": "Yorum, yazar, varlık ara…",
+    "filterByStatus": "Duruma göre filtrele",
+    "filterByEntityType": "Varlık türüne göre filtrele",
+    "statusAll": "Tüm durumlar",
+    "entityAll": "Tüm varlıklar",
+    "empty": "Henüz yorum yok.",
+    "noResults": "Filtrelerinizle eşleşen yorum yok.",
+    "anonymous": "Üye",
+    "emptyBody": "(içerik yok)",
+    "hide": "Gizle",
+    "restore": "Geri yükle",
+    "dismissFlags": "Bildirileri yok say",
+    "openSource": "Kaynağı aç",
+    "viewDialogTitle": "{name} tarafından yorum",
+    "deleteConfirmTitle": "Bu yorum kalıcı olarak silinsin mi?",
+    "deleteConfirmDescription": "Bu işlem yorumu, tepkilerini ve bildirilerini kalıcı olarak siler. Onaylamak için DELETE yazın.",
+    "statusUpdatedToast": "Yorum durumu güncellendi.",
+    "flagsDismissedToast": "Bildiriler yok sayıldı.",
+    "deletedToast": "Yorum kalıcı olarak silindi.",
+    "columns": {
+      "author": "Yazar",
+      "body": "Yorum",
+      "entity": "Nerede",
+      "status": "Durum",
+      "flags": "Bildiriler",
+      "created": "Oluşturulma"
+    },
+    "entityTypes": {
+      "ayah": "Ayet",
+      "hadith": "Hadis",
+      "surah": "Sure",
+      "article": "Makale",
+      "mosque": "Cami",
+      "event": "Etkinlik",
+      "business": "İşletme"
+    }
+  },
+  "profileComments": {
+    "pageTitle": "Yorumlarım",
+    "pageDescription": "Site genelinde yaptığınız her yorum, mevcut moderasyon durumuyla birlikte.",
+    "empty": "Henüz yorum yapmadınız.",
+    "emptyBody": "(içerik yok)",
+    "edited": "düzenlendi",
+    "replies": "{count, plural, one {1 yanıt} other {# yanıt}}",
+    "flags": "{count, plural, one {1 bildiri} other {# bildiri}}"
   }
 }
