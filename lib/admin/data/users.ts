@@ -97,18 +97,28 @@ export async function fetchUsers(): Promise<UsersResult> {
   if (!auth) return { users: MOCK_USERS, source: "mock" };
 
   try {
-    const list = await auth.listUsers(1000);
-    if (list.users.length === 0) return { users: [], source: "firestore" };
+    const authUsers: UserRecord[] = [];
+    let pageToken: string | undefined;
+    do {
+      const page = await auth.listUsers(1000, pageToken);
+      authUsers.push(...page.users);
+      pageToken = page.pageToken;
+    } while (pageToken);
+
+    if (authUsers.length === 0) return { users: [], source: "firestore" };
 
     const overlays = new Map<string, Record<string, unknown>>();
     const db = getDb();
     if (db) {
       try {
-        const refs = list.users.map((u) => db.collection("users").doc(u.uid));
-        const docs = await db.getAll(...refs);
-        for (const doc of docs) {
-          if (doc.exists) {
-            overlays.set(doc.id, doc.data() as Record<string, unknown>);
+        for (let i = 0; i < authUsers.length; i += 300) {
+          const slice = authUsers.slice(i, i + 300);
+          const refs = slice.map((u) => db.collection("users").doc(u.uid));
+          const docs = await db.getAll(...refs);
+          for (const doc of docs) {
+            if (doc.exists) {
+              overlays.set(doc.id, doc.data() as Record<string, unknown>);
+            }
           }
         }
       } catch (err) {
@@ -116,7 +126,7 @@ export async function fetchUsers(): Promise<UsersResult> {
       }
     }
 
-    const users = list.users
+    const users = authUsers
       .map((u) => compose(u, overlays.get(u.uid) ?? null))
       .sort((a, b) => new Date(b.joinedAt).getTime() - new Date(a.joinedAt).getTime());
 
