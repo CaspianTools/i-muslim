@@ -22,6 +22,8 @@ export function SettingsSidebar() {
         "-mx-1 flex gap-1 overflow-x-auto pb-2",
         // Desktop: vertical list, fixed width.
         "md:mx-0 md:w-56 md:shrink-0 md:flex-col md:gap-0.5 md:overflow-visible md:pb-0",
+        // Desktop: card chrome around the stacked nav buttons.
+        "md:self-start md:rounded-lg md:border md:border-border md:bg-card md:p-2",
       )}
     >
       {SETTINGS_NAV.map((item) => {
