@@ -193,7 +193,7 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [
       { labelKey: "settings", href: "/admin/settings", icon: Settings },
       { labelKey: "integrations", href: "/admin/integrations", icon: Plug },
-      { labelKey: "donations", href: "/admin/donations", icon: HandCoins },
+      { labelKey: "donations", href: "/admin/donations", icon: HandCoins, comingSoon: true },
       { labelKey: "reports", href: "/admin/reports", icon: FileBarChart, comingSoon: true },
       { labelKey: "audit", href: "/admin/audit", icon: ScrollText, comingSoon: true },
     ],
