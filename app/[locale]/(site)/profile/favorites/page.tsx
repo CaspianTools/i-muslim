@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Star } from "lucide-react";
 import { getSiteSession } from "@/lib/auth/session";
 import { listFavorites } from "@/lib/profile/data";
 import { formatRelative } from "@/lib/utils";
 import { RemoveFavoriteButton } from "@/components/site/profile/RemoveFavoriteButton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import {
   FAVORITE_ITEM_TYPES,
   type FavoriteItemType,
@@ -74,9 +75,19 @@ export default async function FavoritesPage({
       </nav>
 
       {favorites.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-card px-6 py-12 text-center text-muted-foreground">
-          {t("empty")}
-        </div>
+        <EmptyState
+          icon={<Star className="size-5" />}
+          title={t("empty")}
+          description={t("emptyHint")}
+          actions={
+            <Link
+              href="/quran"
+              className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              {t("emptyCta")}
+            </Link>
+          }
+        />
       ) : (
         <ul className="space-y-3">
           {favorites.map((fav) => (

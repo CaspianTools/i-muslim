@@ -503,6 +503,13 @@
     "position": "{current} of {total}",
     "progressLabel": "Reading progress through the 114 surahs"
   },
+  "install": {
+    "title": "Install i-muslim",
+    "description": "Add to your home screen for quick access.",
+    "install": "Install",
+    "dismiss": "Dismiss",
+    "iosInstructions": "Tap <share/> in Safari, then \"Add to Home Screen\"."
+  },
   "onboarding": {
     "welcomeTitle": "Welcome to i-muslim",
     "welcomeDescription": "Quran, Hadith, prayer times, and mosques in one place. Set up takes ten seconds.",
@@ -2298,7 +2305,10 @@
         "savedToast": "Translations saved.",
         "errorToast": "Could not save translations.",
         "readOnlyBadge": "View only",
-        "readOnlyHint": "Your role can view but not edit this language. Ask an admin to grant uiLocales.translate for this language to make changes."
+        "readOnlyHint": "Your role can view but not edit this language. Ask an admin to grant uiLocales.translate for this language to make changes.",
+        "resetOverlay": "Reset to bundled",
+        "resetOverlayConfirm": "Discard all admin edits for this language and revert to the version shipped in the build? This cannot be undone.",
+        "resetOverlayToast": "Admin edits cleared — runtime now uses the bundled translations."
       },
       "openEditor": "Open phrase editor"
     }
@@ -2462,7 +2472,9 @@
       "event": "Events",
       "matrimonialProfile": "Profiles"
     },
-    "empty": "Nothing saved yet."
+    "empty": "Nothing saved yet.",
+    "emptyHint": "Tap the heart icon on an ayah, hadith, article, or event to save it here.",
+    "emptyCta": "Browse the Quran"
   },
   "notes": {
     "addNote": "Add note",

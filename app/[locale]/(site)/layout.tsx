@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { PrayerTimesBar } from "@/components/prayer/PrayerTimesBar";
 import { MobileBottomTabBar } from "@/components/mobile/MobileBottomTabBar";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function SiteLayout({
@@ -12,6 +13,12 @@ export default function SiteLayout({
 }>) {
   return (
     <>
+      {/* PWA install banner sits above the prayer bar on mobile only. The
+          component is gated internally on visit count + UA detection — it
+          renders nothing until the user has opened the site three times and
+          either Android beforeinstallprompt has fired or the browser is
+          iOS Safari. */}
+      <InstallPrompt />
       <PrayerTimesBar />
       <Nav />
       {/* Bottom tab bar at <md sits above the home indicator (safe-area pad

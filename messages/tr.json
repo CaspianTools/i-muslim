@@ -506,6 +506,13 @@
     "position": "{current} of {total}",
     "progressLabel": "Reading progress through the 114 surahs"
   },
+  "install": {
+    "title": "Install i-muslim",
+    "description": "Add to your home screen for quick access.",
+    "install": "Install",
+    "dismiss": "Dismiss",
+    "iosInstructions": "Tap <share/> in Safari, then \"Add to Home Screen\"."
+  },
   "onboarding": {
     "welcomeTitle": "Welcome to i-muslim",
     "welcomeDescription": "Quran, Hadith, prayer times, and mosques in one place. Set up takes ten seconds.",
@@ -2301,7 +2308,10 @@
         "savedToast": "Çeviriler kaydedildi.",
         "errorToast": "Çeviriler kaydedilemedi.",
         "readOnlyBadge": "Yalnızca görüntüleme",
-        "readOnlyHint": "Rolünüz bu dili görüntüleyebilir ancak düzenleyemez. Düzenleme için bir yöneticiden bu dile uiLocales.translate izni vermesini isteyin."
+        "readOnlyHint": "Rolünüz bu dili görüntüleyebilir ancak düzenleyemez. Düzenleme için bir yöneticiden bu dile uiLocales.translate izni vermesini isteyin.",
+        "resetOverlay": "Reset to bundled",
+        "resetOverlayConfirm": "Discard all admin edits for this language and revert to the version shipped in the build? This cannot be undone.",
+        "resetOverlayToast": "Admin edits cleared — runtime now uses the bundled translations."
       },
       "openEditor": "İfade düzenleyiciyi aç"
     }
@@ -2465,7 +2475,9 @@
       "event": "Etkinlikler",
       "matrimonialProfile": "Profiller"
     },
-    "empty": "Henüz kaydedilmiş bir şey yok."
+    "empty": "Henüz kaydedilmiş bir şey yok.",
+    "emptyHint": "Tap the heart icon on an ayah, hadith, article, or event to save it here.",
+    "emptyCta": "Browse the Quran"
   },
   "notes": {
     "addNote": "Not ekle",
