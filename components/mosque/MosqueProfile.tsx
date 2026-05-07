@@ -2,7 +2,24 @@
 
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Globe, Mail, MapPin, Phone, Users } from "lucide-react";
+import {
+  Accessibility,
+  BookOpen,
+  CalendarHeart,
+  Coffee,
+  Droplet,
+  Flower2,
+  Globe,
+  HandCoins,
+  HeartHandshake,
+  Library,
+  Mail,
+  MapPin,
+  ParkingSquare,
+  Phone,
+  Users,
+} from "lucide-react";
+import type { ComponentType } from "react";
 import { pickLocalized } from "@/lib/utils";
 import { countryName } from "@/lib/mosques/countries";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +43,23 @@ function humanizeFacility(slug: string): string {
   if (!cleaned) return slug;
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 }
+
+// Best-effort icon for the seeded facility slugs from
+// `lib/admin/data/mosque-facilities.ts`. Unknown slugs (admin-defined later)
+// fall back to a neutral icon. Keeping this lookup local — moving it to the
+// admin taxonomy module would couple public render to that module's auth path.
+const FACILITY_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  "friday-prayer": CalendarHeart,
+  "womens-section": HeartHandshake,
+  "wudu-facilities": Droplet,
+  "wheelchair-access": Accessibility,
+  parking: ParkingSquare,
+  "quran-classes": BookOpen,
+  library: Library,
+  "funeral-services": Flower2,
+  "nikah-services": HandCoins,
+  "itikaf-accommodation": Coffee,
+};
 
 export function MosqueProfile({ mosque }: { mosque: Mosque }) {
   const locale = useLocale();
@@ -114,12 +148,18 @@ export function MosqueProfile({ mosque }: { mosque: Mosque }) {
           {facilities.length > 0 && (
             <section className="rounded-xl border border-border bg-card p-5">
               <h2 className="text-base font-semibold text-foreground">{t("facilities")}</h2>
-              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                {facilities.map((slug) => (
-                  <li key={slug} className="text-sm text-muted-foreground">
-                    · {humanizeFacility(slug)}
-                  </li>
-                ))}
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {facilities.map((slug) => {
+                  const Icon = FACILITY_ICONS[slug] ?? Coffee;
+                  return (
+                    <li key={slug}>
+                      <span className="facility-chip">
+                        <Icon />
+                        {humanizeFacility(slug)}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           )}

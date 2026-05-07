@@ -1,3 +1,4 @@
+import { Info } from "lucide-react";
 import type { HadithEntry } from "@/types/hadith";
 import { LANG_LABELS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
@@ -8,6 +9,12 @@ import {
   NoteEditorTrigger,
 } from "@/components/site/NoteEditor";
 import { HadithCommentsButton } from "@/components/comments/HadithCommentsButton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export type HadithTranslationSlice = {
   requested: LangCode;
@@ -124,16 +131,44 @@ export function HadithCard({
             >
               <div className="mb-1 flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                 <span>{LANG_LABELS[requested] ?? requested.toUpperCase()}</span>
+                {/* Status badges are now compact (i) tooltips so the hadith
+                    list isn't cluttered with inline review-status copy on
+                    every card. The full text shows on hover (desktop) or
+                    tap (mobile). */}
                 {status === "in_process" && (
-                  <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] normal-case tracking-normal">
-                    Translation under review
-                  </span>
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label="Translation under review"
+                          className="inline-flex items-center justify-center rounded text-muted-foreground hover:text-foreground"
+                        >
+                          <Info className="size-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Translation under review</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
                 {status !== "in_process" && fallback && actual && (
-                  <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] normal-case tracking-normal">
-                    {LANG_LABELS[requested] ?? requested.toUpperCase()} unavailable — showing{" "}
-                    {LANG_LABELS[actual] ?? actual.toUpperCase()}
-                  </span>
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label={`${LANG_LABELS[requested] ?? requested.toUpperCase()} unavailable — showing ${LANG_LABELS[actual] ?? actual.toUpperCase()}`}
+                          className="inline-flex items-center justify-center rounded text-muted-foreground hover:text-foreground"
+                        >
+                          <Info className="size-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {LANG_LABELS[requested] ?? requested.toUpperCase()} unavailable
+                        — showing {LANG_LABELS[actual] ?? actual.toUpperCase()}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
                 {status !== "in_process" && !entry && !fallback && (
                   <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] normal-case tracking-normal">

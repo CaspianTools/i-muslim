@@ -4,6 +4,7 @@ import { MapPin, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { Mosque } from "@/types/mosque";
 import { countryName } from "@/lib/mosques/countries";
+import { initials } from "@/lib/utils";
 
 export function MosqueCard({ mosque }: { mosque: Mosque }) {
   const t = useTranslations("mosques.actions");
@@ -12,7 +13,9 @@ export function MosqueCard({ mosque }: { mosque: Mosque }) {
       href={`/mosques/${mosque.slug}`}
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-background transition-colors hover:border-accent"
     >
-      <div className="relative aspect-[16/9] w-full bg-muted">
+      {/* Image area shrinks at <md so 2-3 cards fit above the fold instead of
+          one half-card; on md+ keeps the visual weight it had. */}
+      <div className="relative h-[120px] md:h-auto md:aspect-[16/9] w-full bg-muted">
         {mosque.coverImage?.url ? (
           <Image
             src={mosque.coverImage.url}
@@ -22,7 +25,11 @@ export function MosqueCard({ mosque }: { mosque: Mosque }) {
             className="object-cover transition-transform group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-3xl text-accent/40">۞</div>
+          // Monogram fallback — far less visually noisy than 30 cards each
+          // showing the same starburst placeholder.
+          <div className="flex h-full w-full items-center justify-center bg-[var(--selected)] text-2xl md:text-3xl font-semibold text-[var(--selected-foreground)]">
+            {initials(mosque.name.en)}
+          </div>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">

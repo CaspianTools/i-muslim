@@ -48,7 +48,11 @@ export async function Footer() {
           <p className="text-muted-foreground">{siteConfig.tagline || t("tagline")}</p>
         </div>
 
-        <nav aria-label={t("colWorship")} className="space-y-3">
+        {/* On <md the bottom tab bar + /more page already surface these
+            destinations, so the three middle columns are redundant chrome.
+            Hide them at mobile and let the brand block + locale switcher
+            stand alone. */}
+        <nav aria-label={t("colWorship")} className="hidden md:block space-y-3">
           <h2 className={headingClass}>{t("colWorship")}</h2>
           <ul className="space-y-2">
             <li>
@@ -64,7 +68,7 @@ export async function Footer() {
           </ul>
         </nav>
 
-        <nav aria-label={t("colCommunity")} className="space-y-3">
+        <nav aria-label={t("colCommunity")} className="hidden md:block space-y-3">
           <h2 className={headingClass}>{t("colCommunity")}</h2>
           <ul className="space-y-2">
             <li>
@@ -97,7 +101,7 @@ export async function Footer() {
           </ul>
         </nav>
 
-        <nav aria-label={t("colTools")} className="space-y-3">
+        <nav aria-label={t("colTools")} className="hidden md:block space-y-3">
           <h2 className={headingClass}>{t("colTools")}</h2>
           <ul className="space-y-2">
             <li>

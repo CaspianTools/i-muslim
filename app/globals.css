@@ -402,6 +402,91 @@ body {
     padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
     z-index: 30;
   }
+
+  /*
+   * Facility / amenity chip. Used on the mosque profile page (and a candidate
+   * for businesses + matrimonial in future). Each chip is a tappable
+   * filter-shaped pill with an icon and a label.
+   */
+  .facility-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+  .facility-chip > svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    color: var(--muted-foreground);
+    flex-shrink: 0;
+  }
+}
+
+/*
+ * Mobile-only typography bumps. iOS native body text is 17 px and uses a
+ * tighter line-height than the desktop default; the previous 14 px / 1.5
+ * combination read small and loose on a phone. Quran Arabic is bumped via
+ * clamp() so older readers don't squint at .text-2xl on a 390 px viewport
+ * (~24 px) — Quran apps standardise around 28-32 px on phones.
+ */
+@media (max-width: 767px) {
+  body {
+    font-size: 17px;
+    line-height: 1.45;
+  }
+  .font-arabic {
+    font-size: clamp(1.6rem, 5vw, 2rem);
+  }
+  /* Comment chrome was sized for desktop precision pointers; bump heights so
+     reaction pills and icon buttons clear the 40 px tap target. */
+  .comment-reaction-pill {
+    height: 2.25rem;
+    font-size: 0.8125rem;
+  }
+  .comment-icon-button {
+    height: 2.25rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/*
+ * Skeleton loader — a single named recipe used wherever a list / card / line
+ * of content is loading. Pulses the muted token; respects reduced-motion.
+ */
+@layer components {
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--muted) 0%,
+      color-mix(in oklab, var(--muted) 60%, var(--background)) 50%,
+      var(--muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s linear infinite;
+    border-radius: var(--radius-sm);
+    color: transparent;
+  }
+  .skeleton-line {
+    height: 0.875rem;
+  }
+  .skeleton-card {
+    height: 100%;
+    width: 100%;
+    border-radius: var(--radius-md);
+  }
+}
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
 }
 
 .font-arabic {

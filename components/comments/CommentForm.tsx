@@ -45,10 +45,22 @@ export function CommentForm({
   const [body, setBody] = useState("");
   const [pending, startTransition] = useTransition();
   const ref = useRef<HTMLTextAreaElement | null>(null);
+  // Top-level composers (replyMode=false, no autoFocus) start collapsed so the
+  // textarea + char counter + submit button don't consume ~200 px of vertical
+  // space on every thread before the user has any intent to comment. Reply
+  // composers and autoFocus composers always start expanded — they're spawned
+  // by an explicit user action.
+  const [expanded, setExpanded] = useState(
+    Boolean(replyMode || autoFocus || body),
+  );
 
   useEffect(() => {
     if (autoFocus) ref.current?.focus();
   }, [autoFocus]);
+
+  useEffect(() => {
+    if (expanded) ref.current?.focus();
+  }, [expanded]);
 
   if (!signedIn) {
     return (
@@ -84,6 +96,18 @@ export function CommentForm({
     });
   }
 
+  if (!expanded) {
+    return (
+      <button
+        type="button"
+        onClick={() => setExpanded(true)}
+        className="w-full rounded-md border border-border bg-background px-3 py-3 text-start text-sm text-muted-foreground hover:border-accent hover:text-foreground transition-colors"
+      >
+        {placeholder ?? t("placeholder")}
+      </button>
+    );
+  }
+
   return (
     <div className="space-y-2">
       <textarea
@@ -103,6 +127,16 @@ export function CommentForm({
         <div className="flex items-center gap-2">
           {onCancel && (
             <Button size="sm" variant="ghost" onClick={onCancel} disabled={pending}>
+              {tCommon("cancel")}
+            </Button>
+          )}
+          {!onCancel && !replyMode && !autoFocus && body.length === 0 && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setExpanded(false)}
+              disabled={pending}
+            >
               {tCommon("cancel")}
             </Button>
           )}

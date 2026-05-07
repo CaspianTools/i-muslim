@@ -16,16 +16,20 @@ export function OpenInMapsLinks({ lat, lng, label }: Props) {
     { id: "yandex", href: `https://yandex.com/maps/?ll=${lng},${lat}&z=16&pt=${lng},${lat}`, label: t("openInYandex") },
   ];
   return (
-    <ul className="flex flex-wrap gap-2">
+    // At <md the three buttons share the row evenly (flex-1) so Yandex
+    // doesn't get pushed onto a second row by itself. At md+ they keep
+    // their content width.
+    <ul className="flex gap-2">
       {links.map((l) => (
-        <li key={l.id}>
+        <li key={l.id} className="flex-1 min-w-0 md:flex-none">
           <a
             href={l.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm hover:border-accent"
+            className="flex md:inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 md:py-1.5 text-sm hover:border-accent"
           >
-            {l.label} <ExternalLink className="size-3" />
+            <span className="truncate">{l.label}</span>
+            <ExternalLink className="size-3 shrink-0" />
           </a>
         </li>
       ))}
