@@ -2376,6 +2376,12 @@
     "moreItems": "+{count} daha",
     "removeChip": "{name} sil"
   },
+  "hadithDownload": {
+    "buttonCollection": "Download collection (JSON)",
+    "buttonBook": "Download book (JSON)",
+    "preparing": "Preparing download…",
+    "failed": "Download failed. Please try again."
+  },
   "profileNav": {
     "title": "Profil",
     "items": {

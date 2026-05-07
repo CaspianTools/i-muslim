@@ -85,6 +85,28 @@ export async function getHadithsByBook(
   )();
 }
 
+export async function getHadithsByCollection(
+  slug: string,
+): Promise<HadithDoc[]> {
+  return unstable_cache(
+    async (): Promise<HadithDoc[]> => {
+      const db = getDb();
+      if (!db) return [];
+      const snap = await db
+        .collection("hadith_entries")
+        .where("collection", "==", slug)
+        .where("published", "==", true)
+        .get();
+      if (snap.empty) return [];
+      return snap.docs
+        .map((d) => d.data() as HadithDoc)
+        .sort((a, b) => a.number - b.number);
+    },
+    [`hadith:${slug}:all`],
+    { revalidate: REVALIDATE_SECONDS, tags: [collectionTag(slug)] },
+  )();
+}
+
 export async function getHadith(
   slug: string,
   number: number,
