@@ -2342,6 +2342,21 @@
       "openEditor": "افتح محرر العبارات"
     }
   },
+  "quranPage": {
+    "metaTitle": "The Quran — 114 surahs",
+    "metaDescription": "Browse all 114 surahs of the Holy Quran with Arabic text and translations.",
+    "indexHeading": "The Holy Quran",
+    "indexSubtitle": "114 surahs. Pick one to begin reading.",
+    "verseCount": "{count, plural, one {# verse} other {# verses}}",
+    "revelationMakkan": "Makkan",
+    "revelationMadinan": "Madinan",
+    "cardSummary": "{translatedName} · {verses} · {revelation}",
+    "surahMetaTitle": "Surah {name} ({id})",
+    "surahMetaDescription": "Read Surah {name} — {translatedName}. {verses}.",
+    "surahEyebrow": "Surah {id}",
+    "surahSummary": "{translatedName} · {verses} · {revelation}",
+    "backToSurahs": "← All surahs"
+  },
   "quranSidebar": {
     "title": "التصفيات",
     "menu": "التصفيات",
