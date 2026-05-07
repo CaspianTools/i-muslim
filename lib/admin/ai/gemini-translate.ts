@@ -79,7 +79,12 @@ export async function translateSacredText(
       generationConfig: {
         // Low temperature = deterministic, faithful. Sacred text demands this.
         temperature: 0.2,
-        maxOutputTokens: 2048,
+        // Gemini 2.5 models bill thinking tokens against this budget, so
+        // 2048 was tight — long narrative hadith and multi-ayah passages
+        // hit MAX_TOKENS before any visible output emerged. 8192 gives
+        // comfortable headroom; check usageMetadata in logs if it ever
+        // truncates again.
+        maxOutputTokens: 8192,
       },
       // Sacred-text input is canonical, not user-generated, and legitimately
       // mentions warfare, hudud, marriage, etc. Keep only HIGH-confidence blocks
@@ -107,6 +112,7 @@ export async function translateSacredText(
       promptFeedback,
       finishReason,
       safetyRatings,
+      usageMetadata: result.response.usageMetadata,
     });
 
     if (promptFeedback?.blockReason) {
