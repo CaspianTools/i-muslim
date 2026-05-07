@@ -41,21 +41,24 @@ export function SettingsSidebar() {
       )}
     >
       {SETTINGS_NAV.map((item) => (
-        <div key={item.id} className="contents">
+        <div key={item.id} className="flex flex-col gap-0.5">
           <NavRow
             item={item}
             active={isParentActive(item)}
             label={t(item.labelKey)}
           />
-          {item.children?.map((child) => (
-            <NavRow
-              key={child.id}
-              item={child}
-              active={isChildActive(child)}
-              label={t(child.labelKey)}
-              indented
-            />
-          ))}
+          {item.children && item.children.length > 0 && (
+            <div className="ms-5 flex flex-col gap-0.5 border-s border-border/60 ps-2">
+              {item.children.map((child) => (
+                <NavRow
+                  key={child.id}
+                  item={child}
+                  active={isChildActive(child)}
+                  label={t(child.labelKey)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </nav>
@@ -66,12 +69,10 @@ function NavRow({
   item,
   active,
   label,
-  indented = false,
 }: {
   item: SettingsNavItem;
   active: boolean;
   label: string;
-  indented?: boolean;
 }) {
   const Icon = item.icon;
   return (
@@ -79,7 +80,6 @@ function NavRow({
       href={item.query ? { pathname: item.href, query: item.query } : item.href}
       className={cn(
         "group relative flex items-center gap-2.5 whitespace-nowrap rounded-md px-3 py-2 text-sm transition-colors",
-        indented && "ps-9",
         "hover:bg-muted/70",
         active &&
           "bg-sidebar-accent text-sidebar-accent-foreground font-medium hover:bg-sidebar-accent",
