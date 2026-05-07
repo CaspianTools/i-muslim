@@ -17,7 +17,9 @@ import { toast } from "@/components/ui/sonner";
 import { type Locale } from "@/i18n/config";
 import { updateUiLocaleMessagesAction } from "@/app/[locale]/(admin)/admin/settings/_actions";
 import {
+  deleteLeafByPath,
   flattenLeaves,
+  getLeafByPath,
   setLeafByPath,
   type MessageTree,
   type Leaf,
@@ -33,7 +35,20 @@ export type EditTranslationsDialogProps = {
   // value === base value).
   baseMessages: MessageTree;
   // The activated locale's current overlay (post-sync, mirrors base shape).
+  // For bundled non-default locales this is just the diff stored in
+  // Firestore (small) — the dialog falls back to `referenceMessages` for
+  // any key not present in the overlay so inputs render the bundled value.
   initialOverlay: MessageTree;
+  // Optional fallback layer between `initialOverlay` and `baseMessages` —
+  // used for bundled non-default locales (e.g. tr) where the bundled JSON
+  // file IS the current translation and the Firestore overlay only stores
+  // edits diverging from it. When provided, the dialog:
+  //   - falls back to a key's reference value if the overlay doesn't carry
+  //     a value for it (so inputs show the bundled translation, not English)
+  //   - on save, omits any key whose new value matches the reference value
+  //     (so the stored overlay stays a minimal diff, not a full copy)
+  // Reserved-locale flows leave this undefined; behaviour is unchanged.
+  referenceMessages?: MessageTree;
   rtl: boolean;
   // When true, every input is rendered as `readOnly`, the Save button is
   // hidden, and a "view only" badge is shown in the header. Used when the
@@ -56,6 +71,7 @@ export function EditTranslationsDialog({
   nativeName,
   baseMessages,
   initialOverlay,
+  referenceMessages,
   rtl,
   readOnly = false,
   onSaved,
@@ -72,13 +88,24 @@ export function EditTranslationsDialog({
   const [showOnlyUntranslated, setShowOnlyUntranslated] = useState(false);
   const [pending, startTransition] = useTransition();
 
-  // Compose the current overlay = initialOverlay + edits.
+  // Compose the current overlay = initialOverlay + edits, falling back to
+  // `referenceMessages` (the locale's bundled JSON, when applicable) before
+  // the English `baseValue`. Reserved flows pass no reference, so for those
+  // the chain collapses to overlay → base, matching the pre-existing
+  // behaviour exactly.
   const rows: Row[] = useMemo(() => {
     return baseRows.map(({ key, value }) => {
-      const overlayValue = key in edits ? edits[key]! : getLeaf(initialOverlay, key) ?? value;
+      const fromOverlay = getLeaf(initialOverlay, key);
+      const fromReference = referenceMessages
+        ? getLeaf(referenceMessages, key)
+        : undefined;
+      const overlayValue =
+        key in edits
+          ? edits[key]!
+          : (fromOverlay ?? fromReference ?? value);
       return { key, baseValue: value, overlayValue };
     });
-  }, [baseRows, initialOverlay, edits]);
+  }, [baseRows, initialOverlay, referenceMessages, edits]);
 
   const liveStats = useMemo(() => {
     let translated = 0;
@@ -112,9 +139,21 @@ export function EditTranslationsDialog({
   function onSave() {
     if (!code || !dirty) return;
     // Build the new overlay by merging `edits` into a copy of the initial.
+    // When `referenceMessages` is provided, any edit whose new value matches
+    // the reference value is treated as a "revert" — the overlay key is
+    // removed entirely so the stored doc stays a minimal diff.
     const next: MessageTree = JSON.parse(JSON.stringify(initialOverlay));
     for (const [key, val] of Object.entries(edits)) {
-      setLeafByPath(next, key, val);
+      const refRaw = referenceMessages
+        ? getLeafByPath(referenceMessages, key)
+        : undefined;
+      const refStr =
+        refRaw === undefined || refRaw === null ? undefined : String(refRaw);
+      if (refStr !== undefined && val === refStr) {
+        deleteLeafByPath(next, key);
+      } else {
+        setLeafByPath(next, key, val);
+      }
     }
     startTransition(async () => {
       const res = await updateUiLocaleMessagesAction({ code, messages: next });

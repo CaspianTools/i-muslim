@@ -227,6 +227,11 @@ export function LanguagesForm({
   const [editorOpen, setEditorOpen] = useState(false);
   const [editorCode, setEditorCode] = useState<Locale | null>(null);
   const [editorBaseMessages, setEditorBaseMessages] = useState<MessageTree | null>(null);
+  // When the editor is opened on a bundled non-default locale, this carries
+  // that locale's own JSON so the dialog can fall back to it for unset
+  // overlay keys and prune diff-matching edits at save time.
+  const [editorReferenceMessages, setEditorReferenceMessages] =
+    useState<MessageTree | null>(null);
 
   // Editor target — bundled locales render through the same overlay model
   // (the page builds an `effectiveOverlay` that already merges bundled JSON +
@@ -262,6 +267,17 @@ export function LanguagesForm({
       : "en";
     const baseMessages = await loadBundledMessages(baseCode);
     setEditorBaseMessages(baseMessages);
+    // For bundled non-default locales, the locale's own JSON acts as the
+    // diff reference — the editor pre-fills inputs from it and prunes any
+    // edit that reverts to it, so the stored Firestore overlay stays a
+    // minimal diff. English (the default / source) and reserved locales
+    // don't need a separate reference layer.
+    if (isBundledCode(code) && code !== "en") {
+      const ref = await loadBundledMessages(code);
+      setEditorReferenceMessages(ref);
+    } else {
+      setEditorReferenceMessages(null);
+    }
     setEditorCode(code);
     setEditorOpen(true);
   }
@@ -543,6 +559,7 @@ export function LanguagesForm({
           nativeName={editorTarget.nativeName}
           baseMessages={editorBaseMessages}
           initialOverlay={(editorTarget.messages ?? {}) as MessageTree}
+          referenceMessages={editorReferenceMessages ?? undefined}
           rtl={editorTarget.rtl}
           readOnly={editorCode ? !editableSet.has(editorCode) : true}
           onSaved={onEditorSaved}

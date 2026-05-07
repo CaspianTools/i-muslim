@@ -115,19 +115,21 @@ export default async function Page({
               : "en";
             const baseTree = BUNDLED_MESSAGES[baseCode];
             const overlay = (d.messages ?? {}) as MessageTree;
-            // For bundled non-default locales the JSON itself IS the
-            // translation, so the "effective overlay" we display in the
-            // editor is the bundled JSON merged with any admin-saved
-            // Firestore overlay. For the default locale (en) and reserved
-            // locales, the doc's `messages` overlay is the only translation.
-            const effectiveOverlay: MessageTree =
-              isBundled(d.code) && d.code !== "en"
-                ? deepMerge(BUNDLED_MESSAGES[d.code as BundledLocale], overlay)
-                : overlay;
+            // Stats use the *effective* tree (bundled JSON merged with
+            // overlay for bundled non-en locales) so the row's progress
+            // chip reflects what end users actually see at runtime. The
+            // overlay we hand to the editor stays raw — the dialog falls
+            // back to the locale's bundled JSON for unset keys.
             const stats = isBundled(d.code)
               ? d.code === "en"
                 ? { total: 0, translated: 0, percent: 100 }
-                : computeTranslationStats(BUNDLED_MESSAGES.en, effectiveOverlay)
+                : computeTranslationStats(
+                    BUNDLED_MESSAGES.en,
+                    deepMerge(
+                      BUNDLED_MESSAGES[d.code as BundledLocale],
+                      overlay,
+                    ),
+                  )
               : d.activated
                 ? computeTranslationStats(baseTree, overlay)
                 : { total: 0, translated: 0, percent: 0 };
@@ -139,7 +141,7 @@ export default async function Page({
               flag: d.flag,
               rtl: d.rtl,
               baseLocale: d.baseLocale,
-              messages: effectiveOverlay,
+              messages: overlay,
               stats,
             };
           }),

@@ -55,6 +55,37 @@ export function setLeafByPath(tree: MessageTree, path: string, value: Leaf): voi
   cursor[segments[segments.length - 1]!] = value;
 }
 
+// Delete a leaf at a dotted path, also pruning any intermediate parent
+// objects that become empty as a result. Mutates the tree. Used by the
+// translation editor to keep stored overlays as small diffs rather than
+// full bundled-JSON copies — when a user reverts an edit back to the
+// reference value, the overlay key is removed entirely.
+export function deleteLeafByPath(tree: MessageTree, path: string): void {
+  const segments = path.split(".");
+  // Walk down, recording each parent so we can prune empty containers.
+  const trail: Array<{ parent: MessageTree; key: string }> = [];
+  let cursor: MessageTree = tree;
+  for (let i = 0; i < segments.length - 1; i++) {
+    const seg = segments[i]!;
+    const next = cursor[seg];
+    if (!isPlainObject(next)) return; // path doesn't exist — nothing to delete
+    trail.push({ parent: cursor, key: seg });
+    cursor = next;
+  }
+  delete cursor[segments[segments.length - 1]!];
+  // Walk back up pruning containers that are now empty. Stops at the root
+  // (we never delete the tree itself, even if it ends up empty).
+  for (let i = trail.length - 1; i >= 0; i--) {
+    const { parent, key } = trail[i]!;
+    const child = parent[key];
+    if (isPlainObject(child) && Object.keys(child).length === 0) {
+      delete parent[key];
+    } else {
+      break;
+    }
+  }
+}
+
 // Stats for a translated tree relative to a base tree (English):
 //   total      — leaf count in the base
 //   translated — leaves where the overlay's value differs from the base

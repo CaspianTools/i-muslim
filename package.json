@@ -18,6 +18,7 @@
     "cleanup:muslim-owned-submissions": "tsx scripts/cleanup-muslim-owned-submissions.ts",
     "sync:locales": "tsx scripts/sync-locale-translations.ts",
     "check:locales": "tsx scripts/check-locale-parity.ts",
+    "gen:icons": "tsx scripts/generate-icons.ts",
     "recompute:translation-stats": "tsx scripts/recompute-translation-stats.ts",
     "migrate:country-iso2": "tsx scripts/migrate-profile-country-to-iso2.ts",
     "migrate:hadith-publish-status": "tsx scripts/migrate-hadith-publish-status.ts",
