@@ -57,9 +57,9 @@ export default async function MatrimonialLandingPage() {
         </div>
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-3 text-sm">
-        <Pillar icon={<Sparkles className="size-4 text-primary" />} text="Photos hidden until match" />
-        <Pillar icon={<ShieldCheck className="size-4 text-primary" />} text="Admin-reviewed profiles" />
-        <Pillar icon={<Heart className="size-4 text-primary" />} text="Marriage intent only" />
+        <Pillar icon={<Sparkles className="size-4 text-primary" />} text={t("pillarPhotos")} />
+        <Pillar icon={<ShieldCheck className="size-4 text-primary" />} text={t("pillarReviewed")} />
+        <Pillar icon={<Heart className="size-4 text-primary" />} text={t("pillarIntent")} />
       </div>
     </div>
   );

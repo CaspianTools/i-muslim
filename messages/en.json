@@ -1199,7 +1199,10 @@
       "ctaContinue": "Continue to your profile",
       "expectationsTitle": "Conduct expectations",
       "expectationsBody": "This space is for serious marriage intent. Treat every member's family with the dignity Allah commanded. Misuse leads to suspension.",
-      "notConfigured": "Firebase is not configured — sign-in won't work yet."
+      "notConfigured": "Firebase is not configured — sign-in won't work yet.",
+      "pillarPhotos": "Photos hidden until match",
+      "pillarReviewed": "Admin-reviewed profiles",
+      "pillarIntent": "Marriage intent only"
     },
     "onboarding": {
       "title": "Create your matrimonial profile",
