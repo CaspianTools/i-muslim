@@ -12,6 +12,7 @@ import {
   NoteEditorTrigger,
 } from "@/components/site/NoteEditor";
 import { AyahCommentsButton } from "@/components/comments/AyahCommentsButton";
+import { AyahActionsRow } from "@/components/AyahActionsRow";
 
 function stripHtml(s: string): string {
   // Translations from quran.com may contain <sup foot_note="...">N</sup> footnote markers.
@@ -77,25 +78,52 @@ export function AyahCard({
           <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-muted px-2 text-xs font-medium text-muted-foreground">
             {verse.verse_key}
           </span>
-          <div className="flex items-center gap-2">
-            <NoteEditorTrigger />
-            <AyahCommentsButton
-              surahId={surahId}
-              ayahNumber={verse.verse_number}
-              surahName={surahName}
-              locale={locale}
-              signedIn={signedIn}
-              currentUid={currentUid}
-              initialCount={commentCount}
-            />
-            <FavoriteButton
-              itemType="ayah"
-              itemId={verse.verse_key}
-              itemMeta={itemMeta}
-              signedIn={signedIn}
-              iconOnly
-            />
-          </div>
+          <AyahActionsRow
+            triggerLabel={`${surahName} ${verse.verse_key} actions`}
+            desktop={
+              <>
+                <NoteEditorTrigger />
+                <AyahCommentsButton
+                  surahId={surahId}
+                  ayahNumber={verse.verse_number}
+                  surahName={surahName}
+                  locale={locale}
+                  signedIn={signedIn}
+                  currentUid={currentUid}
+                  initialCount={commentCount}
+                />
+                <FavoriteButton
+                  itemType="ayah"
+                  itemId={verse.verse_key}
+                  itemMeta={itemMeta}
+                  signedIn={signedIn}
+                  iconOnly
+                />
+              </>
+            }
+            mobile={
+              <>
+                <NoteEditorTrigger className="w-full justify-start" />
+                <AyahCommentsButton
+                  surahId={surahId}
+                  ayahNumber={verse.verse_number}
+                  surahName={surahName}
+                  locale={locale}
+                  signedIn={signedIn}
+                  currentUid={currentUid}
+                  initialCount={commentCount}
+                  className="w-full justify-start"
+                />
+                <FavoriteButton
+                  itemType="ayah"
+                  itemId={verse.verse_key}
+                  itemMeta={itemMeta}
+                  signedIn={signedIn}
+                  className="w-full justify-start"
+                />
+              </>
+            }
+          />
         </header>
 
         {langs.includes("ar") && (

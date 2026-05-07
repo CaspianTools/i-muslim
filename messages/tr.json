@@ -499,6 +499,13 @@
     "language": "Language",
     "theme": "Theme"
   },
+  "surahPagination": {
+    "ariaLabel": "Surah pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "position": "{current} of {total}",
+    "progressLabel": "Reading progress through the 114 surahs"
+  },
   "onboarding": {
     "welcomeTitle": "Welcome to i-muslim",
     "welcomeDescription": "Quran, Hadith, prayer times, and mosques in one place. Set up takes ten seconds.",

@@ -6,6 +6,7 @@ import {
   getAyahsForSurah,
   filterVerseLangs,
 } from "@/lib/quran/db";
+import { SurahPagination } from "@/components/site/quran/SurahPagination";
 import { parseLangsParam } from "@/lib/translations";
 import { getLocale } from "next-intl/server";
 import { AyahCard } from "@/components/AyahCard";
@@ -193,28 +194,13 @@ export default async function SurahPage({
               }}
             />
 
-            <nav className="mt-8 flex items-center justify-between gap-2 text-sm">
-              {prev ? (
-                <Link
-                  href={`/quran/${prev.id}${langQS}`}
-                  className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
-                >
-                  ← {prev.name_simple}
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <Link
-                  href={`/quran/${next.id}${langQS}`}
-                  className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
-                >
-                  {next.name_simple} →
-                </Link>
-              ) : (
-                <span />
-              )}
-            </nav>
+            <SurahPagination
+              current={id}
+              total={chapters.length}
+              prev={prev}
+              next={next}
+              qs={langQS}
+            />
           </div>
         </div>
       </div>

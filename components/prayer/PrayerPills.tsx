@@ -27,6 +27,27 @@ export function PrayerPills({
 
   const tz = effectivePrefs?.tz ?? "UTC";
 
+  // Loading state — render shimmer pills until the prayer-times hook has
+  // hydrated effectivePrefs (localStorage read + auto-detect). Without this
+  // the row flashes 5 dashes and then jumps to real values, which reads as
+  // broken on slow connections.
+  if (!today) {
+    return (
+      <ul
+        className={
+          "flex items-center gap-1 text-xs sm:text-sm " + (className ?? "")
+        }
+        aria-busy="true"
+      >
+        {PRAYERS.map((key) => (
+          <li key={key}>
+            <span className="skeleton inline-block h-6 w-16 rounded-md" />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <ul
       className={
@@ -35,7 +56,7 @@ export function PrayerPills({
     >
       {PRAYERS.map((key) => {
         const isNext = next?.key === key && !next.isTomorrow;
-        const time = today ? formatPrayerTime(today[key], tz, locale) : "—";
+        const time = formatPrayerTime(today[key], tz, locale);
         const label = tPrayers(key);
         const baseClass =
           "inline-flex items-center gap-1.5 rounded-md px-2 py-1 " +
