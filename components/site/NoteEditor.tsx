@@ -32,7 +32,7 @@ interface CardCtx {
   pending: boolean;
   draft: string;
   setDraft: (s: string) => void;
-  open: () => void;
+  toggle: () => void;
   cancel: () => void;
   save: () => void;
   remove: () => void;
@@ -95,18 +95,22 @@ export function NoteEditor({
     });
   }
 
-  function open() {
+  function cancel() {
+    setEditing(false);
+    setDraft(note?.text ?? "");
+  }
+
+  function toggle() {
     if (!signedIn) {
       handleSignInGate();
       return;
     }
+    if (editing) {
+      cancel();
+      return;
+    }
     setDraft(note?.text ?? "");
     setEditing(true);
-  }
-
-  function cancel() {
-    setEditing(false);
-    setDraft(note?.text ?? "");
   }
 
   function save() {
@@ -196,7 +200,7 @@ export function NoteEditor({
       pending,
       draft,
       setDraft,
-      open,
+      toggle,
       cancel,
       save,
       remove,
@@ -209,7 +213,7 @@ export function NoteEditor({
 }
 
 export function NoteEditorTrigger({ className }: { className?: string }) {
-  const { note, pending, open } = useCard();
+  const { note, editing, pending, toggle } = useCard();
   const t = useTranslations("notes");
   const hasNote = Boolean(note);
   const label = hasNote ? t("editNote") : t("addNote");
@@ -217,11 +221,11 @@ export function NoteEditorTrigger({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      onClick={open}
+      onClick={toggle}
       disabled={pending}
       aria-label={label}
       title={label}
-      aria-pressed={hasNote}
+      aria-pressed={editing}
       className={cn(
         "inline-flex items-center gap-1.5 rounded-md border transition-colors h-8 px-2 text-xs",
         hasNote ? "ui-selected-chip" : "ui-selected-chip-idle",
