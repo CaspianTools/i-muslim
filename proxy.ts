@@ -16,11 +16,13 @@ function pickLocaleFromCookie(req: NextRequest): string {
   return isLocale(fromCookie) ? fromCookie : DEFAULT_LOCALE;
 }
 
-// On Firebase App Hosting (Cloud Run), the container listens on internal
-// :8080 while the public proxy serves :443. `req.nextUrl` reflects the
-// internal request, so any absolute redirect built from it leaks `:8080`
-// into the Location header. Rewrite it back to the external host using the
-// x-forwarded-* headers Cloud Run sets.
+// `req.nextUrl.host` in Next 16's middleware runtime drops the port (in dev,
+// "localhost:7777" becomes "localhost"; in prod behind Cloud Run, the
+// internal ":8080" leaks while the external host is :443). Either way an
+// absolute redirect built from `req.nextUrl` ends up wrong. Rewrite the
+// Location header using the most reliable host we have: x-forwarded-host
+// when present (Cloud Run + most reverse proxies), else the browser's own
+// Host header (dev + any unproxied environment).
 function fixForwardedLocation(
   res: NextResponse,
   req: NextRequest,
@@ -29,14 +31,25 @@ function fixForwardedLocation(
   if (!location) return res;
 
   const forwardedHost = req.headers.get("x-forwarded-host");
-  if (!forwardedHost) return res;
   const forwardedProto = req.headers.get("x-forwarded-proto");
+  const targetHost = forwardedHost ?? req.headers.get("host");
+  if (!targetHost) return res;
 
   try {
     const url = new URL(location, req.nextUrl);
-    url.host = forwardedHost;
-    url.port = "";
-    if (forwardedProto) url.protocol = `${forwardedProto}:`;
+    if (url.host === targetHost) return res; // already correct
+
+    if (forwardedHost) {
+      // Cloud Run path: external host with no port; clear any leaked
+      // internal port (e.g. :8080) and respect the original protocol.
+      url.host = forwardedHost;
+      url.port = "";
+      if (forwardedProto) url.protocol = `${forwardedProto}:`;
+    } else {
+      // Dev path: the Host header already encodes "localhost:7777" —
+      // setting url.host with the colon-port form parses both pieces.
+      url.host = targetHost;
+    }
     res.headers.set("location", url.toString());
   } catch {
     // Pathological Location value — leave untouched.
