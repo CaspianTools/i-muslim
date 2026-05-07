@@ -659,6 +659,10 @@
       "ctaQuran": "Kur'an'ı oku",
       "ctaHadith": "Hadis oku"
     },
+    "continueReading": {
+      "heading": "Continue reading",
+      "resume": "Resume"
+    },
     "features": {
       "heading": "i-muslim'i keşfet",
       "subheading": "Uygulamanın bir araya getirdiği her şey tek yerde.",
@@ -811,6 +815,8 @@
       "zakatDue": "Toplam Zekât Borcu (%2.5)",
       "nisabLabel": "Nisab eşiği: {value}",
       "belowNisab": "Net servetiniz şu anda Nisab eşiğinin altında. Zekât farz değildir, ancak gönüllü sadaka her zaman sevap kazandırır.",
+      "aboveNisab": "Above nisab",
+      "belowNisabShort": "Below nisab",
       "reset": "Hesabı sıfırla",
       "disclaimer": "* Bu hesaplayıcı bir kılavuzdur. Net serveti bir kameri yıl boyunca Nisab'ı aşan kişilere zekât farzdır. Karmaşık durumlar için bir âlime danışın."
     },

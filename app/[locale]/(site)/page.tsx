@@ -7,6 +7,7 @@ import { RecentMasjids } from "@/components/home/RecentMasjids";
 import { RecentBusinesses } from "@/components/home/RecentBusinesses";
 import { HomeEventsThisWeek } from "@/components/home/HomeEventsThisWeek";
 import { HomeTools } from "@/components/home/HomeTools";
+import { ContinueReading } from "@/components/home/ContinueReading";
 
 // Inline skeletons used as <Suspense fallback>. Each matches the visual
 // shape of its corresponding async server component so the page doesn't
@@ -39,6 +40,14 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
       <HomeHero />
+
+      {/* "Continue reading" card — server-rendered, returns null for
+          anonymous visitors and signed-in users with no prior progress.
+          Wrapped in Suspense so the rest of the home page renders even if
+          the Firestore read is slow. */}
+      <Suspense fallback={null}>
+        <ContinueReading />
+      </Suspense>
 
       <div className="mt-10 grid gap-5 lg:grid-cols-2">
         <Suspense fallback={<CardSkeleton />}>

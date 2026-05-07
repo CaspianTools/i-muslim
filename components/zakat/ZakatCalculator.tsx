@@ -20,6 +20,7 @@ import { ReceivableLine } from "./ReceivableLine";
 import { DynamicLine } from "./DynamicLine";
 import { NumericInput } from "./NumericInput";
 import { ResultsPanel } from "./ResultsPanel";
+import { MobileZakatSummary } from "./MobileZakatSummary";
 import { SettingsDialog } from "./SettingsDialog";
 import { SyncRatesButton } from "./SyncRatesButton";
 import {
@@ -406,6 +407,16 @@ export function ZakatCalculator() {
         settings={state.settings}
         onMazhabChange={(m) => dispatch({ type: "SET_MAZHAB", mazhab: m })}
         onSettingsChange={(s) => dispatch({ type: "SET_SETTINGS", settings: s })}
+      />
+
+      {/* Mobile-only sticky summary above the bottom tab bar — surfaces the
+          headline number while the user is mid-input so they don't scroll
+          2,800px to confirm "did this cross nisab?". Desktop already has
+          the lg:sticky ResultsPanel sitting beside the inputs. */}
+      <MobileZakatSummary
+        zakatDue={totals.zakatDue}
+        netWealth={totals.netWealth}
+        nisab={nisab.value}
       />
     </div>
   );

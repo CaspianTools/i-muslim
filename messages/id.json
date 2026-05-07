@@ -659,6 +659,10 @@
       "ctaQuran": "Baca Al-Qur'an",
       "ctaHadith": "Baca Hadis"
     },
+    "continueReading": {
+      "heading": "Continue reading",
+      "resume": "Resume"
+    },
     "features": {
       "heading": "Jelajahi i-muslim",
       "subheading": "Semua yang dirangkum aplikasi ini dalam satu tempat.",
@@ -811,6 +815,8 @@
       "zakatDue": "Total Zakat Terutang (2,5%)",
       "nisabLabel": "Ambang Nisab: {value}",
       "belowNisab": "Harta bersih Anda saat ini di bawah ambang Nisab. Zakat tidak wajib, tetapi sedekah sukarela tetap berpahala.",
+      "aboveNisab": "Above nisab",
+      "belowNisabShort": "Below nisab",
       "reset": "Atur ulang perhitungan",
       "disclaimer": "* Kalkulator ini sebagai panduan. Zakat wajib bagi yang harta bersihnya melampaui Nisab selama satu tahun hijriah. Konsultasikan dengan ulama untuk situasi rumit."
     },

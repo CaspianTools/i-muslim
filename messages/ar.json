@@ -659,6 +659,10 @@
       "ctaQuran": "اقرأ القرآن",
       "ctaHadith": "اقرأ الحديث"
     },
+    "continueReading": {
+      "heading": "Continue reading",
+      "resume": "Resume"
+    },
     "features": {
       "heading": "استكشف i-muslim",
       "subheading": "كل ما يجمعه التطبيق في مكان واحد.",
@@ -811,6 +815,8 @@
       "zakatDue": "الزكاة المستحقة (2.5٪)",
       "nisabLabel": "حدّ النصاب: {value}",
       "belowNisab": "صافي ثروتك حالياً دون النصاب. الزكاة غير واجبة، لكن الصدقة التطوعية لها الأجر دائماً.",
+      "aboveNisab": "Above nisab",
+      "belowNisabShort": "Below nisab",
       "reset": "إعادة الحساب",
       "disclaimer": "* هذه الحاسبة دليل إرشادي. تجب الزكاة على من بلغ ماله النصاب وحال عليه الحول. يُرجى استشارة عالم في الحالات المعقدة."
     },

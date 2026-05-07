@@ -656,6 +656,10 @@
       "ctaQuran": "Read the Quran",
       "ctaHadith": "Read Hadith"
     },
+    "continueReading": {
+      "heading": "Continue reading",
+      "resume": "Resume"
+    },
     "features": {
       "heading": "Explore i-muslim",
       "subheading": "Everything the app brings together in one place.",
@@ -808,6 +812,8 @@
       "zakatDue": "Total Zakat Due (2.5%)",
       "nisabLabel": "Nisab threshold: {value}",
       "belowNisab": "Your net wealth is currently below the Nisab threshold. Zakat is not obligatory, but voluntary charity (sadaqah) is always rewarding.",
+      "aboveNisab": "Above nisab",
+      "belowNisabShort": "Below nisab",
       "reset": "Reset calculation",
       "disclaimer": "* This calculator is a guide. Zakat is obligatory for those whose net wealth exceeds the Nisab for one lunar year. Please consult a scholar for complex situations."
     },

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { MosqueCard } from "@/components/mosque/MosqueCard";
 import { MosqueFilters } from "@/components/mosque/MosqueFilters";
+import { PullToRefresh } from "@/components/site/PullToRefresh";
 import { fetchPublishedMosques, fetchCountryAggregates } from "@/lib/admin/data/mosques";
 import { parseNearParam } from "@/lib/mosques/geo";
 import { countryName } from "@/lib/mosques/countries";
@@ -51,6 +52,7 @@ export default async function MosquesIndex({
   const countLabel = total_ === 1 ? tResults("countOne", { count: total_ }) : tResults("countOther", { count: total_ });
 
   return (
+    <PullToRefresh>
     <div className="mx-auto max-w-6xl px-4 py-8 sm:py-12">
       <header className="flex flex-col gap-3 border-b border-border pb-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -130,5 +132,6 @@ export default async function MosquesIndex({
         }}
       />
     </div>
+    </PullToRefresh>
   );
 }

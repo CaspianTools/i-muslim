@@ -1,6 +1,7 @@
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { PrayerTimesBar } from "@/components/prayer/PrayerTimesBar";
+import { PrayerChime } from "@/components/prayer/PrayerChime";
 import { MobileBottomTabBar } from "@/components/mobile/MobileBottomTabBar";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
@@ -36,6 +37,12 @@ export default function SiteLayout({
           ships the real content under it (SEO-safe, deep-link-safe). */}
       <OnboardingModal />
       <ShrinkOnScroll />
+      {/* Soft chime + 200 ms vibration at every prayer-time transition. No
+          render output; schedules a setTimeout off the next prayer's UTC
+          time and re-arms when the ticker rolls past it. AudioContext is
+          unlocked on the first user interaction (touch / click) — autoplay
+          policies prevent us from creating it eagerly. */}
+      <PrayerChime />
       <Toaster />
     </>
   );
