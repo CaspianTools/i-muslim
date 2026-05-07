@@ -1,5 +1,7 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getHadithCollection } from "@/lib/hadith/db";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
@@ -9,13 +11,14 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ collection: string }>;
-}) {
+}): Promise<Metadata> {
   const { collection } = await params;
   const meta = await getHadithCollection(collection);
   if (!meta) return {};
+  const t = await getTranslations("hadithPage");
   return {
-    title: `${meta.name_en} — Books`,
-    description: `Browse books of ${meta.name_en}.`,
+    title: t("collectionMetaTitle", { name: meta.name_en }),
+    description: t("collectionMetaDescription", { name: meta.name_en }),
   };
 }
 
@@ -28,9 +31,10 @@ export default async function CollectionPage({
 }) {
   const { collection } = await params;
   const { lang: langParam } = await searchParams;
-  const [meta, languageSettings] = await Promise.all([
+  const [meta, languageSettings, t] = await Promise.all([
     getHadithCollection(collection),
     getLanguageSettings(),
+    getTranslations("hadithPage"),
   ]);
   if (!meta) notFound();
 
@@ -50,7 +54,7 @@ export default async function CollectionPage({
             href={`/hadith${langQS}`}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
-            ← All collections
+            {t("backToCollections")}
           </Link>
 
           <header className="mt-4 border-b border-border pb-6">
@@ -60,7 +64,10 @@ export default async function CollectionPage({
                   {meta.name_en}
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {meta.books.length} books · {meta.total} total hadith
+                  {t("collectionSummary", {
+                    books: meta.books.length,
+                    total: meta.total,
+                  })}
                 </p>
               </div>
               <p dir="rtl" lang="ar" className="font-arabic text-3xl text-foreground">
@@ -80,7 +87,9 @@ export default async function CollectionPage({
                     {b.number}
                   </span>
                   <span className="flex-1 truncate">{b.name}</span>
-                  <span className="text-xs text-muted-foreground">{b.count} hadith</span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("bookCount", { count: b.count })}
+                  </span>
                 </Link>
               </li>
             ))}

@@ -2376,6 +2376,24 @@
     "moreItems": "+{count} daha",
     "removeChip": "{name} sil"
   },
+  "hadithPage": {
+    "metaTitle": "Hadis — Başlıca Koleksiyonlar",
+    "metaDescription": "Sünni hadis koleksiyonlarına göz atın: Buhari, Müslim, Ebu Davud, Tirmizi, Nesai, İbn Mace, Malik, Nevevi 40, Kudsi 40.",
+    "indexHeading": "Hadis Koleksiyonları",
+    "indexSubtitle": "Dokuz başlıca koleksiyon. Kitaba göre incelemek için birini seçin.",
+    "preparing": "Hadis veritabanı şu anda hazırlanıyor. Lütfen daha sonra tekrar kontrol edin.",
+    "cardCount": "{total} hadis · {books} kitap",
+    "collectionMetaTitle": "{name} — Kitaplar",
+    "collectionMetaDescription": "{name} kitaplarına göz atın.",
+    "backToCollections": "← Tüm koleksiyonlar",
+    "collectionSummary": "{books} kitap · toplam {total} hadis",
+    "bookCount": "{count} hadis",
+    "bookMetaTitle": "{name} — Kitap {book}",
+    "bookEyebrow": "{collection} · Kitap {book}",
+    "bookSummary": "Bu kitapta {count} hadis var.",
+    "prevBook": "← Kitap {n}",
+    "nextBook": "Kitap {n} →"
+  },
   "profileNav": {
     "title": "Profil",
     "items": {
