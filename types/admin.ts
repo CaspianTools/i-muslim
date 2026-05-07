@@ -113,6 +113,13 @@ export interface AdminEvent {
   recurrence?: string;
   startAnchor?: EventStartAnchor;
   hijriAnchor?: HijriAnchor;
+  /**
+   * Slug of the host mosque (Firestore `mosques/{slug}`), if this event is
+   * organized by a specific mosque. Absent for community-wide / online-only
+   * events. Set by site admins or by mosque managers via the public submit
+   * flow with `?mosqueId=<slug>`.
+   */
+  mosqueId?: string;
   submittedBy?: { uid?: string; email?: string };
   createdAt: string;
   updatedAt: string;

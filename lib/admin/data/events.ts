@@ -143,6 +143,7 @@ export function normalizeEvent(id: string, raw: Record<string, unknown>): AdminE
     recurrence: asOptionalString(raw.recurrence),
     startAnchor: asStartAnchor(raw.startAnchor),
     hijriAnchor: asHijriAnchor(raw.hijriAnchor),
+    mosqueId: asOptionalString(raw.mosqueId),
     submittedBy,
     createdAt: asIso(raw.createdAt),
     updatedAt: asIso(raw.updatedAt ?? raw.createdAt),
@@ -185,6 +186,42 @@ export async function fetchUpcomingEvents(windowDays = 14, limit = 6): Promise<U
     return projectUpcoming(events, now, horizon, limit);
   } catch (err) {
     console.warn("[admin/data/events] Upcoming Firestore read failed:", err);
+    return [];
+  }
+}
+
+/**
+ * Upcoming published events organized by a specific mosque, sorted by next
+ * occurrence. Honors recurrence/anchor projection so weekly Friday prayers
+ * etc. continue to surface beyond their first occurrence. Returns an empty
+ * list on Firestore failure (so the mosque page renders without the section
+ * rather than 500ing).
+ */
+export async function fetchUpcomingEventsByMosque(
+  mosqueSlug: string,
+  { windowDays = 90, limit = 5 }: { windowDays?: number; limit?: number } = {},
+): Promise<UpcomingEvent[]> {
+  if (!mosqueSlug) return [];
+  const db = getDb();
+  if (!db) return [];
+
+  const now = new Date();
+  const horizon = new Date(now.getTime() + windowDays * 24 * 60 * 60 * 1000);
+
+  try {
+    const snap = await db
+      .collection("events")
+      .where("mosqueId", "==", mosqueSlug)
+      .where("status", "==", "published")
+      .limit(200)
+      .get();
+    if (snap.empty) return [];
+    const events = snap.docs
+      .map((d) => normalizeEvent(d.id, d.data() as Record<string, unknown>))
+      .filter((e): e is AdminEvent => e !== null);
+    return projectUpcoming(events, now, horizon, limit);
+  } catch (err) {
+    console.warn("[admin/data/events] mosque-events read failed:", err);
     return [];
   }
 }

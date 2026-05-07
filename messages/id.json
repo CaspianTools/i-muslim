@@ -27,6 +27,12 @@
     "moreCountries": "+{count} lainnya",
     "removeChip": "Hapus {name}"
   },
+  "mosqueCombobox": {
+    "selectMosque": "Select mosque…",
+    "searchPlaceholder": "Search mosques…",
+    "noResults": "No mosques found.",
+    "clear": "Clear selection"
+  },
   "madhhabCombobox": {
     "selectMadhhabs": "Pilih mazhab",
     "searchPlaceholder": "Cari mazhab…",
@@ -1014,6 +1020,8 @@
       "organizerContact": "Kontak (email atau telepon)",
       "capacity": "Kapasitas",
       "capacityHint": "Opsional. Kosongkan untuk tanpa batas.",
+      "mosque": "Hosting mosque",
+      "mosqueHint": "Optional. Link this event to a mosque so it shows up on the mosque page.",
       "save": "Simpan perubahan",
       "create": "Buat acara",
       "noPersistNote": "Penyimpanan dinonaktifkan dalam mode data contoh. Atur Firebase Admin untuk menyimpan acara.",
@@ -1068,7 +1076,7 @@
     "locationUnsupported": "Lokasi tidak didukung di peramban ini.",
     "kmAway": "{km} km",
     "noResults": "Tidak ada acara mendatang.",
-    "noResultsHint": "Know of one we should list? Submit it and admins will review it for the public calendar.",
+    "noResultsHint": "Tahu acara yang seharusnya kami tampilkan? Kirimkan, dan admin akan meninjau sebelum dimasukkan ke kalender publik.",
     "anchorNote": "Mulai pada waktu {prayer}",
     "backToEvents": "Kembali ke acara",
     "addToCalendar": "Tambahkan ke kalender (.ics)",
@@ -1083,6 +1091,7 @@
       "title": "Kirim acara",
       "subtitle": "Usulkan acara komunitas untuk ditinjau.",
       "guideline": "Kiriman ditinjau oleh admin sebelum tampil di kalender publik.",
+      "hostingMosque": "Submitting on behalf of <strong>{name}</strong>. The event will appear on this mosque's page.",
       "steps": {
         "basics": "Dasar",
         "when": "Kapan",
@@ -1611,6 +1620,11 @@
       "reportTitle": "Laporkan masalah",
       "reportNote": "Menemukan ketidakakuratan? Beri tahu kami untuk memperbaikinya."
     },
+    "events": {
+      "title": "Upcoming events",
+      "empty": "No upcoming events at this mosque yet.",
+      "addEvent": "Add event"
+    },
     "hub": {
       "byCountryTitle": "Jelajahi per negara",
       "byCityTitle": "Kota di {country}",
@@ -1726,6 +1740,17 @@
       "coverImageLabel": "Gambar sampul",
       "logoLabel": "Logo",
       "facilitiesEmpty": "Belum ada fasilitas. Tambahkan di /admin/mosques/facilities terlebih dahulu.",
+      "managers": {
+        "label": "Managers",
+        "hint": "Verified users who can create events for this mosque from its public page. Verify identity off-platform before assigning.",
+        "addByEmail": "Add by email",
+        "emailPlaceholder": "manager@example.com",
+        "addButton": "Add",
+        "remove": "Remove manager",
+        "notFound": "No user with that email. They must sign in once before you can assign them.",
+        "invalidEmail": "Enter a valid email.",
+        "errorGeneric": "Couldn't add manager. Try again."
+      },
       "status": "Status",
       "actions": {
         "save": "Simpan perubahan",

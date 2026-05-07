@@ -55,6 +55,17 @@ export const eventSubmitSchema = z
       contact: optionalTrimmed,
     }),
     submitterEmail: z.string().email(),
+    /**
+     * Slug of a mosque this event is hosted by. The submit endpoint verifies
+     * the caller is in `mosques/{slug}.managers[]` (or has `mosques.write`)
+     * before persisting; an unauthorized slug is dropped, not surfaced as an
+     * error, so we don't leak whether a slug exists.
+     */
+    mosqueId: z
+      .string()
+      .regex(/^[a-z0-9-]+$/)
+      .optional()
+      .or(z.literal("").transform(() => undefined)),
     website_url_secondary: z.string().optional(),
   })
   .refine(

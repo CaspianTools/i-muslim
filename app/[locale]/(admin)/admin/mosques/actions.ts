@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePermission } from "@/lib/permissions/server";
-import { getDb } from "@/lib/firebase/admin";
+import { getAdminAuth, getDb } from "@/lib/firebase/admin";
 import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
 import { buildMosqueSlug, isReservedSlug, withCollisionSuffix } from "@/lib/mosques/slug";
 import { buildSearchTokens } from "@/lib/mosques/search";
@@ -80,6 +80,12 @@ const mosqueInputSchema = z.object({
   status: z
     .enum(["draft", "pending_review", "published", "rejected", "suspended"])
     .default("draft"),
+  /**
+   * Firebase Auth uids of users authorized to manage this mosque (e.g. create
+   * events on its behalf via the public submit flow). Site admins assign these
+   * after off-platform identity verification. Empty array clears all managers.
+   */
+  managers: z.array(z.string().min(1)).optional(),
 });
 
 export type MosqueInput = z.infer<typeof mosqueInputSchema>;
@@ -185,6 +191,7 @@ function buildPersistable(
     logoUrl: input.logoUrl || undefined,
     logoStoragePath: input.logoStoragePath || undefined,
     submittedBy: { uid, email },
+    managers: input.managers ?? [],
     moderation: {
       reviewedBy: uid,
       reviewedAt: now.toISOString(),
@@ -362,6 +369,41 @@ export async function deleteMosqueImageAction(
   // block the form save flow.
   await deleteMosqueStorageObject(storagePath);
   return { ok: true };
+}
+
+/**
+ * Resolve an email address to a Firebase Auth uid. Used by the mosque editor
+ * to let admins add managers by email rather than raw uid. Returns { ok: false,
+ * error: "not_found" } when no user has signed up with that email yet.
+ */
+export async function lookupUserByEmailAction(
+  email: string,
+): Promise<
+  | { ok: true; data: { uid: string; email: string; displayName: string | null } }
+  | { ok: false; error: string }
+> {
+  try {
+    await requirePermission("mosques.write");
+  } catch {
+    return { ok: false, error: "unauthorized" };
+  }
+  const trimmed = email.trim().toLowerCase();
+  if (!/^.+@.+\..+$/.test(trimmed)) return { ok: false, error: "invalid_email" };
+  const auth = getAdminAuth();
+  if (!auth) return { ok: false, error: "auth_not_configured" };
+  try {
+    const user = await auth.getUserByEmail(trimmed);
+    return {
+      ok: true,
+      data: {
+        uid: user.uid,
+        email: user.email ?? trimmed,
+        displayName: user.displayName ?? null,
+      },
+    };
+  } catch {
+    return { ok: false, error: "not_found" };
+  }
 }
 
 export async function bulkImport(rows: unknown[]): Promise<{ ok: boolean; created: number; failed: number; errors: string[] }> {

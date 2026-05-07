@@ -149,6 +149,12 @@ export interface Mosque {
   // Provenance / moderation
   submittedBy?: { uid?: string; email?: string };
   moderation?: MosqueModeration;
+  /**
+   * Firebase Auth uids of users who can manage this mosque (currently: create
+   * events linked to it). Assigned by site admins after off-platform identity
+   * verification. One user may manage multiple mosques.
+   */
+  managers?: string[];
   // Search
   searchTokens: string[];
   altSpellings?: string[];

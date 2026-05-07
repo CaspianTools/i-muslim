@@ -6,6 +6,7 @@ import { eventSubmitSchema } from "@/lib/events/submit-schema";
 import { fetchEventCategories } from "@/lib/admin/data/event-categories";
 import { createNotification } from "@/lib/admin/data/notifications";
 import { buildRRule } from "@/lib/admin/recurrence";
+import { canManageMosque } from "@/lib/mosques/authz";
 
 export const runtime = "nodejs";
 
@@ -70,6 +71,16 @@ export async function POST(req: Request) {
       ? buildRRule(data.recurrence, startsAtDate)
       : undefined;
 
+  // The caller's claim to host this event under a specific mosque must be
+  // re-checked server-side — never trust the client. If the verification
+  // fails we silently drop the field rather than reject the submission, so
+  // unauthorized callers can't probe which slugs exist.
+  let verifiedMosqueId: string | undefined;
+  if (data.mosqueId) {
+    const allowed = await canManageMosque(data.mosqueId);
+    if (allowed) verifiedMosqueId = data.mosqueId;
+  }
+
   const eventDoc = stripUndefined({
     title: data.title,
     description: data.description,
@@ -93,6 +104,7 @@ export async function POST(req: Request) {
       contact: data.organizer.contact,
     },
     rsvpCount: 0,
+    mosqueId: verifiedMosqueId,
     submittedBy: { uid: session.uid, email: data.submitterEmail },
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),

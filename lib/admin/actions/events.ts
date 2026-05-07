@@ -58,6 +58,12 @@ const eventInputSchema = z
         minuteLocal: z.number().int().min(0).max(59),
       })
       .optional(),
+    mosqueId: z
+      .string()
+      .min(1)
+      .regex(/^[a-z0-9-]+$/, "Invalid mosque slug")
+      .optional()
+      .or(z.literal("").transform(() => undefined)),
   })
   .refine(
     (v) => !v.endsAt || new Date(v.endsAt).getTime() >= new Date(v.startsAt).getTime(),
@@ -99,6 +105,7 @@ function toFirestorePayload(input: EventInput) {
     recurrence: input.recurrence,
     startAnchor: input.startAnchor,
     hijriAnchor: input.hijriAnchor,
+    mosqueId: input.mosqueId,
   });
 }
 
@@ -179,9 +186,15 @@ export async function updateEventAction(id: string, input: EventInput): Promise<
 
   try {
     const ref = db.collection("events").doc(id);
+    // `stripUndefined` drops `mosqueId` when the admin un-picks the mosque,
+    // so without a delete sentinel `set(..., { merge: true })` would leave the
+    // old slug in place. Make the clear explicit.
+    const mosqueClear =
+      parsed.data.mosqueId === undefined ? { mosqueId: FieldValue.delete() } : {};
     await ref.set(
       {
         ...toFirestorePayload(parsed.data),
+        ...mosqueClear,
         updatedAt: FieldValue.serverTimestamp(),
       },
       { merge: true },

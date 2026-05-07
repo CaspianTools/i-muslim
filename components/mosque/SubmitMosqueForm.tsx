@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, Loader2, MapPin, Pencil, Save, Send } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, MapPin, Pencil, Plus, Save, Send, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import { DENOMINATIONS, deriveFacilitiesFromServices } from "@/lib/mosques/const
 import { defaultPrayerCalc, suggestPrayerCalc } from "@/lib/mosques/adhan";
 import {
   createMosque,
+  lookupUserByEmailAction,
   updateMosque,
   type MosqueInput,
 } from "@/app/[locale]/(admin)/admin/mosques/actions";
@@ -95,6 +96,11 @@ interface FormState {
   logoStoragePath: string;
   // Admin
   adminStatus: MosqueStatus;
+  // Mosque managers — uid + display label (email/name) for the chip list.
+  // The form persists `uid[]` in `MosqueInput.managers`; the labels are
+  // display-only and resolved via `lookupUserByEmailAction` when an admin
+  // adds a manager by email.
+  managers: Array<{ uid: string; label: string }>;
   // honeypot
   website_url_secondary: string;
 }
@@ -135,6 +141,7 @@ function emptyState(): FormState {
     logoUrl: "",
     logoStoragePath: "",
     adminStatus: "draft",
+    managers: [],
     website_url_secondary: "",
   };
 }
@@ -180,6 +187,9 @@ function fromMosque(m: Mosque): FormState {
     logoUrl: m.logoUrl ?? "",
     logoStoragePath: m.logoStoragePath ?? "",
     adminStatus: m.status,
+    // Email/name labels aren't stored on the mosque doc — only uids. Show the
+    // uid as a fallback label until the admin re-adds via email lookup.
+    managers: (m.managers ?? []).map((uid) => ({ uid, label: uid })),
     website_url_secondary: "",
   };
 }
@@ -233,6 +243,40 @@ export function SubmitMosqueForm({
   // we stop auto-suggesting based on country/denomination changes — otherwise
   // an admin's deliberate override could be silently overwritten.
   const prayerCalcDirty = useRef(false);
+
+  // Add-manager-by-email controls (admin step). Local to the form — no need
+  // to live in `state` since they don't survive a save/reset.
+  const [managerEmailInput, setManagerEmailInput] = useState("");
+  const [managerLookupBusy, setManagerLookupBusy] = useState(false);
+
+  async function addManagerByEmail() {
+    const email = managerEmailInput.trim();
+    if (!email) return;
+    setManagerLookupBusy(true);
+    try {
+      const result = await lookupUserByEmailAction(email);
+      if (!result.ok) {
+        if (result.error === "not_found") toast.error(tForm("managers.notFound"));
+        else if (result.error === "invalid_email") toast.error(tForm("managers.invalidEmail"));
+        else toast.error(tForm("managers.errorGeneric"));
+        return;
+      }
+      setState((s) => {
+        if (s.managers.some((m) => m.uid === result.data.uid)) return s;
+        const label = result.data.displayName
+          ? `${result.data.displayName} <${result.data.email}>`
+          : result.data.email;
+        return { ...s, managers: [...s.managers, { uid: result.data.uid, label }] };
+      });
+      setManagerEmailInput("");
+    } finally {
+      setManagerLookupBusy(false);
+    }
+  }
+
+  function removeManager(uid: string) {
+    setState((s) => ({ ...s, managers: s.managers.filter((m) => m.uid !== uid) }));
+  }
 
   // On first mount, default the country from the browser's TZ for nicer UX.
   // (Edit mode skips this — country is always pre-filled.)
@@ -556,6 +600,7 @@ export function SubmitMosqueForm({
       logoUrl: state.logoUrl.trim() || "",
       logoStoragePath: state.logoStoragePath || "",
       status: state.adminStatus,
+      managers: state.managers.map((m) => m.uid),
     };
   }
 
@@ -1156,6 +1201,66 @@ export function SubmitMosqueForm({
                 {tQuick("adminFields.statusHintMosque")}
               </p>
             </div>
+
+            <div className="space-y-2 rounded-md border border-border bg-muted/20 p-3">
+              <div className="space-y-0.5">
+                <Label>{tForm("managers.label")}</Label>
+                <p className="text-xs text-muted-foreground">{tForm("managers.hint")}</p>
+              </div>
+              {state.managers.length > 0 && (
+                <ul className="flex flex-wrap gap-1.5">
+                  {state.managers.map((m) => (
+                    <li
+                      key={m.uid}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1 text-xs"
+                    >
+                      <span className="truncate max-w-[16rem]">{m.label}</span>
+                      <button
+                        type="button"
+                        aria-label={tForm("managers.remove")}
+                        onClick={() => removeManager(m.uid)}
+                        className="text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="size-3" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="flex items-end gap-2">
+                <div className="flex-1 space-y-1.5">
+                  <Label htmlFor="sub-manager-email" className="text-xs">
+                    {tForm("managers.addByEmail")}
+                  </Label>
+                  <Input
+                    id="sub-manager-email"
+                    type="email"
+                    value={managerEmailInput}
+                    onChange={(e) => setManagerEmailInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addManagerByEmail();
+                      }
+                    }}
+                    placeholder={tForm("managers.emailPlaceholder")}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={addManagerByEmail}
+                  disabled={managerLookupBusy || managerEmailInput.trim().length === 0}
+                >
+                  {managerLookupBusy ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Plus />
+                  )}
+                  {tForm("managers.addButton")}
+                </Button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -1270,7 +1375,16 @@ export function SubmitMosqueForm({
                   title={tQuick("steps.admin")}
                   onEdit={() => jumpToStep(STEPS.indexOf("admin"))}
                   editLabel={t("review.editSection", { section: tQuick("steps.admin") })}
-                  rows={[{ label: tQuick("adminFields.status"), value: tStatuses(state.adminStatus) }]}
+                  rows={[
+                    { label: tQuick("adminFields.status"), value: tStatuses(state.adminStatus) },
+                    {
+                      label: tForm("managers.label"),
+                      value:
+                        state.managers.length > 0
+                          ? state.managers.map((m) => m.label).join(", ")
+                          : "—",
+                    },
+                  ]}
                 />
               </>
             )}

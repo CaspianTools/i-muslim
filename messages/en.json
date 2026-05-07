@@ -24,6 +24,12 @@
     "moreCountries": "+{count} more",
     "removeChip": "Remove {name}"
   },
+  "mosqueCombobox": {
+    "selectMosque": "Select mosque…",
+    "searchPlaceholder": "Search mosques…",
+    "noResults": "No mosques found.",
+    "clear": "Clear selection"
+  },
   "madhhabCombobox": {
     "selectMadhhabs": "Select madhhabs",
     "searchPlaceholder": "Search madhhab…",
@@ -1011,6 +1017,8 @@
       "organizerContact": "Contact (email or phone)",
       "capacity": "Capacity",
       "capacityHint": "Optional. Leave empty for unlimited.",
+      "mosque": "Hosting mosque",
+      "mosqueHint": "Optional. Link this event to a mosque so it shows up on the mosque page.",
       "save": "Save changes",
       "create": "Create event",
       "noPersistNote": "Persistence is disabled in sample-data mode. Configure Firebase Admin to save events.",
@@ -1080,6 +1088,7 @@
       "title": "Submit an event",
       "subtitle": "Propose a community event for review.",
       "guideline": "Submissions are reviewed by an admin before appearing on the public calendar.",
+      "hostingMosque": "Submitting on behalf of <strong>{name}</strong>. The event will appear on this mosque's page.",
       "steps": {
         "basics": "Basics",
         "when": "When",
@@ -1608,6 +1617,11 @@
       "reportTitle": "Report a problem",
       "reportNote": "Spotted an inaccuracy? Tell us so we can fix it."
     },
+    "events": {
+      "title": "Upcoming events",
+      "empty": "No upcoming events at this mosque yet.",
+      "addEvent": "Add event"
+    },
     "hub": {
       "byCountryTitle": "Browse by country",
       "byCityTitle": "Cities in {country}",
@@ -1723,6 +1737,17 @@
       "coverImageLabel": "Cover image",
       "logoLabel": "Logo",
       "facilitiesEmpty": "No facilities defined yet. Add some under /admin/mosques/facilities first.",
+      "managers": {
+        "label": "Managers",
+        "hint": "Verified users who can create events for this mosque from its public page. Verify identity off-platform before assigning.",
+        "addByEmail": "Add by email",
+        "emailPlaceholder": "manager@example.com",
+        "addButton": "Add",
+        "remove": "Remove manager",
+        "notFound": "No user with that email. They must sign in once before you can assign them.",
+        "invalidEmail": "Enter a valid email.",
+        "errorGeneric": "Couldn't add manager. Try again."
+      },
       "status": "Status",
       "actions": {
         "save": "Save changes",

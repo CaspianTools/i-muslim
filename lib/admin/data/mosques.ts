@@ -68,6 +68,11 @@ function normalizeMosque(id: string, raw: Record<string, unknown>): Mosque | nul
     logoStoragePath: raw.logoStoragePath as string | undefined,
     submittedBy: raw.submittedBy as Mosque["submittedBy"],
     moderation: raw.moderation as Mosque["moderation"],
+    managers: Array.isArray(raw.managers)
+      ? (raw.managers as unknown[]).filter(
+          (v): v is string => typeof v === "string" && v.length > 0,
+        )
+      : undefined,
     searchTokens: (raw.searchTokens as string[]) ?? [],
     altSpellings: raw.altSpellings as string[] | undefined,
     stats: raw.stats as Mosque["stats"],

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/editor-dialog";
 import { Field, FormGrid, Section } from "@/components/admin/ui/form-layout";
 import { toast } from "@/components/ui/sonner";
+import { MosqueCombobox, type MosqueOption } from "@/components/common/MosqueCombobox";
 import {
   createEventAction,
   updateEventAction,
@@ -54,6 +55,7 @@ type FormValues = {
   organizerName: string;
   organizerContact: string;
   capacity: string;
+  mosqueId: string;
   recurrenceMode: RecurrenceMode;
   recurrenceCount: string;
   hijriMonth: string;
@@ -67,6 +69,8 @@ interface Props {
   event?: AdminEvent | null;
   canPersist: boolean;
   categories: EventCategoryDoc[];
+  /** All mosques (admin scope) the editor can attach the event to. */
+  mosques: MosqueOption[];
   onSaved: (saved: AdminEvent, mode: "create" | "update") => void;
   onCancel: () => void;
   /** Optional left-aligned header element (e.g. Quick Create back button). */
@@ -125,6 +129,7 @@ function defaultsFromEvent(
     organizerName: event?.organizer.name ?? "",
     organizerContact: event?.organizer.contact ?? "",
     capacity: event?.capacity != null ? String(event.capacity) : "",
+    mosqueId: event?.mosqueId ?? "",
     recurrenceMode: detectRecurrenceMode(event),
     recurrenceCount: detectRecurrenceCount(event?.recurrence),
     hijriMonth: event?.hijriAnchor?.monthIndex != null ? String(event.hijriAnchor.monthIndex) : "9",
@@ -142,6 +147,7 @@ export function EventEditorBody({
   event,
   canPersist,
   categories,
+  mosques,
   onSaved,
   onCancel,
   headerLeading,
@@ -193,6 +199,7 @@ export function EventEditorBody({
             .refine((v) => !v || (/^\d+$/.test(v) && Number(v) >= 0), {
               message: t("errorCapacity"),
             }),
+          mosqueId: z.string(),
           recurrenceMode: z.enum(["none", "weekly", "daily", "monthly", "hijri-anchor"]),
           recurrenceCount: z
             .string()
@@ -229,6 +236,7 @@ export function EventEditorBody({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -242,6 +250,7 @@ export function EventEditorBody({
   const locationMode = watch("locationMode");
   const recurrenceMode = watch("recurrenceMode");
   const prayerAnchorEnabled = watch("prayerAnchorEnabled");
+  const mosqueId = watch("mosqueId");
 
   async function onSubmit(values: FormValues) {
     if (!canPersist) {
@@ -307,6 +316,7 @@ export function EventEditorBody({
         contact: values.organizerContact.trim() || undefined,
       },
       capacity: values.capacity ? Number(values.capacity) : undefined,
+      mosqueId: values.mosqueId || undefined,
       recurrence,
       hijriAnchor,
       startAnchor,
@@ -541,6 +551,16 @@ export function EventEditorBody({
               />
             </Field>
           </FormGrid>
+          <Field label={t("mosque")} hint={t("mosqueHint")}>
+            <MosqueCombobox
+              id="evt-mosque"
+              value={mosqueId || undefined}
+              onChange={(slug) =>
+                setValue("mosqueId", slug ?? "", { shouldDirty: true })
+              }
+              options={mosques}
+            />
+          </Field>
         </Section>
 
         {!canPersist && (

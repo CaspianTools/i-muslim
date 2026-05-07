@@ -27,6 +27,12 @@
     "moreCountries": "+{count} أخرى",
     "removeChip": "إزالة {name}"
   },
+  "mosqueCombobox": {
+    "selectMosque": "Select mosque…",
+    "searchPlaceholder": "Search mosques…",
+    "noResults": "No mosques found.",
+    "clear": "Clear selection"
+  },
   "madhhabCombobox": {
     "selectMadhhabs": "اختر المذاهب",
     "searchPlaceholder": "ابحث عن مذهب…",
@@ -1014,6 +1020,8 @@
       "organizerContact": "وسيلة التواصل (بريد أو هاتف)",
       "capacity": "السعة",
       "capacityHint": "اختياري. اتركه فارغًا لعدد غير محدود.",
+      "mosque": "Hosting mosque",
+      "mosqueHint": "Optional. Link this event to a mosque so it shows up on the mosque page.",
       "save": "حفظ التغييرات",
       "create": "إنشاء الفعالية",
       "noPersistNote": "الحفظ معطل في وضع البيانات التجريبية. قم بإعداد Firebase Admin لحفظ الفعاليات.",
@@ -1068,7 +1076,7 @@
     "locationUnsupported": "تحديد الموقع غير مدعوم في هذا المتصفح.",
     "kmAway": "{km} كم",
     "noResults": "لا توجد فعاليات قادمة.",
-    "noResultsHint": "Know of one we should list? Submit it and admins will review it for the public calendar.",
+    "noResultsHint": "هل تعرف فعالية ينبغي إدراجها؟ أرسلها وسيراجعها المشرفون قبل إضافتها إلى التقويم العام.",
     "anchorNote": "يبدأ في وقت {prayer}",
     "backToEvents": "العودة إلى الفعاليات",
     "addToCalendar": "أضف إلى التقويم (.ics)",
@@ -1083,6 +1091,7 @@
       "title": "إرسال فعالية",
       "subtitle": "اقترح فعالية مجتمعية للمراجعة.",
       "guideline": "تخضع الإرسالات لمراجعة المشرف قبل ظهورها على التقويم العام.",
+      "hostingMosque": "Submitting on behalf of <strong>{name}</strong>. The event will appear on this mosque's page.",
       "steps": {
         "basics": "الأساسيات",
         "when": "متى",
@@ -1611,6 +1620,11 @@
       "reportTitle": "الإبلاغ عن مشكلة",
       "reportNote": "هل لاحظت معلومة خاطئة؟ أبلغنا لنصححها."
     },
+    "events": {
+      "title": "Upcoming events",
+      "empty": "No upcoming events at this mosque yet.",
+      "addEvent": "Add event"
+    },
     "hub": {
       "byCountryTitle": "تصفّح حسب الدولة",
       "byCityTitle": "المدن في {country}",
@@ -1726,6 +1740,17 @@
       "coverImageLabel": "صورة الغلاف",
       "logoLabel": "الشعار",
       "facilitiesEmpty": "لم تُعرَّف مرافق بعد. أضف بعضها ضمن /admin/mosques/facilities أولاً.",
+      "managers": {
+        "label": "Managers",
+        "hint": "Verified users who can create events for this mosque from its public page. Verify identity off-platform before assigning.",
+        "addByEmail": "Add by email",
+        "emailPlaceholder": "manager@example.com",
+        "addButton": "Add",
+        "remove": "Remove manager",
+        "notFound": "No user with that email. They must sign in once before you can assign them.",
+        "invalidEmail": "Enter a valid email.",
+        "errorGeneric": "Couldn't add manager. Try again."
+      },
       "status": "الحالة",
       "actions": {
         "save": "حفظ التغييرات",

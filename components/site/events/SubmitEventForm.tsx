@@ -6,6 +6,7 @@ import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  Building2,
   CalendarPlus,
   Lightbulb,
   Loader2,
@@ -114,6 +115,13 @@ interface SubmitEventFormProps {
   categories: EventCategoryDoc[];
   /** When true, skip honeypot/submitter-email/sessionStorage and submit via the admin server action. */
   adminMode?: boolean;
+  /**
+   * When set, the event is pre-attributed to a specific mosque (typically via
+   * the "Add event" CTA on a mosque page, after a manager-authz check on the
+   * server). The form renders a non-editable banner and includes the mosque
+   * slug in the submit payload — the API re-verifies before persisting.
+   */
+  lockedMosque?: { slug: string; name: string };
   onAdminSaved?: (result: { id: string }) => void;
   onAdminCancel?: () => void;
 }
@@ -122,6 +130,7 @@ export function SubmitEventForm({
   userEmail,
   categories,
   adminMode = false,
+  lockedMosque,
   onAdminSaved,
   onAdminCancel,
 }: SubmitEventFormProps) {
@@ -350,6 +359,7 @@ export function SubmitEventForm({
           contact: state.organizerContact || undefined,
         },
         submitterEmail: state.submitterEmail,
+        mosqueId: lockedMosque?.slug,
         website_url_secondary: state.website_url_secondary,
       };
 
@@ -459,6 +469,19 @@ export function SubmitEventForm({
 
       {liveStep === "basics" && (
         <div className="space-y-5">
+          {lockedMosque && (
+            <div className="flex items-center gap-2 rounded-md border border-accent/30 bg-accent/5 p-3 text-sm">
+              <Building2 className="size-4 shrink-0 text-accent" />
+              <span>
+                {t.rich("hostingMosque", {
+                  name: lockedMosque.name,
+                  strong: (chunks) => (
+                    <strong className="font-semibold text-foreground">{chunks}</strong>
+                  ),
+                })}
+              </span>
+            </div>
+          )}
           <div className="space-y-1.5">
             <Label htmlFor="evt-title">{t("fields.title")}</Label>
             <Input

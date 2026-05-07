@@ -27,6 +27,12 @@
     "moreCountries": "+{count} daha",
     "removeChip": "{name} sil"
   },
+  "mosqueCombobox": {
+    "selectMosque": "Select mosque…",
+    "searchPlaceholder": "Search mosques…",
+    "noResults": "No mosques found.",
+    "clear": "Clear selection"
+  },
   "madhhabCombobox": {
     "selectMadhhabs": "Mezhep seç",
     "searchPlaceholder": "Mezhep ara…",
@@ -1014,6 +1020,8 @@
       "organizerContact": "İletişim (e-posta veya telefon)",
       "capacity": "Kapasite",
       "capacityHint": "İsteğe bağlı. Sınırsız için boş bırakın.",
+      "mosque": "Hosting mosque",
+      "mosqueHint": "Optional. Link this event to a mosque so it shows up on the mosque page.",
       "save": "Değişiklikleri kaydet",
       "create": "Etkinliği oluştur",
       "noPersistNote": "Kayıt, örnek veri modunda devre dışıdır. Etkinlikleri kaydetmek için Firebase Admin'i yapılandırın.",
@@ -1068,7 +1076,7 @@
     "locationUnsupported": "Bu tarayıcıda konum desteklenmiyor.",
     "kmAway": "{km} km",
     "noResults": "Yaklaşan etkinlik yok.",
-    "noResultsHint": "Know of one we should list? Submit it and admins will review it for the public calendar.",
+    "noResultsHint": "Bilmemiz gereken bir etkinlik var mı? Gönderin, yöneticiler herkese açık takvime eklemeden önce inceler.",
     "anchorNote": "{prayer} vaktinde başlar",
     "backToEvents": "Etkinliklere dön",
     "addToCalendar": "Takvime ekle (.ics)",
@@ -1083,6 +1091,7 @@
       "title": "Etkinlik gönder",
       "subtitle": "İncelenmek üzere bir topluluk etkinliği önerin.",
       "guideline": "Başvurular, herkese açık takvimde görünmeden önce bir yönetici tarafından incelenir.",
+      "hostingMosque": "Submitting on behalf of <strong>{name}</strong>. The event will appear on this mosque's page.",
       "steps": {
         "basics": "Temel bilgiler",
         "when": "Ne zaman",
@@ -1611,6 +1620,11 @@
       "reportTitle": "Sorun bildir",
       "reportNote": "Bir hata mı fark ettiniz? Bize bildirin, düzeltelim."
     },
+    "events": {
+      "title": "Upcoming events",
+      "empty": "No upcoming events at this mosque yet.",
+      "addEvent": "Add event"
+    },
     "hub": {
       "byCountryTitle": "Ülkeye göre",
       "byCityTitle": "{country} şehirleri",
@@ -1726,6 +1740,17 @@
       "coverImageLabel": "Kapak görseli",
       "logoLabel": "Logo",
       "facilitiesEmpty": "Henüz tanımlı olanak yok. Önce /admin/mosques/facilities altından ekleyin.",
+      "managers": {
+        "label": "Managers",
+        "hint": "Verified users who can create events for this mosque from its public page. Verify identity off-platform before assigning.",
+        "addByEmail": "Add by email",
+        "emailPlaceholder": "manager@example.com",
+        "addButton": "Add",
+        "remove": "Remove manager",
+        "notFound": "No user with that email. They must sign in once before you can assign them.",
+        "invalidEmail": "Enter a valid email.",
+        "errorGeneric": "Couldn't add manager. Try again."
+      },
       "status": "Durum",
       "actions": {
         "save": "Değişiklikleri kaydet",

@@ -1,21 +1,50 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { SubmitEventForm } from "@/components/site/events/SubmitEventForm";
 import { getSiteSession } from "@/lib/auth/session";
 import { fetchEventCategories } from "@/lib/admin/data/event-categories";
+import { fetchMosqueBySlug } from "@/lib/admin/data/mosques";
+import { canManageMosque } from "@/lib/mosques/authz";
+import { pickLocalized } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("eventsPublic.submit");
   return { title: t("title"), description: t("subtitle") };
 }
 
-export default async function SubmitEventPage() {
+export default async function SubmitEventPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ mosqueId?: string }>;
+}) {
   const t = await getTranslations("eventsPublic.submit");
   const session = await getSiteSession();
   if (!session) redirect("/login?callbackUrl=/events/submit");
 
-  const { categories } = await fetchEventCategories();
+  const [{ categories }, { mosqueId }, locale] = await Promise.all([
+    fetchEventCategories(),
+    searchParams,
+    getLocale(),
+  ]);
+
+  // `?mosqueId=<slug>` is a hint from the mosque page CTA — verify the caller
+  // is actually a manager (or site admin) before letting the form trust it.
+  // If verification fails we silently drop the param so the form behaves as
+  // a regular community submission.
+  let lockedMosque: { slug: string; name: string } | undefined;
+  if (mosqueId) {
+    const allowed = await canManageMosque(mosqueId);
+    if (allowed) {
+      const { mosque } = await fetchMosqueBySlug(mosqueId);
+      if (mosque) {
+        lockedMosque = {
+          slug: mosque.slug,
+          name: pickLocalized(mosque.name, locale, "en") ?? mosque.name.en,
+        };
+      }
+    }
+  }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:py-12">
@@ -27,7 +56,11 @@ export default async function SubmitEventPage() {
         </p>
       </header>
       <div className="mt-6">
-        <SubmitEventForm userEmail={session.email} categories={categories} />
+        <SubmitEventForm
+          userEmail={session.email}
+          categories={categories}
+          lockedMosque={lockedMosque}
+        />
       </div>
     </div>
   );

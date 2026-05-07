@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/editor-dialog";
 import type { AdminEvent } from "@/types/admin";
 import type { EventCategoryDoc } from "@/types/event-category";
+import type { MosqueOption } from "@/components/common/MosqueCombobox";
 import { EventEditorBody } from "./EventEditorBody";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
   event?: AdminEvent | null;
   canPersist: boolean;
   categories: EventCategoryDoc[];
+  mosques: MosqueOption[];
   onSaved: (saved: AdminEvent, mode: "create" | "update") => void;
 }
 
@@ -23,6 +25,7 @@ export function EventEditorDrawer({
   event,
   canPersist,
   categories,
+  mosques,
   onSaved,
 }: Props) {
   return (
@@ -33,6 +36,7 @@ export function EventEditorDrawer({
           event={event}
           canPersist={canPersist}
           categories={categories}
+          mosques={mosques}
           onSaved={(saved, mode) => {
             onSaved(saved, mode);
             onOpenChange(false);

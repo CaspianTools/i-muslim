@@ -59,6 +59,7 @@ import type { EventCategoryDoc } from "@/types/event-category";
 import { resolveCategoryName } from "@/lib/events/categories";
 import { EventEditorDrawer } from "./EventEditorDrawer";
 import { EventsCalendarView } from "./EventsCalendarView";
+import type { MosqueOption } from "@/components/common/MosqueCombobox";
 
 const PAGE_SIZES = [10, 25, 50, 100];
 
@@ -98,10 +99,12 @@ export function EventsPageClient({
   initialEvents,
   source,
   categories,
+  mosques,
 }: {
   initialEvents: AdminEvent[];
   source: "firestore" | "mock";
   categories: EventCategoryDoc[];
+  mosques: MosqueOption[];
 }) {
   const searchParams = useSearchParams();
   const initialStatus = (() => {
@@ -606,6 +609,7 @@ export function EventsPageClient({
         event={editing}
         canPersist={canPersist}
         categories={categories}
+        mosques={mosques}
         onSaved={handleSaved}
       />
 

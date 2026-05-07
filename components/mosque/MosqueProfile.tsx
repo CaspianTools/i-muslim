@@ -61,7 +61,17 @@ const FACILITY_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   "itikaf-accommodation": Coffee,
 };
 
-export function MosqueProfile({ mosque }: { mosque: Mosque }) {
+export function MosqueProfile({
+  mosque,
+  eventsSlot,
+}: {
+  mosque: Mosque;
+  /**
+   * Server-rendered events card injected by the parent page so this client
+   * component can stay client-side without dragging in firebase-admin.
+   */
+  eventsSlot?: React.ReactNode;
+}) {
   const locale = useLocale();
   const t = useTranslations("mosques.detail");
   const tDenomination = useTranslations("mosques.denominations");
@@ -144,6 +154,8 @@ export function MosqueProfile({ mosque }: { mosque: Mosque }) {
               </>
             )}
           </section>
+
+          {eventsSlot}
 
           {facilities.length > 0 && (
             <section className="rounded-xl border border-border bg-card p-5">

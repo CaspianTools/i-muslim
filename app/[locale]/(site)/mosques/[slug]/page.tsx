@@ -9,7 +9,9 @@ import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { getSiteUrl } from "@/lib/mosques/constants";
 import { MosqueProfile } from "@/components/mosque/MosqueProfile";
+import { MosqueEventsCard } from "@/components/mosque/MosqueEventsCard";
 import { CommentThread } from "@/components/comments/CommentThread";
+import { canManageMosque } from "@/lib/mosques/authz";
 
 export const revalidate = 3600;
 
@@ -56,6 +58,11 @@ export default async function MosqueDetailPage({
 
   const localizedName = pickLocalized(mosque.name, locale, "en") ?? mosque.name.en;
 
+  // The events card hides itself for non-managers when there are no events,
+  // so unauthenticated visitors see nothing extra. Managers (and admins) see
+  // the card with an "Add event" CTA even on empty mosques.
+  const canAddEvent = await canManageMosque(mosque.slug);
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <Link
@@ -66,7 +73,12 @@ export default async function MosqueDetailPage({
       </Link>
 
       <div className="mt-4">
-        <MosqueProfile mosque={mosque} />
+        <MosqueProfile
+          mosque={mosque}
+          eventsSlot={
+            <MosqueEventsCard mosqueSlug={mosque.slug} canAddEvent={canAddEvent} />
+          }
+        />
       </div>
 
       <CommentThread
