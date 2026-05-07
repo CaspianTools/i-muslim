@@ -121,6 +121,44 @@ export async function getHadith(
   return doc.data() as HadithDoc;
 }
 
+/**
+ * Admin-only: returns every hadith in the collection including drafts. Not
+ * cached — admin tooling needs the freshest write-after-edit state and the
+ * traffic is negligible. Callers must gate with a permission check.
+ */
+export async function getAdminHadithsByCollection(
+  slug: string,
+): Promise<HadithDoc[]> {
+  const db = getDb();
+  if (!db) return [];
+  const snap = await db
+    .collection("hadith_entries")
+    .where("collection", "==", slug)
+    .get();
+  if (snap.empty) return [];
+  return snap.docs
+    .map((d) => d.data() as HadithDoc)
+    .sort((a, b) => a.number - b.number);
+}
+
+/** Admin-only sibling of getHadithsByBook that does NOT filter by published. */
+export async function getAdminHadithsByBook(
+  slug: string,
+  book: number,
+): Promise<HadithDoc[]> {
+  const db = getDb();
+  if (!db) return [];
+  const snap = await db
+    .collection("hadith_entries")
+    .where("collection", "==", slug)
+    .where("book", "==", book)
+    .get();
+  if (snap.empty) return [];
+  return snap.docs
+    .map((d) => d.data() as HadithDoc)
+    .sort((a, b) => a.number - b.number);
+}
+
 export function revalidateHadithCollection(slug: string): void {
   revalidateTag(collectionTag(slug), { expire: 0 });
   revalidateTag(COLLECTIONS_TAG, { expire: 0 });

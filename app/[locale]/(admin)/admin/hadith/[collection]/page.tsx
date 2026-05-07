@@ -1,46 +1,20 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { fetchCollectionWithHadiths } from "@/lib/admin/data/hadith";
-import { HadithList } from "@/components/admin/hadith/HadithList";
-import { getGeminiConfigStatus } from "@/lib/admin/data/secrets";
-import { getSiteSession } from "@/lib/auth/session";
-import { editableLanguagesFor, hasPermission } from "@/lib/permissions/check";
-import { ALL_LANGS } from "@/lib/translations";
+import { fetchCollectionWithBookStats } from "@/lib/admin/data/hadith";
+import { AdminDownloadHadithDialog } from "@/components/admin/hadith/AdminDownloadHadithDialog";
 
 export const dynamic = "force-dynamic";
 
-const PAGE_SIZE = 50;
-const NON_ARABIC_LANGS = ALL_LANGS.filter((l) => l !== "ar");
-
 export default async function AdminCollectionPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ collection: string }>;
-  searchParams: Promise<{ page?: string; book?: string }>;
 }) {
   const { collection } = await params;
-  const sp = await searchParams;
-  const page = Math.max(1, Number(sp.page) || 1);
-  const book = sp.book ? Number(sp.book) : undefined;
-
-  const [{ collection: meta, entries, total }, geminiStatus, session] = await Promise.all([
-    fetchCollectionWithHadiths(collection, { page, pageSize: PAGE_SIZE, book }),
-    getGeminiConfigStatus(),
-    getSiteSession(),
-  ]);
-  if (!meta) notFound();
-
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
-  const permissions = session?.permissions ?? [];
-  const editableLanguages = editableLanguagesFor(
-    permissions,
-    session?.languages,
-    "hadith.translate",
-    NON_ARABIC_LANGS,
+  const { collection: meta, editedByBook } = await fetchCollectionWithBookStats(
+    collection,
   );
-  const canPublish = hasPermission(permissions, "hadith.publish");
+  if (!meta) notFound();
 
   return (
     <div className="space-y-4">
@@ -55,46 +29,47 @@ export default async function AdminCollectionPage({
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">{meta.name_en}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {total} hadith · {meta.books.length} books · page {page} of{" "}
-              {totalPages}
+              {meta.books.length} books · {meta.total} total hadith
             </p>
           </div>
           <p dir="rtl" lang="ar" className="font-arabic text-3xl">
             {meta.name_ar}
           </p>
         </div>
+        <div className="mt-3">
+          <AdminDownloadHadithDialog
+            scope="collection"
+            collection={collection}
+          />
+        </div>
       </div>
 
-      <HadithList
-        entries={entries}
-        collection={collection}
-        aiConfigured={geminiStatus.configured}
-        editableLanguages={editableLanguages}
-        canPublish={canPublish}
-      />
-
-      <nav className="flex items-center justify-between gap-2 text-sm">
-        {page > 1 ? (
-          <Link
-            href={`/admin/hadith/${collection}?page=${page - 1}${book ? `&book=${book}` : ""}`}
-            className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
-          >
-            ← Page {page - 1}
-          </Link>
-        ) : (
-          <span />
-        )}
-        {page < totalPages ? (
-          <Link
-            href={`/admin/hadith/${collection}?page=${page + 1}${book ? `&book=${book}` : ""}`}
-            className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
-          >
-            Page {page + 1} →
-          </Link>
-        ) : (
-          <span />
-        )}
-      </nav>
+      <ul className="divide-y divide-border rounded-lg border border-border bg-background">
+        {meta.books.map((b) => {
+          const editCount = editedByBook[b.number] ?? 0;
+          return (
+            <li key={b.number}>
+              <Link
+                href={`/admin/hadith/${collection}/${b.number}`}
+                className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted"
+              >
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-medium text-muted-foreground group-hover:bg-accent group-hover:text-accent-foreground">
+                  {b.number}
+                </span>
+                <span className="flex-1 truncate">{b.name}</span>
+                {editCount > 0 ? (
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                    {editCount} edited
+                  </span>
+                ) : null}
+                <span className="text-xs text-muted-foreground">
+                  {b.count} hadith
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

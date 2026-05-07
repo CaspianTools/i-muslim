@@ -104,6 +104,41 @@ export async function fetchCollections(): Promise<CollectionsResult> {
   return { collections, source: "firestore" };
 }
 
+/**
+ * Returns the collection meta plus a map of book-number → count of hadith
+ * marked editedByAdmin. Used by the admin books-list page to surface which
+ * books still have unreviewed admin edits without loading every entry.
+ */
+export async function fetchCollectionWithBookStats(slug: string): Promise<{
+  collection: AdminHadithCollection | null;
+  editedByBook: Record<number, number>;
+}> {
+  const db = getDb();
+  if (!db) return { collection: null, editedByBook: {} };
+  const collectionDoc = await db
+    .collection("hadith_collections")
+    .doc(slug)
+    .get();
+  if (!collectionDoc.exists) return { collection: null, editedByBook: {} };
+  const meta = collectionDoc.data() as AdminHadithCollection;
+
+  const editedSnap = await db
+    .collection("hadith_entries")
+    .where("collection", "==", slug)
+    .where("editedByAdmin", "==", true)
+    .get();
+  const editedByBook: Record<number, number> = {};
+  for (const d of editedSnap.docs) {
+    const book = (d.data() as { book?: number }).book ?? 0;
+    editedByBook[book] = (editedByBook[book] ?? 0) + 1;
+  }
+
+  return {
+    collection: { ...meta, books: meta.books ?? [] },
+    editedByBook,
+  };
+}
+
 export async function fetchCollectionWithHadiths(
   slug: string,
   opts: { page?: number; pageSize?: number; book?: number } = {},
