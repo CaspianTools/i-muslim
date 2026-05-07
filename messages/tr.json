@@ -2587,6 +2587,7 @@
   "comments": {
     "title": "Yorumlar",
     "empty": "Düşünceli bir yorum paylaşan ilk kişi olun.",
+    "emptyPrompt": "What stood out to you? What does this remind you of? What questions does it raise?",
     "loading": "Yorumlar yükleniyor…",
     "anonymousAuthor": "Üye",
     "deletedTombstone": "[Yorum kaldırıldı]",

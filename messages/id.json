@@ -2587,6 +2587,7 @@
   "comments": {
     "title": "Komentar",
     "empty": "Jadilah yang pertama berbagi refleksi yang bermakna.",
+    "emptyPrompt": "What stood out to you? What does this remind you of? What questions does it raise?",
     "loading": "Memuat komentar…",
     "anonymousAuthor": "Anggota",
     "deletedTombstone": "[Komentar dihapus]",

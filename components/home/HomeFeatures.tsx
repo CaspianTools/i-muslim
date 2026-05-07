@@ -57,7 +57,13 @@ export async function HomeFeatures() {
       description: t("articles.description"),
     },
   ];
+  // The six explore tiles duplicate destinations already reachable from the
+  // bottom tab bar (Quran/Hadith/Mosques) and the /more page (Matrimonial/
+  // Events/Articles), so they're hidden at <md. They still serve discovery
+  // value at md+ where the tab bar isn't visible and the section reads as a
+  // landing-page feature grid rather than redundant chrome.
   return (
+    <div className="hidden md:block">
     <HomeSection heading={t("heading")} subheading={t("subheading")}>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
@@ -82,5 +88,6 @@ export async function HomeFeatures() {
         ))}
       </ul>
     </HomeSection>
+    </div>
   );
 }

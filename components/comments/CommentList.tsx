@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { toast } from "@/components/ui/sonner";
 import { CommentItem } from "@/components/comments/CommentItem";
 import { CommentForm } from "@/components/comments/CommentForm";
@@ -164,7 +166,11 @@ export function CommentList({
       )}
 
       {merged.length === 0 ? (
-        <div className="comment-thread-empty">{t("empty")}</div>
+        <EmptyState
+          icon={<MessageCircle className="size-5" />}
+          title={t("empty")}
+          description={signedIn ? t("emptyPrompt") : undefined}
+        />
       ) : (
         <div className="comment-thread">
           {merged.map((c) => (

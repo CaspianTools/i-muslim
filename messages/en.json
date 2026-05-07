@@ -2584,6 +2584,7 @@
   "comments": {
     "title": "Comments",
     "empty": "Be the first to share a thoughtful reflection.",
+    "emptyPrompt": "What stood out to you? What does this remind you of? What questions does it raise?",
     "loading": "Loading comments…",
     "anonymousAuthor": "Member",
     "deletedTombstone": "[Comment removed]",

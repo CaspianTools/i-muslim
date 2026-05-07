@@ -2587,6 +2587,7 @@
   "comments": {
     "title": "التعليقات",
     "empty": "كن أول من يشارك تأملاً بنّاءً.",
+    "emptyPrompt": "What stood out to you? What does this remind you of? What questions does it raise?",
     "loading": "جارٍ تحميل التعليقات…",
     "anonymousAuthor": "عضو",
     "deletedTombstone": "[تم حذف التعليق]",
