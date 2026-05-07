@@ -2342,6 +2342,21 @@
       "openEditor": "İfade düzenleyiciyi aç"
     }
   },
+  "quranPage": {
+    "metaTitle": "Kur'an — 114 sure",
+    "metaDescription": "Kur'an-ı Kerim'in 114 suresinin tümüne Arapça metin ve çevirileriyle göz atın.",
+    "indexHeading": "Kur'an-ı Kerim",
+    "indexSubtitle": "114 sure. Okumaya başlamak için birini seçin.",
+    "verseCount": "{count, plural, one {# ayet} other {# ayet}}",
+    "revelationMakkan": "Mekkî",
+    "revelationMadinan": "Medenî",
+    "cardSummary": "{translatedName} · {verses} · {revelation}",
+    "surahMetaTitle": "{name} Suresi ({id})",
+    "surahMetaDescription": "{name} Suresi'ni okuyun — {translatedName}. {verses}.",
+    "surahEyebrow": "{id}. Sure",
+    "surahSummary": "{translatedName} · {verses} · {revelation}",
+    "backToSurahs": "← Tüm sureler"
+  },
   "quranSidebar": {
     "title": "Filtreler",
     "menu": "Filtreler",
