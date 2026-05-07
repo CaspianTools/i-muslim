@@ -1051,6 +1051,7 @@
     "locationUnsupported": "تحديد الموقع غير مدعوم في هذا المتصفح.",
     "kmAway": "{km} كم",
     "noResults": "لا توجد فعاليات قادمة.",
+    "noResultsHint": "Know of one we should list? Submit it and admins will review it for the public calendar.",
     "anchorNote": "يبدأ في وقت {prayer}",
     "backToEvents": "العودة إلى الفعاليات",
     "addToCalendar": "أضف إلى التقويم (.ics)",

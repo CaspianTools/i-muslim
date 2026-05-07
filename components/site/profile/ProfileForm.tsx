@@ -125,7 +125,7 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
         </Field>
       </Section>
 
-      <Section title={t("sections.religion")}>
+      <Section title={t("sections.religion")} defaultOpen={false}>
         <Field label={t("madhhab")}>
           <Select {...register("madhhab")}>
             {(["hanafi", "maliki", "shafii", "hanbali", "other", "none"] as const).map((m) => (
@@ -177,7 +177,7 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
         </div>
       </Section>
 
-      <Section title={t("sections.background")}>
+      <Section title={t("sections.background")} defaultOpen={false}>
         <Field label={t("education")}>
           <Select {...register("education")}>
             {(["high_school", "diploma", "bachelor", "master", "phd", "other"] as const).map(
@@ -218,7 +218,11 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
         </div>
       </Section>
 
-      <Section title={t("sections.bio")} description={t("sections.bioDescription")}>
+      <Section
+        title={t("sections.bio")}
+        description={t("sections.bioDescription")}
+        defaultOpen={false}
+      >
         <Field label={t("bio")} error={errors.bio?.message} span="full">
           <textarea
             rows={5}
@@ -229,7 +233,11 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
         </Field>
       </Section>
 
-      <div className="flex items-center justify-end gap-3">
+      {/* Sticky save bar — pinned to the bottom of the viewport so the user
+          can hit Save without scrolling back up after editing a field deep
+          in the form. The .sticky-save-bar recipe lives in globals.css and
+          handles safe-area padding for the home indicator on iOS. */}
+      <div className="sticky-save-bar -mx-4 flex items-center justify-end gap-3">
         {isDirty && (
           <span className="text-xs text-muted-foreground">{t("unsavedChanges")}</span>
         )}

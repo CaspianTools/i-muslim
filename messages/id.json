@@ -1051,6 +1051,7 @@
     "locationUnsupported": "Lokasi tidak didukung di peramban ini.",
     "kmAway": "{km} km",
     "noResults": "Tidak ada acara mendatang.",
+    "noResultsHint": "Know of one we should list? Submit it and admins will review it for the public calendar.",
     "anchorNote": "Mulai pada waktu {prayer}",
     "backToEvents": "Kembali ke acara",
     "addToCalendar": "Tambahkan ke kalender (.ics)",

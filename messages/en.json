@@ -1048,6 +1048,7 @@
     "locationUnsupported": "Location not supported in this browser.",
     "kmAway": "{km} km",
     "noResults": "No upcoming events.",
+    "noResultsHint": "Know of one we should list? Submit it and admins will review it for the public calendar.",
     "anchorNote": "Starts at {prayer} time",
     "backToEvents": "Back to events",
     "addToCalendar": "Add to calendar (.ics)",

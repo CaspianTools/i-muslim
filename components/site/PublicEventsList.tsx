@@ -12,6 +12,7 @@ import {
   Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -165,10 +166,16 @@ export function PublicEventsList({
       )}
 
       {enriched.length === 0 ? (
-        <div className="rounded-lg border border-border bg-muted/30 p-10 text-center">
-          <CalendarDays className="mx-auto size-6 text-muted-foreground" />
-          <p className="mt-3 text-sm text-muted-foreground">{t("noResults")}</p>
-        </div>
+        <EmptyState
+          icon={<CalendarDays className="size-5" />}
+          title={t("noResults")}
+          description={t("noResultsHint")}
+          actions={
+            <Button asChild size="sm">
+              <Link href="/events/submit">{t("submitCta")}</Link>
+            </Button>
+          }
+        />
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2">
           {enriched.map(({ event, nextStartsAt, distanceKm }) => (

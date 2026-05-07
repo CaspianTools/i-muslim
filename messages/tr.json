@@ -1051,6 +1051,7 @@
     "locationUnsupported": "Bu tarayıcıda konum desteklenmiyor.",
     "kmAway": "{km} km",
     "noResults": "Yaklaşan etkinlik yok.",
+    "noResultsHint": "Know of one we should list? Submit it and admins will review it for the public calendar.",
     "anchorNote": "{prayer} vaktinde başlar",
     "backToEvents": "Etkinliklere dön",
     "addToCalendar": "Takvime ekle (.ics)",
