@@ -1,27 +1,12 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { getRole } from "@/lib/admin/data/roles";
-import { getSiteSession } from "@/lib/auth/session";
-import { hasPermission } from "@/lib/permissions/check";
-import { RoleEditor } from "@/components/admin/roles/RoleEditor";
-
-export const dynamic = "force-dynamic";
+import { redirect } from "next/navigation";
 
 interface PageParams {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-  const { id } = await params;
-  const role = await getRole(id);
-  return { title: role ? `${role.name} · Roles` : "Role not found" };
-}
-
-export default async function RoleEditorPage({ params }: PageParams) {
-  const { id } = await params;
-  const [role, session] = await Promise.all([getRole(id), getSiteSession()]);
-  if (!role) notFound();
-
-  const canManage = session ? hasPermission(session.permissions, "roles.manage") : false;
-  return <RoleEditor role={role} canManage={canManage} />;
+export default async function LegacyRoleEditorPage({ params }: PageParams) {
+  // /admin/roles is now the matrix page; per-role editing happens inline by
+  // selecting a role tab. Bookmarks pointing at /admin/roles/<id> land here.
+  const { locale } = await params;
+  redirect(`/${locale}/admin/roles`);
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { listRoles } from "@/lib/admin/data/roles";
 import { getSiteSession } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/permissions/check";
-import { RolesList } from "@/components/admin/roles/RolesList";
+import { RolesMatrix } from "@/components/admin/roles/RolesMatrix";
 
 export const dynamic = "force-dynamic";
 
@@ -16,5 +16,5 @@ export default async function RolesPage() {
     getSiteSession(),
   ]);
   const canManage = session ? hasPermission(session.permissions, "roles.manage") : false;
-  return <RolesList initialRoles={roles} canManage={canManage} />;
+  return <RolesMatrix initialRoles={roles} canManage={canManage} />;
 }

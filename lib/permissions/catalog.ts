@@ -125,6 +125,32 @@ export function isLanguageScopedPermission(perm: Permission): boolean {
   return permissionAction(perm) === "translate";
 }
 
+// All distinct action keys across every resource, in display order. Drives
+// the column set of the roles matrix at /admin/roles. Read-write-translate-
+// publish first (the most-used four), then resource-specific actions.
+export const ALL_ACTIONS_ORDERED: readonly string[] = [
+  "read",
+  "write",
+  "edit",
+  "translate",
+  "publish",
+  "moderate",
+  "respond",
+  "invite",
+  "suspend",
+  "delete",
+  "manage",
+];
+
+export function resourceHasAction(
+  resource: PermissionResource,
+  action: string,
+): boolean {
+  return (PERMISSION_RESOURCES[resource].actions as readonly string[]).includes(
+    action,
+  );
+}
+
 // Pretty-printed name for a permission action, used by the role editor.
 export function actionLabel(action: string): string {
   switch (action) {

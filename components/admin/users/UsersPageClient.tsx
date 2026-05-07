@@ -27,13 +27,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  SearchableMultiCombobox,
+  type SearchableMultiComboboxOption,
+} from "@/components/common/SearchableMultiCombobox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { toast } from "@/components/ui/sonner";
@@ -689,14 +692,12 @@ function UserDetailSheet({
   const currentRoleDoc = user ? roleMap.get(user.role) : undefined;
 
   return (
-    <Sheet open={Boolean(user)} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0">
-        <SheetHeader>
-          <SheetTitle>{tDrawer("title")}</SheetTitle>
-          <SheetDescription>{tDrawer("description")}</SheetDescription>
-        </SheetHeader>
+    <Dialog open={Boolean(user)} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogTitle className="sr-only">{tDrawer("title")}</DialogTitle>
+        <DialogDescription className="sr-only">{tDrawer("description")}</DialogDescription>
         {user && (
-          <div className="flex-1 overflow-y-auto p-5">
+          <div className="space-y-5">
             <div className="flex items-center gap-3">
               <Avatar className="size-12">
                 {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
@@ -710,7 +711,7 @@ function UserDetailSheet({
                 <div className="text-sm text-muted-foreground">{user.email}</div>
               </div>
             </div>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Badge variant={roleVariant(user.role)}>
                 {currentRoleDoc?.name ?? user.role}
               </Badge>
@@ -724,17 +725,10 @@ function UserDetailSheet({
               )}
             </div>
 
-            <RoleAssignmentEditor
-              key={user.id}
-              user={user}
-              roles={roles}
-              roleMap={roleMap}
-              onUpdated={onUpdated}
-            />
-
-            <Tabs defaultValue="profile" className="mt-6">
+            <Tabs defaultValue="profile">
               <TabsList>
                 <TabsTrigger value="profile">{tDrawer("tabProfile")}</TabsTrigger>
+                <TabsTrigger value="role">{tDrawer("tabRole")}</TabsTrigger>
                 <TabsTrigger value="activity">{tDrawer("tabActivity")}</TabsTrigger>
                 <TabsTrigger value="content">{tDrawer("tabContent")}</TabsTrigger>
                 <TabsTrigger value="donations">{tDrawer("tabDonations")}</TabsTrigger>
@@ -744,6 +738,15 @@ function UserDetailSheet({
                 <Row label={tDrawer("joinedLabel")} value={new Date(user.joinedAt).toLocaleString()} />
                 <Row label={tDrawer("lastActiveLabel")} value={new Date(user.lastActiveAt).toLocaleString()} />
                 <Row label={tDrawer("emailVerified")} value={user.verified ? tCommon("yes") : tCommon("no")} />
+              </TabsContent>
+              <TabsContent value="role" className="pt-3">
+                <RoleAssignmentEditor
+                  key={user.id}
+                  user={user}
+                  roles={roles}
+                  roleMap={roleMap}
+                  onUpdated={onUpdated}
+                />
               </TabsContent>
               <TabsContent value="activity" className="pt-3 text-sm text-muted-foreground">
                 {tDrawer("activityPlaceholder")}
@@ -756,7 +759,7 @@ function UserDetailSheet({
               </TabsContent>
             </Tabs>
 
-            <div className="mt-8 rounded-md border border-danger/30 bg-danger/5 p-4">
+            <div className="rounded-md border border-danger/30 bg-danger/5 p-4">
               <h3 className="text-sm font-semibold text-danger">{tDrawer("dangerZone")}</h3>
               <p className="mt-1 text-xs text-muted-foreground">{tDrawer("dangerZoneNote")}</p>
               <div className="mt-3">
@@ -767,11 +770,11 @@ function UserDetailSheet({
             </div>
           </div>
         )}
-        <SheetFooter>
+        <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>{tCommon("close")}</Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -808,19 +811,19 @@ function RoleAssignmentEditor({
   const showLanguagesPicker = roleHasTranslate(pendingRoleDoc);
   const isProtectedAssignment = currentRoleDoc?.protected ?? false;
 
+  const langOptions: SearchableMultiComboboxOption[] = useMemo(
+    () =>
+      ASSIGNABLE_LANGS.map((code) => ({
+        value: code,
+        label: LANG_LABELS[code] ?? code.toUpperCase(),
+      })),
+    [],
+  );
+
   const dirty =
     pendingRole !== user.role ||
     JSON.stringify([...pendingLangs].sort()) !==
       JSON.stringify([...(user.languages ?? [])].sort());
-
-  function toggleLang(lang: string, on: boolean) {
-    setPendingLangs((prev) => {
-      const next = new Set(prev);
-      if (on) next.add(lang);
-      else next.delete(lang);
-      return Array.from(next);
-    });
-  }
 
   async function saveAssignment() {
     if (!dirty) return;
@@ -849,7 +852,7 @@ function RoleAssignmentEditor({
   }
 
   return (
-    <div className="mt-5 rounded-md border border-border p-4 space-y-3">
+    <div className="rounded-md border border-border p-4 space-y-3">
       <h3 className="text-sm font-semibold">Role & languages</h3>
       {isProtectedAssignment ? (
         <p className="text-sm text-muted-foreground">
@@ -881,23 +884,19 @@ function RoleAssignmentEditor({
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Approved languages</label>
               <p className="text-xs text-muted-foreground">
-                Leave all unchecked to grant access to every language.
+                Leave empty to grant access to every language.
               </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
-                {ASSIGNABLE_LANGS.map((lang) => {
-                  const checked = pendingLangs.includes(lang);
-                  return (
-                    <label key={lang} className="flex items-center gap-2 text-sm cursor-pointer">
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={(v) => toggleLang(lang, !!v)}
-                        disabled={savingAssignment}
-                      />
-                      <span>{LANG_LABELS[lang] ?? lang}</span>
-                    </label>
-                  );
-                })}
-              </div>
+              <SearchableMultiCombobox
+                options={langOptions}
+                value={pendingLangs}
+                onChange={setPendingLangs}
+                placeholder="Select languages…"
+                searchPlaceholder="Search languages…"
+                emptyText="No matches."
+                disabled={savingAssignment}
+                ariaLabel="Approved languages"
+                className="w-full"
+              />
             </div>
           )}
           <div className="flex justify-end">
