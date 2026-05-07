@@ -326,12 +326,12 @@
     "sourceManual": "Manuel seçim",
     "sourceFallback": "Varsayılan konum (Mekke)",
     "notify": {
-      "title": "Prayer time reminders",
-      "description": "Get a notification when each prayer time arrives, even when this tab is in the background.",
-      "body": "It's time for {prayer}.",
-      "enable": "Enable reminders",
-      "notNow": "Not now",
-      "dismiss": "Dismiss"
+      "title": "Namaz vakti hatırlatıcıları",
+      "description": "Her namaz vakti girdiğinde, bu sekme arka planda olsa bile bildirim alın.",
+      "body": "{prayer} vakti girdi.",
+      "enable": "Hatırlatıcıları etkinleştir",
+      "notNow": "Şimdi değil",
+      "dismiss": "Kapat"
     },
     "highLatNotice": "Yüksek enlem kuralı uygulandı: {rule}",
     "highLatRule": {
@@ -480,7 +480,7 @@
     "prayer": "Prayer",
     "prayerTimes": "Namaz Vakitleri",
     "zakat": "Zekât",
-    "matrimonial": "Matrimonial",
+    "matrimonial": "Evlilik",
     "events": "Etkinlikler",
     "mosques": "Camiler",
     "articles": "Makaleler",
