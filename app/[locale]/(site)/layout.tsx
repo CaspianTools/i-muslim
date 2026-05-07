@@ -2,6 +2,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { PrayerTimesBar } from "@/components/prayer/PrayerTimesBar";
 import { MobileBottomTabBar } from "@/components/mobile/MobileBottomTabBar";
+import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function SiteLayout({
@@ -21,6 +22,11 @@ export default function SiteLayout({
       </main>
       <Footer />
       <MobileBottomTabBar />
+      {/* First-run welcome on the public site only — admins are signed in
+          and don't need the location/calc-method walk-through. The modal
+          renders nothing until its useEffect reads localStorage, so SSR
+          ships the real content under it (SEO-safe, deep-link-safe). */}
+      <OnboardingModal />
       <Toaster />
     </>
   );

@@ -21,6 +21,21 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "8mb",
     },
   },
+  async headers() {
+    return [
+      {
+        // Service worker must never be cached by browsers — otherwise SW
+        // updates on subsequent deploys won't be picked up for ~24h. The
+        // explicit Content-Type also matters: some hosts default static .js
+        // files to `application/octet-stream`, which fails registration.
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Content-Type", value: "application/javascript; charset=utf-8" },
+        ],
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

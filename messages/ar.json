@@ -435,6 +435,7 @@
       "title": "ملف المستخدم",
       "description": "عرض النشاط والمساهمات. إدارة الأدوار والحالة.",
       "tabProfile": "الملف الشخصي",
+      "tabRole": "Role",
       "tabActivity": "النشاط",
       "tabContent": "المحتوى",
       "tabDonations": "التبرعات",
@@ -497,6 +498,20 @@
     "account": "تسجيل الدخول / الخروج",
     "language": "اللغة",
     "theme": "المظهر"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to i-muslim",
+    "welcomeDescription": "Quran, Hadith, prayer times, and mosques in one place. Set up takes ten seconds.",
+    "useMyLocation": "Use my location",
+    "locating": "Locating…",
+    "approximateLocation": "Use approximate location",
+    "locationPrivacyNote": "Your location stays on this device — used only to compute prayer times.",
+    "methodTitle": "Calculation method",
+    "methodDescription": "Different regions follow different conventions for Fajr and Isha. Pick the one your community uses.",
+    "methodLabel": "Method",
+    "methodHint": "You can change this any time in Prayer Times settings.",
+    "back": "Back",
+    "getStarted": "Get started"
   },
   "prayerBar": {
     "viewAll": "كل أوقات الصلاة",

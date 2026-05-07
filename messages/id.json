@@ -435,6 +435,7 @@
       "title": "Profil pengguna",
       "description": "Lihat aktivitas dan kontribusi. Kelola peran dan status.",
       "tabProfile": "Profil",
+      "tabRole": "Role",
       "tabActivity": "Aktivitas",
       "tabContent": "Konten",
       "tabDonations": "Donasi",
@@ -497,6 +498,20 @@
     "account": "Masuk / Keluar",
     "language": "Bahasa",
     "theme": "Tema"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to i-muslim",
+    "welcomeDescription": "Quran, Hadith, prayer times, and mosques in one place. Set up takes ten seconds.",
+    "useMyLocation": "Use my location",
+    "locating": "Locating…",
+    "approximateLocation": "Use approximate location",
+    "locationPrivacyNote": "Your location stays on this device — used only to compute prayer times.",
+    "methodTitle": "Calculation method",
+    "methodDescription": "Different regions follow different conventions for Fajr and Isha. Pick the one your community uses.",
+    "methodLabel": "Method",
+    "methodHint": "You can change this any time in Prayer Times settings.",
+    "back": "Back",
+    "getStarted": "Get started"
   },
   "prayerBar": {
     "viewAll": "Semua waktu salat",
