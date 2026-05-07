@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { MapPin, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { MosqueCard } from "@/components/mosque/MosqueCard";
 import { MosqueFilters } from "@/components/mosque/MosqueFilters";
 import { fetchPublishedMosques, fetchCountryAggregates } from "@/lib/admin/data/mosques";
@@ -81,9 +82,17 @@ export default async function MosquesIndex({
       <p className="mt-6 text-sm text-muted-foreground">{countLabel}</p>
 
       {mosques.length === 0 ? (
-        <div className="mt-12 rounded-xl border border-dashed border-border bg-card p-10 text-center">
-          <p className="text-base font-medium text-foreground">{tResults("noResults")}</p>
-          <p className="mt-1 text-sm text-muted-foreground">{tResults("noResultsHint")}</p>
+        <div className="mt-12">
+          <EmptyState
+            icon={<MapPin className="size-5" />}
+            title={tResults("noResults")}
+            description={tResults("noResultsHint")}
+            actions={
+              <Button asChild size="sm">
+                <Link href="/mosques/submit">{t("submitCta")}</Link>
+              </Button>
+            }
+          />
         </div>
       ) : (
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

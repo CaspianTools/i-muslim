@@ -429,6 +429,20 @@ body {
 }
 
 /*
+ * Header shrink past 80 px scroll. The Nav is `sticky top-0`; on mobile we
+ * tighten its padding past the fold so the chrome takes less vertical space
+ * once the user is committed to a page. Driven by the data-scrolled attribute
+ * set on <html> by `<ShrinkOnScroll />`.
+ */
+@media (max-width: 767px) {
+  html[data-scrolled="true"] header > div.mx-auto {
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+    transition: padding 0.15s ease-out;
+  }
+}
+
+/*
  * Mobile-only typography bumps. iOS native body text is 17 px and uses a
  * tighter line-height than the desktop default; the previous 14 px / 1.5
  * combination read small and loose on a phone. Quran Arabic is bumped via

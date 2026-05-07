@@ -4,6 +4,7 @@ import { PrayerTimesBar } from "@/components/prayer/PrayerTimesBar";
 import { MobileBottomTabBar } from "@/components/mobile/MobileBottomTabBar";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { ShrinkOnScroll } from "@/components/site/ShrinkOnScroll";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function SiteLayout({
@@ -34,6 +35,7 @@ export default function SiteLayout({
           renders nothing until its useEffect reads localStorage, so SSR
           ships the real content under it (SEO-safe, deep-link-safe). */}
       <OnboardingModal />
+      <ShrinkOnScroll />
       <Toaster />
     </>
   );

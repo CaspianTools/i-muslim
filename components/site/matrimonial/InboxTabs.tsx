@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { Inbox, Mail, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatRelative, initials } from "@/lib/utils";
 import type {
@@ -44,7 +46,16 @@ export function InboxTabs({ viewerId, incoming, outgoing, matchedIds, profilesBy
 
       <TabsContent value="incoming">
         {incoming.length === 0 ? (
-          <Empty text={t("emptyIncoming")} />
+          <EmptyState
+            icon={<Inbox className="size-5" />}
+            title={t("emptyIncoming")}
+            description={t("emptyIncomingHint")}
+            actions={
+              <Button asChild size="sm" variant="secondary">
+                <Link href="/matrimonial/browse">{t("browseProfiles")}</Link>
+              </Button>
+            }
+          />
         ) : (
           <ul className="space-y-2">
             {incoming.map((i) => (
@@ -62,7 +73,16 @@ export function InboxTabs({ viewerId, incoming, outgoing, matchedIds, profilesBy
 
       <TabsContent value="sent">
         {outgoing.length === 0 ? (
-          <Empty text={t("emptySent")} />
+          <EmptyState
+            icon={<Mail className="size-5" />}
+            title={t("emptySent")}
+            description={t("emptySentHint")}
+            actions={
+              <Button asChild size="sm" variant="secondary">
+                <Link href="/matrimonial/browse">{t("browseProfiles")}</Link>
+              </Button>
+            }
+          />
         ) : (
           <ul className="space-y-2">
             {outgoing.map((i) => (
@@ -80,7 +100,11 @@ export function InboxTabs({ viewerId, incoming, outgoing, matchedIds, profilesBy
 
       <TabsContent value="matches">
         {matchedProfiles.length === 0 ? (
-          <Empty text={t("emptyMatches")} />
+          <EmptyState
+            icon={<Sparkles className="size-5" />}
+            title={t("emptyMatches")}
+            description={t("emptyMatchesHint")}
+          />
         ) : (
           <ul className="space-y-2">
             {matchedProfiles.map((p) => (
@@ -129,10 +153,3 @@ function Row({
   );
 }
 
-function Empty({ text }: { text: string }) {
-  return (
-    <div className="rounded-lg border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
-      {text}
-    </div>
-  );
-}

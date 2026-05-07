@@ -1274,8 +1274,12 @@
       "tabSent": "Sent",
       "tabMatches": "Matches",
       "emptyIncoming": "No one has expressed interest yet.",
+      "emptyIncomingHint": "When someone wants to learn more, you'll see them here. In the meantime, browse profiles and reach out yourself.",
       "emptySent": "You haven't expressed interest in anyone yet.",
+      "emptySentHint": "Tap the heart on a profile to express interest. They'll see it in their inbox and decide whether to match.",
       "emptyMatches": "No matches yet.",
+      "emptyMatchesHint": "A match happens when both parties have expressed interest in each other. Conversations open from there.",
+      "browseProfiles": "Browse profiles",
       "matchedAt": "Matched {date}",
       "sentAt": "Sent {date}",
       "receivedAt": "Received {date}",
@@ -1475,6 +1479,7 @@
   "mosques": {
     "directory": "Cami Rehberi",
     "subtitle": "Dünya genelindeki camilerin namaz vakitlerini, adreslerini ve iletişim bilgilerini bulun.",
+    "submitCta": "Submit a mosque",
     "searchPlaceholder": "İsim, şehir veya ülkeye göre ara…",
     "searchAria": "Camileri ara",
     "filters": {
