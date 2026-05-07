@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { PrayerTimesPanel, type PanelInit } from "@/components/prayer/PrayerTimesPanel";
+import { NotificationPermissionCard } from "@/components/prayer/NotificationPermissionCard";
 import { MECCA_FALLBACK } from "@/lib/prayer/location";
 import {
   pickDefaultMadhab,
@@ -32,6 +33,12 @@ export default function PrayerTimesPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+      {/* Contextual notification-permission ask. Renders nothing unless
+          Notification.permission === "default" and the user hasn't
+          dismissed; granting hooks PrayerChime's transition timer so the
+          OS shows a notification at every prayer time even with the tab
+          backgrounded. */}
+      <NotificationPermissionCard />
       <PrayerTimesPanel initial={init} />
     </div>
   );

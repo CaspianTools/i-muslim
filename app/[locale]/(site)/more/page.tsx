@@ -12,6 +12,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { PrayerChimeToggle } from "@/components/prayer/PrayerChimeToggle";
 import { SiteUserMenu } from "@/components/site/SiteUserMenu";
 import { getSiteSession } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/permissions/check";
@@ -90,9 +91,13 @@ export default async function MorePage() {
           <span className="text-sm">{t("language")}</span>
           <LocaleSwitcher availableLocales={availableLocales} />
         </div>
-        <div className="flex items-center justify-between gap-3 px-4 py-3">
+        <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border">
           <span className="text-sm">{t("theme")}</span>
           <ThemeToggle />
+        </div>
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <span className="text-sm">{t("prayerChime")}</span>
+          <PrayerChimeToggle />
         </div>
       </Section>
     </div>

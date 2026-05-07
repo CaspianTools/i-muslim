@@ -322,6 +322,14 @@
     "sourceTz": "Estimated from your timezone",
     "sourceManual": "Manual selection",
     "sourceFallback": "Default location (Mecca)",
+    "notify": {
+      "title": "Prayer time reminders",
+      "description": "Get a notification when each prayer time arrives, even when this tab is in the background.",
+      "body": "It's time for {prayer}.",
+      "enable": "Enable reminders",
+      "notNow": "Not now",
+      "dismiss": "Dismiss"
+    },
     "highLatNotice": "High-latitude rule applied: {rule}",
     "highLatRule": {
       "middleofthenight": "Middle of the night",
@@ -494,7 +502,10 @@
     "profile": "Profile",
     "account": "Sign in / out",
     "language": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "prayerChime": "Prayer reminders",
+    "chimeOn": "On",
+    "chimeOff": "Muted"
   },
   "surahPagination": {
     "ariaLabel": "Surah pagination",

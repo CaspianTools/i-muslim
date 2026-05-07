@@ -325,6 +325,14 @@
     "sourceTz": "Diperkirakan dari zona waktu",
     "sourceManual": "Pilihan manual",
     "sourceFallback": "Lokasi default (Mekah)",
+    "notify": {
+      "title": "Prayer time reminders",
+      "description": "Get a notification when each prayer time arrives, even when this tab is in the background.",
+      "body": "It's time for {prayer}.",
+      "enable": "Enable reminders",
+      "notNow": "Not now",
+      "dismiss": "Dismiss"
+    },
     "highLatNotice": "Aturan lintang tinggi diterapkan: {rule}",
     "highLatRule": {
       "middleofthenight": "Tengah malam",
@@ -497,7 +505,10 @@
     "profile": "Profil",
     "account": "Masuk / Keluar",
     "language": "Bahasa",
-    "theme": "Tema"
+    "theme": "Tema",
+    "prayerChime": "Prayer reminders",
+    "chimeOn": "On",
+    "chimeOff": "Muted"
   },
   "surahPagination": {
     "ariaLabel": "Surah pagination",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { usePrayerTimes } from "@/lib/prayer/use-prayer-times";
 
 const STORAGE_KEY = "i-muslim-prayer-chime";
@@ -64,6 +65,8 @@ export function PrayerChime() {
   const { effectivePrefs, today, tomorrow, next } = usePrayerTimes({
     autoDetect: false,
   });
+  const tPrayers = useTranslations("prayerTimes");
+  const tNotify = useTranslations("prayer.notify");
   const ctxRef = useRef<AudioContext | null>(null);
   const timeoutRef = useRef<number | null>(null);
 
@@ -110,6 +113,14 @@ export function PrayerChime() {
     // before they fire as the ticker re-runs).
     if (ms <= 0 || ms > 60 * 60 * 1000) return;
 
+    // Capture the prayer label + key for the notification body. The dep
+    // array intentionally doesn't include these — `targetMs` is keyed off
+    // `next.key` indirectly so we re-schedule when the next prayer changes,
+    // and re-reading the label inside the timeout would just return the
+    // same value the parent component already memoised.
+    const prayerKey = next?.key;
+    const prayerLabel = prayerKey ? tPrayers(prayerKey) : null;
+
     if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(() => {
       try {
@@ -120,12 +131,34 @@ export function PrayerChime() {
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         navigator.vibrate?.(VIBRATE_MS);
       }
+      // OS-level notification IF the user has previously granted permission
+      // on /prayer-times (or anywhere). Notification permission is unrelated
+      // to the chime — chime works without it; notification adds a tray
+      // entry that's visible even with the tab in the background.
+      try {
+        if (
+          typeof Notification !== "undefined" &&
+          Notification.permission === "granted" &&
+          prayerLabel
+        ) {
+          new Notification(tNotify("title"), {
+            body: tNotify("body", { prayer: prayerLabel }),
+            icon: "/icons/icon-192.png",
+            badge: "/icons/icon-192.png",
+            tag: `i-muslim-prayer-${prayerKey}`,
+          });
+        }
+      } catch {
+        // Notification constructor can throw on some restricted contexts —
+        // ignore.
+      }
     }, ms);
 
     return () => {
       if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
     };
-  }, [hasPrefs, targetMs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasPrefs, targetMs, next?.key]);
 
   return null;
 }

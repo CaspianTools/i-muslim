@@ -325,6 +325,14 @@
     "sourceTz": "Saat diliminizden tahmin edildi",
     "sourceManual": "Manuel seçim",
     "sourceFallback": "Varsayılan konum (Mekke)",
+    "notify": {
+      "title": "Prayer time reminders",
+      "description": "Get a notification when each prayer time arrives, even when this tab is in the background.",
+      "body": "It's time for {prayer}.",
+      "enable": "Enable reminders",
+      "notNow": "Not now",
+      "dismiss": "Dismiss"
+    },
     "highLatNotice": "Yüksek enlem kuralı uygulandı: {rule}",
     "highLatRule": {
       "middleofthenight": "Gecenin yarısı",
@@ -497,7 +505,10 @@
     "profile": "Profile",
     "account": "Sign in / out",
     "language": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "prayerChime": "Prayer reminders",
+    "chimeOn": "On",
+    "chimeOff": "Muted"
   },
   "surahPagination": {
     "ariaLabel": "Surah pagination",

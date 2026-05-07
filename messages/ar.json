@@ -325,6 +325,14 @@
     "sourceTz": "مُقدَّر من المنطقة الزمنية",
     "sourceManual": "اختيار يدوي",
     "sourceFallback": "الموقع الافتراضي (مكة)",
+    "notify": {
+      "title": "Prayer time reminders",
+      "description": "Get a notification when each prayer time arrives, even when this tab is in the background.",
+      "body": "It's time for {prayer}.",
+      "enable": "Enable reminders",
+      "notNow": "Not now",
+      "dismiss": "Dismiss"
+    },
     "highLatNotice": "تم تطبيق قاعدة خطوط العرض العالية: {rule}",
     "highLatRule": {
       "middleofthenight": "منتصف الليل",
@@ -497,7 +505,10 @@
     "profile": "الملف الشخصي",
     "account": "تسجيل الدخول / الخروج",
     "language": "اللغة",
-    "theme": "المظهر"
+    "theme": "المظهر",
+    "prayerChime": "Prayer reminders",
+    "chimeOn": "On",
+    "chimeOff": "Muted"
   },
   "surahPagination": {
     "ariaLabel": "Surah pagination",
