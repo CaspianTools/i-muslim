@@ -65,10 +65,17 @@ export function NotificationsPopover({ initialItems }: NotificationsPopoverProps
     };
   }, [refresh]);
 
-  // Refetch each time the popover opens.
-  useEffect(() => {
-    if (open) refresh();
-  }, [open, refresh]);
+  // Refetch each time the popover opens. Driven from `onOpenChange` rather
+  // than a `useEffect(open)` so we don't sync-setState inside an effect (the
+  // refresh path goes setItems → re-render via the unrelated `items` state,
+  // which the React 19 lint rule flags as a cascading render).
+  const handleOpenChange = useCallback(
+    (next: boolean) => {
+      setOpen(next);
+      if (next) refresh();
+    },
+    [refresh],
+  );
 
   async function markOne(id: string) {
     const prev = items;
@@ -93,7 +100,7 @@ export function NotificationsPopover({ initialItems }: NotificationsPopoverProps
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"

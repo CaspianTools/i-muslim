@@ -703,42 +703,6 @@ function SaveBar({
   );
 }
 
-function LanguageRow({
-  code,
-  flag,
-  native,
-  checked,
-  isDefault,
-  defaultHint,
-  onToggle,
-}: {
-  code: string;
-  flag: string;
-  native: string;
-  checked: boolean;
-  isDefault: boolean;
-  defaultHint: string;
-  onToggle: () => void;
-}) {
-  return (
-    <li className="flex items-center justify-between gap-3 px-4 py-3">
-      <div className="flex min-w-0 items-center gap-3">
-        <span aria-hidden className="text-xl leading-none">
-          {flag}
-        </span>
-        <div className="min-w-0">
-          <p className="truncate text-sm font-medium">{native}</p>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
-            {code}
-            {isDefault ? ` · ${defaultHint}` : ""}
-          </p>
-        </div>
-      </div>
-      <ToggleSwitch checked={checked} disabled={isDefault} onChange={onToggle} label={native} />
-    </li>
-  );
-}
-
 function ToggleSwitch({
   checked,
   disabled,

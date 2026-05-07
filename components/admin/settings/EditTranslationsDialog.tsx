@@ -15,7 +15,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/sonner";
 import { type Locale } from "@/i18n/config";
-import { updateUiLocaleMessagesAction } from "@/app/[locale]/(admin)/admin/settings/_actions";
+import {
+  updateUiLocaleMessagesAction,
+  clearUiLocaleMessagesAction,
+} from "@/app/[locale]/(admin)/admin/settings/_actions";
 import {
   deleteLeafByPath,
   flattenLeaves,
@@ -134,6 +137,41 @@ export function EditTranslationsDialog({
 
   function onEdit(key: string, value: string) {
     setEdits((prev) => ({ ...prev, [key]: value }));
+  }
+
+  // Whether the "Reset to bundled" affordance is meaningful for this row.
+  // Visible only when the user can edit and the dialog has both a
+  // `referenceMessages` fallback (only set for bundled non-default locales)
+  // AND a non-empty stored overlay. Reserved-locale flows never have a
+  // reference layer, so this branch never fires for them.
+  const overlayHasContent = useMemo(
+    () => Object.keys(initialOverlay).length > 0,
+    [initialOverlay],
+  );
+  const canResetOverlay = !readOnly && !!referenceMessages && overlayHasContent;
+
+  function onResetOverlay() {
+    if (!code || !canResetOverlay) return;
+    if (
+      typeof window !== "undefined" &&
+      !window.confirm(t("resetOverlayConfirm"))
+    ) {
+      return;
+    }
+    startTransition(async () => {
+      const res = await clearUiLocaleMessagesAction({ code });
+      if (res.ok) {
+        setEdits({});
+        toast.success(t("resetOverlayToast"));
+        // Hand the empty overlay back so the form's local cache mirrors
+        // the just-cleared Firestore doc. Stats fall back to the bundled
+        // JSON content via the page-level merge on the next render.
+        onSaved({}, 100);
+        onOpenChange(false);
+      } else {
+        toast.error(t("errorToast"));
+      }
+    });
   }
 
   function onSave() {
@@ -256,29 +294,45 @@ export function EditTranslationsDialog({
           </ul>
         </div>
 
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => onOpenChange(false)}
-            disabled={pending}
-          >
-            {tCommon("close")}
-          </Button>
-          {!readOnly && (
+        <DialogFooter className="sm:justify-between">
+          <div className="flex items-center gap-2">
+            {canResetOverlay && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={onResetOverlay}
+                disabled={pending}
+                className="text-destructive hover:text-destructive"
+              >
+                {t("resetOverlay")}
+              </Button>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
             <Button
               type="button"
-              onClick={onSave}
-              disabled={!dirty || pending}
-              aria-busy={pending}
+              variant="ghost"
+              onClick={() => onOpenChange(false)}
+              disabled={pending}
             >
-              {pending
-                ? tCommon("loading")
-                : dirty
-                  ? t("saveChanges", { count: Object.keys(edits).length })
-                  : t("save")}
+              {tCommon("close")}
             </Button>
-          )}
+            {!readOnly && (
+              <Button
+                type="button"
+                onClick={onSave}
+                disabled={!dirty || pending}
+                aria-busy={pending}
+              >
+                {pending
+                  ? tCommon("loading")
+                  : dirty
+                    ? t("saveChanges", { count: Object.keys(edits).length })
+                    : t("save")}
+              </Button>
+            )}
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

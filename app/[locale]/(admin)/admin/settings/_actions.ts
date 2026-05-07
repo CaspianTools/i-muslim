@@ -21,6 +21,7 @@ import {
   setUiLocale,
   deactivateUiLocale,
   updateUiLocaleMessages,
+  clearUiLocaleMessages,
   type UiLocaleDoc,
 } from "@/lib/admin/data/ui-locales";
 import {
@@ -206,6 +207,33 @@ export async function updateTypographyAction(
     return { ok: true, config };
   } catch (err) {
     console.warn("[admin/settings/_actions] updateTypography failed:", err);
+    return { ok: false, error: "write-failed" };
+  }
+}
+
+// Wipe a locale's Firestore overlay — for bundled locales this reverts the
+// runtime render to the plain `messages/<code>.json`; for activated reserved
+// locales it discards the translator's work but keeps the locale activated.
+// Per-language gate matches the editor save path.
+const clearMessagesSchema = z.object({ code: localeEnum });
+
+export async function clearUiLocaleMessagesAction(
+  rawInput: unknown,
+): Promise<UpdateUiLocaleMessagesResult> {
+  const parsed = clearMessagesSchema.safeParse(rawInput);
+  if (!parsed.success) {
+    return { ok: false, error: "invalid-input" };
+  }
+  const session = await requirePermissionForLanguage(
+    "uiLocales.translate",
+    parsed.data.code,
+  );
+  try {
+    const locale = await clearUiLocaleMessages(parsed.data.code, session.email);
+    revalidatePath("/", "layout");
+    return { ok: true, locale };
+  } catch (err) {
+    console.warn("[admin/settings/_actions] clearMessages failed:", err);
     return { ok: false, error: "write-failed" };
   }
 }

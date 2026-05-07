@@ -246,6 +246,40 @@ export async function updateUiLocaleMessages(
   return normalize(code, snap.data() as Record<string, unknown>);
 }
 
+// Wipe the `messages` overlay on a locale doc, leaving any other
+// metadata (nativeName/flag/baseLocale/activated) intact. For bundled
+// locales this reverts the runtime render to pure `messages/<code>.json`.
+// For activated reserved locales it discards the translator's work but
+// keeps the locale activated — paired with the existing deactivate
+// action when the admin actually wants the locale gone from the public
+// switcher too.
+export async function clearUiLocaleMessages(
+  code: Locale,
+  adminEmail: string,
+): Promise<UiLocaleDoc> {
+  const db = requireDb();
+  await db
+    .collection(UI_LOCALES_COLLECTION)
+    .doc("uiLocales")
+    .collection("locales")
+    .doc(code)
+    .set(
+      {
+        messages: {},
+        updatedAt: Timestamp.now(),
+        updatedBy: adminEmail,
+      },
+      { merge: true },
+    );
+  const snap = await db
+    .collection(UI_LOCALES_COLLECTION)
+    .doc("uiLocales")
+    .collection("locales")
+    .doc(code)
+    .get();
+  return normalize(code, snap.data() as Record<string, unknown>);
+}
+
 export async function deactivateUiLocale(
   code: Locale,
   adminEmail: string,
