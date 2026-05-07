@@ -2,7 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requirePermission } from "@/lib/permissions/server";
+import {
+  requirePermission,
+  requirePermissionForLanguage,
+} from "@/lib/permissions/server";
 import {
   LOCALES,
   RESERVED_LOCALES,
@@ -109,8 +112,13 @@ export type DeactivateUiLocaleResult =
   | { ok: true }
   | { ok: false; error: string };
 
+// Accept any known locale (bundled or reserved) — admins/translators can
+// overlay a Firestore `messages` payload on top of the bundled JSON for
+// in-place hot-fixes without a code redeploy.
+const localeEnum = z.enum(LOCALES as unknown as [Locale, ...Locale[]]);
+
 const updateMessagesSchema = z.object({
-  code: reservedLocaleEnum,
+  code: localeEnum,
   messages: z.record(z.string(), z.unknown()),
 });
 
@@ -121,11 +129,15 @@ export type UpdateUiLocaleMessagesResult =
 export async function updateUiLocaleMessagesAction(
   rawInput: unknown,
 ): Promise<UpdateUiLocaleMessagesResult> {
-  const session = await requirePermission("uiLocales.translate");
+  // Validate shape first so we can name the language in the per-language gate.
   const parsed = updateMessagesSchema.safeParse(rawInput);
   if (!parsed.success) {
     return { ok: false, error: "invalid-input" };
   }
+  const session = await requirePermissionForLanguage(
+    "uiLocales.translate",
+    parsed.data.code,
+  );
   try {
     const locale = await updateUiLocaleMessages(
       parsed.data.code,

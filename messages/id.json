@@ -2292,8 +2292,11 @@
         "save": "Tidak ada perubahan",
         "saveChanges": "Simpan {count, plural, one {# perubahan} other {# perubahan}}",
         "savedToast": "Terjemahan disimpan.",
-        "errorToast": "Tidak dapat menyimpan terjemahan."
-      }
+        "errorToast": "Tidak dapat menyimpan terjemahan.",
+        "readOnlyBadge": "Hanya lihat",
+        "readOnlyHint": "Peran Anda dapat melihat namun tidak dapat mengubah bahasa ini. Minta admin memberikan izin uiLocales.translate untuk bahasa ini agar dapat mengedit."
+      },
+      "openEditor": "Buka editor frasa"
     }
   },
   "quranSidebar": {

@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { Pencil, Power } from "lucide-react";
+import { Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
 import {
@@ -89,6 +89,10 @@ export type LanguagesScope = "interface" | "quran" | "hadith";
 
 export type LanguagesFormProps = {
   scope: LanguagesScope;
+  // Locales the current session can edit translations for. Computed at the
+  // server boundary by `editableLanguagesFor("uiLocales.translate", LOCALES)`.
+  // Anything not in this list opens the editor in read-only mode.
+  editableLanguages: Locale[];
   initial: {
     uiEnabled: Locale[];
     quranEnabled: LangCode[];
@@ -105,7 +109,15 @@ function setEqual<T>(a: readonly T[], b: readonly T[]): boolean {
   return b.every((v) => set.has(v));
 }
 
-export function LanguagesForm({ scope, initial }: LanguagesFormProps) {
+export function LanguagesForm({
+  scope,
+  editableLanguages,
+  initial,
+}: LanguagesFormProps) {
+  const editableSet = useMemo(
+    () => new Set<Locale>(editableLanguages),
+    [editableLanguages],
+  );
   const t = useTranslations("adminSettings.languages");
   const tCommon = useTranslations("common");
 
@@ -216,10 +228,17 @@ export function LanguagesForm({ scope, initial }: LanguagesFormProps) {
   const [editorCode, setEditorCode] = useState<Locale | null>(null);
   const [editorBaseMessages, setEditorBaseMessages] = useState<MessageTree | null>(null);
 
-  const editorTarget = useMemo(
-    () => (editorCode ? reserved.find((r) => r.code === editorCode && r.activated) : undefined),
-    [editorCode, reserved],
-  );
+  // Editor target — bundled locales render through the same overlay model
+  // (the page builds an `effectiveOverlay` that already merges bundled JSON +
+  // any Firestore overlay). Reserved locales must be `activated` to have an
+  // editable overlay; for unactivated rows the activation flow runs first.
+  const editorTarget = useMemo(() => {
+    if (!editorCode) return undefined;
+    const found = reserved.find((r) => r.code === editorCode);
+    if (!found) return undefined;
+    if ((BUNDLED_LOCALES as readonly string[]).includes(editorCode)) return found;
+    return found.activated ? found : undefined;
+  }, [editorCode, reserved]);
 
   function openActivateDialog(code: Locale) {
     setActivatingCode(code);
@@ -227,9 +246,20 @@ export function LanguagesForm({ scope, initial }: LanguagesFormProps) {
   }
 
   async function openEditor(code: Locale) {
-    const target = reserved.find((r) => r.code === code && r.activated);
-    if (!target) return;
-    const baseCode: BundledCode = isBundledCode(target.baseLocale) ? target.baseLocale : "en";
+    const found = reserved.find((r) => r.code === code);
+    if (!found) return;
+    // Reserved + unactivated rows can't open the editor — there's no overlay
+    // to view yet. The toggle / row click should run the activation flow
+    // through `openActivateDialog` instead.
+    if (
+      !(BUNDLED_LOCALES as readonly string[]).includes(code) &&
+      !found.activated
+    ) {
+      return;
+    }
+    const baseCode: BundledCode = isBundledCode(found.baseLocale)
+      ? found.baseLocale
+      : "en";
     const baseMessages = await loadBundledMessages(baseCode);
     setEditorBaseMessages(baseMessages);
     setEditorCode(code);
@@ -320,17 +350,27 @@ export function LanguagesForm({ scope, initial }: LanguagesFormProps) {
             const meta = LOCALE_META[code];
             const checked = uiEnabled.has(code) || isDefault;
 
+            const canEdit = editableSet.has(code);
             return (
               <li
                 key={code}
                 className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
               >
-                <div className="flex min-w-0 items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (status === "unactivated") openActivateDialog(code);
+                    else openEditor(code);
+                  }}
+                  disabled={pending}
+                  aria-label={t("openEditor")}
+                  className="group -mx-2 flex min-w-0 flex-1 items-center gap-3 rounded-md px-2 py-1 text-start transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
                   <span aria-hidden className="text-xl leading-none">
                     {reservedDoc?.flag || meta?.flag || "🌐"}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">
+                    <p className="truncate text-sm font-medium group-hover:underline">
                       {reservedDoc?.nativeName || meta?.nativeName || code.toUpperCase()}
                     </p>
                     <p className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -342,9 +382,12 @@ export function LanguagesForm({ scope, initial }: LanguagesFormProps) {
                           : status === "unactivated"
                             ? ` · ${t("notActivatedHint")}`
                             : ""}
+                      {!canEdit && status !== "unactivated"
+                        ? ` · ${t("editor.readOnlyBadge")}`
+                        : ""}
                     </p>
                   </div>
-                </div>
+                </button>
 
                 <div className="flex items-center gap-2">
                   {status === "activated" && reservedDoc && (
@@ -359,16 +402,6 @@ export function LanguagesForm({ scope, initial }: LanguagesFormProps) {
                         onClick={() => openEditor(code)}
                         disabled={pending}
                       />
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => openEditor(code)}
-                        disabled={pending}
-                      >
-                        <Pencil className="size-3.5" />
-                        {t("editTranslations")}
-                      </Button>
                       <Button
                         type="button"
                         size="sm"
@@ -511,6 +544,7 @@ export function LanguagesForm({ scope, initial }: LanguagesFormProps) {
           baseMessages={editorBaseMessages}
           initialOverlay={(editorTarget.messages ?? {}) as MessageTree}
           rtl={editorTarget.rtl}
+          readOnly={editorCode ? !editableSet.has(editorCode) : true}
           onSaved={onEditorSaved}
         />
       )}

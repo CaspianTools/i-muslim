@@ -2289,8 +2289,11 @@
         "save": "No changes",
         "saveChanges": "Save {count, plural, one {# change} other {# changes}}",
         "savedToast": "Translations saved.",
-        "errorToast": "Could not save translations."
-      }
+        "errorToast": "Could not save translations.",
+        "readOnlyBadge": "View only",
+        "readOnlyHint": "Your role can view but not edit this language. Ask an admin to grant uiLocales.translate for this language to make changes."
+      },
+      "openEditor": "Open phrase editor"
     }
   },
   "quranSidebar": {

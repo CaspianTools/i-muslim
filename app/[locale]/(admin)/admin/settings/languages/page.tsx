@@ -4,17 +4,25 @@ import {
   type LanguagesScope,
 } from "@/components/admin/settings/LanguagesForm";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
-import { listReservedLocaleDocs } from "@/lib/admin/data/ui-locales";
+import { listAllUiLocaleDocs } from "@/lib/admin/data/ui-locales";
 import { getContentTranslationStats } from "@/lib/admin/data/content-translation-stats";
 import {
   computeTranslationStats,
   type MessageTree,
 } from "@/lib/i18n/translation-stats";
-import { BUNDLED_LOCALES, type BundledLocale } from "@/i18n/config";
+import {
+  BUNDLED_LOCALES,
+  LOCALES,
+  isBundled,
+  type BundledLocale,
+  type Locale,
+} from "@/i18n/config";
 import enMessages from "@/messages/en.json";
 import arMessages from "@/messages/ar.json";
 import trMessages from "@/messages/tr.json";
 import idMessages from "@/messages/id.json";
+import { getSiteSession } from "@/lib/auth/session";
+import { editableLanguagesFor } from "@/lib/permissions/check";
 
 const BUNDLED_MESSAGES: Record<BundledLocale, MessageTree> = {
   en: enMessages as MessageTree,
@@ -32,18 +40,42 @@ function resolveScope(raw: string | string[] | undefined): LanguagesScope {
   return value === "quran" || value === "hadith" ? value : "interface";
 }
 
+// Deep-merge `overlay` over `base`, mirroring the runtime merge in
+// `i18n/request.ts`. Used to compute the "effective" message tree for
+// bundled locales where the bundled JSON is the base translation and any
+// admin-saved Firestore overlay sits on top.
+function deepMerge(base: MessageTree, overlay: MessageTree): MessageTree {
+  const out: MessageTree = { ...base };
+  for (const [key, value] of Object.entries(overlay)) {
+    const isObj =
+      value !== null && typeof value === "object" && !Array.isArray(value);
+    const baseIsObj =
+      base[key] !== null &&
+      typeof base[key] === "object" &&
+      !Array.isArray(base[key]);
+    if (isObj && baseIsObj) {
+      out[key] = deepMerge(base[key] as MessageTree, value as MessageTree);
+    } else if (value !== undefined) {
+      out[key] = value as MessageTree[string];
+    }
+  }
+  return out;
+}
+
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ scope?: string | string[] }>;
 }) {
-  const [params, settings, reservedDocs, contentStats, t] = await Promise.all([
-    searchParams,
-    getLanguageSettings(),
-    listReservedLocaleDocs(),
-    getContentTranslationStats(),
-    getTranslations("adminSettings.languages"),
-  ]);
+  const [params, settings, localeDocs, contentStats, t, session] =
+    await Promise.all([
+      searchParams,
+      getLanguageSettings(),
+      listAllUiLocaleDocs(),
+      getContentTranslationStats(),
+      getTranslations("adminSettings.languages"),
+      getSiteSession(),
+    ]);
   const scope = resolveScope(params.scope);
   const tNav = await getTranslations("adminSettings.nav");
   const heading =
@@ -53,6 +85,15 @@ export default async function Page({
         ? tNav("languagesHadith")
         : tNav("languagesInterface");
 
+  const editableLanguages = session
+    ? (editableLanguagesFor(
+        session.permissions,
+        session.languages,
+        "uiLocales.translate",
+        LOCALES,
+      ) as Locale[])
+    : [];
+
   return (
     <div className="space-y-6">
       <div>
@@ -61,22 +102,35 @@ export default async function Page({
       </div>
       <LanguagesForm
         scope={scope}
+        editableLanguages={editableLanguages}
         initial={{
           uiEnabled: settings.uiEnabled,
           quranEnabled: settings.quranEnabled,
           hadithEnabled: settings.hadithEnabled,
           quranStats: contentStats.quran,
           hadithStats: contentStats.hadith,
-          reservedLocales: reservedDocs.map((d) => {
+          reservedLocales: localeDocs.map((d) => {
             const baseCode: BundledLocale = isBundledLocale(d.baseLocale)
               ? d.baseLocale
               : "en";
-            const stats = d.activated
-              ? computeTranslationStats(
-                  BUNDLED_MESSAGES[baseCode],
-                  (d.messages ?? {}) as MessageTree,
-                )
-              : { total: 0, translated: 0, percent: 0 };
+            const baseTree = BUNDLED_MESSAGES[baseCode];
+            const overlay = (d.messages ?? {}) as MessageTree;
+            // For bundled non-default locales the JSON itself IS the
+            // translation, so the "effective overlay" we display in the
+            // editor is the bundled JSON merged with any admin-saved
+            // Firestore overlay. For the default locale (en) and reserved
+            // locales, the doc's `messages` overlay is the only translation.
+            const effectiveOverlay: MessageTree =
+              isBundled(d.code) && d.code !== "en"
+                ? deepMerge(BUNDLED_MESSAGES[d.code as BundledLocale], overlay)
+                : overlay;
+            const stats = isBundled(d.code)
+              ? d.code === "en"
+                ? { total: 0, translated: 0, percent: 100 }
+                : computeTranslationStats(BUNDLED_MESSAGES.en, effectiveOverlay)
+              : d.activated
+                ? computeTranslationStats(baseTree, overlay)
+                : { total: 0, translated: 0, percent: 0 };
             return {
               code: d.code,
               activated: d.activated,
@@ -85,7 +139,7 @@ export default async function Page({
               flag: d.flag,
               rtl: d.rtl,
               baseLocale: d.baseLocale,
-              messages: d.messages,
+              messages: effectiveOverlay,
               stats,
             };
           }),

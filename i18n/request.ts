@@ -42,10 +42,19 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale = isLocale(raw) ? raw : routing.defaultLocale ?? DEFAULT_LOCALE;
   }
 
-  // Bundled locales: load the static JSON shipped with the build.
+  // Bundled locales: load the static JSON shipped with the build, then
+  // deep-merge any Firestore overlay an admin/translator has saved on top.
+  // The overlay is optional — when no doc or no `messages` field exists, the
+  // bundled JSON renders unchanged.
   if (isBundled(locale)) {
-    const messages = (await import(`../messages/${locale}.json`)).default;
-    return { locale, messages };
+    const bundled = (await import(`../messages/${locale}.json`))
+      .default as Messages;
+    const overlayDoc = await getUiLocaleDoc(locale);
+    const overlay = overlayDoc?.messages as Messages | undefined;
+    if (!overlay || Object.keys(overlay).length === 0) {
+      return { locale, messages: bundled };
+    }
+    return { locale, messages: deepMerge(bundled, overlay) };
   }
 
   // Reserved locales: read uploaded translations from Firestore and deep-merge

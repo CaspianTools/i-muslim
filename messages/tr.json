@@ -2292,8 +2292,11 @@
         "save": "Değişiklik yok",
         "saveChanges": "{count, plural, one {# değişikliği} other {# değişikliği}} kaydet",
         "savedToast": "Çeviriler kaydedildi.",
-        "errorToast": "Çeviriler kaydedilemedi."
-      }
+        "errorToast": "Çeviriler kaydedilemedi.",
+        "readOnlyBadge": "Yalnızca görüntüleme",
+        "readOnlyHint": "Rolünüz bu dili görüntüleyebilir ancak düzenleyemez. Düzenleme için bir yöneticiden bu dile uiLocales.translate izni vermesini isteyin."
+      },
+      "openEditor": "İfade düzenleyiciyi aç"
     }
   },
   "quranSidebar": {

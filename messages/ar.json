@@ -2292,8 +2292,11 @@
         "save": "لا تغييرات",
         "saveChanges": "حفظ {count, plural, one {تغيير #} other {# تغييرات}}",
         "savedToast": "تم حفظ الترجمات.",
-        "errorToast": "تعذّر حفظ الترجمات."
-      }
+        "errorToast": "تعذّر حفظ الترجمات.",
+        "readOnlyBadge": "عرض فقط",
+        "readOnlyHint": "دورك يسمح بعرض هذه اللغة دون تعديلها. اطلب من المسؤول منحك صلاحية uiLocales.translate لهذه اللغة لإجراء التعديلات."
+      },
+      "openEditor": "افتح محرر العبارات"
     }
   },
   "quranSidebar": {

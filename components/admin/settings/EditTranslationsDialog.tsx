@@ -35,6 +35,10 @@ export type EditTranslationsDialogProps = {
   // The activated locale's current overlay (post-sync, mirrors base shape).
   initialOverlay: MessageTree;
   rtl: boolean;
+  // When true, every input is rendered as `readOnly`, the Save button is
+  // hidden, and a "view only" badge is shown in the header. Used when the
+  // current user lacks `uiLocales.translate` for this language.
+  readOnly?: boolean;
   onSaved: (newOverlay: MessageTree, percent: number) => void;
 };
 
@@ -53,6 +57,7 @@ export function EditTranslationsDialog({
   baseMessages,
   initialOverlay,
   rtl,
+  readOnly = false,
   onSaved,
 }: EditTranslationsDialogProps) {
   const t = useTranslations("adminSettings.languages.editor");
@@ -127,10 +132,20 @@ export function EditTranslationsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>
-            {t("title")}{code ? ` — ${nativeName} (${code.toUpperCase()})` : ""}
+          <DialogTitle className="flex flex-wrap items-center gap-2">
+            <span>
+              {t("title")}
+              {code ? ` — ${nativeName} (${code.toUpperCase()})` : ""}
+            </span>
+            {readOnly && (
+              <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                {t("readOnlyBadge")}
+              </span>
+            )}
           </DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
+          <DialogDescription>
+            {readOnly ? t("readOnlyHint") : t("description")}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-wrap items-center gap-3 border-b border-border pb-3">
@@ -190,9 +205,10 @@ export function EditTranslationsDialog({
                       value={overlayStr}
                       onChange={(e) => onEdit(key, e.target.value)}
                       disabled={pending}
+                      readOnly={readOnly}
                       dir={rtl ? "rtl" : "ltr"}
                       lang={code ?? undefined}
-                      className="font-normal"
+                      className="font-normal read-only:bg-muted/30 read-only:opacity-70"
                     />
                   </li>
                 );
@@ -210,13 +226,20 @@ export function EditTranslationsDialog({
           >
             {tCommon("close")}
           </Button>
-          <Button type="button" onClick={onSave} disabled={!dirty || pending} aria-busy={pending}>
-            {pending
-              ? tCommon("loading")
-              : dirty
-                ? t("saveChanges", { count: Object.keys(edits).length })
-                : t("save")}
-          </Button>
+          {!readOnly && (
+            <Button
+              type="button"
+              onClick={onSave}
+              disabled={!dirty || pending}
+              aria-busy={pending}
+            >
+              {pending
+                ? tCommon("loading")
+                : dirty
+                  ? t("saveChanges", { count: Object.keys(edits).length })
+                  : t("save")}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

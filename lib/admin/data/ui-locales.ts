@@ -3,7 +3,9 @@ import { cache } from "react";
 import { Timestamp } from "firebase-admin/firestore";
 import { getDb, requireDb } from "@/lib/firebase/admin";
 import {
+  LOCALES,
   RESERVED_LOCALES,
+  BUNDLED_LOCALES,
   LOCALE_META,
   type Locale,
 } from "@/i18n/config";
@@ -88,6 +90,10 @@ function isReservedLocale(code: string): code is Locale {
   return (RESERVED_LOCALES as readonly string[]).includes(code);
 }
 
+function isKnownLocale(code: string): code is Locale {
+  return (LOCALES as readonly string[]).includes(code);
+}
+
 export const listReservedLocaleDocs = cache(async (): Promise<UiLocaleDoc[]> => {
   const db = getDb();
   if (!db) return RESERVED_LOCALES.map((c) => defaultMeta(c));
@@ -112,6 +118,45 @@ export const listReservedLocaleDocs = cache(async (): Promise<UiLocaleDoc[]> => 
 export const listActivatedReservedLocales = cache(async (): Promise<Locale[]> => {
   const docs = await listReservedLocaleDocs();
   return docs.filter((d) => d.activated).map((d) => d.code);
+});
+
+// Returns the per-locale doc for every code in `LOCALES` — bundled and reserved.
+// Bundled locales never have an "activation" lifecycle (they always render),
+// so their `activated` field defaults to `true`. Reserved locales without a
+// Firestore doc default to `activated: false`. Both can carry an optional
+// `messages` overlay an admin/translator has saved through the phrase editor.
+export const listAllUiLocaleDocs = cache(async (): Promise<UiLocaleDoc[]> => {
+  const db = getDb();
+  const seedFor = (c: Locale): UiLocaleDoc =>
+    (BUNDLED_LOCALES as readonly string[]).includes(c)
+      ? { ...defaultMeta(c), activated: true }
+      : defaultMeta(c);
+  if (!db) return LOCALES.map(seedFor);
+  try {
+    const snap = await db
+      .collection(UI_LOCALES_COLLECTION)
+      .doc("uiLocales")
+      .collection("locales")
+      .get();
+    const byCode = new Map<string, UiLocaleDoc>();
+    for (const d of snap.docs) {
+      if (!isKnownLocale(d.id)) continue;
+      const normalized = normalize(d.id, d.data() as Record<string, unknown>);
+      // Bundled locales are always usable regardless of what's in the doc —
+      // a stale `activated: false` from manual Firestore tinkering shouldn't
+      // hide them. Reserved locales honour the doc value.
+      byCode.set(
+        d.id,
+        (BUNDLED_LOCALES as readonly string[]).includes(d.id)
+          ? { ...normalized, activated: true }
+          : normalized,
+      );
+    }
+    return LOCALES.map((c) => byCode.get(c) ?? seedFor(c));
+  } catch (err) {
+    console.warn("[admin/data/ui-locales] listAll failed:", err);
+    return LOCALES.map(seedFor);
+  }
 });
 
 export const getUiLocaleDoc = cache(
