@@ -44,6 +44,8 @@ interface Props {
   onCommentCreated?: (c: CommentRecord) => void;
   /** Skip the form (read-only mode). */
   readOnly?: boolean;
+  /** Expand and focus the top-level composer on mount (used by the popup). */
+  autoFocusForm?: boolean;
 }
 
 export function CommentList({
@@ -58,6 +60,7 @@ export function CommentList({
   seedComments,
   onCommentCreated,
   readOnly,
+  autoFocusForm,
 }: Props) {
   const t = useTranslations("comments");
   const tActions = useTranslations("comments.actions");
@@ -156,6 +159,7 @@ export function CommentList({
           parentId={null}
           itemMeta={itemMeta}
           signedIn={signedIn}
+          autoFocus={autoFocusForm}
           onCreated={(c) => {
             setComments((prev) =>
               prev.some((p) => p.id === c.id) ? prev : [c, ...prev],

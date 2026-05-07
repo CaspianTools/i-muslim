@@ -159,6 +159,7 @@ export function CommentsPopupButton({
               signedIn={signedIn}
               currentUid={currentUid}
               seedComments={seedComments}
+              autoFocusForm
               onCommentCreated={(c) =>
                 setSeedComments((prev) =>
                   prev.some((s) => s.id === c.id) ? prev : [c, ...prev],
