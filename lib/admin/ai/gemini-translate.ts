@@ -1,5 +1,9 @@
 import "server-only";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import {
+  GoogleGenerativeAI,
+  HarmBlockThreshold,
+  HarmCategory,
+} from "@google/generative-ai";
 import type { GeminiConfig } from "@/lib/admin/data/secrets";
 import { LANG_LABELS, type LangCode } from "@/lib/translations";
 
@@ -77,11 +81,70 @@ export async function translateSacredText(
         temperature: 0.2,
         maxOutputTokens: 2048,
       },
+      // Sacred-text input is canonical, not user-generated, and legitimately
+      // mentions warfare, hudud, marriage, etc. Keep only HIGH-confidence blocks
+      // to avoid false positives. (RECITATION is a separate filter, unaffected.)
+      safetySettings: [
+        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+        { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+        { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+      ],
     });
     const result = await model.generateContent(buildPrompt(input));
     const text = result.response.text().trim();
-    if (!text) return { ok: false, error: "Gemini returned an empty response." };
-    return { ok: true, text };
+    if (text) return { ok: true, text };
+
+    const promptFeedback = result.response.promptFeedback;
+    const candidate = result.response.candidates?.[0];
+    const finishReason = candidate?.finishReason;
+    const safetyRatings = candidate?.safetyRatings;
+
+    console.error("[gemini-translate] empty response", {
+      targetLang: input.targetLang,
+      sourceKind: input.sourceKind,
+      model: input.config.model,
+      promptFeedback,
+      finishReason,
+      safetyRatings,
+    });
+
+    if (promptFeedback?.blockReason) {
+      return {
+        ok: false,
+        error: `Gemini blocked the prompt (${promptFeedback.blockReason}). Try a different model in /admin/settings.`,
+      };
+    }
+    if (finishReason === "RECITATION") {
+      return {
+        ok: false,
+        error:
+          "Gemini blocked the response as a possible recitation of training data. Try a different model (e.g. gemini-2.5-pro) in /admin/settings, or translate this entry manually.",
+      };
+    }
+    if (finishReason === "SAFETY") {
+      const flagged = safetyRatings
+        ?.filter((r) => r.probability !== "NEGLIGIBLE" && r.probability !== "HARM_PROBABILITY_UNSPECIFIED")
+        .map((r) => `${r.category}=${r.probability}`)
+        .join(", ");
+      return {
+        ok: false,
+        error: `Gemini's safety filter blocked the response${flagged ? ` (${flagged})` : ""}. Try a different model in /admin/settings.`,
+      };
+    }
+    if (finishReason === "MAX_TOKENS") {
+      return {
+        ok: false,
+        error: "Gemini hit the output token limit before finishing. Try again or use a shorter source.",
+      };
+    }
+    if (finishReason && finishReason !== "STOP") {
+      return {
+        ok: false,
+        error: `Gemini returned no candidates (finishReason: ${finishReason}).`,
+      };
+    }
+    return { ok: false, error: "Gemini returned an empty response." };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown Gemini error";
     return { ok: false, error: message };
