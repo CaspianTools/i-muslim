@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
 import {
   getHadithCollection,
   getHadithsByBook,
@@ -14,7 +14,6 @@ import { NotesProvider } from "@/components/site/notes/NotesContext";
 import { ReadingProgressTracker } from "@/components/site/reading/ReadingProgressTracker";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
 import { HadithMobileDrawer } from "@/components/site/hadith/HadithMobileDrawer";
-import { DownloadJsonButton } from "@/components/site/hadith/DownloadJsonButton";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { getSiteSession } from "@/lib/auth/session";
 import { getFavoritedSet } from "@/lib/profile/data";
@@ -69,14 +68,13 @@ export default async function HadithBookPage({
 
   const session = await getSiteSession();
   const locale = await getLocale();
-  const [hadiths, languageSettings, hadithFavorites, hadithNotes, tDownload] = await Promise.all([
+  const [hadiths, languageSettings, hadithFavorites, hadithNotes] = await Promise.all([
     getHadithsByBook(collection, bookNumber),
     getLanguageSettings(),
     session ? getFavoritedSet(session.uid, "hadith") : Promise.resolve(new Set<string>()),
     session
       ? getNotesByItemType(session.uid, "hadith")
       : Promise.resolve(new Map<string, { id: string; text: string; updatedAt: string }>()),
-    getTranslations("hadithDownload"),
   ]);
   const hadithNotesRecord: Record<string, { id: string; text: string; updatedAt: string }> = {};
   for (const [k, v] of hadithNotes) hadithNotesRecord[k] = v;
@@ -127,13 +125,6 @@ export default async function HadithBookPage({
                 <p className="mt-1 text-sm text-muted-foreground">
                   {hadiths.length} hadith in this book.
                 </p>
-                <div className="mt-4">
-                  <DownloadJsonButton
-                    href={`/api/hadith/${collection}/${bookNumber}/download`}
-                    filename={`${collection}-book-${bookNumber}.json`}
-                    label={tDownload("buttonBook")}
-                  />
-                </div>
               </header>
 
               <div className="mt-6 space-y-4">

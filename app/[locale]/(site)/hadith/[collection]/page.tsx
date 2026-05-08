@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
 import { getHadithCollection } from "@/lib/hadith/db";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
 import { HadithMobileDrawer } from "@/components/site/hadith/HadithMobileDrawer";
-import { DownloadJsonButton } from "@/components/site/hadith/DownloadJsonButton";
 
 export async function generateMetadata({
   params,
@@ -30,10 +28,9 @@ export default async function CollectionPage({
 }) {
   const { collection } = await params;
   const { lang: langParam } = await searchParams;
-  const [meta, languageSettings, t] = await Promise.all([
+  const [meta, languageSettings] = await Promise.all([
     getHadithCollection(collection),
     getLanguageSettings(),
-    getTranslations("hadithDownload"),
   ]);
   if (!meta) notFound();
 
@@ -69,13 +66,6 @@ export default async function CollectionPage({
               <p dir="rtl" lang="ar" className="font-arabic text-3xl text-foreground">
                 {meta.name_ar}
               </p>
-            </div>
-            <div className="mt-4">
-              <DownloadJsonButton
-                href={`/api/hadith/${collection}/download`}
-                filename={`${collection}.json`}
-                label={t("buttonCollection")}
-              />
             </div>
           </header>
 

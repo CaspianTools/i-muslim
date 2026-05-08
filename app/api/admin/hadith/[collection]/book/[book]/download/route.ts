@@ -48,7 +48,7 @@ export async function GET(
       bookName: bookMeta.name,
       count: bookMeta.count,
     },
-    { mode: "admin", lang },
+    { lang },
   );
 
   const langSuffix = lang === "all" ? "" : `-${lang}`;

@@ -2398,12 +2398,6 @@
     "moreItems": "+{count} more",
     "removeChip": "Remove {name}"
   },
-  "hadithDownload": {
-    "buttonCollection": "Download collection (JSON)",
-    "buttonBook": "Download book (JSON)",
-    "preparing": "Preparing download…",
-    "failed": "Download failed. Please try again."
-  },
   "profileNav": {
     "title": "Profile",
     "items": {

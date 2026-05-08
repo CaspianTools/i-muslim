@@ -57,7 +57,7 @@ export async function GET(
           bookName: bookMeta.name,
           count: bookMeta.count,
         },
-        { mode: "admin", lang },
+        { lang },
       );
       zip.file(
         `${collection}-book-${bookMeta.number}${langSuffix}.json`,
@@ -79,7 +79,7 @@ export async function GET(
     meta,
     hadiths,
     { kind: "collection" },
-    { mode: "admin", lang },
+    { lang },
   );
 
   return new Response(JSON.stringify(payload, null, 2), {
