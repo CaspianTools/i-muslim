@@ -677,8 +677,8 @@
       "ctaHadith": "Baca Hadis"
     },
     "continueReading": {
-      "heading": "Continue reading",
-      "resume": "Resume"
+      "heading": "Lanjutkan membaca",
+      "resume": "Lanjutkan"
     },
     "features": {
       "heading": "Jelajahi i-muslim",
@@ -2367,6 +2367,21 @@
       "openEditor": "Buka editor frasa"
     }
   },
+  "quranPage": {
+    "metaTitle": "The Quran — 114 surahs",
+    "metaDescription": "Browse all 114 surahs of the Holy Quran with Arabic text and translations.",
+    "indexHeading": "The Holy Quran",
+    "indexSubtitle": "114 surahs. Pick one to begin reading.",
+    "verseCount": "{count, plural, one {# verse} other {# verses}}",
+    "revelationMakkan": "Makkan",
+    "revelationMadinan": "Madinan",
+    "cardSummary": "{translatedName} · {verses} · {revelation}",
+    "surahMetaTitle": "Surah {name} ({id})",
+    "surahMetaDescription": "Read Surah {name} — {translatedName}. {verses}.",
+    "surahEyebrow": "Surah {id}",
+    "surahSummary": "{translatedName} · {verses} · {revelation}",
+    "backToSurahs": "← All surahs"
+  },
   "quranSidebar": {
     "title": "Filter",
     "menu": "Filter",
@@ -2400,6 +2415,24 @@
     "noResults": "Bahasa tidak ditemukan.",
     "moreItems": "+{count} lainnya",
     "removeChip": "Hapus {name}"
+  },
+  "hadithPage": {
+    "metaTitle": "Hadith — Major Collections",
+    "metaDescription": "Browse major Sunni hadith collections: Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasa'i, Ibn Majah, Malik, Nawawi 40, Qudsi 40.",
+    "indexHeading": "Hadith Collections",
+    "indexSubtitle": "Nine major collections. Select one to browse by book.",
+    "preparing": "The hadith database is currently being prepared. Please check back soon.",
+    "cardCount": "{total} hadith · {books} books",
+    "collectionMetaTitle": "{name} — Books",
+    "collectionMetaDescription": "Browse books of {name}.",
+    "backToCollections": "← All collections",
+    "collectionSummary": "{books} books · {total} total hadith",
+    "bookCount": "{count} hadith",
+    "bookMetaTitle": "{name} — Book {book}",
+    "bookEyebrow": "{collection} · Book {book}",
+    "bookSummary": "{count} hadith in this book.",
+    "prevBook": "← Book {n}",
+    "nextBook": "Book {n} →"
   },
   "profileNav": {
     "title": "Profil",

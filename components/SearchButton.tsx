@@ -14,8 +14,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+// `inline-flex` is intentionally NOT in this shared class. Adding it here would
+// conflict with the `hidden` utility on the desktop DialogTrigger — both target
+// `display`, and Tailwind's source order makes `inline-flex` win, leaving the
+// desktop button visible on mobile alongside the mobile Link.
 const triggerClass =
-  "touch-target inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
+  "touch-target items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
 
 export function SearchButton() {
   const t = useTranslations("nav");
@@ -52,7 +56,7 @@ export function SearchButton() {
       <Link
         href="/search"
         aria-label={t("search")}
-        className={`md:hidden ${triggerClass}`}
+        className={`inline-flex md:hidden ${triggerClass}`}
       >
         <Search className="size-4" />
       </Link>

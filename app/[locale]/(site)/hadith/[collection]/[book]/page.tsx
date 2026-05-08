@@ -1,6 +1,7 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import {
   getHadithCollection,
   getHadithsByBook,
@@ -25,11 +26,12 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ collection: string; book: string }>;
-}) {
+}): Promise<Metadata> {
   const { collection, book } = await params;
   const meta = await getHadithCollection(collection);
   if (!meta) return {};
-  return { title: `${meta.name_en} — Book ${book}` };
+  const t = await getTranslations("hadithPage");
+  return { title: t("bookMetaTitle", { name: meta.name_en, book }) };
 }
 
 function docToHadithEntry(d: HadithDoc, lang: LangCode): HadithEntry | null {
@@ -68,13 +70,14 @@ export default async function HadithBookPage({
 
   const session = await getSiteSession();
   const locale = await getLocale();
-  const [hadiths, languageSettings, hadithFavorites, hadithNotes] = await Promise.all([
+  const [hadiths, languageSettings, hadithFavorites, hadithNotes, t] = await Promise.all([
     getHadithsByBook(collection, bookNumber),
     getLanguageSettings(),
     session ? getFavoritedSet(session.uid, "hadith") : Promise.resolve(new Set<string>()),
     session
       ? getNotesByItemType(session.uid, "hadith")
       : Promise.resolve(new Map<string, { id: string; text: string; updatedAt: string }>()),
+    getTranslations("hadithPage"),
   ]);
   const hadithNotesRecord: Record<string, { id: string; text: string; updatedAt: string }> = {};
   for (const [k, v] of hadithNotes) hadithNotesRecord[k] = v;
@@ -117,13 +120,13 @@ export default async function HadithBookPage({
 
               <header className="mt-4 border-b border-border pb-6">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {meta.name_en} · Book {bookNumber}
+                  {t("bookEyebrow", { collection: meta.name_en, book: bookNumber })}
                 </p>
                 <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
                   {bookMeta.name}
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {hadiths.length} hadith in this book.
+                  {t("bookSummary", { count: hadiths.length })}
                 </p>
               </header>
 
@@ -197,7 +200,7 @@ export default async function HadithBookPage({
                     href={`/hadith/${collection}/${prev.number}${langQS}`}
                     className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
                   >
-                    ← Book {prev.number}
+                    {t("prevBook", { n: prev.number })}
                   </Link>
                 ) : (
                   <span />
@@ -207,7 +210,7 @@ export default async function HadithBookPage({
                     href={`/hadith/${collection}/${next.number}${langQS}`}
                     className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
                   >
-                    Book {next.number} →
+                    {t("nextBook", { n: next.number })}
                   </Link>
                 ) : (
                   <span />

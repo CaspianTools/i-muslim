@@ -1,23 +1,30 @@
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getSurahs } from "@/lib/quran/db";
 
-export const metadata = {
-  title: "The Quran — 114 surahs",
-  description:
-    "Browse all 114 surahs of the Holy Quran with Arabic text and translations.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("quranPage");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
 export default async function QuranIndexPage() {
-  const chapters = await getSurahs();
+  const [chapters, t] = await Promise.all([
+    getSurahs(),
+    getTranslations("quranPage"),
+  ]);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          The Holy Quran
+          {t("indexHeading")}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          114 surahs. Pick one to begin reading.
+          {t("indexSubtitle")}
         </p>
       </div>
 
@@ -43,8 +50,14 @@ export default async function QuranIndexPage() {
                   </span>
                 </div>
                 <div className="mt-0.5 text-xs text-muted-foreground">
-                  {c.translated_name.name} · {c.verses_count} verses ·{" "}
-                  {c.revelation_place === "makkah" ? "Makkan" : "Madinan"}
+                  {t("cardSummary", {
+                    translatedName: c.translated_name.name,
+                    verses: t("verseCount", { count: c.verses_count }),
+                    revelation:
+                      c.revelation_place === "makkah"
+                        ? t("revelationMakkan")
+                        : t("revelationMadinan"),
+                  })}
                 </div>
               </div>
             </Link>

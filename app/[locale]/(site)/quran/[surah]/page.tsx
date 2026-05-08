@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -8,7 +9,7 @@ import {
 } from "@/lib/quran/db";
 import { SurahPagination } from "@/components/site/quran/SurahPagination";
 import { parseLangsParam } from "@/lib/translations";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { AyahCard } from "@/components/AyahCard";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
@@ -27,16 +28,23 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ surah: string }>;
-}) {
+}): Promise<Metadata> {
   const { surah } = await params;
   const id = Number(surah);
   if (!Number.isInteger(id) || id < 1 || id > 114) return {};
   try {
-    const chapter = await getSurah(id);
+    const [chapter, t] = await Promise.all([
+      getSurah(id),
+      getTranslations("quranPage"),
+    ]);
     if (!chapter) return {};
     return {
-      title: `Surah ${chapter.name_simple} (${id})`,
-      description: `Read Surah ${chapter.name_simple} — ${chapter.translated_name.name}. ${chapter.verses_count} verses.`,
+      title: t("surahMetaTitle", { name: chapter.name_simple, id }),
+      description: t("surahMetaDescription", {
+        name: chapter.name_simple,
+        translatedName: chapter.translated_name.name,
+        verses: t("verseCount", { count: chapter.verses_count }),
+      }),
     };
   } catch {
     return {};
@@ -66,6 +74,7 @@ export default async function SurahPage({
     ayahFavorites,
     surahFavorites,
     ayahNotes,
+    t,
   ] = await Promise.all([
     getSurah(id),
     getAyahsForSurah(id),
@@ -76,6 +85,7 @@ export default async function SurahPage({
     session
       ? getNotesByItemType(session.uid, "ayah")
       : Promise.resolve(new Map<string, { id: string; text: string; updatedAt: string }>()),
+    getTranslations("quranPage"),
   ]);
   const ayahNotesRecord: Record<string, { id: string; text: string; updatedAt: string }> = {};
   for (const [k, v] of ayahNotes) ayahNotesRecord[k] = v;
@@ -115,21 +125,27 @@ export default async function SurahPage({
               href="/quran"
               className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
             >
-              ← All surahs
+              {t("backToSurahs")}
             </Link>
 
             <header className="mt-4 border-b border-border pb-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Surah {chapter.id}
+                    {t("surahEyebrow", { id: chapter.id })}
                   </p>
                   <h1 className="mt-1 text-3xl font-semibold tracking-tight">
                     {chapter.name_simple}
                   </h1>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {chapter.translated_name.name} · {chapter.verses_count} verses ·{" "}
-                    {chapter.revelation_place === "makkah" ? "Makkan" : "Madinan"}
+                    {t("surahSummary", {
+                      translatedName: chapter.translated_name.name,
+                      verses: t("verseCount", { count: chapter.verses_count }),
+                      revelation:
+                        chapter.revelation_place === "makkah"
+                          ? t("revelationMakkan")
+                          : t("revelationMadinan"),
+                    })}
                   </p>
                 </div>
                 <p
