@@ -53,32 +53,58 @@ function buildInstructions(lang: HadithExportLang): Record<string, unknown> {
       ? TRANSLATABLE_LANGS.map((c) => LANG_NATIVE_NAMES[c] ?? c)
       : [LANG_NATIVE_NAMES[lang] ?? lang];
 
+  const singleLang = lang !== "all";
+
+  const rules: string[] = [
+    "DO NOT modify `text_ar` — this is the original Arabic and must remain unchanged.",
+    "DO NOT modify `number`, `arabic_number`, `book`, `hadith_in_book`, `narrator`, " +
+      "`grades`, `tags`, `published`, or `notes`. " +
+      "These are reference fields, not translation targets.",
+    "Only replace strings inside the `translations` object that begin with `[TRANSLATE TO …]`.",
+    "Leave existing translations alone unless you have been explicitly asked to revise them.",
+    "Keep the JSON structure and quotes intact — do not rename keys or remove entries.",
+  ];
+  if (singleLang) {
+    rules.push(
+      "Set `status` to `published` only when the translation is final and reviewed; " +
+        "otherwise leave it as `draft`. Do not set `status: published` for entries whose " +
+        "`translations." +
+        lang +
+        "` still begins with `[TRANSLATE TO …]` — those will be rejected on upload.",
+    );
+  }
+
+  const fields: Record<string, string> = {
+    text_ar: "Original Arabic text. Read-only.",
+    translations:
+      "Object mapping language code → translation. The only field you should edit (besides `status`).",
+    narrator: "Narrator's name. Reference only — do not translate.",
+    grades: "Authenticity grades. Reference only — do not translate.",
+    published: "Internal publish flag. Reference only.",
+    notes: "Internal admin notes. Reference only — do not translate.",
+  };
+  if (singleLang) {
+    fields.status =
+      "Per-language publish state for `" +
+      lang +
+      "`: `draft` (default) or `published`. Editable.";
+  } else {
+    fields.publishedTranslations =
+      "Per-language publish flags. Editable on re-upload.";
+  }
+
   return {
     purpose:
       `Translate this hadith file into: ${targetNames.join(", ")}. ` +
       "Inside each hadith's `translations` object, replace any string that begins with " +
-      "`[TRANSLATE TO …]` with your translation in that language. Save and return the file as JSON.",
-    rules: [
-      "DO NOT modify `text_ar` — this is the original Arabic and must remain unchanged.",
-      "DO NOT modify `number`, `arabic_number`, `book`, `hadith_in_book`, `narrator`, " +
-        "`grades`, `tags`, `published`, `publishedTranslations`, or `notes`. " +
-        "These are reference fields, not translation targets.",
-      "Only replace strings inside the `translations` object that begin with `[TRANSLATE TO …]`.",
-      "Leave existing translations alone unless you have been explicitly asked to revise them.",
-      "Keep the JSON structure and quotes intact — do not rename keys or remove entries.",
-    ],
+      "`[TRANSLATE TO …]` with your translation in that language." +
+      (singleLang
+        ? ` When a translation is final, change that hadith's \`status\` from \`draft\` to \`published\`.`
+        : "") +
+      " Save and return the file as JSON.",
+    rules,
     languageCodes: LANG_NATIVE_NAMES,
-    fields: {
-      text_ar: "Original Arabic text. Read-only.",
-      translations:
-        "Object mapping language code → translation. The only field you should edit.",
-      narrator: "Narrator's name. Reference only — do not translate.",
-      grades: "Authenticity grades. Reference only — do not translate.",
-      published: "Internal publish flag. Reference only.",
-      publishedTranslations:
-        "Per-language internal publish flags. Reference only.",
-      notes: "Internal admin notes. Reference only — do not translate.",
-    },
+    fields,
   };
 }
 
@@ -100,7 +126,7 @@ export function buildHadithExport(
 
   return {
     _instructions: buildInstructions(lang),
-    schema: "i-muslim/hadith/v1",
+    schema: "i-muslim/hadith/v2",
     exported_at: new Date().toISOString(),
     source: { name: "i-muslim", url: "https://i-muslim.app" },
     scope: scope.kind,
@@ -128,7 +154,13 @@ export function buildHadithExport(
         h.grades ?? (h.grade ? [{ name: "Grade", grade: h.grade }] : []),
       tags: h.tags,
       published: h.published,
-      publishedTranslations: h.publishedTranslations ?? {},
+      ...(lang === "all"
+        ? { publishedTranslations: h.publishedTranslations ?? {} }
+        : {
+            status: (h.publishedTranslations?.[lang] === true
+              ? "published"
+              : "draft") as "draft" | "published",
+          }),
       notes: h.notes,
     })),
   };

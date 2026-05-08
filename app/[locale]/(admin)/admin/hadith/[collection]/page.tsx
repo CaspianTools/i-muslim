@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchCollectionWithBookStats } from "@/lib/admin/data/hadith";
 import { AdminDownloadHadithDialog } from "@/components/admin/hadith/AdminDownloadHadithDialog";
+import { AdminUploadHadithDialog } from "@/components/admin/hadith/AdminUploadHadithDialog";
 
 export const dynamic = "force-dynamic";
 
@@ -36,11 +37,12 @@ export default async function AdminCollectionPage({
             {meta.name_ar}
           </p>
         </div>
-        <div className="mt-3">
+        <div className="mt-3 flex flex-wrap gap-2">
           <AdminDownloadHadithDialog
             scope="collection"
             collection={collection}
           />
+          <AdminUploadHadithDialog collection={collection} />
         </div>
       </div>
 

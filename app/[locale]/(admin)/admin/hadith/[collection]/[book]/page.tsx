@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { fetchCollectionWithHadiths } from "@/lib/admin/data/hadith";
 import { HadithList } from "@/components/admin/hadith/HadithList";
 import { AdminDownloadHadithDialog } from "@/components/admin/hadith/AdminDownloadHadithDialog";
+import { AdminUploadHadithDialog } from "@/components/admin/hadith/AdminUploadHadithDialog";
 import { getGeminiConfigStatus } from "@/lib/admin/data/secrets";
 import { getSiteSession } from "@/lib/auth/session";
 import { editableLanguagesFor, hasPermission } from "@/lib/permissions/check";
@@ -69,12 +70,13 @@ export default async function AdminBookPage({
             </p>
           </div>
         </div>
-        <div className="mt-3">
+        <div className="mt-3 flex flex-wrap gap-2">
           <AdminDownloadHadithDialog
             scope="book"
             collection={collection}
             book={bookNumber}
           />
+          <AdminUploadHadithDialog collection={collection} />
         </div>
       </div>
 
