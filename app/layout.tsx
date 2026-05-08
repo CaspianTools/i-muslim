@@ -109,9 +109,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description,
   };
-  if (config.faviconUrl) {
-    meta.icons = { icon: config.faviconUrl };
-  }
+  meta.icons = { icon: config.faviconUrl ?? "/favicon-default.ico" };
   if (config.ogImageUrl) {
     meta.openGraph = {
       images: [{ url: config.ogImageUrl, width: 1200, height: 630 }],
