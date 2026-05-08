@@ -17,6 +17,12 @@ env:
       - BUILD
       - RUNTIME
 
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: i-muslim-com.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+
   - variable: FIREBASE_PROJECT_ID
     secret: FIREBASE_PROJECT_ID
     availability:

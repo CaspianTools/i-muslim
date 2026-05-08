@@ -36,7 +36,9 @@ function getBucketName(): string {
   if (explicit) return explicit;
   const projectId = process.env.FIREBASE_PROJECT_ID;
   if (!projectId) throw new Error("Storage bucket not configured");
-  return `${projectId}.appspot.com`;
+  // Firebase projects created after Oct 2024 default to <project>.firebasestorage.app
+  // (the legacy .appspot.com bucket is not auto-provisioned). Match that.
+  return `${projectId}.firebasestorage.app`;
 }
 
 function getBucket() {
@@ -100,6 +102,21 @@ export async function createSiteUploadUrl(
 export function publicUrlFor(storagePath: string): string {
   const bucket = getBucketName();
   return `https://storage.googleapis.com/${bucket}/${encodeURI(storagePath)}`;
+}
+
+// Site branding (logo/favicon/og/article placeholder) is rendered via plain
+// `https://storage.googleapis.com/...` URLs in <link rel="icon"> / <img>, which
+// the GCS REST endpoint serves with no Firebase Storage rules in the loop —
+// so the object itself needs an `allUsers: objectViewer` ACL or it 403s.
+// Granting per-object public read only on these admin-uploaded site assets
+// keeps everything else (user uploads, etc.) gated by Storage Rules.
+export async function makeSiteAssetPublic(storagePath: string): Promise<void> {
+  try {
+    await getBucket().file(storagePath).makePublic();
+  } catch (err) {
+    console.warn("[site-config/storage] makePublic failed:", err);
+    throw err;
+  }
 }
 
 export async function deleteSiteStorageObject(storagePath: string): Promise<void> {

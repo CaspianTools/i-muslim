@@ -6,6 +6,7 @@ import { requirePermission } from "@/lib/permissions/server";
 import {
   createSiteUploadUrl,
   deleteSiteStorageObject,
+  makeSiteAssetPublic,
   type SiteUploadInput,
   type SiteUploadKind,
 } from "@/lib/site-config/storage";
@@ -72,6 +73,12 @@ export async function updateSiteAssetAction(
     return { ok: false, error: "invalid-input" };
   }
   try {
+    if (parsed.data.storagePath) {
+      // The browser-side fetch PUT against the signed URL has just succeeded,
+      // but the object lands private — grant public-read so the GCS REST URL
+      // we render in <link rel="icon"> / <img> works without auth.
+      await makeSiteAssetPublic(parsed.data.storagePath);
+    }
     const config = await setSiteAsset(parsed.data, session.email);
     // Favicon, logo, OG, article placeholder all read across the public site
     // and admin layouts — invalidate broadly so changes show up everywhere.
