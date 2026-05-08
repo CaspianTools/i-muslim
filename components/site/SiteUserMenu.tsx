@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LogIn, LogOut, User as UserIcon } from "lucide-react";
+import { LogOut, User as UserIcon, UserRound } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -68,14 +68,19 @@ export function SiteUserMenu({ session, isAdmin }: Props) {
   if (!session) {
     return (
       <Button
-        size="sm"
-        variant="secondary"
+        variant="ghost"
+        size="icon"
         onClick={handleSignIn}
         disabled={busy}
         aria-label={t("signIn")}
+        aria-busy={busy}
+        className="rounded-full"
       >
-        <LogIn className="size-4" />
-        <span className="hidden sm:inline">{t("signIn")}</span>
+        <Avatar className="size-8">
+          <AvatarFallback>
+            <UserRound className="size-4" />
+          </AvatarFallback>
+        </Avatar>
       </Button>
     );
   }
