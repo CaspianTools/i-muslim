@@ -212,11 +212,21 @@ export function NoteEditor({
   return <NoteCardContext.Provider value={value}>{children}</NoteCardContext.Provider>;
 }
 
-export function NoteEditorTrigger({ className }: { className?: string }) {
+export function NoteEditorTrigger({
+  className,
+  withLabel,
+}: {
+  className?: string;
+  withLabel?: boolean;
+}) {
   const { note, editing, pending, toggle } = useCard();
   const t = useTranslations("notes");
   const hasNote = Boolean(note);
   const label = hasNote ? t("editNote") : t("addNote");
+  // Show the text label when explicitly requested OR when the trigger is
+  // rendered as a full-width row (popover layout). Inline desktop usage
+  // remains icon-only.
+  const showLabel = withLabel ?? Boolean(className?.includes("justify-start"));
 
   return (
     <button
@@ -234,6 +244,7 @@ export function NoteEditorTrigger({ className }: { className?: string }) {
       )}
     >
       <StickyNote className={cn("size-4", hasNote && "fill-current")} />
+      {showLabel && <span>{label}</span>}
     </button>
   );
 }

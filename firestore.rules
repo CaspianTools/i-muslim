@@ -46,6 +46,13 @@ service cloud.firestore {
       allow read, create, update, delete: if false;
     }
 
+    match /favoriteStats/{statsId} {
+      // Public read so signed-out visitors see the like count next to ayahs.
+      // Writes only via server actions (Admin SDK bypasses these rules).
+      allow read: if true;
+      allow create, update, delete: if false;
+    }
+
     match /businessReports/{reportId} {
       allow create: if request.resource.data.keys().hasAll(['businessId', 'reason', 'createdAt'])
                     && request.resource.data.businessId is string

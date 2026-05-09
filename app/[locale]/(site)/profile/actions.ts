@@ -15,6 +15,10 @@ import {
   type FavoriteItemType,
   isFavoriteItemType,
 } from "@/types/profile";
+import {
+  FAVORITE_STATS_COLLECTION,
+  favoriteStatsKey,
+} from "@/lib/profile/favoriteStats";
 
 export type SaveProfileFieldsResult =
   | { ok: true }
@@ -90,6 +94,9 @@ export async function toggleFavoriteAction(payload: {
   if (!db) return { ok: false, error: "Firebase is not configured" };
 
   const col = db.collection("users").doc(session.uid).collection("favorites");
+  const statsRef = db
+    .collection(FAVORITE_STATS_COLLECTION)
+    .doc(favoriteStatsKey(payload.itemType, payload.itemId));
 
   try {
     const existing = await col
@@ -100,6 +107,19 @@ export async function toggleFavoriteAction(payload: {
 
     if (!existing.empty) {
       await existing.docs[0]!.ref.delete();
+      try {
+        await statsRef.set(
+          {
+            itemType: payload.itemType,
+            itemId: payload.itemId,
+            count: FieldValue.increment(-1),
+            updatedAt: FieldValue.serverTimestamp(),
+          },
+          { merge: true },
+        );
+      } catch (err) {
+        console.warn("[profile/actions] favoriteStats decrement failed:", err);
+      }
       revalidatePath("/profile/favorites");
       return { ok: true, favorited: false };
     }
@@ -117,6 +137,19 @@ export async function toggleFavoriteAction(payload: {
       },
       createdAt: FieldValue.serverTimestamp(),
     });
+    try {
+      await statsRef.set(
+        {
+          itemType: payload.itemType,
+          itemId: payload.itemId,
+          count: FieldValue.increment(1),
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
+    } catch (err) {
+      console.warn("[profile/actions] favoriteStats increment failed:", err);
+    }
     revalidatePath("/profile/favorites");
     return { ok: true, favorited: true };
   } catch (err) {
@@ -145,12 +178,38 @@ export async function removeFavoriteAction(
   if (!db) return { ok: false, error: "Firebase is not configured" };
 
   try {
-    await db
+    const ref = db
       .collection("users")
       .doc(session.uid)
       .collection("favorites")
-      .doc(favoriteId)
-      .delete();
+      .doc(favoriteId);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      revalidatePath("/profile/favorites");
+      return { ok: true };
+    }
+    const data = snap.data() ?? {};
+    const itemType = data.itemType;
+    const itemId = data.itemId;
+    await ref.delete();
+    if (isFavoriteItemType(itemType) && typeof itemId === "string" && itemId) {
+      try {
+        await db
+          .collection(FAVORITE_STATS_COLLECTION)
+          .doc(favoriteStatsKey(itemType, itemId))
+          .set(
+            {
+              itemType,
+              itemId,
+              count: FieldValue.increment(-1),
+              updatedAt: FieldValue.serverTimestamp(),
+            },
+            { merge: true },
+          );
+      } catch (err) {
+        console.warn("[profile/actions] favoriteStats decrement failed:", err);
+      }
+    }
     revalidatePath("/profile/favorites");
     return { ok: true };
   } catch (err) {

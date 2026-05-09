@@ -1,3 +1,4 @@
+import { Heart, MessageCircle } from "lucide-react";
 import type { Verse } from "@/types/quran";
 import {
   QURAN_TRANSLATION_IDS,
@@ -28,6 +29,7 @@ export function AyahCard({
   signedIn,
   currentUid = null,
   commentCount = 0,
+  favoriteCount = 0,
 }: {
   verse: Verse;
   langs: LangCode[];
@@ -37,6 +39,7 @@ export function AyahCard({
   signedIn: boolean;
   currentUid?: string | null;
   commentCount?: number;
+  favoriteCount?: number;
 }) {
   const nonArabic = langs.filter((l) => l !== "ar");
 
@@ -63,7 +66,7 @@ export function AyahCard({
   return (
     <article
       id={verse.verse_key}
-      className="rounded-xl border border-border bg-background p-5 scroll-mt-24"
+      className="border-b border-border bg-background py-4 scroll-mt-24 sm:py-5"
       data-ayah-id={verse.verse_key}
       data-surah={surahId}
       data-ayah={verse.verse_number}
@@ -75,9 +78,27 @@ export function AyahCard({
         signedIn={signedIn}
       >
         <header className="mb-3 flex items-center justify-between gap-2">
-          <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-muted px-2 text-xs font-medium text-muted-foreground">
-            {verse.verse_key}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-muted px-2 text-xs font-medium text-muted-foreground">
+              {verse.verse_key}
+            </span>
+            {(favoriteCount > 0 || commentCount > 0) && (
+              <span className="hidden md:inline-flex items-center gap-2 text-xs text-muted-foreground">
+                {favoriteCount > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <Heart className="size-3.5" />
+                    <span className="tabular-nums">{favoriteCount}</span>
+                  </span>
+                )}
+                {commentCount > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <MessageCircle className="size-3.5" />
+                    <span className="tabular-nums">{commentCount}</span>
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
           <AyahActionsRow
             triggerLabel={`${surahName} ${verse.verse_key} actions`}
             desktop={
@@ -98,6 +119,7 @@ export function AyahCard({
                   itemMeta={itemMeta}
                   signedIn={signedIn}
                   iconOnly
+                  count={favoriteCount}
                 />
               </>
             }
@@ -120,6 +142,7 @@ export function AyahCard({
                   itemMeta={itemMeta}
                   signedIn={signedIn}
                   className="w-full justify-start"
+                  count={favoriteCount}
                 />
               </>
             }

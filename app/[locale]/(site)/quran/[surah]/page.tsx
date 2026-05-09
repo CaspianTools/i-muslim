@@ -15,11 +15,15 @@ import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
 import { NotesProvider } from "@/components/site/notes/NotesContext";
 import { ReadingProgressTracker } from "@/components/site/reading/ReadingProgressTracker";
-import { QuranSidebar } from "@/components/site/quran/QuranSidebar";
-import { QuranMobileDrawer } from "@/components/site/quran/QuranMobileDrawer";
+import { QuranSidebarAside } from "@/components/site/quran/QuranSidebarAside";
+import { QuranFiltersButton } from "@/components/site/quran/QuranFiltersButton";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { getSiteSession } from "@/lib/auth/session";
 import { getFavoritedSet } from "@/lib/profile/data";
+import {
+  getFavoriteCountsForAyahs,
+  getFavoriteStats,
+} from "@/lib/profile/favoriteStats";
 import { getNotesByItemType } from "@/lib/profile/notes-data";
 import { getCommentCountsForAyahs } from "@/lib/comments/data";
 import { CommentThread } from "@/components/comments/CommentThread";
@@ -33,16 +37,18 @@ export async function generateMetadata({
   const id = Number(surah);
   if (!Number.isInteger(id) || id < 1 || id > 114) return {};
   try {
-    const [chapter, t] = await Promise.all([
+    const [chapter, t, tNames] = await Promise.all([
       getSurah(id),
       getTranslations("quranPage"),
+      getTranslations("surahNames"),
     ]);
     if (!chapter) return {};
+    const translatedName = tNames(String(chapter.id));
     return {
       title: t("surahMetaTitle", { name: chapter.name_simple, id }),
       description: t("surahMetaDescription", {
         name: chapter.name_simple,
-        translatedName: chapter.translated_name.name,
+        translatedName,
         verses: t("verseCount", { count: chapter.verses_count }),
       }),
     };
@@ -75,6 +81,7 @@ export default async function SurahPage({
     surahFavorites,
     ayahNotes,
     t,
+    tNames,
   ] = await Promise.all([
     getSurah(id),
     getAyahsForSurah(id),
@@ -86,15 +93,19 @@ export default async function SurahPage({
       ? getNotesByItemType(session.uid, "ayah")
       : Promise.resolve(new Map<string, { id: string; text: string; updatedAt: string }>()),
     getTranslations("quranPage"),
+    getTranslations("surahNames"),
   ]);
   const ayahNotesRecord: Record<string, { id: string; text: string; updatedAt: string }> = {};
   for (const [k, v] of ayahNotes) ayahNotesRecord[k] = v;
   if (!chapter) notFound();
   const verses = allVerses.map((v) => filterVerseLangs(v, langs));
-  const commentCounts = await getCommentCountsForAyahs(
-    id,
-    verses.map((v) => v.verse_number),
-  );
+  const verseKeys = verses.map((v) => v.verse_key);
+  const [commentCounts, ayahFavoriteCounts, surahFavoriteStats] = await Promise.all([
+    getCommentCountsForAyahs(id, verses.map((v) => v.verse_number)),
+    getFavoriteCountsForAyahs(verseKeys),
+    getFavoriteStats("surah", String(id)),
+  ]);
+  const localizedMeaning = tNames(String(chapter.id));
 
   const prev = chapters.find((c) => c.id === id - 1);
   const next = chapters.find((c) => c.id === id + 1);
@@ -112,14 +123,9 @@ export default async function SurahPage({
     >
       <NotesProvider initialItems={[{ itemType: "ayah", notes: ayahNotesRecord }]}>
       <ReadingProgressTracker variant={{ kind: "quran", surah: id }} />
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:py-10">
-        <div className="flex items-center gap-2 pb-3 md:hidden">
-          <QuranMobileDrawer availableLangs={languageSettings.quranEnabled} />
-        </div>
+      <div className="mx-auto max-w-6xl px-4 py-4 sm:py-10">
         <div className="flex gap-6">
-          <aside className="hidden md:block sticky top-20 self-start">
-            <QuranSidebar variant="desktop" availableLangs={languageSettings.quranEnabled} />
-          </aside>
+          <QuranSidebarAside availableLangs={languageSettings.quranEnabled} />
           <div className="min-w-0 flex-1">
             <Link
               href="/quran"
@@ -128,18 +134,18 @@ export default async function SurahPage({
               {t("backToSurahs")}
             </Link>
 
-            <header className="mt-4 border-b border-border pb-6">
-              <div className="flex items-start justify-between gap-4">
-                <div>
+            <header className="mt-3 border-b border-border pb-4 sm:mt-4 sm:pb-6">
+              <div className="flex items-start justify-between gap-3 sm:gap-4">
+                <div className="min-w-0">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
                     {t("surahEyebrow", { id: chapter.id })}
                   </p>
-                  <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+                  <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
                     {chapter.name_simple}
                   </h1>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {t("surahSummary", {
-                      translatedName: chapter.translated_name.name,
+                      translatedName: localizedMeaning,
                       verses: t("verseCount", { count: chapter.verses_count }),
                       revelation:
                         chapter.revelation_place === "makkah"
@@ -151,25 +157,27 @@ export default async function SurahPage({
                 <p
                   dir="rtl"
                   lang="ar"
-                  className="font-arabic text-4xl text-foreground"
+                  className="font-arabic text-2xl text-foreground sm:text-4xl"
                 >
                   {chapter.name_arabic}
                 </p>
               </div>
-              <div className="mt-4 flex items-center justify-end">
+              <div className="mt-3 flex items-center justify-end gap-2 sm:mt-4">
                 <FavoriteButton
                   itemType="surah"
                   itemId={surahId}
                   itemMeta={{
                     title: `Surah ${chapter.name_simple}`,
-                    subtitle: chapter.translated_name.name,
+                    subtitle: localizedMeaning,
                     href: surahHref,
                     arabic: chapter.name_arabic,
                     locale,
                   }}
                   signedIn={Boolean(session)}
                   size="md"
+                  count={surahFavoriteStats.count}
                 />
+                <QuranFiltersButton availableLangs={languageSettings.quranEnabled} />
               </div>
             </header>
 
@@ -177,13 +185,13 @@ export default async function SurahPage({
               <p
                 dir="rtl"
                 lang="ar"
-                className="mt-6 text-center font-arabic text-2xl text-accent sm:text-3xl"
+                className="mt-4 text-center font-arabic text-2xl text-accent sm:mt-6 sm:text-3xl"
               >
                 بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
               </p>
             )}
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-4 sm:mt-6">
               {verses.map((v) => (
                 <AyahCard
                   key={v.id}
@@ -195,6 +203,7 @@ export default async function SurahPage({
                   signedIn={Boolean(session)}
                   currentUid={session?.uid ?? null}
                   commentCount={commentCounts.get(v.verse_key) ?? 0}
+                  favoriteCount={ayahFavoriteCounts.get(v.verse_key) ?? 0}
                 />
               ))}
             </div>
@@ -204,7 +213,7 @@ export default async function SurahPage({
               entityId={surahId}
               itemMeta={{
                 title: `Surah ${chapter.name_simple}`,
-                subtitle: chapter.translated_name.name,
+                subtitle: localizedMeaning,
                 href: surahHref,
                 locale,
               }}

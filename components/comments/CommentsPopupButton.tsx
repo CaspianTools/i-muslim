@@ -117,6 +117,9 @@ export function CommentsPopupButton({
     : {};
 
   const ariaLabel = triggerAriaLabel ?? t("popupButtonAria", { count });
+  // Show the text label in popover-row layouts so the user can tell what the
+  // icon is for (mobile context menu). Inline desktop usage stays icon+count.
+  const showLabel = Boolean(className?.includes("justify-start"));
 
   return (
     <EditorDialog open={open} onOpenChange={handleOpenChange}>
@@ -134,6 +137,7 @@ export function CommentsPopupButton({
           {triggerSlot ?? (
             <>
               <MessageCircle className="size-4" />
+              {showLabel && <span>{t("title")}</span>}
               {count > 0 && <span className="tabular-nums">{count}</span>}
             </>
           )}

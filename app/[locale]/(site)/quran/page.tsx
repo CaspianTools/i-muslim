@@ -12,9 +12,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function QuranIndexPage() {
-  const [chapters, t] = await Promise.all([
+  const [chapters, t, tNames] = await Promise.all([
     getSurahs(),
     getTranslations("quranPage"),
+    getTranslations("surahNames"),
   ]);
 
   return (
@@ -51,7 +52,7 @@ export default async function QuranIndexPage() {
                 </div>
                 <div className="mt-0.5 text-xs text-muted-foreground">
                   {t("cardSummary", {
-                    translatedName: c.translated_name.name,
+                    translatedName: tNames(String(c.id)),
                     verses: t("verseCount", { count: c.verses_count }),
                     revelation:
                       c.revelation_place === "makkah"

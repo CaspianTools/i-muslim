@@ -28,6 +28,12 @@ interface Props {
    * Firebase client ID token.
    */
   signedIn?: boolean;
+  /**
+   * Optional aggregate save count from `favoriteStats`. When provided, the
+   * button shows the number after the label (Facebook-like-button style) and
+   * updates optimistically on toggle.
+   */
+  count?: number;
 }
 
 export function FavoriteButton({
@@ -40,11 +46,15 @@ export function FavoriteButton({
   className,
   iconOnly = false,
   signedIn = false,
+  count,
 }: Props) {
   const ctx = useFavoritesContext();
   const ctxFavorited = ctx?.has(itemType, itemId);
   const [localFavorited, setLocalFavorited] = useState<boolean>(initialFavorited);
   const favorited = ctxFavorited ?? localFavorited;
+  const [countDelta, setCountDelta] = useState<number>(0);
+  const displayCount =
+    typeof count === "number" ? Math.max(0, count + countDelta) : null;
   const [pending, startTransition] = useTransition();
   const t = useTranslations("favorites");
 
@@ -72,8 +82,10 @@ export function FavoriteButton({
 
     const previous = favorited;
     const next = !favorited;
+    const previousDelta = countDelta;
     setLocalFavorited(next);
     ctx?.set(itemType, itemId, next);
+    setCountDelta(previousDelta + (next ? 1 : -1));
 
     startTransition(async () => {
       try {
@@ -81,6 +93,7 @@ export function FavoriteButton({
         if (!result.ok) {
           setLocalFavorited(previous);
           ctx?.set(itemType, itemId, previous);
+          setCountDelta(previousDelta);
           if (result.reason === "unauthorized") {
             handleAnonClick();
           } else {
@@ -91,11 +104,13 @@ export function FavoriteButton({
         if (result.favorited !== next) {
           setLocalFavorited(result.favorited);
           ctx?.set(itemType, itemId, result.favorited);
+          setCountDelta(previousDelta + (result.favorited ? 1 : -1));
         }
         toast.success(result.favorited ? t("savedToast") : t("removedToast"));
       } catch {
         setLocalFavorited(previous);
         ctx?.set(itemType, itemId, previous);
+        setCountDelta(previousDelta);
         toast.error(t("saveFailed"));
       }
     });
@@ -128,6 +143,11 @@ export function FavoriteButton({
     >
       <Icon className={cn("size-4", favorited && "fill-current")} />
       {!iconOnly && <span>{label}</span>}
+      {displayCount !== null && displayCount > 0 && (
+        <span className="tabular-nums text-muted-foreground">
+          {iconOnly ? displayCount : `· ${displayCount}`}
+        </span>
+      )}
     </button>
   );
 }
