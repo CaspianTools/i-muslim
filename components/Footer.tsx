@@ -27,7 +27,7 @@ export async function Footer() {
     "text-xs font-semibold uppercase tracking-wider text-foreground";
 
   return (
-    <footer className="mt-16 border-t border-border bg-muted/40">
+    <footer className="mt-16 hidden border-t border-border bg-muted/40 md:block">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 text-sm sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-3">
           <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -48,11 +48,7 @@ export async function Footer() {
           <p className="text-muted-foreground">{siteConfig.tagline || t("tagline")}</p>
         </div>
 
-        {/* On <md the bottom tab bar + /more page already surface these
-            destinations, so the three middle columns are redundant chrome.
-            Hide them at mobile and let the brand block + locale switcher
-            stand alone. */}
-        <nav aria-label={t("colWorship")} className="hidden md:block space-y-3">
+        <nav aria-label={t("colWorship")} className="space-y-3">
           <h2 className={headingClass}>{t("colWorship")}</h2>
           <ul className="space-y-2">
             <li>
@@ -68,7 +64,7 @@ export async function Footer() {
           </ul>
         </nav>
 
-        <nav aria-label={t("colCommunity")} className="hidden md:block space-y-3">
+        <nav aria-label={t("colCommunity")} className="space-y-3">
           <h2 className={headingClass}>{t("colCommunity")}</h2>
           <ul className="space-y-2">
             <li>
@@ -101,7 +97,7 @@ export async function Footer() {
           </ul>
         </nav>
 
-        <nav aria-label={t("colTools")} className="hidden md:block space-y-3">
+        <nav aria-label={t("colTools")} className="space-y-3">
           <h2 className={headingClass}>{t("colTools")}</h2>
           <ul className="space-y-2">
             <li>
