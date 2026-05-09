@@ -520,7 +520,7 @@
     "ariaLabel": "Sure sayfalama",
     "previous": "Önceki",
     "next": "Sonraki",
-    "position": "{total} sureden {current}.",
+    "position": "{current} / {total}",
     "progressLabel": "114 sure içindeki okuma ilerlemesi"
   },
   "install": {

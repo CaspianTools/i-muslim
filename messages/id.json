@@ -520,7 +520,7 @@
     "ariaLabel": "Surah pagination",
     "previous": "Previous",
     "next": "Next",
-    "position": "{current} of {total}",
+    "position": "{current} / {total}",
     "progressLabel": "Reading progress through the 114 surahs"
   },
   "install": {
