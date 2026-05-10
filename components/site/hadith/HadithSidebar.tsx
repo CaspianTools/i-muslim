@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { HadithLanguageFilter } from "./HadithLanguageFilter";
+import { ReadingFontControls } from "@/components/site/reading/ReadingFontControls";
 
 const COLLAPSE_KEY = "hadith:sidebar-collapsed";
 const COLLAPSE_EVENT = "hadith:sidebar-collapsed-change";
@@ -101,13 +102,16 @@ export function HadithSidebar({
         <ScrollArea className="flex-1">
           <div className={cn("py-3", showLabels ? "px-3" : "px-2")}>
             {showLabels ? (
-              <section className="space-y-2">
-                <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  <Globe className="size-3.5" />
-                  {t("sections.translations")}
-                </h3>
-                <HadithLanguageFilter availableLangs={availableLangs} />
-              </section>
+              <div className="space-y-5">
+                <section className="space-y-2">
+                  <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <Globe className="size-3.5" />
+                    {t("sections.translations")}
+                  </h3>
+                  <HadithLanguageFilter availableLangs={availableLangs} />
+                </section>
+                <ReadingFontControls />
+              </div>
             ) : (
               <ul className="space-y-1">
                 <li>

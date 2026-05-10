@@ -196,7 +196,7 @@ export function InstallPrompt() {
   if (!eligible) return null;
 
   return (
-    <div className="md:hidden mx-auto max-w-6xl px-4 pt-2">
+    <div data-reading-chrome className="md:hidden mx-auto max-w-6xl px-4 pt-2">
       <div className="flex items-center gap-3 rounded-md border border-border bg-card p-3">
         <Download className="size-5 text-primary shrink-0" />
         <div className="flex-1 min-w-0">

@@ -20,7 +20,7 @@ export function PrayerTimesBar() {
     : t("viewAll");
 
   return (
-    <div className="border-b border-border bg-muted/40 text-foreground">
+    <div data-reading-chrome className="border-b border-border bg-muted/40 text-foreground">
       <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-1.5">
         {/* Mobile: a single tappable next-prayer pill linking to the full table.
             Replaces the desktop 5-prayer row that overflowed at 390px. */}

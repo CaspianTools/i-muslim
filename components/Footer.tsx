@@ -27,7 +27,10 @@ export async function Footer() {
     "text-xs font-semibold uppercase tracking-wider text-foreground";
 
   return (
-    <footer className="mt-16 hidden border-t border-border bg-muted/40 md:block">
+    <footer
+      data-reading-chrome
+      className="mt-16 hidden border-t border-border bg-muted/40 md:block"
+    >
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 text-sm sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-3">
           <Link href="/" className="flex items-center gap-2 font-semibold">

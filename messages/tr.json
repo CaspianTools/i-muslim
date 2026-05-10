@@ -2550,6 +2550,17 @@
     "prevBook": "← Kitap {n}",
     "nextBook": "Kitap {n} →"
   },
+  "readingMode": {
+    "enter": "Reading mode",
+    "exit": "Exit reading mode",
+    "fontSection": "Reading text size",
+    "fontArabic": "Arabic",
+    "fontTranslation": "Translation",
+    "fontIncrease": "Increase {label} size",
+    "fontDecrease": "Decrease {label} size",
+    "fontReset": "Reset {label} size",
+    "reset": "Reset"
+  },
   "profileNav": {
     "title": "Profil",
     "items": {

@@ -116,7 +116,8 @@ export function HadithCard({
         <p
           dir="rtl"
           lang="ar"
-          className="font-arabic text-xl leading-loose text-foreground sm:text-2xl"
+          style={{ fontSize: "var(--reader-arabic-size)" }}
+          className="font-arabic leading-loose text-foreground"
         >
           {arabic.text}
         </p>
@@ -177,7 +178,12 @@ export function HadithCard({
                 )}
               </div>
               {status === "in_process" ? null : entry ? (
-                <p className="text-base leading-relaxed">{entry.text}</p>
+                <p
+                  style={{ fontSize: "var(--reader-translation-size)" }}
+                  className="leading-relaxed"
+                >
+                  {entry.text}
+                </p>
               ) : null}
             </div>
           ))}

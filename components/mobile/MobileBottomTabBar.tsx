@@ -47,7 +47,7 @@ export function MobileBottomTabBar() {
   const pathname = usePathname();
 
   return (
-    <nav className="mobile-tabbar md:hidden" aria-label={t("primary")}>
+    <nav data-reading-chrome className="mobile-tabbar md:hidden" aria-label={t("primary")}>
       {TABS.map(({ href, match, Icon, labelKey }) => {
         const active = match(pathname);
         return (
