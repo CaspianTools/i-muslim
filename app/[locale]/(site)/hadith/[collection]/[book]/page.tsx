@@ -13,6 +13,8 @@ import { HadithCard, type HadithTranslationSlice } from "@/components/HadithCard
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
 import { NotesProvider } from "@/components/site/notes/NotesContext";
 import { ReadingProgressTracker } from "@/components/site/reading/ReadingProgressTracker";
+import { ReadingModeBoundary } from "@/components/site/reading/ReadingModeBoundary";
+import { ReadingModeToggle } from "@/components/site/reading/ReadingModeToggle";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
 import { HadithMobileDrawer } from "@/components/site/hadith/HadithMobileDrawer";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
@@ -98,12 +100,14 @@ export default async function HadithBookPage({
       initialItems={[{ itemType: "hadith", itemIds: Array.from(hadithFavorites) }]}
     >
       <NotesProvider initialItems={[{ itemType: "hadith", notes: hadithNotesRecord }]}>
+      <ReadingModeBoundary scope="hadith" />
       <ReadingProgressTracker
         variant={{ kind: "hadith", collection, book: bookNumber }}
       />
       <div className="mx-auto max-w-6xl px-4 py-6 sm:py-10">
         <div className="flex items-center gap-2 pb-3 md:hidden">
           <HadithMobileDrawer availableLangs={languageSettings.hadithEnabled} />
+          <ReadingModeToggle scope="hadith" />
         </div>
         <div className="flex gap-6">
           <aside className="hidden md:block sticky top-20 self-start">
@@ -111,23 +115,32 @@ export default async function HadithBookPage({
           </aside>
           <div className="min-w-0 flex-1">
             <div className="mx-auto max-w-3xl">
-              <Link
-                href={`/hadith/${collection}${langQS}`}
-                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-              >
-                ← {meta.name_en}
-              </Link>
+              <div data-reading-hide>
+                <Link
+                  href={`/hadith/${collection}${langQS}`}
+                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  ← {meta.name_en}
+                </Link>
+              </div>
 
               <header className="mt-4 border-b border-border pb-6">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {t("bookEyebrow", { collection: meta.name_en, book: bookNumber })}
-                </p>
-                <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-                  {bookMeta.name}
-                </h1>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {t("bookSummary", { count: hadiths.length })}
-                </p>
+                <div className="flex items-start justify-between gap-3">
+                  <div data-reading-hide className="min-w-0">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {t("bookEyebrow", { collection: meta.name_en, book: bookNumber })}
+                    </p>
+                    <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+                      {bookMeta.name}
+                    </h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t("bookSummary", { count: hadiths.length })}
+                    </p>
+                  </div>
+                  <div className="hidden md:block">
+                    <ReadingModeToggle scope="hadith" />
+                  </div>
+                </div>
               </header>
 
               <div className="mt-6 space-y-4">

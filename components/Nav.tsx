@@ -14,7 +14,10 @@ export async function Nav() {
   const siteConfig = await getSiteConfig();
   const isAdmin = session ? hasPermission(session.permissions, "dashboard.read") : false;
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
+    <header
+      data-reading-chrome
+      className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur"
+    >
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           {siteConfig.logoUrl ? (

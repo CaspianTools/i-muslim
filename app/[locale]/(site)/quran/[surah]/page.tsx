@@ -15,6 +15,8 @@ import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
 import { NotesProvider } from "@/components/site/notes/NotesContext";
 import { ReadingProgressTracker } from "@/components/site/reading/ReadingProgressTracker";
+import { ReadingModeBoundary } from "@/components/site/reading/ReadingModeBoundary";
+import { ReadingModeToggle } from "@/components/site/reading/ReadingModeToggle";
 import { QuranSidebarAside } from "@/components/site/quran/QuranSidebarAside";
 import { QuranFiltersButton } from "@/components/site/quran/QuranFiltersButton";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
@@ -122,20 +124,23 @@ export default async function SurahPage({
       ]}
     >
       <NotesProvider initialItems={[{ itemType: "ayah", notes: ayahNotesRecord }]}>
+      <ReadingModeBoundary scope="quran" />
       <ReadingProgressTracker variant={{ kind: "quran", surah: id }} />
       <div className="mx-auto max-w-6xl px-4 py-4 sm:py-10">
         <div className="flex gap-6">
           <QuranSidebarAside availableLangs={languageSettings.quranEnabled} />
           <div className="min-w-0 flex-1">
-            <Link
-              href="/quran"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-            >
-              {t("backToSurahs")}
-            </Link>
+            <div data-reading-hide>
+              <Link
+                href="/quran"
+                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              >
+                {t("backToSurahs")}
+              </Link>
+            </div>
 
             <header className="mt-3 border-b border-border pb-4 sm:mt-4 sm:pb-6">
-              <div className="flex items-start justify-between gap-3 sm:gap-4">
+              <div data-reading-hide className="flex items-start justify-between gap-3 sm:gap-4">
                 <div className="min-w-0">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
                     {t("surahEyebrow", { id: chapter.id })}
@@ -163,20 +168,23 @@ export default async function SurahPage({
                 </p>
               </div>
               <div className="mt-3 flex items-center justify-end gap-2 sm:mt-4">
-                <FavoriteButton
-                  itemType="surah"
-                  itemId={surahId}
-                  itemMeta={{
-                    title: `Surah ${chapter.name_simple}`,
-                    subtitle: localizedMeaning,
-                    href: surahHref,
-                    arabic: chapter.name_arabic,
-                    locale,
-                  }}
-                  signedIn={Boolean(session)}
-                  size="md"
-                  count={surahFavoriteStats.count}
-                />
+                <div data-reading-hide className="contents">
+                  <FavoriteButton
+                    itemType="surah"
+                    itemId={surahId}
+                    itemMeta={{
+                      title: `Surah ${chapter.name_simple}`,
+                      subtitle: localizedMeaning,
+                      href: surahHref,
+                      arabic: chapter.name_arabic,
+                      locale,
+                    }}
+                    signedIn={Boolean(session)}
+                    size="md"
+                    count={surahFavoriteStats.count}
+                  />
+                </div>
+                <ReadingModeToggle scope="quran" />
                 <QuranFiltersButton availableLangs={languageSettings.quranEnabled} />
               </div>
             </header>
@@ -208,16 +216,18 @@ export default async function SurahPage({
               ))}
             </div>
 
-            <CommentThread
-              entityType="surah"
-              entityId={surahId}
-              itemMeta={{
-                title: `Surah ${chapter.name_simple}`,
-                subtitle: localizedMeaning,
-                href: surahHref,
-                locale,
-              }}
-            />
+            <div data-reading-hide>
+              <CommentThread
+                entityType="surah"
+                entityId={surahId}
+                itemMeta={{
+                  title: `Surah ${chapter.name_simple}`,
+                  subtitle: localizedMeaning,
+                  href: surahHref,
+                  locale,
+                }}
+              />
+            </div>
 
             <SurahPagination
               current={id}

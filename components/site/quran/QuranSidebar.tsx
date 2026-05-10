@@ -7,6 +7,7 @@ import type { LangCode } from "@/lib/translations";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { QuranLanguageFilter } from "./QuranLanguageFilter";
+import { ReadingFontControls } from "@/components/site/reading/ReadingFontControls";
 
 const COLLAPSE_KEY = "quran:sidebar-collapsed";
 const COLLAPSE_EVENT = "quran:sidebar-collapsed-change";
@@ -63,7 +64,7 @@ export function QuranSidebar({
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="px-3 py-3">
+        <div className="px-3 py-3 space-y-5">
           <section className="space-y-2">
             <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               <Globe className="size-3.5" />
@@ -71,6 +72,7 @@ export function QuranSidebar({
             </h3>
             <QuranLanguageFilter availableLangs={availableLangs} />
           </section>
+          <ReadingFontControls />
         </div>
       </ScrollArea>
     </div>

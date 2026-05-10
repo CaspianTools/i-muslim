@@ -153,7 +153,8 @@ export function AyahCard({
           <p
             dir="rtl"
             lang="ar"
-            className="font-arabic text-2xl leading-loose text-foreground sm:text-3xl"
+            style={{ fontSize: "var(--reader-arabic-size)" }}
+            className="font-arabic leading-loose text-foreground"
           >
             {verse.text_uthmani}
           </p>
@@ -174,7 +175,12 @@ export function AyahCard({
                     {label}
                     {translator ? ` · ${translator}` : ""}
                   </div>
-                  <p className="text-base leading-relaxed">{stripHtml(t.text)}</p>
+                  <p
+                    style={{ fontSize: "var(--reader-translation-size)" }}
+                    className="leading-relaxed"
+                  >
+                    {stripHtml(t.text)}
+                  </p>
                 </div>
               );
             })}

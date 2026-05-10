@@ -622,3 +622,36 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Reading mode — Quran and Hadith.
+ *
+ * Toggled via localStorage by ReadingModeBoundary, which adds
+ * `body.reading-mode-on` while a reader is active on a Quran/Hadith page.
+ * Every chrome surface that should disappear in reading mode is tagged with
+ * `data-reading-chrome` (global nav, prayer bar, footer, mobile tab bar,
+ * install prompt) or `data-reading-hide` (per-page eyebrow text, comments
+ * thread, full pagination block). Page-level cards stay visible so the
+ * reciter can still tap into the per-ayah / per-hadith context menu.
+ *
+ * Font sizing is driven by --reader-arabic-size / --reader-translation-size
+ * (set on <html>). Defaults match the prior tailwind sizes so non-readers
+ * see no change.
+ */
+:root {
+  --reader-arabic-size: 32px;
+  --reader-translation-size: 17px;
+}
+
+body.reading-mode-on [data-reading-chrome],
+body.reading-mode-on [data-reading-hide] {
+  display: none !important;
+}
+
+/* Mobile tab bar is hidden in reading mode — drop the safe-area pad on
+ * <main> so the page doesn't reserve empty space at the bottom.
+ */
+body.reading-mode-on > main {
+  padding-bottom: 0 !important;
+}
+
