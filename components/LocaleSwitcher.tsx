@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { Globe } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { LOCALES, LOCALE_META, type Locale } from "@/i18n/config";
+import { LOCALES, LOCALE_COOKIE, LOCALE_META, type Locale } from "@/i18n/config";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,19 @@ import {
 
 function nativeName(code: Locale): string {
   return LOCALE_META[code]?.nativeName ?? code.toUpperCase();
+}
+
+// Pin the user's choice in the cookie ourselves. next-intl 4 only writes the
+// locale cookie when its detection heuristics decide to, so on a soft RSC
+// navigation with localePrefix:"always" the cookie can stay on the previous
+// value. Then any later request without a URL prefix (or one whose
+// Accept-Language points elsewhere) bounces the user back to that previous
+// locale via the middleware's cookie → Accept-Language → defaultLocale chain.
+// Writing the cookie here guarantees the user's explicit choice wins on
+// subsequent navigations. Hoisted out of the component so the React Compiler
+// `react-hooks/immutability` rule doesn't flag the `document.cookie` assign.
+function persistLocaleCookie(next: Locale): void {
+  document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
 }
 
 type LocaleSwitcherProps = {
@@ -39,6 +52,7 @@ export function LocaleSwitcher({ availableLocales }: LocaleSwitcherProps = {}) {
 
   function switchLocale(next: Locale) {
     if (next === locale) return;
+    persistLocaleCookie(next);
     startTransition(() => {
       router.replace(pathname, { locale: next });
     });
