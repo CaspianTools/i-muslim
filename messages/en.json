@@ -207,7 +207,8 @@
       "reports": "Reports",
       "audit": "Audit",
       "settings": "Settings",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "apiKeys": "API Keys"
     }
   },
   "breadcrumbs": {
@@ -381,6 +382,37 @@
     "exportIcsHint": "Download a 30-day calendar file you can import into Apple, Google, or Outlook calendar.",
     "monthlyTitle": "Monthly schedule",
     "monthlySubtitle": "Next 30 days for the resolved location."
+  },
+  "apiKeys": {
+    "pageTitle": "API Keys",
+    "subtitle": "Issue keys to external developers so they can call /api/v1 endpoints.",
+    "empty": "No API keys yet. Click \"New key\" to issue one.",
+    "create": "New key",
+    "createTitle": "Create API key",
+    "createDescription": "The plain key is shown once, immediately after creation. Store it somewhere safe.",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. Hadith translation bot",
+    "scopesLabel": "Scopes",
+    "permissionsLabel": "Permissions",
+    "expiresLabel": "Expires (optional)",
+    "expiresHint": "Leave blank for no expiration.",
+    "createFailed": "Failed to create API key.",
+    "revealedTitle": "Your new API key",
+    "revealedWarning": "This is the only time you'll see this key. Copy it now and store it in a safe place — we only keep a hashed version.",
+    "revoke": "Revoke",
+    "revokeFailed": "Failed to revoke key.",
+    "confirmRevoke": "Revoke this key? Requests using it will fail immediately.",
+    "revokedToast": "Key revoked.",
+    "copyFailed": "Failed to copy.",
+    "col": {
+      "name": "Name",
+      "prefix": "Prefix",
+      "scopes": "Scopes",
+      "permissions": "Permissions",
+      "status": "Status",
+      "lastUsed": "Last used",
+      "requests": "Requests"
+    }
   },
   "users": {
     "pageTitle": "Users",

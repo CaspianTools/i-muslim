@@ -72,6 +72,10 @@ export const PERMISSION_RESOURCES = {
     label: "Integrations",
     actions: ["read", "write"],
   },
+  apiKeys: {
+    label: "API keys",
+    actions: ["read", "manage"],
+  },
   notifications: {
     label: "Notifications",
     actions: ["read"],

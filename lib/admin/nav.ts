@@ -26,6 +26,7 @@ import {
   MessageCircleQuestion,
   MessageSquareWarning,
   Mic2,
+  KeyRound,
   Plug,
   ScrollText,
   Settings,
@@ -74,7 +75,8 @@ export type NavItemKey =
   | "reports"
   | "audit"
   | "settings"
-  | "integrations";
+  | "integrations"
+  | "apiKeys";
 
 export type NavGroupKey =
   | "overview"
@@ -212,6 +214,7 @@ export const ADMIN_NAV: NavGroup[] = [
     id: "system",
     items: [
       { labelKey: "settings", href: "/admin/settings", icon: Settings, requiredPermission: "settings.read" },
+      { labelKey: "apiKeys", href: "/admin/api-keys", icon: KeyRound, requiredPermission: "apiKeys.read" },
       { labelKey: "integrations", href: "/admin/integrations", icon: Plug, requiredPermission: "integrations.read" },
       { labelKey: "donations", href: "/admin/donations", icon: HandCoins, comingSoon: true },
       { labelKey: "reports", href: "/admin/reports", icon: FileBarChart, comingSoon: true },
