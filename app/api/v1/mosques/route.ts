@@ -6,8 +6,10 @@ import { apiError, apiOk, corsPreflight, withCors } from "@/lib/api/responses";
 import { fetchPublishedMosques } from "@/lib/admin/data/mosques";
 import { parseNearParam } from "@/lib/mosques/geo";
 import { requireDb } from "@/lib/firebase/admin";
-import { MOSQUE_SUBMISSIONS_COLLECTION, emptyServices } from "@/lib/mosques/constants";
+import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
 import { defaultPrayerCalc } from "@/lib/mosques/adhan";
+import { buildMosqueSlug, withCollisionSuffix, slugify, isReservedSlug } from "@/lib/mosques/slug";
+import { buildSearchTokens } from "@/lib/mosques/search";
 import { MosqueSubmitSchema } from "@/lib/api/validators";
 import { writeApiAuditLog } from "@/lib/api/audit";
 import type { Mosque } from "@/types/mosque";
@@ -25,9 +27,25 @@ function publicShape(m: Mosque) {
     location: m.location,
     timezone: m.timezone,
     contact: m.contact,
-    services: m.services,
+    facilities: m.facilities ?? [],
     languages: m.languages,
   };
+}
+
+async function nextSlug(
+  db: FirebaseFirestore.Firestore,
+  base: string,
+): Promise<string> {
+  const taken = new Set<string>();
+  if (isReservedSlug(base)) taken.add(base);
+  const baseDoc = await db.collection(MOSQUES_COLLECTION).doc(base).get();
+  if (baseDoc.exists) taken.add(base);
+  for (let i = 2; i <= 5; i += 1) {
+    const probe = `${base}-${i}`;
+    const d = await db.collection(MOSQUES_COLLECTION).doc(probe).get();
+    if (d.exists) taken.add(probe);
+  }
+  return withCollisionSuffix(base, taken);
 }
 
 export async function OPTIONS() {
@@ -89,44 +107,73 @@ export async function POST(req: NextRequest) {
   }
   const data = parsed.data;
 
-  const payload = {
-    name: { en: data.nameEn.trim(), ...(data.nameAr ? { ar: data.nameAr.trim() } : {}) },
+  const db = requireDb();
+
+  const nameEn = data.nameEn.trim();
+  const city = data.city.trim();
+  const country = data.country.toUpperCase();
+  const citySlug = slugify(city);
+  const countrySlug = country.toLowerCase();
+  const baseSlug = buildMosqueSlug(nameEn, citySlug);
+  const slug = await nextSlug(db, baseSlug);
+  const now = Timestamp.now();
+
+  const name: { en: string; ar?: string } = { en: nameEn };
+  if (data.nameAr) name.ar = data.nameAr.trim();
+
+  const contact: { phone?: string; website?: string; email?: string } = {};
+  if (data.phone) contact.phone = data.phone;
+  if (data.website) contact.website = data.website;
+  if (data.email) contact.email = data.email;
+
+  const doc: Record<string, unknown> = {
+    slug,
+    status: "pending_review",
+    name,
     denomination: data.denomination,
     address: { line1: data.addressLine1.trim() },
-    city: data.city.trim(),
-    country: data.country.toUpperCase(),
+    city,
+    citySlug,
+    country,
+    countrySlug,
     location: { lat: 0, lng: 0 },
+    geohash: "",
     timezone: "UTC",
-    contact: {
-      phone: data.phone || undefined,
-      website: data.website || undefined,
-      email: data.email || undefined,
-    },
-    services: emptyServices(),
+    facilities: [],
     languages: data.languages,
     prayerCalc: defaultPrayerCalc(),
-    description: data.description ? { en: data.description.trim() } : undefined,
-  };
-
-  const db = requireDb();
-  const docRef = await db.collection(MOSQUE_SUBMISSIONS_COLLECTION).add({
-    status: "pending_review",
-    payload,
-    submittedBy: { email: data.submitterEmail, apiKeyId: auth.keyId, apiKeyName: auth.keyName },
+    submittedBy: {
+      email: data.submitterEmail,
+      apiKeyId: auth.keyId,
+      apiKeyName: auth.keyName,
+    },
     submitterIp: "api",
-    createdAt: Timestamp.now(),
-  });
+    searchTokens: buildSearchTokens({
+      name,
+      city,
+      country,
+      languages: data.languages,
+      denomination: data.denomination,
+      address: { line1: data.addressLine1.trim() },
+    }),
+    createdAt: now,
+    updatedAt: now,
+  };
+  if (Object.keys(contact).length > 0) doc.contact = contact;
+  if (data.description) doc.description = { en: data.description.trim() };
+
+  await db.collection(MOSQUES_COLLECTION).doc(slug).set(doc, { merge: false });
 
   await writeApiAuditLog({
     actor: { kind: "apiKey", keyId: auth.keyId, keyName: auth.keyName },
     action: "mosque.submission.create",
-    resourceType: "mosqueSubmission",
-    resourceId: docRef.id,
-    after: { name: data.nameEn, city: data.city, country: data.country },
+    resourceType: "mosque",
+    resourceId: slug,
+    after: { name: nameEn, city, country, status: "pending_review" },
   });
 
   return apiOk(
-    { submission: { id: docRef.id, status: "pending_review" } },
+    { mosque: { slug, status: "pending_review" } },
     { status: 201, headers },
   );
 }
