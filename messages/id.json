@@ -210,7 +210,8 @@
       "reports": "Laporan",
       "audit": "Audit",
       "settings": "Pengaturan",
-      "integrations": "Integrasi"
+      "integrations": "Integrasi",
+      "apiKeys": "API Keys"
     }
   },
   "breadcrumbs": {
@@ -384,6 +385,37 @@
     "exportIcsHint": "Unduh berkas kalender 30 hari yang dapat diimpor ke Apple, Google, atau Outlook calendar.",
     "monthlyTitle": "Jadwal bulanan",
     "monthlySubtitle": "30 hari ke depan untuk lokasi yang ditentukan."
+  },
+  "apiKeys": {
+    "pageTitle": "API Keys",
+    "subtitle": "Issue keys to external developers so they can call /api/v1 endpoints.",
+    "empty": "No API keys yet. Click \"New key\" to issue one.",
+    "create": "New key",
+    "createTitle": "Create API key",
+    "createDescription": "The plain key is shown once, immediately after creation. Store it somewhere safe.",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. Hadith translation bot",
+    "scopesLabel": "Scopes",
+    "permissionsLabel": "Permissions",
+    "expiresLabel": "Expires (optional)",
+    "expiresHint": "Leave blank for no expiration.",
+    "createFailed": "Failed to create API key.",
+    "revealedTitle": "Your new API key",
+    "revealedWarning": "This is the only time you'll see this key. Copy it now and store it in a safe place — we only keep a hashed version.",
+    "revoke": "Revoke",
+    "revokeFailed": "Failed to revoke key.",
+    "confirmRevoke": "Revoke this key? Requests using it will fail immediately.",
+    "revokedToast": "Key revoked.",
+    "copyFailed": "Failed to copy.",
+    "col": {
+      "name": "Name",
+      "prefix": "Prefix",
+      "scopes": "Scopes",
+      "permissions": "Permissions",
+      "status": "Status",
+      "lastUsed": "Last used",
+      "requests": "Requests"
+    }
   },
   "users": {
     "pageTitle": "Pengguna",
@@ -570,6 +602,7 @@
     "privacy": "Privasi",
     "terms": "Syarat",
     "contact": "Kontak",
+    "developers": "Pengembang",
     "language": "Bahasa",
     "copyright": "© {year} i-muslim"
   },
