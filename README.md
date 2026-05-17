@@ -54,6 +54,6 @@ shared via the `?lang=` URL parameter.
 Public HTTP API at `/api/v1` for prayer times, Qibla, Hijri, mosques, Quran,
 and Hadith — plus write endpoints for publishing Quran/Hadith translations.
 Authentication is via the `X-API-Key` header; keys (`im_live_…`) are issued
-manually by emailing the admin. See [`/developers`](http://localhost:7777/en/developers)
+manually via the site's contact form. See [`/developers`](http://localhost:7777/en/developers)
 on the running site for the full reference. Admin issues and revokes keys at
 `/admin/api-keys`.

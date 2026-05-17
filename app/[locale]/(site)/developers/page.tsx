@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Link } from "@/i18n/navigation";
 
 export const metadata: Metadata = {
   title: "Developer API — i-muslim",
@@ -67,10 +68,10 @@ export default function DevelopersPage() {
 
       <h2 className={H2}>Getting a key</h2>
       <p className={SUB}>
-        Email{" "}
-        <a className="underline" href="mailto:fuad.jalilov@gmail.com">
-          fuad.jalilov@gmail.com
-        </a>{" "}
+        Request a key through the{" "}
+        <Link className="underline" href="/contact">
+          contact form
+        </Link>{" "}
         with a one-sentence description of what you&apos;re building and which
         endpoints you need. Keys are issued manually during v1 and typically come
         back within 24 hours. Each key is scoped to a subset of resources
@@ -222,11 +223,11 @@ X-RateLimit-Reset: 1747234260`}</code>
 
       <h2 className={H2}>Contact</h2>
       <p className={SUB}>
-        Questions, bug reports, or higher-quota requests:{" "}
-        <a className="underline" href="mailto:fuad.jalilov@gmail.com">
-          fuad.jalilov@gmail.com
-        </a>
-        .
+        Questions, bug reports, or higher-quota requests — please use the{" "}
+        <Link className="underline" href="/contact">
+          contact form
+        </Link>{" "}
+        and mention &ldquo;Developer API&rdquo; in the subject.
       </p>
     </div>
   );
