@@ -407,6 +407,13 @@
     "confirmRevoke": "Revoke this key? Requests using it will fail immediately.",
     "revokedToast": "Key revoked.",
     "copyFailed": "Failed to copy.",
+    "copyKey": "Copy key",
+    "copyKeyWithQuickstart": "Copy key + quick-start",
+    "previewQuickstart": "Preview quick-start",
+    "endpointsButton": "Endpoints",
+    "endpointsDialogTitle": "Developer API — endpoints",
+    "endpointsDialogDescription": "Every endpoint your keys can call. Use \"Copy reference\" to share this list.",
+    "copyReference": "Copy reference",
     "col": {
       "name": "Name",
       "prefix": "Prefix",
