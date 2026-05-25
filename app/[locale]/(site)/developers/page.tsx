@@ -64,6 +64,11 @@ export default function DevelopersPage() {
           <code className={INLINE}>PUT</code> directly into our Quran and Hadith
           stores. Arabic original text stays read-only.
         </li>
+        <li>
+          <strong>Download translations in bulk</strong>, no key required, with
+          per-translation attribution and licence metadata baked into every
+          response.
+        </li>
       </ul>
 
       <h2 className={H2}>Getting a key</h2>
@@ -105,6 +110,44 @@ r = requests.get(
 )
 print(r.json()["data"]["bearing"])`}</code>
 
+      <h2 className={H2}>Free translation downloads</h2>
+      <p className={SUB}>
+        Bulk downloads of every translation in our data store, <strong>no API
+        key required</strong> and CORS open to all origins. Cached at the edge
+        for an hour. Each response carries the upstream attribution and licence
+        so you know exactly what you can do with the text.
+      </p>
+      <p className="mt-3 text-sm text-foreground/90 leading-relaxed">
+        <strong>Important:</strong> the modern translator-authored translations
+        (Saheeh International, Kuliev, Musayev, Diyanet, and the
+        translator-credited Hadith renderings) are under translator copyright.
+        Our endpoints return their <em>provenance metadata</em>{" "}
+        (<code className={INLINE}>attribution</code>,{" "}
+        <code className={INLINE}>license</code>,{" "}
+        <code className={INLINE}>source_url</code>) but{" "}
+        <strong>not the text</strong> (<code className={INLINE}>text</code>{" "}
+        is <code className={INLINE}>null</code>) — fetch the text directly
+        from <code className={INLINE}>source_url</code>. Arabic Quran (Uthmani
+        mushaf) and Arabic Hadith editions are classical public-domain text and
+        are returned in full.
+      </p>
+      <code className={CODE}>{`curl https://i-muslim.com/api/v1/translations
+curl https://i-muslim.com/api/v1/translations/quran/ar
+curl https://i-muslim.com/api/v1/translations/quran/en/1
+curl https://i-muslim.com/api/v1/translations/hadith/bukhari/ar`}</code>
+      <p className="mt-3 text-sm text-foreground/90 leading-relaxed">
+        Want to <strong>contribute or correct a translation</strong>? Use the{" "}
+        <Link
+          className="underline"
+          href="/contact?subject=Translation+contribution"
+        >
+          contact form
+        </Link>{" "}
+        with the subject &ldquo;Translation contribution&rdquo; — send the
+        diff, the source, and the licence you&apos;re releasing it under, and
+        we&apos;ll review and merge.
+      </p>
+
       <h2 className={H2}>Publishing a translation</h2>
       <p className={SUB}>
         With a <code className={INLINE}>write</code>-scope key, you can publish or
@@ -143,6 +186,10 @@ print(r.json()["data"]["bearing"])`}</code>
         <Endpoint method="GET" path="/api/v1/hadith/collections" desc="All hadith collections (slug, name, total)." />
         <Endpoint method="GET" path="/api/v1/hadith/collections/{id}/hadiths" desc="Paginated hadiths within a collection. ?limit=, ?startAfter= for cursor." />
         <Endpoint method="GET" path="/api/v1/hadith/collections/{id}/hadiths/{number}" desc="Single hadith with Arabic + translations." />
+        <Endpoint method="GET" path="/api/v1/translations" desc="Open. No key required. Index of every translation download with attribution + licence." />
+        <Endpoint method="GET" path="/api/v1/translations/quran/{lang}" desc="Open. Whole-Quran download for one language. Modern translations return metadata only; Arabic returns full text." />
+        <Endpoint method="GET" path="/api/v1/translations/quran/{lang}/{surah}" desc="Open. Single-surah variant of the above." />
+        <Endpoint method="GET" path="/api/v1/translations/hadith/{collection}/{lang}" desc="Open. Whole-collection hadith download for one language. Same licence gating as Quran." />
       </ul>
 
       <h3 className="mt-8 mb-2 text-base font-semibold text-foreground">Write (PUT / PATCH / POST)</h3>
