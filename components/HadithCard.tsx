@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, Info } from "lucide-react";
+import { ExternalLink, Info, MessageSquare, StickyNote } from "lucide-react";
 import type { HadithEntry } from "@/types/hadith";
 import { LANG_LABELS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
@@ -42,6 +42,8 @@ export function HadithCard({
   commentCount = 0,
   permalink = false,
   permalinkLabel,
+  interactionMode = "popup",
+  tabsAnchorId = "hadith-tabs",
 }: {
   number: number;
   arabic: HadithEntry | null;
@@ -60,6 +62,13 @@ export function HadithCard({
   // permalink page itself (it would link to itself).
   permalink?: boolean;
   permalinkLabel?: string;
+  // "popup" (default): Notes trigger opens an in-card editor; Comments
+  // icon opens a modal popup. Used everywhere except the permalink page.
+  // "scroll-to-tab": both icons become anchor links that jump to the tab
+  // section below the card and flip the active tab. The in-card notes
+  // panel is suppressed since the editor lives in the tab.
+  interactionMode?: "popup" | "scroll-to-tab";
+  tabsAnchorId?: string;
 }) {
   // First non-empty translation, used as a short subtitle in favorites/notes.
   const excerptEntry = translations.find((t) => t.entry?.text)?.entry?.text ?? null;
@@ -109,17 +118,43 @@ export function HadithCard({
                 {arabic.grades[0].grade}
               </span>
             )}
-            <NoteEditorTrigger />
-            <HadithCommentsButton
-              collectionId={collectionId}
-              bookNumber={bookNumber}
-              hadithNumber={number}
-              reference={`${collectionName} — ${bookName} #${number}`}
-              locale={locale}
-              signedIn={signedIn}
-              currentUid={currentUid}
-              initialCount={commentCount}
-            />
+            {interactionMode === "scroll-to-tab" ? (
+              <>
+                <a
+                  href="#notes"
+                  data-hadith-scroll-target={tabsAnchorId}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-transparent px-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  aria-label="Notes"
+                  title="Notes"
+                >
+                  <StickyNote className="size-4" />
+                </a>
+                <a
+                  href="#comments"
+                  data-hadith-scroll-target={tabsAnchorId}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-transparent px-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  aria-label={`Comments (${commentCount})`}
+                  title="Comments"
+                >
+                  <MessageSquare className="size-4" />
+                  {commentCount > 0 && <span>{commentCount}</span>}
+                </a>
+              </>
+            ) : (
+              <>
+                <NoteEditorTrigger />
+                <HadithCommentsButton
+                  collectionId={collectionId}
+                  bookNumber={bookNumber}
+                  hadithNumber={number}
+                  reference={`${collectionName} — ${bookName} #${number}`}
+                  locale={locale}
+                  signedIn={signedIn}
+                  currentUid={currentUid}
+                  initialCount={commentCount}
+                />
+              </>
+            )}
             <FavoriteButton
               itemType="hadith"
               itemId={itemId}
@@ -208,7 +243,7 @@ export function HadithCard({
         </div>
       )}
 
-        <NoteEditorPanel />
+        {interactionMode === "popup" && <NoteEditorPanel />}
       </NoteEditor>
     </article>
   );

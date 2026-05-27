@@ -29,10 +29,11 @@ export function HadithCommentsButton({
 }: Props) {
   const t = useTranslations("comments");
   const entityId = `${collectionId}:${hadithNumber}`;
+  void bookNumber;
   const itemMeta: CommentItemMeta = {
     title: reference,
     subtitle: null,
-    href: `/hadith/${collectionId}/${bookNumber}#hadith-${hadithNumber}`,
+    href: `/hadith/${collectionId}/${hadithNumber}`,
     locale,
   };
 

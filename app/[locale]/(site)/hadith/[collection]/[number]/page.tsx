@@ -7,13 +7,19 @@ import {
   getHadithCollection,
   getAdjacentHadithNumbers,
 } from "@/lib/hadith/db";
-import { LANG_LABELS, type LangCode } from "@/lib/translations";
+import { parseLangsParam, type LangCode } from "@/lib/translations";
 import { BUNDLED_LOCALES, type Locale } from "@/i18n/config";
 import { HadithCard, type HadithTranslationSlice } from "@/components/HadithCard";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
 import { NotesProvider } from "@/components/site/notes/NotesContext";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
 import { HadithMobileDrawer } from "@/components/site/hadith/HadithMobileDrawer";
+import {
+  HadithDetailTabs,
+  HADITH_DETAIL_TABS_ANCHOR,
+} from "@/components/site/hadith/HadithDetailTabs";
+import { InlineNoteEditor } from "@/components/site/notes/InlineNoteEditor";
+import { CommentThread } from "@/components/comments/CommentThread";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { getSiteSession } from "@/lib/auth/session";
 import { getFavoritedSet } from "@/lib/profile/data";
@@ -185,10 +191,13 @@ export async function generateMetadata({
 
 export default async function HadithDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<Params>;
+  searchParams: Promise<{ lang?: string }>;
 }) {
   const { collection, number: numberParam } = await params;
+  const { lang: langParam } = await searchParams;
   const number = parseNumber(numberParam);
   if (!number) notFound();
 
@@ -230,46 +239,82 @@ export default async function HadithDetailPage({
   const hadithNotesRecord: Record<string, { id: string; text: string; updatedAt: string }> = {};
   for (const [k, v] of hadithNotes) hadithNotesRecord[k] = v;
 
-  const arabicEntry: HadithEntry = {
-    hadithnumber: doc.number,
-    arabicnumber: doc.arabic_number ?? doc.number,
-    text: doc.text_ar,
-    grades: doc.grades ?? (doc.grade ? [{ name: "Grade", grade: doc.grade }] : []),
-    reference: { book: doc.book, hadith: doc.hadith_in_book ?? doc.number },
-  };
+  // Honour the ?lang= viewing preference (set by the sidebar's
+  // HadithLanguageFilter). Mirrors the book page's resolution: showArabic
+  // toggles the Arabic block, nonArabic drives one HadithTranslationSlice
+  // per requested language with the same Draft/Published gate (never render
+  // unreviewed text; English fallback only when English itself is Published).
+  const langs = parseLangsParam(langParam);
+  const nonArabic = langs.filter((l): l is Exclude<LangCode, "ar"> => l !== "ar");
+  const showArabic = langs.includes("ar");
 
-  const activeLang = locale as LangCode;
-  // Single-translation slice for the active locale. Follows the Draft gate:
-  // never substitute unreviewed text, never silently fall back to English in
-  // the rendered card (the meta description / JSON-LD does fall back so
-  // crawlers see real content).
-  const translationSlice: HadithTranslationSlice | null =
-    activeLang === "ar"
-      ? null
-      : (() => {
-          if (resolved.hasNativeTranslation) {
-            return {
-              requested: activeLang,
-              actual: activeLang,
-              entry: {
-                hadithnumber: doc.number,
-                arabicnumber: doc.arabic_number ?? doc.number,
-                text: resolved.visibleText!,
-                grades: arabicEntry.grades,
-                reference: arabicEntry.reference,
-              },
-              fallback: false,
-            };
-          }
-          // No Published translation in active locale.
-          return {
-            requested: activeLang,
-            actual: null,
-            entry: null,
-            fallback: false,
-            status: "in_process" as const,
-          };
-        })();
+  const baseGrades =
+    doc.grades ?? (doc.grade ? [{ name: "Grade", grade: doc.grade }] : []);
+  const baseReference = { book: doc.book, hadith: doc.hadith_in_book ?? doc.number };
+  const arabicEntry: HadithEntry | null = showArabic
+    ? {
+        hadithnumber: doc.number,
+        arabicnumber: doc.arabic_number ?? doc.number,
+        text: doc.text_ar,
+        grades: baseGrades,
+        reference: baseReference,
+      }
+    : null;
+
+  const isPublished = (l: LangCode) =>
+    doc.publishedTranslations?.[l] === true;
+  const translationSlices: HadithTranslationSlice[] = nonArabic.map((lang) => {
+    const rawText = doc.translations?.[lang];
+    if (rawText && isPublished(lang)) {
+      return {
+        requested: lang,
+        actual: lang,
+        entry: {
+          hadithnumber: doc.number,
+          arabicnumber: doc.arabic_number ?? doc.number,
+          text: rawText,
+          grades: baseGrades,
+          reference: baseReference,
+        },
+        fallback: false,
+      };
+    }
+    if (rawText) {
+      // Translation exists but is still Draft — never render the unreviewed
+      // text and never fall back to English.
+      return {
+        requested: lang,
+        actual: null,
+        entry: null,
+        fallback: false,
+        status: "in_process",
+      };
+    }
+    // No translation in this language. Fall back to English only when
+    // English itself is Published.
+    const enText = doc.translations?.en;
+    if (lang !== "en" && enText && isPublished("en")) {
+      return {
+        requested: lang,
+        actual: "en",
+        entry: {
+          hadithnumber: doc.number,
+          arabicnumber: doc.arabic_number ?? doc.number,
+          text: enText,
+          grades: baseGrades,
+          reference: baseReference,
+        },
+        fallback: true,
+      };
+    }
+    return {
+      requested: lang,
+      actual: null,
+      entry: null,
+      fallback: false,
+      status: "in_process",
+    };
+  });
 
   const canonical = `${SITE_URL}/${locale}/hadith/${collection}/${number}`;
   const collectionUrl = `${SITE_URL}/${locale}/hadith/${collection}`;
@@ -281,11 +326,12 @@ export default async function HadithDetailPage({
 
   const prevNumber = adjacent.prev;
   const nextNumber = adjacent.next;
+  const langQS = langParam ? `?lang=${encodeURIComponent(langParam)}` : "";
   const prevHref = prevNumber
-    ? `/hadith/${collection}/${prevNumber}`
+    ? `/hadith/${collection}/${prevNumber}${langQS}`
     : null;
   const nextHref = nextNumber
-    ? `/hadith/${collection}/${nextNumber}`
+    ? `/hadith/${collection}/${nextNumber}${langQS}`
     : null;
 
   return (
@@ -395,7 +441,7 @@ export default async function HadithDetailPage({
                   <HadithCard
                     number={doc.number}
                     arabic={arabicEntry}
-                    translations={translationSlice ? [translationSlice] : []}
+                    translations={translationSlices}
                     collectionShortName={collectionShortName}
                     collectionId={collection}
                     collectionName={meta.name_en}
@@ -405,16 +451,43 @@ export default async function HadithDetailPage({
                     signedIn={Boolean(session)}
                     currentUid={session?.uid ?? null}
                     commentCount={commentCounts.get(`${collection}:${number}`) ?? 0}
+                    interactionMode="scroll-to-tab"
+                    tabsAnchorId={HADITH_DETAIL_TABS_ANCHOR}
                   />
-                  {translationSlice?.status === "in_process" ? (
-                    <p className="mt-3 text-sm text-muted-foreground">
-                      {t("singleTranslationUnavailable", {
-                        language:
-                          LANG_LABELS[activeLang] ?? activeLang.toUpperCase(),
-                      })}
-                    </p>
-                  ) : null}
                 </div>
+
+                <HadithDetailTabs
+                  initialCommentCount={
+                    commentCounts.get(`${collection}:${number}`) ?? 0
+                  }
+                  commentsSlot={
+                    <CommentThread
+                      bare
+                      entityType="hadith"
+                      entityId={`${collection}:${number}`}
+                      itemMeta={{
+                        title: `${meta.name_en} — ${bookMeta?.name ?? `Book ${doc.book}`} #${doc.number}`,
+                        subtitle: null,
+                        href: `/hadith/${collection}/${doc.number}`,
+                        locale,
+                      }}
+                    />
+                  }
+                  notesSlot={
+                    <InlineNoteEditor
+                      itemType="hadith"
+                      itemId={`${collection}/${doc.book}/${doc.number}`}
+                      itemMeta={{
+                        title: `${meta.name_en} — ${bookMeta?.name ?? `Book ${doc.book}`} #${doc.number}`,
+                        subtitle: null,
+                        href: `/hadith/${collection}/${doc.number}`,
+                        arabic: doc.text_ar,
+                        locale,
+                      }}
+                      signedIn={Boolean(session)}
+                    />
+                  }
+                />
 
                 <nav className="mt-8 flex items-center justify-between gap-2 text-sm">
                   {prevHref && prevNumber ? (
@@ -429,7 +502,7 @@ export default async function HadithDetailPage({
                   )}
                   {bookMeta ? (
                     <Link
-                      href={`/hadith/${collection}/book/${doc.book}`}
+                      href={`/hadith/${collection}/book/${doc.book}${langQS}`}
                       className="rounded-md border border-border bg-background px-3 py-2 text-muted-foreground hover:border-accent hover:text-foreground"
                     >
                       {t("singleBackToBook", { bookName: bookMeta.name })}

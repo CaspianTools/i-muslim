@@ -2600,7 +2600,11 @@
     "prevHadith": "← Hadith {n}",
     "nextHadith": "Hadith {n} →",
     "singleTranslationUnavailable": "A translation in {language} is not yet available for this hadith. The Arabic text is shown above.",
-    "singleOpenPermalink": "Open"
+    "singleOpenPermalink": "Open",
+    "singleTabsComments": "Comments",
+    "singleTabsNotes": "Notes",
+    "singleNotesSignInPrompt": "Sign in to take private notes on this hadith.",
+    "singleNotesSignInLink": "Sign in"
   },
   "readingMode": {
     "enter": "Reading mode",

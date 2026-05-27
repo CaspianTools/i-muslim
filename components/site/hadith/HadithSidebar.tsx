@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
-import { ChevronLeft, Globe } from "lucide-react";
+import { ChevronLeft, Globe, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { LangCode } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
@@ -96,6 +96,24 @@ export function HadithSidebar({
             >
               <ChevronLeft className="size-4 rtl:rotate-180" />
             </Button>
+          )}
+          {variant === "desktop" && !showLabels && (
+            // Identify the collapsed rail as the filters sidebar; without
+            // this the strip is just an unlabelled globe + chevron and new
+            // users can't tell what it is. Click expands.
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setCollapsed(false)}
+                  aria-label={t("title")}
+                  className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
+                  <SlidersHorizontal className="size-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{t("title")}</TooltipContent>
+            </Tooltip>
           )}
         </div>
 
