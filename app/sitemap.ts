@@ -3,8 +3,14 @@ import { listAllPublishedSlugs } from "@/lib/blog/data";
 import { fetchPublishedMosques, fetchCountryAggregates } from "@/lib/admin/data/mosques";
 import { listPublishedSlugs as listPublishedBusinessSlugs } from "@/lib/businesses/public";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ?? "http://localhost:7777";
+// NEXT_PUBLIC_SITE_URL is sometimes set without a scheme (e.g. "i-muslim.com"),
+// which causes Google to reject every entry in the sitemap. Defensive prepend.
+function resolveSiteUrl(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ?? "http://localhost:7777";
+  return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+}
+const SITE_URL = resolveSiteUrl();
 
 export const revalidate = 3600;
 
@@ -21,6 +27,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/downloads`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE_URL}/developers`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
   ];
   const slugs = await listAllPublishedSlugs();
   const articleEntries: MetadataRoute.Sitemap = slugs

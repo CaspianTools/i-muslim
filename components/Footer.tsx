@@ -153,6 +153,11 @@ export async function Footer() {
                     {t("developers")}
                   </Link>
                 </li>
+                <li>
+                  <Link href="/downloads" className={linkClass}>
+                    {t("downloads")}
+                  </Link>
+                </li>
                 {locale === "en" && (
                   <li>
                     <a

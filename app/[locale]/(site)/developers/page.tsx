@@ -115,7 +115,11 @@ print(r.json()["data"]["bearing"])`}</code>
         Bulk downloads of every translation in our data store, <strong>no API
         key required</strong> and CORS open to all origins. Cached at the edge
         for an hour. Each response carries the upstream attribution and licence
-        so you know exactly what you can do with the text.
+        so you know exactly what you can do with the text. See the{" "}
+        <Link className="underline" href="/downloads">
+          full downloads index
+        </Link>{" "}
+        for a clickable list of every file with attribution and licence.
       </p>
       <p className="mt-3 text-sm text-foreground/90 leading-relaxed">
         <strong>Important:</strong> the modern translator-authored translations
