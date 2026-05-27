@@ -12,8 +12,10 @@ import { parseLangsParam } from "@/lib/translations";
 import { getLocale, getTranslations } from "next-intl/server";
 import { AyahCard } from "@/components/AyahCard";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
+import { MarkAsReadButton } from "@/components/site/MarkAsReadButton";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
 import { NotesProvider } from "@/components/site/notes/NotesContext";
+import { ReadsProvider } from "@/components/site/reads/ReadsContext";
 import { ReadingProgressTracker } from "@/components/site/reading/ReadingProgressTracker";
 import { ReadingModeBoundary } from "@/components/site/reading/ReadingModeBoundary";
 import { ReadingModeToggle } from "@/components/site/reading/ReadingModeToggle";
@@ -22,6 +24,7 @@ import { QuranFiltersButton } from "@/components/site/quran/QuranFiltersButton";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { getSiteSession } from "@/lib/auth/session";
 import { getFavoritedSet } from "@/lib/profile/data";
+import { getReadSet } from "@/lib/reads/data";
 import {
   getFavoriteCountsForAyahs,
   getFavoriteStats,
@@ -81,6 +84,7 @@ export default async function SurahPage({
     languageSettings,
     ayahFavorites,
     surahFavorites,
+    surahReads,
     ayahNotes,
     t,
     tNames,
@@ -91,6 +95,7 @@ export default async function SurahPage({
     getLanguageSettings(),
     session ? getFavoritedSet(session.uid, "ayah") : Promise.resolve(new Set<string>()),
     session ? getFavoritedSet(session.uid, "surah") : Promise.resolve(new Set<string>()),
+    session ? getReadSet(session.uid, "surah") : Promise.resolve(new Set<string>()),
     session
       ? getNotesByItemType(session.uid, "ayah")
       : Promise.resolve(new Map<string, { id: string; text: string; updatedAt: string }>()),
@@ -123,6 +128,10 @@ export default async function SurahPage({
         { itemType: "surah", itemIds: Array.from(surahFavorites) },
       ]}
     >
+      <ReadsProvider
+        initialReadIds={Array.from(surahReads)}
+        subscribeToLocalStorage={!session}
+      >
       <NotesProvider initialItems={[{ itemType: "ayah", notes: ayahNotesRecord }]}>
       <ReadingModeBoundary scope="quran" />
       <ReadingProgressTracker variant={{ kind: "quran", surah: id }} />
@@ -183,6 +192,11 @@ export default async function SurahPage({
                     size="md"
                     count={surahFavoriteStats.count}
                   />
+                  <MarkAsReadButton
+                    mark={{ itemType: "surah", surahId: id }}
+                    signedIn={Boolean(session)}
+                    size="md"
+                  />
                 </div>
                 <ReadingModeToggle scope="quran" />
                 <QuranFiltersButton availableLangs={languageSettings.quranEnabled} />
@@ -240,6 +254,7 @@ export default async function SurahPage({
         </div>
       </div>
       </NotesProvider>
+      </ReadsProvider>
     </FavoritesProvider>
   );
 }

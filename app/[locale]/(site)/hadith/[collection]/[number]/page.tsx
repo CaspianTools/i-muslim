@@ -12,6 +12,7 @@ import { BUNDLED_LOCALES, type Locale } from "@/i18n/config";
 import { HadithCard, type HadithTranslationSlice } from "@/components/HadithCard";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
 import { NotesProvider } from "@/components/site/notes/NotesContext";
+import { ReadsProvider } from "@/components/site/reads/ReadsContext";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
 import { HadithMobileDrawer } from "@/components/site/hadith/HadithMobileDrawer";
 import {
@@ -23,6 +24,7 @@ import { CommentThread } from "@/components/comments/CommentThread";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { getSiteSession } from "@/lib/auth/session";
 import { getFavoritedSet } from "@/lib/profile/data";
+import { getReadSet } from "@/lib/reads/data";
 import { getNotesByItemType } from "@/lib/profile/notes-data";
 import { getCommentCountsForEntities } from "@/lib/comments/data";
 import type { HadithEntry } from "@/types/hadith";
@@ -225,16 +227,23 @@ export default async function HadithDetailPage({
   const resolved = resolveTranslation(doc, locale as LangCode);
   const session = await getSiteSession();
 
-  const [languageSettings, hadithFavorites, hadithNotes, adjacent, commentCounts] =
-    await Promise.all([
-      getLanguageSettings(),
-      session ? getFavoritedSet(session.uid, "hadith") : Promise.resolve(new Set<string>()),
-      session
-        ? getNotesByItemType(session.uid, "hadith")
-        : Promise.resolve(new Map<string, { id: string; text: string; updatedAt: string }>()),
-      getAdjacentHadithNumbers(collection, number),
-      getCommentCountsForEntities("hadith", [`${collection}:${number}`]),
-    ]);
+  const [
+    languageSettings,
+    hadithFavorites,
+    hadithReads,
+    hadithNotes,
+    adjacent,
+    commentCounts,
+  ] = await Promise.all([
+    getLanguageSettings(),
+    session ? getFavoritedSet(session.uid, "hadith") : Promise.resolve(new Set<string>()),
+    session ? getReadSet(session.uid, "hadith") : Promise.resolve(new Set<string>()),
+    session
+      ? getNotesByItemType(session.uid, "hadith")
+      : Promise.resolve(new Map<string, { id: string; text: string; updatedAt: string }>()),
+    getAdjacentHadithNumbers(collection, number),
+    getCommentCountsForEntities("hadith", [`${collection}:${number}`]),
+  ]);
 
   const hadithNotesRecord: Record<string, { id: string; text: string; updatedAt: string }> = {};
   for (const [k, v] of hadithNotes) hadithNotesRecord[k] = v;
@@ -338,6 +347,10 @@ export default async function HadithDetailPage({
     <FavoritesProvider
       initialItems={[{ itemType: "hadith", itemIds: Array.from(hadithFavorites) }]}
     >
+      <ReadsProvider
+        initialReadIds={Array.from(hadithReads)}
+        subscribeToLocalStorage={!session}
+      >
       <NotesProvider initialItems={[{ itemType: "hadith", notes: hadithNotesRecord }]}>
         {prevHref ? <link rel="prev" href={prevHref} /> : null}
         {nextHref ? <link rel="next" href={nextHref} /> : null}
@@ -524,6 +537,7 @@ export default async function HadithDetailPage({
           </div>
         </div>
       </NotesProvider>
+      </ReadsProvider>
     </FavoritesProvider>
   );
 }

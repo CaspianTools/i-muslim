@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSiteSession } from "@/lib/auth/session";
 import { ProfileSidebar } from "@/components/site/profile/ProfileSidebar";
 import { ProfileMobileTabs } from "@/components/site/profile/ProfileMobileTabs";
+import { ReadsMigrationOnSignIn } from "@/components/site/reads/ReadsMigrationOnSignIn";
 
 export default async function ProfileLayout({ children }: { children: ReactNode }) {
   const session = await getSiteSession();
@@ -12,6 +13,7 @@ export default async function ProfileLayout({ children }: { children: ReactNode 
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:py-10">
+      <ReadsMigrationOnSignIn />
       {/* Mobile: horizontal scroll strip (auto-discoverable, no hidden
           drawer trigger). Desktop: sticky left sidebar (unchanged). */}
       <ProfileMobileTabs />

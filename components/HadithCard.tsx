@@ -4,6 +4,7 @@ import type { HadithEntry } from "@/types/hadith";
 import { LANG_LABELS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
+import { MarkAsReadButton } from "@/components/site/MarkAsReadButton";
 import {
   NoteEditor,
   NoteEditorPanel,
@@ -159,6 +160,16 @@ export function HadithCard({
               itemType="hadith"
               itemId={itemId}
               itemMeta={itemMeta}
+              signedIn={signedIn}
+              iconOnly
+            />
+            <MarkAsReadButton
+              mark={{
+                itemType: "hadith",
+                collection: collectionId,
+                book: bookNumber,
+                number,
+              }}
               signedIn={signedIn}
               iconOnly
             />
