@@ -1,0 +1,35 @@
+name: Security audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/security-audit.yml"
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (deterministic)
+        run: npm ci
+
+      - name: npm audit (fail on high or critical)
+        run: npm audit --audit-level=high
+
+      - name: npm audit (report all, non-blocking)
+        if: always()
+        run: npm audit || true
