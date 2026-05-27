@@ -19,13 +19,27 @@ export type ContentTranslationStats = {
   hadith: {
     total: number;
     perLang: LangCountMap;
-    perCollection: Record<string, { total: number; perLang: LangCountMap }>;
+    /**
+     * Count of admin-authored translations per language across all hadith
+     * collections (editedTranslations[lang] === true). These are the
+     * translations released under i-muslim's own CC0 licence; the remainder
+     * are upstream-mirrored and metadata-only via the public API.
+     */
+    authoredPerLang: LangCountMap;
+    perCollection: Record<
+      string,
+      {
+        total: number;
+        perLang: LangCountMap;
+        authoredPerLang: LangCountMap;
+      }
+    >;
   };
 };
 
 const EMPTY: ContentTranslationStats = {
   quran: { total: 0, perLang: {} },
-  hadith: { total: 0, perLang: {}, perCollection: {} },
+  hadith: { total: 0, perLang: {}, authoredPerLang: {}, perCollection: {} },
 };
 
 function asNumber(v: unknown): number {
@@ -44,15 +58,24 @@ function asLangCountMap(raw: unknown): LangCountMap {
 
 function asPerCollection(
   raw: unknown,
-): Record<string, { total: number; perLang: LangCountMap }> {
+): Record<
+  string,
+  { total: number; perLang: LangCountMap; authoredPerLang: LangCountMap }
+> {
   if (!raw || typeof raw !== "object") return {};
-  const out: Record<string, { total: number; perLang: LangCountMap }> = {};
+  const out: Record<
+    string,
+    { total: number; perLang: LangCountMap; authoredPerLang: LangCountMap }
+  > = {};
   for (const [slug, data] of Object.entries(raw as Record<string, unknown>)) {
     if (!data || typeof data !== "object") continue;
     const d = data as Record<string, unknown>;
     out[slug] = {
       total: asNumber(d.total),
       perLang: asLangCountMap(d.perLang),
+      // `authoredPerLang` was added later — old stats docs lack it, so default
+      // to an empty map. /downloads renders zero authored counts in that case.
+      authoredPerLang: asLangCountMap(d.authoredPerLang),
     };
   }
   return out;
@@ -80,6 +103,7 @@ export const getContentTranslationStats = cache(
         hadith: {
           total: asNumber(hadithRaw.total),
           perLang: asLangCountMap(hadithRaw.perLang),
+          authoredPerLang: asLangCountMap(hadithRaw.authoredPerLang),
           perCollection: asPerCollection(hadithRaw.perCollection),
         },
       };

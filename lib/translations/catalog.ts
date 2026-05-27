@@ -58,6 +58,25 @@ export type TranslationCatalogEntry = {
 };
 
 /* -------------------------------------------------------------------------- */
+/* i-muslim's own authored translations (CC0)                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Per-item authored translations are flagged on each doc via
+ * `editedTranslations[lang] === true`. When the public API encounters that
+ * flag, it returns the text in full under this catalogue entry — CC0,
+ * attributed to i-muslim. This is the licence the project releases its own
+ * translation work under, distinct from any upstream catalogue defaults.
+ */
+export const IMUSLIM_AUTHORED: TranslationCatalogEntry = {
+  sourceId: "i-muslim:authored",
+  attribution: "i-muslim",
+  license: "CC0-1.0",
+  licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+  redistribute: "full",
+};
+
+/* -------------------------------------------------------------------------- */
 /* Quran                                                                       */
 /* -------------------------------------------------------------------------- */
 

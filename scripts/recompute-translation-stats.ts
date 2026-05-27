@@ -37,7 +37,18 @@ export type ContentTranslationStatsDoc = {
   hadith: {
     total: number;
     perLang: LangCounts;
-    perCollection: Record<string, { total: number; perLang: LangCounts }>;
+    /**
+     * Project-wide count of admin-authored translations per language
+     * (editedTranslations[lang] === true && translations[lang] non-empty).
+     * These are the ones the public API ships under i-muslim's own CC0
+     * licence — the rest fall back to the upstream catalogue licence and are
+     * usually returned as metadata-only.
+     */
+    authoredPerLang: LangCounts;
+    perCollection: Record<
+      string,
+      { total: number; perLang: LangCounts; authoredPerLang: LangCounts }
+    >;
   };
   updatedAt: Timestamp;
 };
@@ -72,6 +83,31 @@ function tallyTranslations(translations: unknown, into: LangCounts): void {
   }
 }
 
+/**
+ * Increment a counter only for non-empty translations that are flagged as
+ * admin-authored (editedTranslations[lang] === true). The flag is the same
+ * signal the seed scripts use to preserve admin work across re-runs, so
+ * counting it here gives the public API a stable view of "how much of this
+ * (collection, lang) is owned and CC0-able by i-muslim".
+ */
+function tallyAuthored(
+  translations: unknown,
+  edited: unknown,
+  into: LangCounts,
+): void {
+  if (!translations || typeof translations !== "object") return;
+  if (!edited || typeof edited !== "object") return;
+  const editedMap = edited as Record<string, unknown>;
+  for (const [lang, value] of Object.entries(
+    translations as Record<string, unknown>,
+  )) {
+    if (typeof value !== "string" || value.trim().length === 0) continue;
+    if (editedMap[lang] === true) {
+      into[lang] = (into[lang] ?? 0) + 1;
+    }
+  }
+}
+
 async function tallyQuran(firestore: Firestore): Promise<{
   total: number;
   perLang: LangCounts;
@@ -97,12 +133,17 @@ async function tallyQuran(firestore: Firestore): Promise<{
 async function tallyHadith(firestore: Firestore): Promise<{
   total: number;
   perLang: LangCounts;
-  perCollection: Record<string, { total: number; perLang: LangCounts }>;
+  authoredPerLang: LangCounts;
+  perCollection: Record<
+    string,
+    { total: number; perLang: LangCounts; authoredPerLang: LangCounts }
+  >;
 }> {
   const globalPerLang: LangCounts = {};
+  const globalAuthoredPerLang: LangCounts = {};
   const perCollection: Record<
     string,
-    { total: number; perLang: LangCounts }
+    { total: number; perLang: LangCounts; authoredPerLang: LangCounts }
   > = {};
   let total = 0;
   const stream = firestore.collection(HADITH_COLLECTION).stream();
@@ -114,7 +155,11 @@ async function tallyHadith(firestore: Firestore): Promise<{
         ? data.collection
         : "_unknown";
     if (!perCollection[collection]) {
-      perCollection[collection] = { total: 0, perLang: {} };
+      perCollection[collection] = {
+        total: 0,
+        perLang: {},
+        authoredPerLang: {},
+      };
     }
     const bucket = perCollection[collection];
     bucket.total++;
@@ -124,8 +169,15 @@ async function tallyHadith(firestore: Firestore): Promise<{
     }
     tallyTranslations(data.translations, globalPerLang);
     tallyTranslations(data.translations, bucket.perLang);
+    tallyAuthored(data.translations, data.editedTranslations, globalAuthoredPerLang);
+    tallyAuthored(data.translations, data.editedTranslations, bucket.authoredPerLang);
   }
-  return { total, perLang: globalPerLang, perCollection };
+  return {
+    total,
+    perLang: globalPerLang,
+    authoredPerLang: globalAuthoredPerLang,
+    perCollection,
+  };
 }
 
 export async function recomputeTranslationStats(firestore: Firestore): Promise<void> {
@@ -138,7 +190,7 @@ export async function recomputeTranslationStats(firestore: Firestore): Promise<v
   console.log("[stats] tallying Hadith translations…");
   const hadith = await tallyHadith(firestore);
   console.log(
-    `[stats] Hadith: total=${hadith.total}, perLang=${JSON.stringify(hadith.perLang)}, collections=${Object.keys(hadith.perCollection).length}`,
+    `[stats] Hadith: total=${hadith.total}, perLang=${JSON.stringify(hadith.perLang)}, authoredPerLang=${JSON.stringify(hadith.authoredPerLang)}, collections=${Object.keys(hadith.perCollection).length}`,
   );
 
   await firestore

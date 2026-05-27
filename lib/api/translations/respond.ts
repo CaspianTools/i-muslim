@@ -1,6 +1,9 @@
 import "server-only";
 import { NextResponse } from "next/server";
-import type { TranslationCatalogEntry } from "@/lib/translations/catalog";
+import {
+  IMUSLIM_AUTHORED,
+  type TranslationCatalogEntry,
+} from "@/lib/translations/catalog";
 
 /**
  * Headers shared by every public translation endpoint. No `X-API-Key` is
@@ -66,4 +69,31 @@ export function gateText(
 ): string | null {
   if (entry.redistribute === "full") return text ?? null;
   return null;
+}
+
+/**
+ * True ⇔ i-muslim authored or substantively edited this translation. The
+ * `editedTranslations[lang]` flag is set by the admin UI when the value
+ * diverges from upstream, and by the Hadith v1 PUT endpoint on every write.
+ * When true, the public API ships the text under the IMUSLIM_AUTHORED licence
+ * (CC0) instead of the upstream catalogue licence.
+ */
+export function isAuthored(
+  doc: { editedTranslations?: Record<string, boolean> },
+  lang: string,
+): boolean {
+  return doc.editedTranslations?.[lang] === true;
+}
+
+/**
+ * Resolve the catalogue entry that governs a single (doc, lang) — authored if
+ * the flag is set, otherwise the upstream entry passed in. Keeps the per-item
+ * gating logic identical across endpoints.
+ */
+export function resolveEntry(
+  doc: { editedTranslations?: Record<string, boolean> },
+  lang: string,
+  upstream: TranslationCatalogEntry,
+): TranslationCatalogEntry {
+  return isAuthored(doc, lang) ? IMUSLIM_AUTHORED : upstream;
 }
