@@ -126,3 +126,46 @@ export async function requireSiteSession(): Promise<SiteSession> {
   if (!session) throw new Error("Unauthorized");
   return session;
 }
+
+/**
+ * Resolves a `SiteSession` for an API request, trying in order:
+ *  1. `Authorization: Bearer <idToken>` (mobile / first-party native clients).
+ *  2. The `__session` cookie (web).
+ *
+ * Use this in route handlers under `/api/v1/me/*` where either a logged-in
+ * web user or a signed-in mobile user should be accepted. Returns null when
+ * neither path yields a verified user.
+ */
+export async function getApiCallerSession(
+  req: Request,
+): Promise<SiteSession | null> {
+  const auth = getAdminAuth();
+  if (!auth) return null;
+
+  const header = req.headers.get("authorization") ?? req.headers.get("Authorization");
+  if (header?.toLowerCase().startsWith("bearer ")) {
+    const idToken = header.slice(7).trim();
+    if (idToken.length > 0) {
+      try {
+        const decoded = await auth.verifyIdToken(idToken, true);
+        if (decoded.email) {
+          const overlay = await loadUserOverlay(decoded.uid);
+          const permissions = await loadRolePermissions(overlay.roleId);
+          return {
+            uid: decoded.uid,
+            email: decoded.email,
+            name: decoded.name ?? null,
+            picture: decoded.picture ?? null,
+            roleId: overlay.roleId,
+            permissions,
+            languages: overlay.languages,
+          };
+        }
+      } catch {
+        // Invalid / expired ID token — fall through to cookie path.
+      }
+    }
+  }
+
+  return getSiteSession();
+}
