@@ -1,4 +1,5 @@
-import { Info } from "lucide-react";
+import Link from "next/link";
+import { ExternalLink, Info } from "lucide-react";
 import type { HadithEntry } from "@/types/hadith";
 import { LANG_LABELS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
@@ -39,6 +40,8 @@ export function HadithCard({
   signedIn,
   currentUid = null,
   commentCount = 0,
+  permalink = false,
+  permalinkLabel,
 }: {
   number: number;
   arabic: HadithEntry | null;
@@ -52,6 +55,11 @@ export function HadithCard({
   signedIn: boolean;
   currentUid?: string | null;
   commentCount?: number;
+  // When true, render an "Open" link in the card header pointing to the
+  // hadith's own permalink page. Used on the book page; never set on the
+  // permalink page itself (it would link to itself).
+  permalink?: boolean;
+  permalinkLabel?: string;
 }) {
   // First non-empty translation, used as a short subtitle in favorites/notes.
   const excerptEntry = translations.find((t) => t.entry?.text)?.entry?.text ?? null;
@@ -83,6 +91,16 @@ export function HadithCard({
             {collectionShortName} · #{number}
           </span>
           <div className="flex items-center gap-2">
+            {permalink && (
+              <Link
+                href={`/hadith/${collectionId}/${number}`}
+                className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                aria-label={permalinkLabel ?? `Open hadith ${number}`}
+              >
+                <ExternalLink className="size-3.5" />
+                <span className="hidden sm:inline">{permalinkLabel ?? "Open"}</span>
+              </Link>
+            )}
             {arabic?.grades && arabic.grades.length > 0 && (
               <span
                 className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"

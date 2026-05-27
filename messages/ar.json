@@ -2589,7 +2589,21 @@
     "bookEyebrow": "{collection} · Book {book}",
     "bookSummary": "{count} hadith in this book.",
     "prevBook": "← Book {n}",
-    "nextBook": "Book {n} →"
+    "nextBook": "Book {n} →",
+    "singleMetaTitle": "{collection} {number} — {narrator}",
+    "singleMetaTitleNoNarrator": "{collection} {number}",
+    "singleMetaDescription": "{snippet} — {collection}, Hadith {number}.",
+    "singleMetaDescriptionFallback": "Read Hadith {number} from {collection} in Arabic with translation.",
+    "singleEyebrow": "{collection} · Hadith {number}",
+    "singleBreadcrumbHome": "Home",
+    "singleBreadcrumbHadith": "Hadith",
+    "singleBackToBook": "← {bookName}",
+    "singleReferenceLabel": "Reference",
+    "singleReferenceValue": "{collection}, Book {book}, Hadith {hadithInBook}",
+    "prevHadith": "← Hadith {n}",
+    "nextHadith": "Hadith {n} →",
+    "singleTranslationUnavailable": "A translation in {language} is not yet available for this hadith. The Arabic text is shown above.",
+    "singleOpenPermalink": "Open"
   },
   "readingMode": {
     "enter": "Reading mode",

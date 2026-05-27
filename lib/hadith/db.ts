@@ -7,6 +7,20 @@ const collectionTag = (slug: string) => `hadith:${slug}`;
 
 const REVALIDATE_SECONDS = 60 * 60 * 24; // 1 day
 
+// Canonical ordering used by the sharded sitemap (`generateSitemaps` returns
+// `{id}` indices into this array) and by the API allowlists. Keep in sync.
+export const HADITH_COLLECTION_SLUGS = [
+  "bukhari",
+  "muslim",
+  "abudawud",
+  "tirmidhi",
+  "nasai",
+  "ibnmajah",
+  "malik",
+  "nawawi",
+  "qudsi",
+] as const;
+
 export type HadithCollectionDoc = {
   slug: string;
   name_en: string;
@@ -89,14 +103,77 @@ export async function getHadith(
   slug: string,
   number: number,
 ): Promise<HadithDoc | null> {
-  const db = getDb();
-  if (!db) return null;
-  const doc = await db
-    .collection("hadith_entries")
-    .doc(`${slug}:${number}`)
-    .get();
-  if (!doc.exists) return null;
-  return doc.data() as HadithDoc;
+  return unstable_cache(
+    async (): Promise<HadithDoc | null> => {
+      const db = getDb();
+      if (!db) return null;
+      const doc = await db
+        .collection("hadith_entries")
+        .doc(`${slug}:${number}`)
+        .get();
+      if (!doc.exists) return null;
+      return doc.data() as HadithDoc;
+    },
+    [`hadith:${slug}:${number}`],
+    { revalidate: REVALIDATE_SECONDS, tags: [collectionTag(slug)] },
+  )();
+}
+
+// Slim list of every published hadith number in a collection, used by the
+// sharded sitemap and by adjacent-prev/next lookups. Field-masked so the
+// 7,500-row Bukhari case stays cheap.
+export async function listPublishedHadithNumbers(
+  slug: string,
+): Promise<number[]> {
+  return unstable_cache(
+    async (): Promise<number[]> => {
+      const db = getDb();
+      if (!db) return [];
+      const snap = await db
+        .collection("hadith_entries")
+        .where("collection", "==", slug)
+        .where("published", "==", true)
+        .select("number")
+        .get();
+      if (snap.empty) return [];
+      return snap.docs
+        .map((d) => (d.data() as { number: number }).number)
+        .filter((n): n is number => typeof n === "number")
+        .sort((a, b) => a - b);
+    },
+    [`hadith:${slug}:numbers`],
+    { revalidate: REVALIDATE_SECONDS, tags: [collectionTag(slug)] },
+  )();
+}
+
+// Previous/next hadith numbers within the same collection (global number
+// order). Backed by the same cached number list so a detail-page render
+// doesn't hit Firestore twice.
+export async function getAdjacentHadithNumbers(
+  slug: string,
+  number: number,
+): Promise<{ prev: number | null; next: number | null }> {
+  const numbers = await listPublishedHadithNumbers(slug);
+  if (numbers.length === 0) return { prev: null, next: null };
+  // Binary search for the position of `number`.
+  let lo = 0;
+  let hi = numbers.length - 1;
+  let idx = -1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    const v = numbers[mid];
+    if (v === number) {
+      idx = mid;
+      break;
+    }
+    if (v < number) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  if (idx === -1) return { prev: null, next: null };
+  return {
+    prev: idx > 0 ? numbers[idx - 1] : null,
+    next: idx < numbers.length - 1 ? numbers[idx + 1] : null,
+  };
 }
 
 /**

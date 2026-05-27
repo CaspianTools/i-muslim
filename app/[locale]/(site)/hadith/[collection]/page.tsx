@@ -80,7 +80,7 @@ export default async function CollectionPage({
             {meta.books.map((b) => (
               <li key={b.number}>
                 <Link
-                  href={`/hadith/${collection}/${b.number}${langQS}`}
+                  href={`/hadith/${collection}/book/${b.number}${langQS}`}
                   className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted"
                 >
                   <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-medium text-muted-foreground group-hover:bg-accent group-hover:text-accent-foreground">

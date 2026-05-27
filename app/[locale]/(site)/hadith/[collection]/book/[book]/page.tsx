@@ -202,6 +202,8 @@ export default async function HadithBookPage({
                       signedIn={Boolean(session)}
                       currentUid={session?.uid ?? null}
                       commentCount={commentCounts.get(`${collection}:${h.number}`) ?? 0}
+                      permalink
+                      permalinkLabel={t("singleOpenPermalink")}
                     />
                   );
                 })}
@@ -210,7 +212,7 @@ export default async function HadithBookPage({
               <nav className="mt-8 flex items-center justify-between gap-2 text-sm">
                 {prev ? (
                   <Link
-                    href={`/hadith/${collection}/${prev.number}${langQS}`}
+                    href={`/hadith/${collection}/book/${prev.number}${langQS}`}
                     className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
                   >
                     {t("prevBook", { n: prev.number })}
@@ -220,7 +222,7 @@ export default async function HadithBookPage({
                 )}
                 {next ? (
                   <Link
-                    href={`/hadith/${collection}/${next.number}${langQS}`}
+                    href={`/hadith/${collection}/book/${next.number}${langQS}`}
                     className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
                   >
                     {t("nextBook", { n: next.number })}
