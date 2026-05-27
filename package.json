@@ -23,7 +23,8 @@
     "migrate:country-iso2": "tsx scripts/migrate-profile-country-to-iso2.ts",
     "migrate:hadith-publish-status": "tsx scripts/migrate-hadith-publish-status.ts",
     "migrate:mosque-updated-at": "tsx scripts/migrate-mosque-updated-at.ts",
-    "migrate:submissions-to-mosques": "tsx scripts/migrate-submissions-to-mosques.ts"
+    "migrate:submissions-to-mosques": "tsx scripts/migrate-submissions-to-mosques.ts",
+    "build:bundles": "tsx scripts/build-bundles.ts"
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "^4.2.0",
