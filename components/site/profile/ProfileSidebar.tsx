@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { PROFILE_NAV } from "@/lib/profile/nav";
@@ -98,6 +98,21 @@ export function ProfileSidebar({ variant = "desktop", onNavigate }: ProfileSideb
               <ChevronLeft className="size-4 rtl:rotate-180" />
             </Button>
           )}
+          {variant === "desktop" && !showLabels && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setCollapsed(false)}
+                  aria-label={t("title")}
+                  className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
+                  <User className="size-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{t("title")}</TooltipContent>
+            </Tooltip>
+          )}
         </div>
 
         <ScrollArea className="flex-1">
@@ -146,23 +161,6 @@ export function ProfileSidebar({ variant = "desktop", onNavigate }: ProfileSideb
           </nav>
         </ScrollArea>
 
-        {!showLabels && variant === "desktop" && (
-          <div className="border-t border-border p-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={() => setCollapsed(false)}
-                  className="flex h-8 w-full items-center justify-center rounded-md hover:bg-muted text-muted-foreground"
-                  aria-label={t("expand")}
-                >
-                  <ChevronLeft className="size-4 rotate-180 rtl:rotate-0" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">{t("expand")}</TooltipContent>
-            </Tooltip>
-          </div>
-        )}
       </div>
     </TooltipProvider>
   );
