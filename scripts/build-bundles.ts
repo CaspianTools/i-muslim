@@ -28,11 +28,16 @@
  * Node's bundled SQLite.
  */
 
-import "dotenv/config";
+import { config as loadEnv } from "dotenv";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, rmSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+
+// Match the seed scripts: load .env.local (where the Firebase admin creds
+// live), then fall back to a plain .env for anything not set there.
+loadEnv({ path: resolve(process.cwd(), ".env.local") });
+loadEnv();
 
 import { cert, getApp, getApps, initializeApp } from "firebase-admin/app";
 import {
