@@ -2,6 +2,9 @@ import "server-only";
 import { Timestamp } from "firebase-admin/firestore";
 import { getDb } from "@/lib/firebase/admin";
 import { MOCK_NOTIFICATIONS } from "@/lib/admin/mock/notifications";
+import { findNavItem } from "@/lib/admin/nav";
+import { hasPermission } from "@/lib/permissions/check";
+import type { RolePermissions } from "@/lib/permissions/catalog";
 import type { AdminNotification, NotificationType } from "@/types/admin";
 
 export const NOTIFICATIONS_COLLECTION = "notifications";
@@ -100,6 +103,23 @@ export async function fetchNotifications(
     console.warn("[admin/data/notifications] read failed:", err);
     return { items: MOCK_NOTIFICATIONS, source: "mock" };
   }
+}
+
+// Drop notifications whose deep-link points at an admin page the viewer can't
+// open, so e.g. a "New contact message" notification never surfaces for a role
+// without `contact.read`. The required permission is resolved from the nav
+// entry that owns the link, so this stays in sync with sidebar gating.
+export function filterAccessibleNotifications(
+  items: AdminNotification[],
+  permissions: RolePermissions,
+): AdminNotification[] {
+  return items.filter((n) => {
+    if (!n.link) return true; // non-navigational → always keep
+    const path = n.link.split(/[?#]/)[0]; // links are locale-less; strip query/hash
+    const item = findNavItem(path);
+    if (!item?.requiredPermission) return true;
+    return hasPermission(permissions, item.requiredPermission);
+  });
 }
 
 export type CreateNotificationInput = {

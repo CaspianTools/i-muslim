@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { requirePermission } from "@/lib/admin/api";
-import { fetchNotifications } from "@/lib/admin/data/notifications";
+import {
+  fetchNotifications,
+  filterAccessibleNotifications,
+} from "@/lib/admin/data/notifications";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,5 +13,6 @@ export async function GET() {
   if (!auth.ok) return auth.response;
 
   const { items, source } = await fetchNotifications({ limit: 50 });
-  return NextResponse.json({ items, source });
+  const visible = filterAccessibleNotifications(items, auth.session.permissions);
+  return NextResponse.json({ items: visible, source });
 }

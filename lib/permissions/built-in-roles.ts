@@ -54,8 +54,11 @@ const MODERATOR_PERMISSIONS: Permission[] = [
   "contact.respond",
 ];
 
+// Translators read content to translate it but have no business in the
+// contact inbox — drop `contact.read` (kept on Moderator, which also has
+// `contact.respond`). They retain `dashboard.read` for the admin landing page.
 const TRANSLATOR_PERMISSIONS: Permission[] = [
-  ...READ_ALL_CONTENT,
+  ...READ_ALL_CONTENT.filter((p) => p !== "contact.read"),
   "articles.translate",
   "quran.translate",
   "hadith.translate",

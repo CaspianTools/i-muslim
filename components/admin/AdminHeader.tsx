@@ -11,7 +11,7 @@ import type { SidebarBadges } from "./Sidebar";
 import type { AdminSession } from "@/lib/auth/session";
 import { BUNDLED_LOCALES } from "@/i18n/config";
 import { listActivatedReservedLocales } from "@/lib/admin/data/ui-locales";
-import { fetchNotifications } from "@/lib/admin/data/notifications";
+import { fetchNotifications, filterAccessibleNotifications } from "@/lib/admin/data/notifications";
 import { fetchCategories } from "@/lib/admin/data/business-taxonomies";
 import { fetchEventCategories } from "@/lib/admin/data/event-categories";
 import { fetchArticleCategories } from "@/lib/admin/data/article-categories";
@@ -42,6 +42,7 @@ export async function AdminHeader({ session, badges, logoUrl }: AdminHeaderProps
     fetchMosqueFacilities(),
   ]);
   const availableLocales = [...BUNDLED_LOCALES, ...activated];
+  const visibleNotifications = filterAccessibleNotifications(notifications, permissions);
   const canPersist = getFirebaseAdminStatus().configured;
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
@@ -59,7 +60,7 @@ export async function AdminHeader({ session, badges, logoUrl }: AdminHeaderProps
         </div>
         <LanguageSwitcher availableLocales={availableLocales} />
         <ThemeMenu />
-        <NotificationsPopover initialItems={notifications} />
+        <NotificationsPopover initialItems={visibleNotifications} />
         <QuickCreate
           categories={categories}
           eventCategories={eventCategories}

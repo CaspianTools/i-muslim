@@ -174,7 +174,7 @@ export const ADMIN_NAV: NavGroup[] = [
           { labelKey: "businessesAmenities", href: "/admin/businesses/amenities", icon: ConciergeBell, requiredPermission: "businesses.read" },
         ],
       },
-      { labelKey: "courses", href: "/admin/courses", icon: BookOpenCheck },
+      { labelKey: "courses", href: "/admin/courses", icon: BookOpenCheck, comingSoon: true },
       { labelKey: "matrimonial", href: "/admin/matrimonial", icon: Heart, badgeKey: "pendingMatrimonial", requiredPermission: "matrimonial.read" },
       { labelKey: "duas", href: "/admin/duas", icon: Sparkles, comingSoon: true },
       { labelKey: "khutbahs", href: "/admin/khutbahs", icon: Mic2, comingSoon: true },
