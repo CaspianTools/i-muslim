@@ -5,6 +5,11 @@ import { useTranslations } from "next-intl";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
 import { countryName } from "@/lib/mosques/countries";
 import {
   EditorDialog,
@@ -104,12 +109,15 @@ export function CertBodiesClient({ initialCertBodies, canPersist }: Props) {
                     {c.verifiedByPlatform ? <Badge variant="info">●</Badge> : <Badge>—</Badge>}
                   </td>
                   <td className="px-3 py-2.5 text-end">
-                    <Button size="sm" variant="ghost" onClick={() => openEdit(c)}>
-                      <Pencil className="size-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => setDeleteTarget(c)}>
-                      <Trash2 className="size-4 text-danger" />
-                    </Button>
+                    <RowActions label={tCommon("actions")}>
+                      <DropdownMenuItem onClick={() => openEdit(c)}>
+                        <Pencil /> {tCommon("edit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(c)}>
+                        <Trash2 /> {tCommon("delete")}
+                      </DropdownMenuItem>
+                    </RowActions>
                   </td>
                 </tr>
               ))}

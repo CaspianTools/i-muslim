@@ -2,8 +2,13 @@
 
 import { Link } from "@/i18n/navigation";
 import { useMemo, useState, useTransition } from "react";
-import { Plus, Trash2, FileText } from "lucide-react";
+import { Pencil, Plus, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
@@ -190,14 +195,20 @@ export function ArticlesPageClient({
                       {formatRelative(row.updatedAt)}
                     </td>
                     <td className="px-3 py-2 align-middle text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeleteTarget(row)}
-                        aria-label={`Delete ${title}`}
-                      >
-                        <Trash2 className="size-4 text-danger" />
-                      </Button>
+                      <RowActions label="Actions">
+                        <DropdownMenuItem asChild>
+                          <Link href={`/admin/articles/${row.id}`}>
+                            <Pencil /> Edit
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          variant="danger"
+                          onClick={() => setDeleteTarget(row)}
+                        >
+                          <Trash2 /> Delete
+                        </DropdownMenuItem>
+                      </RowActions>
                     </td>
                   </tr>
                 );

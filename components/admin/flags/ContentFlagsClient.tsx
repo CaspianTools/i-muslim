@@ -14,8 +14,9 @@ import {
   X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
 import { toast } from "@/components/ui/sonner";
 import { resolveFlagAction, dismissFlagAction } from "@/lib/admin/actions/content-flags";
 import type { ContentFlag, ContentFlagStatus } from "@/types/content-flag";
@@ -68,6 +69,7 @@ function SortHeader({
 export function ContentFlagsClient({ initialFlags, canPersist }: Props) {
   const t = useTranslations("flagsAdmin");
   const tStatus = useTranslations("flagsAdmin.statuses");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const [flags, setFlags] = useState(initialFlags);
   const [query, setQuery] = useState("");
@@ -272,29 +274,20 @@ export function ContentFlagsClient({ initialFlags, canPersist }: Props) {
                       </td>
                       <td className="px-3 py-2.5 text-end">
                         {f.status === "open" && (
-                          <div className="flex justify-end gap-1">
-                            <Button
-                              size="sm"
+                          <RowActions label={tCommon("actions")}>
+                            <DropdownMenuItem
                               onClick={() => resolve(f.id)}
                               disabled={!canPersist}
-                              title={t("resolveCta")}
-                              aria-label={t("resolveCta")}
-                              className="h-8 w-8 p-0"
                             >
-                              <Check className="size-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
+                              <Check /> {t("resolveCta")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
                               onClick={() => dismiss(f.id)}
                               disabled={!canPersist}
-                              title={t("dismissCta")}
-                              aria-label={t("dismissCta")}
-                              className="h-8 w-8 p-0"
                             >
-                              <X className="size-4" />
-                            </Button>
-                          </div>
+                              <X /> {t("dismissCta")}
+                            </DropdownMenuItem>
+                          </RowActions>
                         )}
                       </td>
                     </tr>

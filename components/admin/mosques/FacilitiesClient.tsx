@@ -5,6 +5,11 @@ import { useTranslations } from "next-intl";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
+import {
   EditorDialog,
   EditorDialogContent,
   EditorDialogHeader,
@@ -96,12 +101,15 @@ export function FacilitiesClient({ initialFacilities, canPersist }: Props) {
                     {f.sortOrder}
                   </td>
                   <td className="px-3 py-2.5 text-end">
-                    <Button size="sm" variant="ghost" onClick={() => openEdit(f)}>
-                      <Pencil className="size-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => setDeleteTarget(f)}>
-                      <Trash2 className="size-4 text-danger" />
-                    </Button>
+                    <RowActions label={tCommon("actions")}>
+                      <DropdownMenuItem onClick={() => openEdit(f)}>
+                        <Pencil /> {tCommon("edit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(f)}>
+                        <Trash2 /> {tCommon("delete")}
+                      </DropdownMenuItem>
+                    </RowActions>
                   </td>
                 </tr>
               ))}

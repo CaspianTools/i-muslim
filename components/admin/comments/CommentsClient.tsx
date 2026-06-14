@@ -18,6 +18,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -298,43 +303,26 @@ export function CommentsClient({ initialComments }: Props) {
                     {formatRelative(c.createdAt)}
                   </td>
                   <td className="px-3 py-2.5 text-end">
-                    <div className="flex justify-end gap-1.5">
+                    <RowActions label={tCommon("actions")}>
                       {c.status === "visible" ? (
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => changeStatus(c.id, "hidden")}
-                        >
-                          <EyeOff className="size-4" /> {t("hide")}
-                        </Button>
+                        <DropdownMenuItem onClick={() => changeStatus(c.id, "hidden")}>
+                          <EyeOff /> {t("hide")}
+                        </DropdownMenuItem>
                       ) : c.status === "auto_hidden" || c.status === "hidden" ? (
-                        <Button
-                          size="sm"
-                          onClick={() => changeStatus(c.id, "visible")}
-                        >
-                          <Check className="size-4" /> {t("restore")}
-                        </Button>
+                        <DropdownMenuItem onClick={() => changeStatus(c.id, "visible")}>
+                          <Check /> {t("restore")}
+                        </DropdownMenuItem>
                       ) : null}
                       {c.flagCount > 0 && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => dismissFlags(c.id)}
-                          aria-label={t("dismissFlags")}
-                          title={t("dismissFlags")}
-                        >
-                          <RotateCcw className="size-4" />
-                        </Button>
+                        <DropdownMenuItem onClick={() => dismissFlags(c.id)}>
+                          <RotateCcw /> {t("dismissFlags")}
+                        </DropdownMenuItem>
                       )}
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => setDeleting(c)}
-                        aria-label={tCommon("delete")}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
-                    </div>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="danger" onClick={() => setDeleting(c)}>
+                        <Trash2 /> {tCommon("delete")}
+                      </DropdownMenuItem>
+                    </RowActions>
                   </td>
                 </tr>
               ))}

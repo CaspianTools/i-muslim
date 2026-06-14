@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Copy, Check, KeyRound, Trash2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -149,14 +151,14 @@ export function ApiKeysPageClient({ initialKeys }: Props) {
                   </td>
                   <td className="px-4 py-2 text-right">
                     {k.status === "active" && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => revoke(k.id)}
-                        aria-label={t("revoke")}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
+                      <RowActions label={tCommon("actions")}>
+                        <DropdownMenuItem
+                          variant="danger"
+                          onClick={() => revoke(k.id)}
+                        >
+                          <Trash2 /> {t("revoke")}
+                        </DropdownMenuItem>
+                      </RowActions>
                     )}
                   </td>
                 </tr>

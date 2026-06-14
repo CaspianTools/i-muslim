@@ -14,8 +14,12 @@ import {
   X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
 import { toast } from "@/components/ui/sonner";
 import {
   resolveReportAction,
@@ -73,6 +77,7 @@ export function BusinessReportsClient({ initialReports, canPersist }: Props) {
   const t = useTranslations("businesses.admin");
   const tReason = useTranslations("businesses.report.reasons");
   const tStatus = useTranslations("businesses.admin.reportStatuses");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const [reports, setReports] = useState(initialReports);
   const [query, setQuery] = useState("");
@@ -269,27 +274,28 @@ export function BusinessReportsClient({ initialReports, canPersist }: Props) {
                   </td>
                   <td className="px-3 py-2.5 text-end">
                     {r.status === "open" && (
-                      <div className="flex justify-end gap-1.5">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => archiveBusiness(r)}
+                      <RowActions label={tCommon("actions")}>
+                        <DropdownMenuItem
+                          onClick={() => resolve(r.id)}
                           disabled={!canPersist}
                         >
-                          <Archive className="size-4" /> {t("reportsArchiveBusiness")}
-                        </Button>
-                        <Button size="sm" onClick={() => resolve(r.id)} disabled={!canPersist}>
-                          <Check className="size-4" /> {t("reportsResolveCta")}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
+                          <Check /> {t("reportsResolveCta")}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
                           onClick={() => dismiss(r.id)}
                           disabled={!canPersist}
                         >
-                          <X className="size-4" /> {t("reportsDismissCta")}
-                        </Button>
-                      </div>
+                          <X /> {t("reportsDismissCta")}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          variant="danger"
+                          onClick={() => archiveBusiness(r)}
+                          disabled={!canPersist}
+                        >
+                          <Archive /> {t("reportsArchiveBusiness")}
+                        </DropdownMenuItem>
+                      </RowActions>
                     )}
                   </td>
                 </tr>

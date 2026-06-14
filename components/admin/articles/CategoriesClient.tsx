@@ -5,6 +5,11 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
+import {
   EditorDialog,
   EditorDialogContent,
   EditorDialogHeader,
@@ -100,12 +105,15 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
                       {c.isActive ? <Badge variant="success">●</Badge> : <Badge>—</Badge>}
                     </td>
                     <td className="px-3 py-2.5 text-end">
-                      <Button size="sm" variant="ghost" onClick={() => openEdit(c)} aria-label="Edit">
-                        <Pencil className="size-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => setDeleteTarget(c)} aria-label="Delete">
-                        <Trash2 className="size-4 text-danger" />
-                      </Button>
+                      <RowActions label="Actions">
+                        <DropdownMenuItem onClick={() => openEdit(c)}>
+                          <Pencil /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(c)}>
+                          <Trash2 /> Delete
+                        </DropdownMenuItem>
+                      </RowActions>
                     </td>
                   </tr>
                 ))}

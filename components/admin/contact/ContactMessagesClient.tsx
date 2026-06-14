@@ -7,6 +7,7 @@ import {
   ArrowUp,
   ArrowUpDown,
   Check,
+  Eye,
   Mail,
   RotateCcw,
   Search,
@@ -15,6 +16,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { RowActions } from "@/components/admin/RowActions";
 import {
   Dialog,
   DialogContent,
@@ -283,38 +289,34 @@ export function ContactMessagesClient({ initialMessages, canPersist }: Props) {
                     {new Date(m.createdAt).toLocaleString(locale)}
                   </td>
                   <td className="px-3 py-2.5 text-end">
-                    <div className="flex justify-end gap-1.5">
-                      <Button size="sm" variant="ghost" onClick={() => setViewing(m)}>
-                        {t("viewMessage")}
-                      </Button>
+                    <RowActions label={tCommon("actions")}>
+                      <DropdownMenuItem onClick={() => setViewing(m)}>
+                        <Eye /> {t("viewMessage")}
+                      </DropdownMenuItem>
                       {m.status === "open" ? (
-                        <Button
-                          size="sm"
+                        <DropdownMenuItem
                           onClick={() => resolve(m.id)}
                           disabled={!canPersist}
                         >
-                          <Check className="size-4" /> {t("markResolved")}
-                        </Button>
+                          <Check /> {t("markResolved")}
+                        </DropdownMenuItem>
                       ) : (
-                        <Button
-                          size="sm"
-                          variant="secondary"
+                        <DropdownMenuItem
                           onClick={() => reopen(m.id)}
                           disabled={!canPersist}
                         >
-                          <RotateCcw className="size-4" /> {t("reopen")}
-                        </Button>
+                          <RotateCcw /> {t("reopen")}
+                        </DropdownMenuItem>
                       )}
-                      <Button
-                        size="sm"
-                        variant="ghost"
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        variant="danger"
                         onClick={() => setDeleting(m)}
                         disabled={!canPersist}
-                        aria-label={t("delete")}
                       >
-                        <Trash2 className="size-4" />
-                      </Button>
-                    </div>
+                        <Trash2 /> {t("delete")}
+                      </DropdownMenuItem>
+                    </RowActions>
                   </td>
                 </tr>
               ))}
