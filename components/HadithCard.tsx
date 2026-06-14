@@ -1,5 +1,15 @@
+"use client";
+
 import Link from "next/link";
-import { ExternalLink, Info, MessageSquare, StickyNote } from "lucide-react";
+import {
+  ExternalLink,
+  Heart,
+  Info,
+  MessageCircle,
+  MessageSquare,
+  StickyNote,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { HadithEntry } from "@/types/hadith";
 import { LANG_LABELS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
@@ -17,6 +27,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
+function gradeKey(grade: string): string {
+  return grade
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_|_$/g, "");
+}
 
 export type HadithTranslationSlice = {
   requested: LangCode;
@@ -41,6 +59,7 @@ export function HadithCard({
   signedIn,
   currentUid = null,
   commentCount = 0,
+  favoriteCount = 0,
   permalink = false,
   permalinkLabel,
   interactionMode = "popup",
@@ -58,6 +77,7 @@ export function HadithCard({
   signedIn: boolean;
   currentUid?: string | null;
   commentCount?: number;
+  favoriteCount?: number;
   // When true, render an "Open" link in the card header pointing to the
   // hadith's own permalink page. Used on the book page; never set on the
   // permalink page itself (it would link to itself).
@@ -71,6 +91,14 @@ export function HadithCard({
   interactionMode?: "popup" | "scroll-to-tab";
   tabsAnchorId?: string;
 }) {
+  const tCard = useTranslations("hadithCard");
+  const tGrades = useTranslations("hadithGrades");
+  const localizedGrade = (raw: string): string => {
+    const key = gradeKey(raw);
+    if (!key) return raw;
+    if (!tGrades.has(key)) return raw;
+    return tGrades(key);
+  };
   // First non-empty translation, used as a short subtitle in favorites/notes.
   const excerptEntry = translations.find((t) => t.entry?.text)?.entry?.text ?? null;
   const excerpt = excerptEntry ? excerptEntry.slice(0, 160) : null;
@@ -86,7 +114,7 @@ export function HadithCard({
   return (
     <article
       id={`hadith-${number}`}
-      className="rounded-xl border border-border bg-background p-5 scroll-mt-24"
+      className="border-b border-border bg-background py-4 scroll-mt-24 sm:py-5"
       data-hadith-number={number}
       data-hadith-id={itemId}
     >
@@ -97,9 +125,27 @@ export function HadithCard({
         signedIn={signedIn}
       >
         <header className="mb-3 flex items-center justify-between gap-2">
-          <span className="text-xs font-medium text-muted-foreground">
-            {collectionShortName} · #{number}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground">
+              {collectionShortName} · #{number}
+            </span>
+            {(favoriteCount > 0 || commentCount > 0) && (
+              <span className="hidden md:inline-flex items-center gap-2 text-xs text-muted-foreground">
+                {favoriteCount > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <Heart className="size-3.5" />
+                    <span className="tabular-nums">{favoriteCount}</span>
+                  </span>
+                )}
+                {commentCount > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <MessageCircle className="size-3.5" />
+                    <span className="tabular-nums">{commentCount}</span>
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             {permalink && (
               <Link
@@ -114,9 +160,11 @@ export function HadithCard({
             {arabic?.grades && arabic.grades.length > 0 && (
               <span
                 className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
-                title={arabic.grades.map((g) => `${g.name}: ${g.grade}`).join("; ")}
+                title={arabic.grades
+                  .map((g) => `${tCard("gradeTooltip")}: ${localizedGrade(g.grade)}`)
+                  .join("; ")}
               >
-                {arabic.grades[0].grade}
+                {localizedGrade(arabic.grades[0].grade)}
               </span>
             )}
             {interactionMode === "scroll-to-tab" ? (
@@ -162,6 +210,7 @@ export function HadithCard({
               itemMeta={itemMeta}
               signedIn={signedIn}
               iconOnly
+              count={favoriteCount}
             />
             <MarkAsReadButton
               mark={{
@@ -189,13 +238,20 @@ export function HadithCard({
 
       {translations.length > 0 && (
         <div className="mt-4 space-y-4">
-          {translations.map(({ requested, actual, entry, fallback, status }) => (
+          {translations.map(({ requested, actual, entry, fallback, status }) => {
+            const requestedLabel = LANG_LABELS[requested] ?? requested.toUpperCase();
+            const actualLabel = actual ? LANG_LABELS[actual] ?? actual.toUpperCase() : "";
+            const langUnavailableMsg = tCard("languageUnavailableShowing", {
+              requested: requestedLabel,
+              actual: actualLabel,
+            });
+            return (
             <div
               key={requested}
               className="border-l-2 border-border pl-4"
             >
               <div className="mb-1 flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
-                <span>{LANG_LABELS[requested] ?? requested.toUpperCase()}</span>
+                <span>{requestedLabel}</span>
                 {/* Status badges are now compact (i) tooltips so the hadith
                     list isn't cluttered with inline review-status copy on
                     every card. The full text shows on hover (desktop) or
@@ -206,13 +262,13 @@ export function HadithCard({
                       <TooltipTrigger asChild>
                         <button
                           type="button"
-                          aria-label="Translation under review"
+                          aria-label={tCard("translationUnderReview")}
                           className="inline-flex items-center justify-center rounded text-muted-foreground hover:text-foreground"
                         >
                           <Info className="size-3.5" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent>Translation under review</TooltipContent>
+                      <TooltipContent>{tCard("translationUnderReview")}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 )}
@@ -222,22 +278,19 @@ export function HadithCard({
                       <TooltipTrigger asChild>
                         <button
                           type="button"
-                          aria-label={`${LANG_LABELS[requested] ?? requested.toUpperCase()} unavailable — showing ${LANG_LABELS[actual] ?? actual.toUpperCase()}`}
+                          aria-label={langUnavailableMsg}
                           className="inline-flex items-center justify-center rounded text-muted-foreground hover:text-foreground"
                         >
                           <Info className="size-3.5" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        {LANG_LABELS[requested] ?? requested.toUpperCase()} unavailable
-                        — showing {LANG_LABELS[actual] ?? actual.toUpperCase()}
-                      </TooltipContent>
+                      <TooltipContent>{langUnavailableMsg}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 )}
                 {status !== "in_process" && !entry && !fallback && (
                   <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] normal-case tracking-normal">
-                    translation unavailable
+                    {tCard("translationUnavailable")}
                   </span>
                 )}
               </div>
@@ -250,7 +303,8 @@ export function HadithCard({
                 </p>
               ) : null}
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
