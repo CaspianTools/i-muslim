@@ -1,10 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Heart } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getHadithCollections } from "@/lib/hadith/db";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
 import { HadithMobileDrawer } from "@/components/site/hadith/HadithMobileDrawer";
+import { getFavoriteCountsForCollections } from "@/lib/profile/favoriteStats";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("hadithPage");
@@ -20,10 +22,11 @@ export default async function HadithIndexPage({
   searchParams: Promise<{ lang?: string }>;
 }) {
   const { lang: langParam } = await searchParams;
-  const [collections, languageSettings, t] = await Promise.all([
+  const [collections, languageSettings, t, tCollections] = await Promise.all([
     getHadithCollections(),
     getLanguageSettings(),
     getTranslations("hadithPage"),
+    getTranslations("hadithCollectionNames"),
   ]);
 
   const langQS = langParam ? `?lang=${encodeURIComponent(langParam)}` : "";
@@ -40,6 +43,12 @@ export default async function HadithIndexPage({
       </div>
     );
   }
+
+  const slugs = collections.map((c) => c.slug);
+  const favoriteCounts = await getFavoriteCountsForCollections(slugs);
+
+  const localizedName = (slug: string, fallback: string): string =>
+    tCollections.has(slug) ? tCollections(slug) : fallback;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:py-10">
@@ -61,24 +70,40 @@ export default async function HadithIndexPage({
           </div>
 
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {collections.map((c) => (
-              <li key={c.slug}>
-                <Link
-                  href={`/hadith/${c.slug}${langQS}`}
-                  className="group block rounded-lg border border-border bg-background p-4 transition-colors hover:border-accent"
-                >
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="font-medium">{c.name_en}</span>
-                    <span dir="rtl" lang="ar" className="font-arabic text-lg text-foreground">
-                      {c.name_ar}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {t("cardCount", { total: c.total, books: c.books.length })}
-                  </p>
-                </Link>
-              </li>
-            ))}
+            {collections.map((c) => {
+              const favCount = favoriteCounts.get(c.slug) ?? 0;
+              return (
+                <li key={c.slug}>
+                  <Link
+                    href={`/hadith/${c.slug}${langQS}`}
+                    className="group block rounded-lg border border-border bg-background p-4 transition-colors hover:border-accent"
+                  >
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="font-medium">
+                        {localizedName(c.slug, c.name_en)}
+                      </span>
+                      <span
+                        dir="rtl"
+                        lang="ar"
+                        className="font-arabic text-lg text-foreground"
+                      >
+                        {c.name_ar}
+                      </span>
+                    </div>
+                    <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>{t("cardCount", { total: c.total, books: c.books.length })}</span>
+                      {favCount > 0 && (
+                        <span className="hidden md:inline-flex items-center gap-1">
+                          <span aria-hidden>·</span>
+                          <Heart className="size-3.5" />
+                          <span className="tabular-nums">{favCount}</span>
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
