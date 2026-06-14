@@ -2565,6 +2565,32 @@
       "translations": "Çeviriler"
     }
   },
+  "hadithCollectionNames": {
+    "bukhari": "Sahih-i Buhari",
+    "muslim": "Sahih-i Müslim",
+    "abudawud": "Sünen-i Ebu Davud",
+    "tirmidhi": "Cami'u't-Tirmizi",
+    "nasai": "Sünen-i Nesai",
+    "ibnmajah": "Sünen-i İbn Mace",
+    "malik": "Muvatta Malik",
+    "nawawi": "Nevevi'nin Kırk Hadisi",
+    "qudsi": "Kırk Kudsi Hadis"
+  },
+  "hadithBookNames": {},
+  "hadithGrades": {
+    "sahih": "Sahih",
+    "hasan": "Hasen",
+    "daif": "Zayıf",
+    "hasan_sahih": "Hasen Sahih",
+    "mawdu": "Mevzu",
+    "munkar": "Münker"
+  },
+  "hadithCard": {
+    "gradeTooltip": "Derece",
+    "translationUnderReview": "Çeviri inceleme aşamasında",
+    "translationUnavailable": "çeviri mevcut değil",
+    "languageUnavailableShowing": "{requested} mevcut değil — {actual} gösteriliyor"
+  },
   "hadithLanguageFilter": {
     "label": "Çeviriler",
     "placeholder": "Dil seç",

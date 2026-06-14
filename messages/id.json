@@ -2565,6 +2565,32 @@
       "translations": "Terjemahan"
     }
   },
+  "hadithCollectionNames": {
+    "bukhari": "Sahih al-Bukhari",
+    "muslim": "Sahih Muslim",
+    "abudawud": "Sunan Abu Dawud",
+    "tirmidhi": "Jami` at-Tirmidhi",
+    "nasai": "Sunan an-Nasa'i",
+    "ibnmajah": "Sunan Ibn Majah",
+    "malik": "Muwatta Malik",
+    "nawawi": "Forty Hadith of an-Nawawi",
+    "qudsi": "Forty Hadith Qudsi"
+  },
+  "hadithBookNames": {},
+  "hadithGrades": {
+    "sahih": "Sahih",
+    "hasan": "Hasan",
+    "daif": "Da'if",
+    "hasan_sahih": "Hasan Sahih",
+    "mawdu": "Mawdu'",
+    "munkar": "Munkar"
+  },
+  "hadithCard": {
+    "gradeTooltip": "Grade",
+    "translationUnderReview": "Translation under review",
+    "translationUnavailable": "Translation unavailable",
+    "languageUnavailableShowing": "{requested} unavailable — showing {actual}"
+  },
   "hadithLanguageFilter": {
     "label": "Terjemahan",
     "placeholder": "Pilih bahasa",
