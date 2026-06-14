@@ -2741,6 +2741,8 @@
       "ayah": "Ayetler",
       "surah": "Sureler",
       "hadith": "Hadisler",
+      "hadithBook": "Hadis kitapları",
+      "hadithCollection": "Hadis koleksiyonları",
       "article": "Makaleler",
       "event": "Etkinlikler",
       "matrimonialProfile": "Profiller"

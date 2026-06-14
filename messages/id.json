@@ -2741,6 +2741,8 @@
       "ayah": "Ayat",
       "surah": "Surah",
       "hadith": "Hadis",
+      "hadithBook": "Hadith books",
+      "hadithCollection": "Hadith collections",
       "article": "Artikel",
       "event": "Acara",
       "matrimonialProfile": "Profil"

@@ -2,6 +2,8 @@ export type FavoriteItemType =
   | "ayah"
   | "surah"
   | "hadith"
+  | "hadithBook"
+  | "hadithCollection"
   | "article"
   | "event"
   | "matrimonialProfile";
@@ -59,6 +61,8 @@ export const FAVORITE_ITEM_TYPES: readonly FavoriteItemType[] = [
   "ayah",
   "surah",
   "hadith",
+  "hadithBook",
+  "hadithCollection",
   "article",
   "event",
   "matrimonialProfile",

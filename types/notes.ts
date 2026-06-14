@@ -1,4 +1,4 @@
-export type NoteItemType = "ayah" | "hadith";
+export type NoteItemType = "ayah" | "hadith" | "hadithBook" | "hadithCollection";
 
 export interface NoteItemMeta {
   title: string;
@@ -18,7 +18,12 @@ export interface NoteRecord {
   updatedAt: string;
 }
 
-export const NOTE_ITEM_TYPES: readonly NoteItemType[] = ["ayah", "hadith"] as const;
+export const NOTE_ITEM_TYPES: readonly NoteItemType[] = [
+  "ayah",
+  "hadith",
+  "hadithBook",
+  "hadithCollection",
+] as const;
 
 export const MAX_NOTE_LENGTH = 5000;
 
