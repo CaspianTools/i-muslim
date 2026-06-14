@@ -10,6 +10,7 @@ import { listProfiles } from "@/lib/matrimonial/store";
 import { countPendingMosques } from "@/lib/admin/data/mosques";
 import { countOpenContactMessages } from "@/lib/admin/data/contact-messages";
 import { countAutoHiddenComments } from "@/lib/admin/data/comments";
+import { countOpenContentFlags } from "@/lib/admin/data/content-flags";
 import { countPendingUsers } from "@/lib/admin/data/users";
 import { getSiteConfig } from "@/lib/admin/data/site-config";
 
@@ -53,6 +54,7 @@ export default async function AdminLayout({
     openContactMessages,
     pendingUsers,
     autoHiddenComments,
+    openFlags,
     siteConfig,
   ] = await Promise.all([
     countOpenReports(),
@@ -61,6 +63,7 @@ export default async function AdminLayout({
     countOpenContactMessages(),
     countPendingUsers(),
     countAutoHiddenComments(),
+    countOpenContentFlags(),
     getSiteConfig(),
   ]);
   const pendingMatrimonial = matrimonialProfiles.filter((p) => p.status === "pending").length;
@@ -72,6 +75,7 @@ export default async function AdminLayout({
     pendingMosques,
     openContactMessages,
     autoHiddenComments,
+    openFlags,
   };
 
   return (

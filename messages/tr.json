@@ -198,6 +198,7 @@
       "newsletter": "Bülten",
       "moderation": "Moderasyon",
       "comments": "Yorumlar",
+      "flags": "Content flags",
       "donations": "Bağışlar",
       "businesses": "İşletmeler",
       "businessesCategories": "Kategoriler",
@@ -2982,6 +2983,50 @@
       "signInRequired": "Yorum yapmak için oturum açın.",
       "notOwner": "Yalnızca kendi yorumunuzu düzenleyebilirsiniz.",
       "reactionFailed": "Tepki güncellenemedi."
+    }
+  },
+  "flags": {
+    "buttonLabel": "Report an issue",
+    "report": {
+      "title": "Report an issue",
+      "description": "Spotted a wrong translation, a typo, or incorrect text? Let us know and our team will review it.",
+      "noteLabel": "What's wrong? (optional)",
+      "notePlaceholder": "Wrong translation, typo, incorrect Arabic…",
+      "submit": "Submit report",
+      "submittedToast": "Thanks — our team will review this.",
+      "alreadyToast": "You've already reported this.",
+      "signInRequired": "Sign in to report an issue",
+      "signInCta": "Sign in",
+      "errorGeneric": "Couldn't submit — please try again."
+    }
+  },
+  "flagsAdmin": {
+    "pageTitle": "Content flags",
+    "pageSubtitle": "Reader-submitted reports of wrong translations or text in hadiths and verses.",
+    "empty": "No flags.",
+    "noResults": "No flags match these filters.",
+    "search": "Search item, note, reporter…",
+    "filterByStatus": "Filter by status",
+    "colItem": "Item",
+    "colNote": "Note",
+    "colReporter": "Reporter",
+    "colStatus": "Status",
+    "colCreated": "Created",
+    "colActions": "Actions",
+    "resolveCta": "Resolve",
+    "dismissCta": "Dismiss",
+    "resolvedToast": "Flag resolved.",
+    "dismissedToast": "Flag dismissed.",
+    "viewItem": "View",
+    "anonymous": "Anonymous",
+    "typeHadith": "Hadith",
+    "typeAyah": "Verse",
+    "noPersistToast": "Cannot save: Firestore is not configured.",
+    "statuses": {
+      "all": "All statuses",
+      "open": "Open",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
     }
   },
   "commentsAdmin": {

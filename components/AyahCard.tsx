@@ -14,6 +14,7 @@ import {
 } from "@/components/site/NoteEditor";
 import { AyahCommentsButton } from "@/components/comments/AyahCommentsButton";
 import { AyahActionsRow } from "@/components/AyahActionsRow";
+import { FlagContentButton } from "@/components/flags/FlagContentButton";
 
 function stripHtml(s: string): string {
   // Translations from quran.com may contain <sup foot_note="...">N</sup> footnote markers.
@@ -121,6 +122,15 @@ export function AyahCard({
                   iconOnly
                   count={favoriteCount}
                 />
+                <FlagContentButton
+                  itemType="ayah"
+                  itemId={verse.verse_key}
+                  reference={itemMeta.title}
+                  href={itemMeta.href}
+                  locale={locale}
+                  signedIn={signedIn}
+                  iconOnly
+                />
               </>
             }
             mobile={
@@ -143,6 +153,15 @@ export function AyahCard({
                   signedIn={signedIn}
                   className="w-full justify-start"
                   count={favoriteCount}
+                />
+                <FlagContentButton
+                  itemType="ayah"
+                  itemId={verse.verse_key}
+                  reference={itemMeta.title}
+                  href={itemMeta.href}
+                  locale={locale}
+                  signedIn={signedIn}
+                  className="w-full justify-start"
                 />
               </>
             }

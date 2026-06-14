@@ -52,6 +52,10 @@ export const PERMISSION_RESOURCES = {
     label: "Comments",
     actions: ["read", "moderate"],
   },
+  flags: {
+    label: "Content flags",
+    actions: ["read", "moderate"],
+  },
   contact: {
     label: "Contact messages",
     actions: ["read", "respond"],

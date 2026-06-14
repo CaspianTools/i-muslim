@@ -15,6 +15,7 @@ import { LANG_LABELS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { MarkAsReadButton } from "@/components/site/MarkAsReadButton";
+import { FlagContentButton } from "@/components/flags/FlagContentButton";
 import {
   NoteEditor,
   NoteEditorPanel,
@@ -219,6 +220,15 @@ export function HadithCard({
                 book: bookNumber,
                 number,
               }}
+              signedIn={signedIn}
+              iconOnly
+            />
+            <FlagContentButton
+              itemType="hadith"
+              itemId={itemId}
+              reference={itemMeta.title}
+              href={itemMeta.href}
+              locale={locale}
               signedIn={signedIn}
               iconOnly
             />

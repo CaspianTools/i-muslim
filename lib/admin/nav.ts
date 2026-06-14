@@ -63,6 +63,7 @@ export type NavItemKey =
   | "newsletter"
   | "moderation"
   | "comments"
+  | "flags"
   | "donations"
   | "businesses"
   | "businessesCategories"
@@ -96,7 +97,8 @@ export interface NavItem {
     | "pendingMosques"
     | "pendingMatrimonial"
     | "openContactMessages"
-    | "autoHiddenComments";
+    | "autoHiddenComments"
+    | "openFlags";
   children?: NavItem[];
   comingSoon?: boolean;
   // Required permission to see this nav entry. If unset, the item is visible
@@ -196,6 +198,13 @@ export const ADMIN_NAV: NavGroup[] = [
         icon: MessageCircle,
         badgeKey: "autoHiddenComments",
         requiredPermission: "comments.read",
+      },
+      {
+        labelKey: "flags",
+        href: "/admin/flags",
+        icon: Flag,
+        badgeKey: "openFlags",
+        requiredPermission: "flags.read",
       },
       {
         labelKey: "contactMessages",
