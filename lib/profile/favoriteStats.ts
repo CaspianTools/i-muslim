@@ -62,3 +62,21 @@ export async function getFavoriteCountsForAyahs(
 ): Promise<Map<string, number>> {
   return getFavoriteCountsForEntities("ayah", verseKeys);
 }
+
+export async function getFavoriteCountsForHadiths(
+  hadithKeys: string[],
+): Promise<Map<string, number>> {
+  return getFavoriteCountsForEntities("hadith", hadithKeys);
+}
+
+export async function getFavoriteCountsForBooks(
+  bookKeys: string[],
+): Promise<Map<string, number>> {
+  return getFavoriteCountsForEntities("hadithBook", bookKeys);
+}
+
+export async function getFavoriteCountsForCollections(
+  slugs: string[],
+): Promise<Map<string, number>> {
+  return getFavoriteCountsForEntities("hadithCollection", slugs);
+}
