@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
@@ -8,7 +8,8 @@ import {
   ArrowUp,
   ArrowUpDown,
   Check,
-  ExternalLink,
+  ChevronDown,
+  ChevronRight,
   Search,
   X,
 } from "lucide-react";
@@ -73,6 +74,16 @@ export function ContentFlagsClient({ initialFlags, canPersist }: Props) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("open");
   const [sortKey, setSortKey] = useState<SortKey>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
+  function toggleExpanded(id: string) {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -178,7 +189,6 @@ export function ContentFlagsClient({ initialFlags, canPersist }: Props) {
                     onToggle={() => toggleSort("item")}
                   />
                 </th>
-                <th className="px-3 py-2">{t("colNote")}</th>
                 <th className="px-3 py-2">
                   <SortHeader
                     label={t("colReporter")}
@@ -207,62 +217,97 @@ export function ContentFlagsClient({ initialFlags, canPersist }: Props) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((f) => (
-                <tr key={f.id} className="border-t border-border align-top">
-                  <td className="px-3 py-2.5">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="neutral">
-                        {f.itemType === "hadith" ? t("typeHadith") : t("typeAyah")}
-                      </Badge>
-                      <span className="font-medium text-foreground">{f.reference}</span>
-                    </div>
-                    {f.href && (
-                      <Link
-                        href={f.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground hover:underline"
-                      >
-                        <ExternalLink className="size-3" /> {t("viewItem")}
-                        {f.locale ? ` · ${f.locale}` : ""}
-                      </Link>
+              {filtered.map((f) => {
+                const isOpen = expanded.has(f.id);
+                return (
+                  <Fragment key={f.id}>
+                    <tr className="border-t border-border align-top">
+                      <td className="px-3 py-2.5">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="neutral">
+                            {f.itemType === "hadith" ? t("typeHadith") : t("typeAyah")}
+                          </Badge>
+                          {f.href ? (
+                            <Link
+                              href={f.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-medium text-foreground no-underline hover:text-primary hover:no-underline"
+                            >
+                              {f.reference}
+                            </Link>
+                          ) : (
+                            <span className="font-medium text-foreground">{f.reference}</span>
+                          )}
+                        </div>
+                        {(f.locale || f.note) && (
+                          <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                            {f.locale && <span>{f.locale}</span>}
+                            {f.note && (
+                              <button
+                                type="button"
+                                onClick={() => toggleExpanded(f.id)}
+                                aria-expanded={isOpen}
+                                className="inline-flex items-center gap-1 font-medium uppercase tracking-wide hover:text-foreground"
+                              >
+                                {isOpen ? (
+                                  <ChevronDown className="size-3" />
+                                ) : (
+                                  <ChevronRight className="size-3" />
+                                )}
+                                {t("colNote")}
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-3 py-2.5 text-xs text-muted-foreground">
+                        {f.reporterEmail ?? t("anonymous")}
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <Badge variant={statusVariant(f.status)}>{tStatus(f.status)}</Badge>
+                      </td>
+                      <td className="px-3 py-2.5 text-xs text-muted-foreground">
+                        {new Date(f.createdAt).toLocaleString(locale)}
+                      </td>
+                      <td className="px-3 py-2.5 text-end">
+                        {f.status === "open" && (
+                          <div className="flex justify-end gap-1">
+                            <Button
+                              size="sm"
+                              onClick={() => resolve(f.id)}
+                              disabled={!canPersist}
+                              title={t("resolveCta")}
+                              aria-label={t("resolveCta")}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Check className="size-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => dismiss(f.id)}
+                              disabled={!canPersist}
+                              title={t("dismissCta")}
+                              aria-label={t("dismissCta")}
+                              className="h-8 w-8 p-0"
+                            >
+                              <X className="size-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                    {isOpen && f.note && (
+                      <tr className="bg-muted/40">
+                        <td colSpan={5} className="px-3 pb-3 pt-1">
+                          <p className="whitespace-pre-wrap text-sm text-foreground">{f.note}</p>
+                        </td>
+                      </tr>
                     )}
-                  </td>
-                  <td className="px-3 py-2.5">
-                    {f.note ? (
-                      <p className="max-w-md text-xs text-muted-foreground">{f.note}</p>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5 text-xs text-muted-foreground">
-                    {f.reporterEmail ?? t("anonymous")}
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <Badge variant={statusVariant(f.status)}>{tStatus(f.status)}</Badge>
-                  </td>
-                  <td className="px-3 py-2.5 text-xs text-muted-foreground">
-                    {new Date(f.createdAt).toLocaleString(locale)}
-                  </td>
-                  <td className="px-3 py-2.5 text-end">
-                    {f.status === "open" && (
-                      <div className="flex justify-end gap-1.5">
-                        <Button size="sm" onClick={() => resolve(f.id)} disabled={!canPersist}>
-                          <Check className="size-4" /> {t("resolveCta")}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => dismiss(f.id)}
-                          disabled={!canPersist}
-                        >
-                          <X className="size-4" /> {t("dismissCta")}
-                        </Button>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                  </Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
