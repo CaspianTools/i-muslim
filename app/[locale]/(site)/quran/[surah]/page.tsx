@@ -230,6 +230,14 @@ export default async function SurahPage({
               ))}
             </div>
 
+            <SurahPagination
+              current={id}
+              total={chapters.length}
+              prev={prev}
+              next={next}
+              qs={langQS}
+            />
+
             <div data-reading-hide>
               <CommentThread
                 entityType="surah"
@@ -242,14 +250,6 @@ export default async function SurahPage({
                 }}
               />
             </div>
-
-            <SurahPagination
-              current={id}
-              total={chapters.length}
-              prev={prev}
-              next={next}
-              qs={langQS}
-            />
           </div>
         </div>
       </div>
