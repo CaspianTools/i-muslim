@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { TocSidebar } from "@/components/site/TocSidebar";
 
 export const metadata: Metadata = {
   title: "Developer API — i-muslim",
@@ -7,16 +9,66 @@ export const metadata: Metadata = {
     "Public read/write HTTP API for prayer times, Qibla, Hijri dates, Quran, Hadith, and mosque data. Free, key-authenticated, browser-friendly.",
 };
 
-const H2 = "mt-12 mb-3 text-2xl font-semibold tracking-tight text-foreground";
+const H2 = "mt-12 mb-3 scroll-mt-24 text-2xl font-semibold tracking-tight text-foreground";
 const SUB = "mt-1 text-sm text-muted-foreground";
 const CODE =
   "block whitespace-pre-wrap overflow-x-auto rounded-md border border-border bg-muted p-3 font-mono text-xs text-foreground/90";
 const INLINE =
   "rounded bg-muted px-1 py-0.5 font-mono text-[0.85em] text-foreground/90";
 
-export default function DevelopersPage() {
+export default async function DevelopersPage() {
+  const tc = await getTranslations("common");
+
+  // Grouped table-of-contents — item ids match the section heading ids below;
+  // group ids are synthetic categories with no scroll target.
+  const tocGroups = [
+    {
+      id: "dev-cat-start",
+      label: "Getting started",
+      items: [
+        { id: "dev-what", label: "What you can do" },
+        { id: "dev-key", label: "Getting a key" },
+        { id: "dev-quickstart", label: "Quick start" },
+      ],
+    },
+    {
+      id: "dev-cat-translations",
+      label: "Translations",
+      items: [
+        { id: "dev-downloads", label: "Free translation downloads" },
+        { id: "dev-publish", label: "Publishing a translation" },
+      ],
+    },
+    {
+      id: "dev-cat-reference",
+      label: "Reference",
+      items: [
+        { id: "dev-endpoints", label: "Endpoints" },
+        { id: "dev-auth", label: "Authentication" },
+        { id: "dev-ratelimits", label: "Rate limits" },
+        { id: "dev-response", label: "Response shape" },
+        { id: "dev-errors", label: "Error codes" },
+      ],
+    },
+    {
+      id: "dev-cat-more",
+      label: "More",
+      items: [
+        { id: "dev-versioning", label: "Stability & versioning" },
+        { id: "dev-ethics", label: "Attribution & ethics" },
+        { id: "dev-contact", label: "Contact" },
+      ],
+    },
+  ];
+
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+      <div className="flex gap-8 lg:gap-10">
+        <aside className="hidden lg:block sticky top-20 self-start">
+          <TocSidebar label={tc("onThisPage")} groups={tocGroups} />
+        </aside>
+
+        <div className="min-w-0 max-w-3xl flex-1">
       <header className="mb-10 border-b border-border pb-8">
         <p className="text-xs font-semibold uppercase tracking-wider text-primary">
           Developer API · v1
@@ -33,7 +85,7 @@ export default function DevelopersPage() {
         </p>
       </header>
 
-      <h2 className={H2}>What you can do</h2>
+      <h2 id="dev-what" className={H2}>What you can do</h2>
       <ul className="mt-3 space-y-2 text-sm text-foreground/90 leading-relaxed">
         <li>
           <strong>Read prayer times</strong> for any coordinates, date, calculation
@@ -71,7 +123,7 @@ export default function DevelopersPage() {
         </li>
       </ul>
 
-      <h2 className={H2}>Getting a key</h2>
+      <h2 id="dev-key" className={H2}>Getting a key</h2>
       <p className={SUB}>
         Request a key through the{" "}
         <Link className="underline" href="/contact">
@@ -86,7 +138,7 @@ export default function DevelopersPage() {
         <code className={INLINE}>delete</code>).
       </p>
 
-      <h2 className={H2}>Quick start</h2>
+      <h2 id="dev-quickstart" className={H2}>Quick start</h2>
       <p className={SUB}>Every request needs the <code className={INLINE}>X-API-Key</code> header. Here&apos;s the simplest possible request — Qibla bearing for London:</p>
 
       <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">curl</p>
@@ -110,7 +162,7 @@ r = requests.get(
 )
 print(r.json()["data"]["bearing"])`}</code>
 
-      <h2 className={H2}>Free translation downloads</h2>
+      <h2 id="dev-downloads" className={H2}>Free translation downloads</h2>
       <p className={SUB}>
         Bulk downloads of every translation in our data store, <strong>no API
         key required</strong> and CORS open to all origins. Cached at the edge
@@ -152,7 +204,7 @@ curl https://i-muslim.com/api/v1/translations/hadith/bukhari/ar`}</code>
         we&apos;ll review and merge.
       </p>
 
-      <h2 className={H2}>Publishing a translation</h2>
+      <h2 id="dev-publish" className={H2}>Publishing a translation</h2>
       <p className={SUB}>
         With a <code className={INLINE}>write</code>-scope key, you can publish or
         update a translation for any hadith or Quranic ayah. The endpoint is
@@ -170,7 +222,7 @@ curl https://i-muslim.com/api/v1/translations/hadith/bukhari/ar`}</code>
         be wrong, we can roll it back.
       </p>
 
-      <h2 className={H2}>Endpoints</h2>
+      <h2 id="dev-endpoints" className={H2}>Endpoints</h2>
 
       <h3 className="mt-6 mb-2 text-base font-semibold text-foreground">Read (GET)</h3>
       <p className={SUB}>
@@ -210,7 +262,7 @@ curl https://i-muslim.com/api/v1/translations/hadith/bukhari/ar`}</code>
         <Endpoint method="POST" path="/api/v1/mosques" desc="Submit a new mosque for moderation. Body: nameEn, addressLine1, city, country, submitterEmail, [nameAr, denomination, phone, website, email, description, languages]." />
       </ul>
 
-      <h2 className={H2}>Authentication</h2>
+      <h2 id="dev-auth" className={H2}>Authentication</h2>
       <p className={SUB}>
         Send your key in the <code className={INLINE}>X-API-Key</code> header on every
         request. Keys look like <code className={INLINE}>im_live_AbCd…</code> and are
@@ -220,7 +272,7 @@ curl https://i-muslim.com/api/v1/translations/hadith/bukhari/ar`}</code>
         ask for a new one.
       </p>
 
-      <h2 className={H2}>Rate limits</h2>
+      <h2 id="dev-ratelimits" className={H2}>Rate limits</h2>
       <p className={SUB}>
         <strong>100 requests per minute, per key.</strong> Every response carries
         three headers so you can self-throttle:
@@ -235,14 +287,14 @@ X-RateLimit-Reset: 1747234260`}</code>
         use case.
       </p>
 
-      <h2 className={H2}>Response shape</h2>
+      <h2 id="dev-response" className={H2}>Response shape</h2>
       <code className={CODE}>{`// Success
 { "data": { "bearing": 118.99, "origin": {...}, "kaaba": {...} } }
 
 // Error
 { "error": { "code": "INVALID_API_KEY", "message": "API key not found or revoked" } }`}</code>
 
-      <h2 className={H2}>Error codes</h2>
+      <h2 id="dev-errors" className={H2}>Error codes</h2>
       <ul className="mt-3 space-y-1 text-sm text-foreground/90">
         <li><code className={INLINE}>MISSING_API_KEY</code> (401) — no <code className={INLINE}>X-API-Key</code> header sent.</li>
         <li><code className={INLINE}>INVALID_API_KEY</code> (401) — key not recognized or revoked.</li>
@@ -256,7 +308,7 @@ X-RateLimit-Reset: 1747234260`}</code>
         <li><code className={INLINE}>RATE_LIMITED</code> (429) — over 100 req/min on this key.</li>
       </ul>
 
-      <h2 className={H2}>Stability & versioning</h2>
+      <h2 id="dev-versioning" className={H2}>Stability & versioning</h2>
       <p className={SUB}>
         <code className={INLINE}>v1</code> is the stable surface. Any breaking change
         ships as <code className={INLINE}>v2</code> on a new path; we&apos;ll keep{" "}
@@ -264,7 +316,7 @@ X-RateLimit-Reset: 1747234260`}</code>
         <code className={INLINE}>v2</code> launches.
       </p>
 
-      <h2 className={H2}>Attribution & ethics</h2>
+      <h2 id="dev-ethics" className={H2}>Attribution & ethics</h2>
       <p className={SUB}>
         Quran and Hadith are sacred — please render them faithfully, don&apos;t
         paraphrase, and don&apos;t silently truncate. If you publish translations
@@ -272,7 +324,7 @@ X-RateLimit-Reset: 1747234260`}</code>
         translation error in our data, let us know and we&apos;ll roll it back.
       </p>
 
-      <h2 className={H2}>Contact</h2>
+      <h2 id="dev-contact" className={H2}>Contact</h2>
       <p className={SUB}>
         Questions, bug reports, or higher-quota requests — please use the{" "}
         <Link className="underline" href="/contact">
@@ -280,6 +332,8 @@ X-RateLimit-Reset: 1747234260`}</code>
         </Link>{" "}
         and mention &ldquo;Developer API&rdquo; in the subject.
       </p>
+        </div>
+      </div>
     </div>
   );
 }

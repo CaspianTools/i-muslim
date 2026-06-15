@@ -3,6 +3,7 @@
     "_review": "Machine-drafted Arabic translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (الصلاة، القرآن، الحديث، المذهب، الزواج), tone (formal vs casual), and ICU plural arms in comments.* and profileComments.*. 2026-05-06 update: filled 610 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   },
   "common": {
+    "onThisPage": "On this page",
     "cancel": "إلغاء",
     "save": "حفظ",
     "close": "إغلاق",
@@ -628,7 +629,6 @@
     "privacy": {
       "title": "الخصوصية",
       "description": "ما البيانات التي يجمعها i-muslim وكيف نستخدمها.",
-      "tocLabel": "On this page",
       "lead": "تغطّي هذه الصفحة منتجين: موقع i-muslim وتطبيق i-muslim Quran المستقل لنظام Android. يتعامل كل منهما مع بياناتك بطريقة مختلفة، لذا نوضّحهما بشكل منفصل أدناه.",
       "webHeading": "الموقع (i-muslim.com)",
       "p1": "نجمع الحدّ الأدنى اللازم لتشغيل الميزات التي تستخدمها — لا أكثر.",

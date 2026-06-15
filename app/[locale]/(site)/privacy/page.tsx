@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { PrivacyTocSidebar } from "@/components/site/privacy/PrivacyTocSidebar";
+import { TocSidebar } from "@/components/site/TocSidebar";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("legal.privacy");
@@ -17,6 +17,33 @@ const H3 = "scroll-mt-24 pt-4 text-lg font-semibold text-foreground";
 
 export default async function PrivacyPage() {
   const t = await getTranslations("legal.privacy");
+  const tc = await getTranslations("common");
+
+  // Table-of-contents tree — ids match the section/heading ids rendered below.
+  const tocGroups = [
+    {
+      id: "website",
+      label: t("webHeading"),
+      items: [
+        { id: "website-location", label: t("h1") },
+        { id: "website-account", label: t("h2") },
+        { id: "website-tracking", label: t("h3") },
+        { id: "website-contact", label: t("h4") },
+      ],
+    },
+    {
+      id: "android-app",
+      label: t("app.heading"),
+      items: [
+        { id: "app-collect", label: t("app.collectHeading") },
+        { id: "app-store", label: t("app.storeHeading") },
+        { id: "app-permissions", label: t("app.permissionsHeading") },
+        { id: "app-children", label: t("app.childrenHeading") },
+        { id: "app-changes", label: t("app.changesHeading") },
+        { id: "app-contact", label: t("app.contactHeading") },
+      ],
+    },
+  ];
 
   // Shared rich-text renderer: turns the <contact>…</contact> tag in a message
   // into a locale-aware link to the contact page.
@@ -35,7 +62,7 @@ export default async function PrivacyPage() {
     <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
       <div className="flex gap-8 lg:gap-10">
         <aside className="hidden lg:block sticky top-20 self-start">
-          <PrivacyTocSidebar />
+          <TocSidebar label={tc("onThisPage")} groups={tocGroups} />
         </aside>
 
         <div className="min-w-0 max-w-3xl flex-1">
