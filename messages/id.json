@@ -678,7 +678,9 @@
       "h4": "Perubahan",
       "p5": "Kami dapat memperbarui syarat ini seiring berkembangnya aplikasi. Perubahan signifikan akan dicatat di halaman ini.",
       "h5": "Zakat calculator rates",
-      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying."
+      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying.",
+      "h6": "Comments",
+      "p7": "Comments on ayahs and hadiths are personal perspectives (reviewed for quality) and should not be taken as authoritative. They are not a religious ruling — consult a qualified scholar for personal matters."
     },
     "contact": {
       "title": "Kontak",
@@ -2965,7 +2967,6 @@
     "signInPrompt": "Masuk untuk berbagi refleksi Anda.",
     "signInCta": "Masuk",
     "placeholder": "Bagikan refleksi yang bermakna…",
-    "disclaimer": "Komentar adalah perspektif pribadi (ditinjau untuk kualitas) dan tidak boleh dianggap sebagai sumber otoritatif.",
     "ayahButtonAria": "{count, plural, =0 {Belum ada komentar — buka utas} one {1 komentar — buka utas} other {# komentar — buka utas}}",
     "ayahDialogTitle": "{reference}",
     "hadithButtonAria": "{count, plural, =0 {Belum ada komentar — buka utas} one {1 komentar — buka utas} other {# komentar — buka utas}}",

@@ -675,7 +675,9 @@
       "h4": "Changes",
       "p5": "We may update these terms as the app grows. Significant changes will be noted on this page.",
       "h5": "Zakat calculator rates",
-      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying."
+      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying.",
+      "h6": "Comments",
+      "p7": "Comments on ayahs and hadiths are personal perspectives (reviewed for quality) and should not be taken as authoritative. They are not a religious ruling — consult a qualified scholar for personal matters."
     },
     "contact": {
       "title": "Contact",
@@ -2962,7 +2964,6 @@
     "signInPrompt": "Sign in to share your reflection.",
     "signInCta": "Sign in",
     "placeholder": "Share a thoughtful reflection…",
-    "disclaimer": "Comments are personal perspectives (reviewed for quality) and should not be taken as authoritative.",
     "ayahButtonAria": "{count, plural, =0 {No comments yet — open thread} one {1 comment — open thread} other {# comments — open thread}}",
     "ayahDialogTitle": "{reference}",
     "hadithButtonAria": "{count, plural, =0 {No comments yet — open thread} one {1 comment — open thread} other {# comments — open thread}}",

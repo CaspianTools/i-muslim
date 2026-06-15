@@ -678,7 +678,9 @@
       "h4": "Değişiklikler",
       "p5": "Uygulama büyüdükçe bu şartları güncelleyebiliriz. Önemli değişiklikler bu sayfada belirtilecektir.",
       "h5": "Zakat calculator rates",
-      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying."
+      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying.",
+      "h6": "Comments",
+      "p7": "Comments on ayahs and hadiths are personal perspectives (reviewed for quality) and should not be taken as authoritative. They are not a religious ruling — consult a qualified scholar for personal matters."
     },
     "contact": {
       "title": "İletişim",
@@ -2965,7 +2967,6 @@
     "signInPrompt": "Düşüncelerinizi paylaşmak için oturum açın.",
     "signInCta": "Oturum aç",
     "placeholder": "Düşünceli bir yorum paylaşın…",
-    "disclaimer": "Yorumlar kişisel görüşlerdir (kalite açısından incelenir) ve bağlayıcı kabul edilmemelidir.",
     "ayahButtonAria": "{count, plural, =0 {Henüz yorum yok — konuyu aç} one {1 yorum — konuyu aç} other {# yorum — konuyu aç}}",
     "ayahDialogTitle": "{reference}",
     "hadithButtonAria": "{count, plural, =0 {Henüz yorum yok — konuyu aç} one {1 yorum — konuyu aç} other {# yorum — konuyu aç}}",
