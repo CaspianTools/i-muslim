@@ -78,7 +78,7 @@ const mosqueInputSchema = z.object({
   logoUrl: z.string().url().optional().or(z.literal("")),
   logoStoragePath: z.string().optional().or(z.literal("")),
   status: z
-    .enum(["draft", "pending_review", "published", "rejected", "suspended"])
+    .enum(["draft", "pending_review", "published", "rejected", "suspended", "claimed_draft"])
     .default("draft"),
   /**
    * Firebase Auth uids of users authorized to manage this mosque (e.g. create

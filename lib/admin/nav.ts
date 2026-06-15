@@ -58,6 +58,7 @@ export type NavItemKey =
   | "eventsCategories"
   | "mosques"
   | "mosquesFacilities"
+  | "mosquesApplications"
   | "qa"
   | "announcements"
   | "newsletter"
@@ -160,6 +161,7 @@ export const ADMIN_NAV: NavGroup[] = [
         badgeKey: "pendingMosques",
         requiredPermission: "mosques.read",
         children: [
+          { labelKey: "mosquesApplications", href: "/admin/mosques/applications", icon: BadgeCheck, requiredPermission: "mosques.publish" },
           { labelKey: "mosquesFacilities", href: "/admin/mosques/facilities", icon: ConciergeBell, requiredPermission: "mosques.read" },
         ],
       },

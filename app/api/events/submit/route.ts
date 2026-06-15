@@ -105,6 +105,10 @@ export async function POST(req: Request) {
     },
     rsvpCount: 0,
     mosqueId: verifiedMosqueId,
+    // A verified mosque manager's submission is shown on the mosque page
+    // immediately (mosqueVisible), while `status` stays `under_review` until an
+    // admin promotes it to the site-wide global events list.
+    mosqueVisible: verifiedMosqueId ? true : undefined,
     submittedBy: { uid: session.uid, email: data.submitterEmail },
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),

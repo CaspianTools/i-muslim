@@ -9,9 +9,15 @@ import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { getSiteUrl } from "@/lib/mosques/constants";
 import { MosqueProfile } from "@/components/mosque/MosqueProfile";
+import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
 import { MosqueEventsCard } from "@/components/mosque/MosqueEventsCard";
+import { MosqueNewsFeed } from "@/components/mosque/news/MosqueNewsFeed";
+import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
 import { CommentThread } from "@/components/comments/CommentThread";
 import { canManageMosque } from "@/lib/mosques/authz";
+import { getSiteSession } from "@/lib/auth/session";
+import { isFollowingMosque } from "@/lib/mosques/follows";
+import { hasPermission } from "@/lib/permissions/check";
 
 export const revalidate = 3600;
 
@@ -61,7 +67,13 @@ export default async function MosqueDetailPage({
   // The events card hides itself for non-managers when there are no events,
   // so unauthenticated visitors see nothing extra. Managers (and admins) see
   // the card with an "Add event" CTA even on empty mosques.
-  const canAddEvent = await canManageMosque(mosque.slug);
+  const [canAddEvent, session] = await Promise.all([
+    canManageMosque(mosque.slug),
+    getSiteSession(),
+  ]);
+  const canModerate = hasPermission(session?.permissions ?? [], "comments.moderate");
+  const following = session && !canAddEvent ? await isFollowingMosque(session.uid, mosque.slug) : false;
+  const showClaim = (mosque.managers?.length ?? 0) === 0 && !canAddEvent;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -72,12 +84,51 @@ export default async function MosqueDetailPage({
         <ArrowLeft className="size-4 rtl:rotate-180" /> {t("back")}
       </Link>
 
+      {showClaim && (
+        <Link
+          href={`/mosques/apply?slug=${mosque.slug}`}
+          className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-accent/40 bg-accent/5 px-4 py-3 text-sm font-medium text-foreground hover:bg-accent/10"
+        >
+          {t("claimCta")}
+          <span aria-hidden className="text-accent">→</span>
+        </Link>
+      )}
+
+      {!canAddEvent && mosque.status === "published" && (
+        <div className="mt-4 flex justify-end">
+          <MosqueFollowButton
+            slug={mosque.slug}
+            initialFollowing={following}
+            initialCount={mosque.followerCount ?? 0}
+            signedIn={Boolean(session)}
+          />
+        </div>
+      )}
+
+      {canAddEvent && (
+        <div className="mt-4">
+          <MosqueManagePanel mosque={mosque} />
+        </div>
+      )}
+
       <div className="mt-4">
         <MosqueProfile
           mosque={mosque}
           eventsSlot={
             <MosqueEventsCard mosqueSlug={mosque.slug} canAddEvent={canAddEvent} />
           }
+        />
+      </div>
+
+      <div className="mt-8">
+        <MosqueNewsFeed
+          slug={mosque.slug}
+          mosqueName={localizedName}
+          locale={locale}
+          signedIn={Boolean(session)}
+          currentUid={session?.uid ?? null}
+          canManage={canAddEvent}
+          canModerate={canModerate}
         />
       </div>
 

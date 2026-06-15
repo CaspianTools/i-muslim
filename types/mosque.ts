@@ -10,7 +10,11 @@ export type MosqueStatus =
   | "pending_review"
   | "published"
   | "rejected"
-  | "suspended";
+  | "suspended"
+  // Approved claim/registration that a manager is still filling in. Not yet
+  // public — the manager flips it to "published" via the go-live gate once the
+  // essentials (logo, about, location) are present.
+  | "claimed_draft";
 
 export type Denomination =
   | "sunni"
@@ -98,6 +102,30 @@ export interface MosqueModeration {
   rejectionReason?: string;
 }
 
+/**
+ * Manager-set weekly opening hours. Keyed by day-of-week index (0=Sunday .. 6=
+ * Saturday). `null` means closed that day; a missing key means "not specified".
+ * Times are "HH:mm" in the mosque's local timezone.
+ */
+export type MosqueOpeningHours = Record<
+  number,
+  { open: string; close: string } | null
+>;
+
+/**
+ * Manager-set Iqamah / Jama'ah times — the congregation start times, which
+ * differ from the calculated adhan times. Daily prayers are a single "HH:mm"
+ * local string; Jumu'ah can have one or more khutbah start times.
+ */
+export interface MosqueIqamah {
+  fajr?: string;
+  dhuhr?: string;
+  asr?: string;
+  maghrib?: string;
+  isha?: string;
+  jumuah?: string[];
+}
+
 export interface MosqueStats {
   viewsLast30d?: number;
 }
@@ -150,11 +178,28 @@ export interface Mosque {
   submittedBy?: { uid?: string; email?: string };
   moderation?: MosqueModeration;
   /**
-   * Firebase Auth uids of users who can manage this mosque (currently: create
-   * events linked to it). Assigned by site admins after off-platform identity
-   * verification. One user may manage multiple mosques.
+   * Firebase Auth uids of users who can manage this mosque: edit the page
+   * inline, post news, set Iqamah times, and create events linked to it.
+   * Assigned by site admins via the claim/registration review flow. v1 keeps a
+   * single manager per mosque (length 0 or 1).
    */
   managers?: string[];
+  // Manager self-service (claimed pages)
+  /** Random short code → bare public page at `/m/<shortCode>`. */
+  shortCode?: string;
+  /** Single-language manager-authored "about" text, shown on the masjid page.
+   *  Distinct from the localized `description` used by the admin/directory. */
+  about?: string;
+  openingHours?: MosqueOpeningHours;
+  iqamah?: MosqueIqamah;
+  /** Denormalized count of followers (see the `mosqueFollows` collection). */
+  followerCount?: number;
+  /** Denormalized count of visible news posts. */
+  newsCount?: number;
+  /** Admin-only "verified" identity badge. Managers cannot set this. */
+  verifiedBadge?: boolean;
+  /** Who currently manages the page (set at approval; single manager in v1). */
+  claimedBy?: { uid: string; email: string; at: string };
   // Search
   searchTokens: string[];
   altSpellings?: string[];

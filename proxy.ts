@@ -84,6 +84,15 @@ function proxyImpl(req: NextRequest): NextResponse {
     return NextResponse.next();
   }
 
+  // Masjid short-link pages (`/m/<code>`) are deliberately locale-FREE and
+  // chrome-less: they live outside the `[locale]` segment so the next-intl
+  // middleware must NOT rewrite/redirect them to `/<locale>/m/...` (which would
+  // 404). The page itself resolves the viewer's locale from the cookie for UI
+  // chrome; masjid content renders single-language as authored.
+  if (pathname === "/m" || pathname.startsWith("/m/")) {
+    return NextResponse.next();
+  }
+
   // Admin auth gate — applies whether or not the URL is locale-prefixed.
   if (stripped.startsWith("/admin")) {
     if (!hasSession) {

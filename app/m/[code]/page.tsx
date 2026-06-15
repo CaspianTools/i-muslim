@@ -1,0 +1,147 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
+import { pickLocalized } from "@/lib/utils";
+import { fetchMosqueByShortCode } from "@/lib/admin/data/mosques";
+import { countryName } from "@/lib/mosques/countries";
+import { mosqueJsonLd } from "@/lib/mosques/jsonld";
+import { getSiteUrl } from "@/lib/mosques/constants";
+import { MosqueProfile } from "@/components/mosque/MosqueProfile";
+import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
+import { MosqueEventsCard } from "@/components/mosque/MosqueEventsCard";
+import { MosqueNewsFeed } from "@/components/mosque/news/MosqueNewsFeed";
+import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
+import { CommentThread } from "@/components/comments/CommentThread";
+import { canManageMosque } from "@/lib/mosques/authz";
+import { getSiteSession } from "@/lib/auth/session";
+import { isFollowingMosque } from "@/lib/mosques/follows";
+import { hasPermission } from "@/lib/permissions/check";
+
+// Live content (news, Iqamah, manager edits) must not be statically cached.
+export const dynamic = "force-dynamic";
+
+/** A masjid is publicly visible at `/m/<code>` only when published; a manager
+ *  (or admin) may preview their own draft. */
+async function resolveVisibleMosque(code: string) {
+  const { mosque } = await fetchMosqueByShortCode(code);
+  if (!mosque) return null;
+  if (mosque.status === "published") return { mosque, isDraftPreview: false };
+  const canManage = await canManageMosque(mosque.slug);
+  if (!canManage) return null;
+  return { mosque, isDraftPreview: true };
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ code: string }>;
+}): Promise<Metadata> {
+  const { code } = await params;
+  const { mosque } = await fetchMosqueByShortCode(code);
+  if (!mosque || mosque.status !== "published") return { robots: { index: false } };
+  const title = `${mosque.name.en} — ${mosque.city}, ${countryName(mosque.country)}`;
+  const description =
+    mosque.about ??
+    mosque.description?.en ??
+    `News, events, and prayer times for ${mosque.name.en} in ${mosque.city}.`;
+  return {
+    title,
+    description,
+    alternates: { canonical: `${getSiteUrl()}/m/${code}` },
+    openGraph: {
+      title,
+      description,
+      url: `${getSiteUrl()}/m/${code}`,
+      images: mosque.coverImage?.url ? [{ url: mosque.coverImage.url }] : undefined,
+      type: "website",
+    },
+  };
+}
+
+export default async function MasjidShortLinkPage({
+  params,
+}: {
+  params: Promise<{ code: string }>;
+}) {
+  const { code } = await params;
+  const [resolved, locale] = await Promise.all([resolveVisibleMosque(code), getLocale()]);
+  if (!resolved) notFound();
+  const { mosque, isDraftPreview } = resolved;
+  const t = await getTranslations("mosques.detail");
+
+  const localizedName = pickLocalized(mosque.name, locale, "en") ?? mosque.name.en;
+  const [canManage, session] = await Promise.all([
+    canManageMosque(mosque.slug),
+    getSiteSession(),
+  ]);
+  const canModerate = hasPermission(session?.permissions ?? [], "comments.moderate");
+  const following = session && !canManage ? await isFollowingMosque(session.uid, mosque.slug) : false;
+
+  return (
+    <main className="min-h-dvh bg-background">
+      <div className="mx-auto max-w-3xl px-4 py-8">
+        {isDraftPreview && (
+          <div className="mb-6 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-foreground">
+            {t("draftPreviewNote")}
+          </div>
+        )}
+
+        {canManage && (
+          <div className="mb-6">
+            <MosqueManagePanel mosque={mosque} />
+          </div>
+        )}
+
+        {!canManage && mosque.status === "published" && (
+          <div className="mb-4 flex justify-end">
+            <MosqueFollowButton
+              slug={mosque.slug}
+              initialFollowing={following}
+              initialCount={mosque.followerCount ?? 0}
+              signedIn={Boolean(session)}
+            />
+          </div>
+        )}
+
+        <MosqueProfile
+          mosque={mosque}
+          eventsSlot={
+            <MosqueEventsCard mosqueSlug={mosque.slug} canAddEvent={canManage} />
+          }
+        />
+
+        <div className="mt-8">
+          <MosqueNewsFeed
+            slug={mosque.slug}
+            mosqueName={localizedName}
+            locale={locale}
+            signedIn={Boolean(session)}
+            currentUid={session?.uid ?? null}
+            canManage={canManage}
+            canModerate={canModerate}
+          />
+        </div>
+
+        {mosque.status === "published" && (
+          <CommentThread
+            entityType="mosque"
+            entityId={mosque.slug}
+            itemMeta={{
+              title: localizedName,
+              subtitle: `${mosque.city}, ${countryName(mosque.country)}`,
+              href: `/m/${code}`,
+              locale,
+            }}
+          />
+        )}
+
+        {mosque.status === "published" && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(mosqueJsonLd(mosque)) }}
+          />
+        )}
+      </div>
+    </main>
+  );
+}

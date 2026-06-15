@@ -13,6 +13,17 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // Masjid media. Public kinds (logo, cover, gallery, news) are readable;
+    // proof-of-authorization docs are NOT exposed through the Firebase SDK path.
+    // Uploads always go through server-minted signed URLs, so writes stay off.
+    // NOTE: if the bucket grants bucket-wide public IAM read, raw GCS URLs bypass
+    // these rules — proof objects additionally use an unguessable path prefix
+    // (see lib/mosques/storage.ts) so they can't be enumerated or guessed.
+    match /mosques/{slug}/{kind}/{allPaths=**} {
+      allow read: if kind != 'proof';
+      allow write: if false;
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

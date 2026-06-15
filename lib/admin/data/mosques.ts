@@ -10,6 +10,7 @@ import type {
   MosqueStatus,
 } from "@/types/mosque";
 import { MOSQUES_COLLECTION, deriveFacilitiesFromServices } from "@/lib/mosques/constants";
+import { normalizeShortCode, randomShortCode } from "@/lib/mosques/shortcode";
 import { mosqueMatchesQuery } from "@/lib/mosques/search";
 import { distanceKm, sortByDistance } from "@/lib/mosques/geo";
 import type { Timestamp } from "firebase-admin/firestore";
@@ -73,6 +74,14 @@ function normalizeMosque(id: string, raw: Record<string, unknown>): Mosque | nul
           (v): v is string => typeof v === "string" && v.length > 0,
         )
       : undefined,
+    shortCode: raw.shortCode as string | undefined,
+    about: raw.about as string | undefined,
+    openingHours: raw.openingHours as Mosque["openingHours"],
+    iqamah: raw.iqamah as Mosque["iqamah"],
+    followerCount: typeof raw.followerCount === "number" ? raw.followerCount : undefined,
+    newsCount: typeof raw.newsCount === "number" ? raw.newsCount : undefined,
+    verifiedBadge: typeof raw.verifiedBadge === "boolean" ? raw.verifiedBadge : undefined,
+    claimedBy: raw.claimedBy as Mosque["claimedBy"],
     searchTokens: (raw.searchTokens as string[]) ?? [],
     altSpellings: raw.altSpellings as string[] | undefined,
     stats: raw.stats as Mosque["stats"],
@@ -163,6 +172,58 @@ export async function fetchMosqueBySlug(slug: string): Promise<{ mosque: Mosque 
     const m = MOCK_MOSQUE_BY_SLUG.get(slug) ?? null;
     return { mosque: m, source: "mock" };
   }
+}
+
+/**
+ * Resolve a mosque by its `/m/<code>` short code. Reads regardless of status so
+ * a manager can preview a `claimed_draft` page; the caller is responsible for
+ * gating render on `status === "published" || canManageMosque(slug)`.
+ */
+export async function fetchMosqueByShortCode(
+  code: string,
+): Promise<{ mosque: Mosque | null; source: MosqueSource }> {
+  const normalized = normalizeShortCode(code);
+  const db = getDb();
+  if (!db) {
+    const m = MOCK_MOSQUES.find((x) => x.shortCode === normalized) ?? null;
+    return { mosque: m, source: "mock" };
+  }
+  try {
+    const snap = await db
+      .collection(MOSQUES_COLLECTION)
+      .where("shortCode", "==", normalized)
+      .limit(1)
+      .get();
+    if (snap.empty) return { mosque: null, source: "firestore" };
+    const doc = snap.docs[0]!;
+    return {
+      mosque: normalizeMosque(doc.id, doc.data() as Record<string, unknown>),
+      source: "firestore",
+    };
+  } catch (err) {
+    console.warn("[mosques] shortCode read failed:", err);
+    return { mosque: null, source: "firestore" };
+  }
+}
+
+/**
+ * Mint a short code that isn't already taken. Loops a handful of times; with
+ * 32^7 codes a collision is astronomically unlikely, but we check anyway.
+ */
+export async function generateUniqueShortCode(): Promise<string> {
+  const db = getDb();
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const code = randomShortCode();
+    if (!db) return code;
+    const snap = await db
+      .collection(MOSQUES_COLLECTION)
+      .where("shortCode", "==", code)
+      .limit(1)
+      .get();
+    if (snap.empty) return code;
+  }
+  // Fall back to a longer code on the (vanishingly rare) repeated collision.
+  return randomShortCode(10);
 }
 
 export async function fetchAllSlugs(limit = 200): Promise<string[]> {

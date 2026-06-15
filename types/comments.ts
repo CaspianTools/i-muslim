@@ -4,6 +4,7 @@ export type CommentEntityType =
   | "surah"
   | "article"
   | "mosque"
+  | "mosque_news"
   | "event"
   | "business";
 
@@ -17,6 +18,7 @@ export const COMMENT_ENTITY_TYPES: readonly CommentEntityType[] = [
   "surah",
   "article",
   "mosque",
+  "mosque_news",
   "event",
   "business",
 ] as const;

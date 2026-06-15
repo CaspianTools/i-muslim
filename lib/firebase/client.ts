@@ -5,6 +5,10 @@ import {
   GoogleAuthProvider,
   getAuth,
   signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
   signOut as fbSignOut,
   type Auth,
   type User,
@@ -55,6 +59,40 @@ export async function signInWithGoogle(): Promise<User> {
   provider.setCustomParameters({ prompt: "select_account" });
   const cred = await signInWithPopup(auth, provider);
   return cred.user;
+}
+
+export async function signInWithEmail(email: string, password: string): Promise<User> {
+  const auth = getClientAuth();
+  if (!auth) throw new Error("Firebase client is not configured.");
+  const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
+  return cred.user;
+}
+
+export async function registerWithEmail(email: string, password: string): Promise<User> {
+  const auth = getClientAuth();
+  if (!auth) throw new Error("Firebase client is not configured.");
+  const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
+  // Best-effort: a freshly-created account is unverified, and the session
+  // endpoint rejects unverified emails (a deliberate security boundary). Send
+  // the verification link so the user can confirm before signing in.
+  try {
+    await sendEmailVerification(cred.user);
+  } catch (err) {
+    console.warn("[auth] sendEmailVerification failed:", err);
+  }
+  return cred.user;
+}
+
+export async function resendVerificationEmail(): Promise<void> {
+  const auth = getClientAuth();
+  if (!auth?.currentUser) throw new Error("Not signed in.");
+  await sendEmailVerification(auth.currentUser);
+}
+
+export async function sendPasswordReset(email: string): Promise<void> {
+  const auth = getClientAuth();
+  if (!auth) throw new Error("Firebase client is not configured.");
+  await sendPasswordResetEmail(auth, email.trim());
 }
 
 export async function signOutClient(): Promise<void> {

@@ -120,6 +120,13 @@ export interface AdminEvent {
    * flow with `?mosqueId=<slug>`.
    */
   mosqueId?: string;
+  /**
+   * When true, this event is shown immediately on its host mosque's own page
+   * (`/m/<code>` and `/mosques/<slug>`), independent of `status`. Manager-
+   * created events set this true while `status` stays `under_review` until an
+   * admin publishes them to the site-wide global events list.
+   */
+  mosqueVisible?: boolean;
   submittedBy?: { uid?: string; email?: string };
   createdAt: string;
   updatedAt: string;

@@ -144,6 +144,7 @@ export function normalizeEvent(id: string, raw: Record<string, unknown>): AdminE
     startAnchor: asStartAnchor(raw.startAnchor),
     hijriAnchor: asHijriAnchor(raw.hijriAnchor),
     mosqueId: asOptionalString(raw.mosqueId),
+    mosqueVisible: typeof raw.mosqueVisible === "boolean" ? raw.mosqueVisible : undefined,
     submittedBy,
     createdAt: asIso(raw.createdAt),
     updatedAt: asIso(raw.updatedAt ?? raw.createdAt),
@@ -209,17 +210,25 @@ export async function fetchUpcomingEventsByMosque(
   const horizon = new Date(now.getTime() + windowDays * 24 * 60 * 60 * 1000);
 
   try {
+    // Query by mosque only (no status filter) so manager-created events — which
+    // are `under_review` for the global list but `mosqueVisible` on their own
+    // page — surface here immediately alongside globally-published ones.
     const snap = await db
       .collection("events")
       .where("mosqueId", "==", mosqueSlug)
-      .where("status", "==", "published")
       .limit(200)
       .get();
     if (snap.empty) return [];
     const events = snap.docs
       .map((d) => normalizeEvent(d.id, d.data() as Record<string, unknown>))
       .filter((e): e is AdminEvent => e !== null);
-    return projectUpcoming(events, now, horizon, limit);
+    return projectUpcoming(
+      events,
+      now,
+      horizon,
+      limit,
+      (e) => e.status !== "cancelled" && (e.status === "published" || e.mosqueVisible === true),
+    );
   } catch (err) {
     console.warn("[admin/data/events] mosque-events read failed:", err);
     return [];
@@ -231,11 +240,12 @@ function projectUpcoming(
   from: Date,
   to: Date,
   limit: number,
+  include: (event: AdminEvent) => boolean = (event) => event.status === "published",
 ): UpcomingEvent[] {
   type Pair = { event: AdminEvent; next: Date };
   const pairs: Pair[] = [];
   for (const event of events) {
-    if (event.status !== "published") continue;
+    if (!include(event)) continue;
     const next = nextOccurrenceAfter(event, from);
     if (!next) continue;
     if (next.getTime() > to.getTime()) continue;
