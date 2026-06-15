@@ -625,6 +625,8 @@
     "privacy": {
       "title": "Privacy",
       "description": "What data i-muslim collects and how we use it.",
+      "lead": "This page covers two products: the i-muslim website and the standalone i-muslim Quran app for Android. Each handles your data differently, so they are described separately below.",
+      "webHeading": "Website (i-muslim.com)",
       "p1": "We collect the minimum needed to run the features you use — and nothing more.",
       "h1": "Location",
       "p2": "Prayer Times, Qibla, and Mosques near me ask for your location only when you tap them. Coordinates stay in your browser and are sent only to the calculation libraries that produce times or distances. We do not store them on our servers.",
@@ -633,7 +635,31 @@
       "h3": "Tracking",
       "p4": "We do not run third-party advertising trackers. We do not sell your data. We do not have a Facebook pixel or similar.",
       "h4": "Contact",
-      "p5": "Questions, deletion requests, or anything privacy-related: email us at the address on the <contact>contact</contact> page."
+      "p5": "Questions, deletion requests, or anything privacy-related: email us at the address on the <contact>contact</contact> page.",
+      "app": {
+        "heading": "i-muslim Quran (Android app)",
+        "updated": "Last updated: 15 June 2026",
+        "intro": "The i-muslim Quran app (package com.imuslim.quran) is an offline Quran reader for Android. Its privacy story is short, because the app is built to need nothing from you.",
+        "collectHeading": "What we collect",
+        "collectIntro": "Nothing. The app does not collect, transmit, or share any personal data.",
+        "collect1": "The app has no internet permission and makes no network requests. The full Quran text and translations are bundled inside the app.",
+        "collect2": "There are no accounts, no login, and no sign-up.",
+        "collect3": "There are no ads and no third-party analytics, advertising, or tracking SDKs.",
+        "storeHeading": "Data stored on your device",
+        "storeIntro": "The app stores a small amount of data only on your device, never sent anywhere:",
+        "store1": "Bookmarks you create.",
+        "store2": "Reading position (last-read surah and ayah), so you can resume.",
+        "store3": "Settings — chosen translation languages, theme (light/dark/system), and Arabic font size.",
+        "storeNote": "This data lives in the app's private storage. It is removed when you uninstall the app or clear its data from Android settings.",
+        "permissionsHeading": "Permissions",
+        "permissions": "The app requests no runtime permissions and no internet access.",
+        "childrenHeading": "Children",
+        "children": "The app is suitable for all ages. It does not collect data from anyone, including children.",
+        "changesHeading": "Changes",
+        "changes": "If this policy changes, the updated version will be posted on this page with a new \"last updated\" date.",
+        "contactHeading": "Contact",
+        "contact": "Questions about the app's privacy: email us at the address on the <contact>contact</contact> page."
+      }
     },
     "terms": {
       "title": "Terms of use",

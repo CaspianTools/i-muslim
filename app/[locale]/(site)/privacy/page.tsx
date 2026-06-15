@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -10,8 +11,25 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const H2 = "text-xl font-semibold tracking-tight text-foreground";
+const H3 = "pt-4 text-lg font-semibold text-foreground";
+
 export default async function PrivacyPage() {
   const t = await getTranslations("legal.privacy");
+
+  // Shared rich-text renderer: turns the <contact>…</contact> tag in a message
+  // into a locale-aware link to the contact page.
+  const contactLink = {
+    contact: (chunks: ReactNode) => (
+      <Link
+        href="/contact"
+        className="underline underline-offset-2 hover:text-foreground"
+      >
+        {chunks}
+      </Link>
+    ),
+  };
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
       <header className="mb-8">
@@ -20,32 +38,65 @@ export default async function PrivacyPage() {
         </h1>
         <p className="mt-2 text-muted-foreground">{t("description")}</p>
       </header>
-      <div className="space-y-4 leading-relaxed text-foreground/90">
+
+      <p className="mb-10 leading-relaxed text-foreground/90">{t("lead")}</p>
+
+      {/* Website (i-muslim.com) */}
+      <section className="space-y-4 leading-relaxed text-foreground/90">
+        <h2 className={H2}>{t("webHeading")}</h2>
         <p>{t("p1")}</p>
 
-        <h2 className="pt-4 text-lg font-semibold text-foreground">{t("h1")}</h2>
+        <h3 className={H3}>{t("h1")}</h3>
         <p>{t("p2")}</p>
 
-        <h2 className="pt-4 text-lg font-semibold text-foreground">{t("h2")}</h2>
+        <h3 className={H3}>{t("h2")}</h3>
         <p>{t("p3")}</p>
 
-        <h2 className="pt-4 text-lg font-semibold text-foreground">{t("h3")}</h2>
+        <h3 className={H3}>{t("h3")}</h3>
         <p>{t("p4")}</p>
 
-        <h2 className="pt-4 text-lg font-semibold text-foreground">{t("h4")}</h2>
-        <p>
-          {t.rich("p5", {
-            contact: (chunks) => (
-              <Link
-                href="/contact"
-                className="underline underline-offset-2 hover:text-foreground"
-              >
-                {chunks}
-              </Link>
-            ),
-          })}
-        </p>
-      </div>
+        <h3 className={H3}>{t("h4")}</h3>
+        <p>{t.rich("p5", contactLink)}</p>
+      </section>
+
+      {/* i-muslim Quran (Android app) */}
+      <section
+        id="android-app"
+        className="mt-12 space-y-4 border-t border-border pt-8 leading-relaxed text-foreground/90"
+      >
+        <h2 className={H2}>{t("app.heading")}</h2>
+        <p className="text-sm text-muted-foreground">{t("app.updated")}</p>
+        <p>{t("app.intro")}</p>
+
+        <h3 className={H3}>{t("app.collectHeading")}</h3>
+        <p>{t("app.collectIntro")}</p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>{t("app.collect1")}</li>
+          <li>{t("app.collect2")}</li>
+          <li>{t("app.collect3")}</li>
+        </ul>
+
+        <h3 className={H3}>{t("app.storeHeading")}</h3>
+        <p>{t("app.storeIntro")}</p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>{t("app.store1")}</li>
+          <li>{t("app.store2")}</li>
+          <li>{t("app.store3")}</li>
+        </ul>
+        <p>{t("app.storeNote")}</p>
+
+        <h3 className={H3}>{t("app.permissionsHeading")}</h3>
+        <p>{t("app.permissions")}</p>
+
+        <h3 className={H3}>{t("app.childrenHeading")}</h3>
+        <p>{t("app.children")}</p>
+
+        <h3 className={H3}>{t("app.changesHeading")}</h3>
+        <p>{t("app.changes")}</p>
+
+        <h3 className={H3}>{t("app.contactHeading")}</h3>
+        <p>{t.rich("app.contact", contactLink)}</p>
+      </section>
     </div>
   );
 }

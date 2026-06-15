@@ -628,6 +628,8 @@
     "privacy": {
       "title": "Gizlilik",
       "description": "i-muslim'in topladığı veriler ve bunları nasıl kullandığımız.",
+      "lead": "Bu sayfa iki ürünü kapsar: i-muslim web sitesi ve Android için bağımsız i-muslim Quran uygulaması. Her biri verilerinizi farklı şekilde işlediğinden, aşağıda ayrı ayrı açıklanmıştır.",
+      "webHeading": "Web sitesi (i-muslim.com)",
       "p1": "Yalnızca kullandığınız özelliklerin çalışması için gereken asgariyi topluyoruz — fazlasını değil.",
       "h1": "Konum",
       "p2": "Namaz Vakitleri, Kıble ve Yakındaki Camiler özellikleri konumunuzu yalnızca dokunduğunuzda ister. Koordinatlar tarayıcınızda kalır ve yalnızca vakitleri veya mesafeleri hesaplayan kütüphanelere gönderilir. Sunucularımızda saklamayız.",
@@ -636,7 +638,31 @@
       "h3": "Takip",
       "p4": "Üçüncü taraf reklam takipçileri kullanmıyoruz. Verilerinizi satmıyoruz. Facebook pixel veya benzeri bir araç kullanmıyoruz.",
       "h4": "İletişim",
-      "p5": "Sorular, silme talepleri veya gizlilikle ilgili her şey için: <contact>iletişim</contact> sayfasındaki adresten bize yazın."
+      "p5": "Sorular, silme talepleri veya gizlilikle ilgili her şey için: <contact>iletişim</contact> sayfasındaki adresten bize yazın.",
+      "app": {
+        "heading": "i-muslim Quran (Android uygulaması)",
+        "updated": "Son güncelleme: 15 Haziran 2026",
+        "intro": "i-muslim Quran uygulaması (paket com.imuslim.quran), Android için çevrimdışı çalışan bir Kur'an okuyucusudur. Gizlilik öyküsü kısadır, çünkü uygulama sizden hiçbir şeye ihtiyaç duymayacak şekilde tasarlanmıştır.",
+        "collectHeading": "Neleri topluyoruz",
+        "collectIntro": "Hiçbir şey. Uygulama hiçbir kişisel veriyi toplamaz, iletmez veya paylaşmaz.",
+        "collect1": "Uygulamanın internet izni yoktur ve hiçbir ağ isteği yapmaz. Kur'an metninin tamamı ve çeviriler uygulamanın içine gömülüdür.",
+        "collect2": "Hesap, oturum açma veya kayıt yoktur.",
+        "collect3": "Reklam yoktur; üçüncü taraf analiz, reklam veya takip SDK'ları yoktur.",
+        "storeHeading": "Cihazınızda saklanan veriler",
+        "storeIntro": "Uygulama, yalnızca cihazınızda kalan ve hiçbir yere gönderilmeyen az miktarda veri saklar:",
+        "store1": "Oluşturduğunuz yer imleri.",
+        "store2": "Okuma konumu (en son okunan sure ve ayet), böylece kaldığınız yerden devam edebilirsiniz.",
+        "store3": "Ayarlar — seçtiğiniz çeviri dilleri, tema (açık/koyu/sistem) ve Arapça yazı tipi boyutu.",
+        "storeNote": "Bu veriler uygulamanın özel depolama alanında bulunur. Uygulamayı kaldırdığınızda veya Android ayarlarından verilerini temizlediğinizde silinir.",
+        "permissionsHeading": "İzinler",
+        "permissions": "Uygulama hiçbir çalışma zamanı izni ve hiçbir internet erişimi istemez.",
+        "childrenHeading": "Çocuklar",
+        "children": "Uygulama her yaşa uygundur. Çocuklar da dâhil olmak üzere hiç kimseden veri toplamaz.",
+        "changesHeading": "Değişiklikler",
+        "changes": "Bu politika değişirse, güncellenmiş sürüm yeni bir \"son güncelleme\" tarihiyle bu sayfada yayımlanacaktır.",
+        "contactHeading": "İletişim",
+        "contact": "Uygulamanın gizliliğiyle ilgili sorular için: <contact>iletişim</contact> sayfasındaki adresten bize yazın."
+      }
     },
     "terms": {
       "title": "Kullanım Şartları",

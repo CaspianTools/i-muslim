@@ -628,6 +628,8 @@
     "privacy": {
       "title": "Privasi",
       "description": "Data apa yang dikumpulkan i-muslim dan bagaimana kami menggunakannya.",
+      "lead": "Halaman ini mencakup dua produk: situs web i-muslim dan aplikasi i-muslim Quran mandiri untuk Android. Masing-masing menangani data Anda secara berbeda, sehingga dijelaskan secara terpisah di bawah ini.",
+      "webHeading": "Situs web (i-muslim.com)",
       "p1": "Kami mengumpulkan seminimal mungkin yang dibutuhkan untuk menjalankan fitur yang Anda gunakan — tidak lebih.",
       "h1": "Lokasi",
       "p2": "Waktu Salat, Kiblat, dan Masjid terdekat meminta lokasi Anda hanya saat Anda mengetuknya. Koordinat tetap di peramban Anda dan hanya dikirim ke pustaka kalkulasi yang menghasilkan waktu atau jarak. Kami tidak menyimpannya di server kami.",
@@ -636,7 +638,31 @@
       "h3": "Pelacakan",
       "p4": "Kami tidak menjalankan pelacak iklan pihak ketiga. Kami tidak menjual data Anda. Kami tidak menggunakan Facebook pixel atau sejenisnya.",
       "h4": "Kontak",
-      "p5": "Pertanyaan, permintaan penghapusan, atau apa pun terkait privasi: kirim email ke alamat di halaman <contact>kontak</contact>."
+      "p5": "Pertanyaan, permintaan penghapusan, atau apa pun terkait privasi: kirim email ke alamat di halaman <contact>kontak</contact>.",
+      "app": {
+        "heading": "i-muslim Quran (aplikasi Android)",
+        "updated": "Terakhir diperbarui: 15 Juni 2026",
+        "intro": "Aplikasi i-muslim Quran (paket com.imuslim.quran) adalah pembaca Al-Qur'an offline untuk Android. Kisah privasinya singkat, karena aplikasi dibuat agar tidak membutuhkan apa pun dari Anda.",
+        "collectHeading": "Apa yang kami kumpulkan",
+        "collectIntro": "Tidak ada. Aplikasi tidak mengumpulkan, mengirimkan, atau membagikan data pribadi apa pun.",
+        "collect1": "Aplikasi tidak memiliki izin internet dan tidak membuat permintaan jaringan apa pun. Seluruh teks Al-Qur'an dan terjemahan disertakan di dalam aplikasi.",
+        "collect2": "Tidak ada akun, tidak ada login, dan tidak ada pendaftaran.",
+        "collect3": "Tidak ada iklan dan tidak ada SDK analitik, periklanan, atau pelacakan pihak ketiga.",
+        "storeHeading": "Data yang disimpan di perangkat Anda",
+        "storeIntro": "Aplikasi menyimpan sedikit data hanya di perangkat Anda, tidak pernah dikirim ke mana pun:",
+        "store1": "Markah (bookmark) yang Anda buat.",
+        "store2": "Posisi baca (surah dan ayat terakhir dibaca), agar Anda dapat melanjutkan.",
+        "store3": "Pengaturan — bahasa terjemahan yang dipilih, tema (terang/gelap/sistem), dan ukuran font Arab.",
+        "storeNote": "Data ini berada di penyimpanan privat aplikasi. Data dihapus saat Anda mencopot aplikasi atau menghapus datanya dari pengaturan Android.",
+        "permissionsHeading": "Izin",
+        "permissions": "Aplikasi tidak meminta izin runtime apa pun dan tidak ada akses internet.",
+        "childrenHeading": "Anak-anak",
+        "children": "Aplikasi cocok untuk segala usia. Aplikasi tidak mengumpulkan data dari siapa pun, termasuk anak-anak.",
+        "changesHeading": "Perubahan",
+        "changes": "Jika kebijakan ini berubah, versi yang diperbarui akan diposting di halaman ini dengan tanggal \"terakhir diperbarui\" yang baru.",
+        "contactHeading": "Kontak",
+        "contact": "Pertanyaan terkait privasi aplikasi: kirim email ke alamat di halaman <contact>kontak</contact>."
+      }
     },
     "terms": {
       "title": "Syarat penggunaan",
