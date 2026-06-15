@@ -628,6 +628,7 @@
     "privacy": {
       "title": "Privasi",
       "description": "Data apa yang dikumpulkan i-muslim dan bagaimana kami menggunakannya.",
+      "tocLabel": "On this page",
       "lead": "Halaman ini mencakup dua produk: situs web i-muslim dan aplikasi i-muslim Quran mandiri untuk Android. Masing-masing menangani data Anda secara berbeda, sehingga dijelaskan secara terpisah di bawah ini.",
       "webHeading": "Situs web (i-muslim.com)",
       "p1": "Kami mengumpulkan seminimal mungkin yang dibutuhkan untuk menjalankan fitur yang Anda gunakan — tidak lebih.",

@@ -628,6 +628,7 @@
     "privacy": {
       "title": "Gizlilik",
       "description": "i-muslim'in topladığı veriler ve bunları nasıl kullandığımız.",
+      "tocLabel": "On this page",
       "lead": "Bu sayfa iki ürünü kapsar: i-muslim web sitesi ve Android için bağımsız i-muslim Quran uygulaması. Her biri verilerinizi farklı şekilde işlediğinden, aşağıda ayrı ayrı açıklanmıştır.",
       "webHeading": "Web sitesi (i-muslim.com)",
       "p1": "Yalnızca kullandığınız özelliklerin çalışması için gereken asgariyi topluyoruz — fazlasını değil.",

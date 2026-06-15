@@ -625,6 +625,7 @@
     "privacy": {
       "title": "Privacy",
       "description": "What data i-muslim collects and how we use it.",
+      "tocLabel": "On this page",
       "lead": "This page covers two products: the i-muslim website and the standalone i-muslim Quran app for Android. Each handles your data differently, so they are described separately below.",
       "webHeading": "Website (i-muslim.com)",
       "p1": "We collect the minimum needed to run the features you use — and nothing more.",
