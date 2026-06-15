@@ -17,6 +17,7 @@ import { CommentThread } from "@/components/comments/CommentThread";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { getSiteSession } from "@/lib/auth/session";
 import { isFollowingMosque } from "@/lib/mosques/follows";
+import { getMosqueAnalytics } from "@/lib/mosques/analytics";
 import { hasPermission } from "@/lib/permissions/check";
 
 export const revalidate = 3600;
@@ -73,6 +74,7 @@ export default async function MosqueDetailPage({
   ]);
   const canModerate = hasPermission(session?.permissions ?? [], "comments.moderate");
   const following = session && !canAddEvent ? await isFollowingMosque(session.uid, mosque.slug) : false;
+  const analytics = canAddEvent ? await getMosqueAnalytics(mosque.slug) : undefined;
   const showClaim = (mosque.managers?.length ?? 0) === 0 && !canAddEvent;
 
   return (
@@ -107,7 +109,7 @@ export default async function MosqueDetailPage({
 
       {canAddEvent && (
         <div className="mt-4">
-          <MosqueManagePanel mosque={mosque} />
+          <MosqueManagePanel mosque={mosque} analytics={analytics} />
         </div>
       )}
 

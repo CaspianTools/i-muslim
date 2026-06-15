@@ -11,10 +11,13 @@ import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
 import { MosqueEventsCard } from "@/components/mosque/MosqueEventsCard";
 import { MosqueNewsFeed } from "@/components/mosque/news/MosqueNewsFeed";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
+import { InstallMasjidButton } from "@/components/mosque/InstallMasjidButton";
+import { MasjidViewTracker } from "@/components/mosque/MasjidViewTracker";
 import { CommentThread } from "@/components/comments/CommentThread";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { getSiteSession } from "@/lib/auth/session";
 import { isFollowingMosque } from "@/lib/mosques/follows";
+import { getMosqueAnalytics } from "@/lib/mosques/analytics";
 import { hasPermission } from "@/lib/permissions/check";
 
 // Live content (news, Iqamah, manager edits) must not be statically cached.
@@ -47,6 +50,11 @@ export async function generateMetadata({
   return {
     title,
     description,
+    // Per-masjid PWA: override the site-wide manifest so this page installs as
+    // its own standalone app (masjid name + logo, launching into /m/<code>).
+    manifest: `/m/${code}/manifest.webmanifest`,
+    appleWebApp: { capable: true, title: mosque.name.en, statusBarStyle: "default" },
+    icons: { apple: `/m/${code}/app-icon?size=192` },
     alternates: { canonical: `${getSiteUrl()}/m/${code}` },
     openGraph: {
       title,
@@ -76,6 +84,7 @@ export default async function MasjidShortLinkPage({
   ]);
   const canModerate = hasPermission(session?.permissions ?? [], "comments.moderate");
   const following = session && !canManage ? await isFollowingMosque(session.uid, mosque.slug) : false;
+  const analytics = canManage ? await getMosqueAnalytics(mosque.slug) : undefined;
 
   return (
     <main className="min-h-dvh bg-background">
@@ -86,20 +95,25 @@ export default async function MasjidShortLinkPage({
           </div>
         )}
 
+        {mosque.status === "published" && <MasjidViewTracker slug={mosque.slug} />}
+
         {canManage && (
           <div className="mb-6">
-            <MosqueManagePanel mosque={mosque} />
+            <MosqueManagePanel mosque={mosque} analytics={analytics} />
           </div>
         )}
 
-        {!canManage && mosque.status === "published" && (
-          <div className="mb-4 flex justify-end">
-            <MosqueFollowButton
-              slug={mosque.slug}
-              initialFollowing={following}
-              initialCount={mosque.followerCount ?? 0}
-              signedIn={Boolean(session)}
-            />
+        {mosque.status === "published" && (
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <InstallMasjidButton />
+            {!canManage && (
+              <MosqueFollowButton
+                slug={mosque.slug}
+                initialFollowing={following}
+                initialCount={mosque.followerCount ?? 0}
+                signedIn={Boolean(session)}
+              />
+            )}
           </div>
         )}
 

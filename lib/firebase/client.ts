@@ -29,7 +29,7 @@ export function getFirebaseClientStatus(): FirebaseClientConfigStatus {
 
 let cachedApp: FirebaseApp | null = null;
 
-function getClientApp(): FirebaseApp | null {
+export function getClientApp(): FirebaseApp | null {
   const status = getFirebaseClientStatus();
   if (!status.configured) return null;
 
@@ -43,6 +43,9 @@ function getClientApp(): FirebaseApp | null {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
     projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+    // Optional — required only for Cloud Messaging (web push).
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   });
   return cachedApp;
 }

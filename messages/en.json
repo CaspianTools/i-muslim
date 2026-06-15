@@ -1786,6 +1786,9 @@
       "save": "Save",
       "saved": "Saved.",
       "saveFailed": "Couldn't save. Please try again.",
+      "statViews": "Page views",
+      "statScans": "QR scans",
+      "statFollowers": "Followers",
       "shareTitle": "Share link & QR code",
       "shareHint": "Share this link or print the QR poster for your masjid noticeboard.",
       "copyLink": "Copy",
@@ -1793,6 +1796,9 @@
       "downloadPoster": "Printable poster (PDF)",
       "downloadPng": "QR (PNG)",
       "downloadSvg": "QR (SVG)"
+    },
+    "install": {
+      "install": "Install app"
     },
     "follow": {
       "follow": "Follow",

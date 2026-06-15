@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Bell, BellRing, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toggleMosqueFollow } from "@/app/[locale]/(site)/mosques/follow-actions";
+import { enablePush } from "@/lib/push/client";
 
 export function MosqueFollowButton({
   slug,
@@ -39,7 +40,10 @@ export function MosqueFollowButton({
         setFollowing(!next);
         setCount((c) => c + (next ? -1 : 1));
         toast.error(t("failed"));
+        return;
       }
+      // On a fresh follow, offer push so the user actually receives updates.
+      if (next) void enablePush();
     } finally {
       setBusy(false);
     }

@@ -8,6 +8,7 @@ import { requirePermission } from "@/lib/permissions/server";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
 import { NEWS_SUBCOLLECTION } from "@/lib/mosques/news";
+import { sendPushToFollowers } from "@/lib/push/send";
 import { MAX_NEWS_BODY_LENGTH } from "@/types/mosque-news";
 
 export interface NewsActionResult {
@@ -56,6 +57,19 @@ export async function createNewsPost(
     .doc(slug)
     .update({ newsCount: FieldValue.increment(1) })
     .catch(() => {});
+
+  // Best-effort push to followers (no-op until FCM is configured + tokens exist).
+  try {
+    const mq = await db.collection(MOSQUES_COLLECTION).doc(slug).get();
+    const m = mq.data() ?? {};
+    await sendPushToFollowers(slug, m.shortCode as string | undefined, {
+      title: (m.name as { en?: string } | undefined)?.en ?? "New masjid update",
+      body: body.length > 120 ? `${body.slice(0, 117)}…` : body,
+    });
+  } catch {
+    // never let push failures break posting
+  }
+
   revalidatePath(`/mosques/${slug}`);
   return { ok: true, id: ref.id };
 }

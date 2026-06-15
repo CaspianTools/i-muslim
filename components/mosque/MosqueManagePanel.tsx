@@ -23,7 +23,13 @@ import {
 
 const DAILY = ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const;
 
-export function MosqueManagePanel({ mosque }: { mosque: Mosque }) {
+export function MosqueManagePanel({
+  mosque,
+  analytics,
+}: {
+  mosque: Mosque;
+  analytics?: { views: number; scans: number };
+}) {
   const t = useTranslations("mosques.manage");
   const tPrayer = useTranslations("mosques.prayer");
   const router = useRouter();
@@ -233,6 +239,15 @@ export function MosqueManagePanel({ mosque }: { mosque: Mosque }) {
             </div>
           )}
 
+          {/* Analytics */}
+          {analytics && (
+            <div className="grid grid-cols-3 gap-3">
+              <Stat label={t("statViews")} value={analytics.views} />
+              <Stat label={t("statScans")} value={analytics.scans} />
+              <Stat label={t("statFollowers")} value={mosque.followerCount ?? 0} />
+            </div>
+          )}
+
           {/* Share & QR */}
           {mosque.shortCode && (
             <div className="space-y-2 rounded-lg border border-border bg-card p-4">
@@ -413,6 +428,15 @@ export function MosqueManagePanel({ mosque }: { mosque: Mosque }) {
         </div>
       )}
     </section>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-3 text-center">
+      <div className="text-xl font-semibold tabular-nums text-foreground">{value.toLocaleString()}</div>
+      <div className="text-xs text-muted-foreground">{label}</div>
+    </div>
   );
 }
 

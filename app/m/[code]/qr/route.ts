@@ -18,7 +18,8 @@ export async function GET(
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const url = `${getSiteUrl()}/m/${code}`;
+  // `?s=qr` lets the page's view tracker count QR scans separately from visits.
+  const url = `${getSiteUrl()}/m/${code}?s=qr`;
   const format = new URL(req.url).searchParams.get("format") === "svg" ? "svg" : "png";
 
   if (format === "svg") {

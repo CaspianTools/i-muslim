@@ -19,6 +19,23 @@ export async function isFollowingMosque(uid: string, slug: string): Promise<bool
   }
 }
 
+/** Uids of users who follow a given masjid (for push fan-out). */
+export async function listFollowerUids(slug: string, limit = 1000): Promise<string[]> {
+  const db = getDb();
+  if (!db) return [];
+  try {
+    const snap = await db
+      .collection(MOSQUE_FOLLOWS_COLLECTION)
+      .where("mosqueSlug", "==", slug)
+      .limit(limit)
+      .get();
+    return snap.docs.map((d) => (d.data().uid as string) ?? "").filter((u) => u.length > 0);
+  } catch (err) {
+    console.warn("[mosqueFollows] follower list failed:", err);
+    return [];
+  }
+}
+
 export async function listFollowedSlugs(uid: string, limit = 200): Promise<string[]> {
   const db = getDb();
   if (!db) return [];
