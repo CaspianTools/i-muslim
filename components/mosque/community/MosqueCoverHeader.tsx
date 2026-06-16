@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { MapPin } from "lucide-react";
 import { pickLocalized } from "@/lib/utils";
@@ -18,17 +19,22 @@ const ARABIC_GREETING = "السَّلَامُ عَلَيْكُمْ";
 export async function MosqueCoverHeader({
   mosque,
   locale,
+  baseHref,
+  activeView,
   followSlot,
   installSlot,
   shareSlot,
-  hasPhotos,
+  manageSlot,
 }: {
   mosque: Mosque;
   locale: string;
+  /** e.g. `/m/<code>` or `/mosques/<slug>` — tabs link off this. */
+  baseHref: string;
+  activeView: "posts" | "about" | "events";
   followSlot?: ReactNode;
   installSlot?: ReactNode;
   shareSlot?: ReactNode;
-  hasPhotos: boolean;
+  manageSlot?: ReactNode;
 }) {
   const t = await getTranslations("mosques.community");
   const tDenom = await getTranslations("mosques.denominations");
@@ -63,8 +69,9 @@ export async function MosqueCoverHeader({
         </p>
       </div>
 
-      {/* Meta row */}
-      <div className="-mt-12 px-5 pb-2">
+      {/* Meta row — `relative z-10` lifts it above the absolutely-positioned
+          cover image so the logo + text are never covered by the photo. */}
+      <div className="relative z-10 -mt-12 px-5 pb-2">
         <div className="flex flex-wrap items-end gap-4">
           <div className="grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow">
             {mosque.logoUrl ? (
@@ -108,8 +115,9 @@ export async function MosqueCoverHeader({
             </div>
           </div>
 
-          {(installSlot || followSlot || shareSlot) && (
+          {(manageSlot || installSlot || followSlot || shareSlot) && (
             <div className="flex flex-wrap items-center gap-2 pb-1">
+              {manageSlot}
               {installSlot}
               {followSlot}
               {shareSlot}
@@ -117,22 +125,23 @@ export async function MosqueCoverHeader({
           )}
         </div>
 
-        {/* Sub-tabs */}
+        {/* Sub-tabs — navigate to the Posts / About / Events views. */}
         <nav className="mt-4 flex gap-1 overflow-x-auto border-t border-border">
-          <a href="#posts" className="mq-tab active">
+          <Link href={baseHref} className={`mq-tab${activeView === "posts" ? " active" : ""}`}>
             {t("tabPosts")}
-          </a>
-          <a href="#about" className="mq-tab">
+          </Link>
+          <Link
+            href={`${baseHref}?view=about`}
+            className={`mq-tab${activeView === "about" ? " active" : ""}`}
+          >
             {t("tabAbout")}
-          </a>
-          <a href="#events" className="mq-tab">
+          </Link>
+          <Link
+            href={`${baseHref}?view=events`}
+            className={`mq-tab${activeView === "events" ? " active" : ""}`}
+          >
             {t("tabEvents")}
-          </a>
-          {hasPhotos && (
-            <a href="#photos" className="mq-tab">
-              {t("tabPhotos")}
-            </a>
-          )}
+          </Link>
         </nav>
       </div>
     </div>

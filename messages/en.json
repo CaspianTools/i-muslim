@@ -1759,6 +1759,12 @@
       "manage": "Manage",
       "hide": "Hide",
       "draftBadge": "Draft",
+      "tabProfile": "Profile",
+      "tabMedia": "Media",
+      "tabPrayer": "Prayer",
+      "tabContact": "Contact",
+      "tabShare": "Share",
+      "shareUnavailable": "Your share link & QR code appear here once the page is published.",
       "publish": "Publish page",
       "publishHint": "Your page isn't public yet. Add a logo and an About description, then publish.",
       "published": "Your masjid page is now live.",
@@ -1884,7 +1890,8 @@
     "events": {
       "title": "Upcoming events",
       "empty": "No upcoming events at this mosque yet.",
-      "addEvent": "Add event"
+      "addEvent": "Add event",
+      "viewAll": "View all events"
     },
     "hub": {
       "byCountryTitle": "Browse by country",

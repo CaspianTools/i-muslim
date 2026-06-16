@@ -15,6 +15,8 @@ import { DuaWall } from "./DuaWall";
 import { MembersRail } from "./MembersRail";
 import type { Mosque } from "@/types/mosque";
 
+export type CommunityView = "posts" | "about" | "events";
+
 export interface CommunityContext {
   signedIn: boolean;
   currentUid: string | null;
@@ -23,14 +25,17 @@ export interface CommunityContext {
 }
 
 /**
- * Shared "community home" layout for both mosque surfaces (the bare `/m/<code>`
- * page and the directory detail page). Renders a cover header + three-column
- * shell (left rail · center feed · right rail). Page-specific chrome and the
- * client CTA buttons are passed in as slots so this stays a server component.
+ * Shared "community home" for both mosque surfaces. Renders a cover header with
+ * Posts / About / Events tabs and the content for the active `view`. Posts is
+ * the three-column home; About and Events are focused single-column subviews
+ * (their own `?view=` URL). Page-specific chrome and client CTA buttons are
+ * passed in as slots so this stays a server component.
  */
 export async function MosqueCommunityHome({
   mosque,
   locale,
+  view,
+  baseHref,
   context,
   canonicalHref,
   topSlot,
@@ -41,8 +46,10 @@ export async function MosqueCommunityHome({
 }: {
   mosque: Mosque;
   locale: string;
+  view: CommunityView;
+  /** e.g. `/m/<code>` or `/mosques/<slug>` — tabs link off this. */
+  baseHref: string;
   context: CommunityContext;
-  /** Canonical URL of this surface (for the discussion comment itemMeta). */
   canonicalHref: string;
   topSlot?: ReactNode;
   followSlot?: ReactNode;
@@ -52,10 +59,7 @@ export async function MosqueCommunityHome({
 }) {
   const t = await getTranslations("mosques.community");
   const name = pickLocalized(mosque.name, locale, "en") ?? mosque.name.en;
-  const hasPhotos = (mosque.gallery ?? []).some((g) => g?.url);
   const showDiscussion = mosque.status === "published" || context.canManage;
-
-  const railLink = "block rounded-md px-2 py-1.5 text-foreground hover:bg-muted";
 
   return (
     <div className="space-y-5">
@@ -64,33 +68,42 @@ export async function MosqueCommunityHome({
       <MosqueCoverHeader
         mosque={mosque}
         locale={locale}
+        baseHref={baseHref}
+        activeView={view}
         followSlot={followSlot}
         installSlot={installSlot}
         shareSlot={shareSlot}
-        hasPhotos={hasPhotos}
+        manageSlot={manageSlot}
       />
 
-      {manageSlot}
+      {view === "about" && (
+        <div className="mx-auto max-w-3xl space-y-4">
+          <AboutSection mosque={mosque} locale={locale} />
+          <PhotosGrid mosque={mosque} />
+        </div>
+      )}
 
-      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[260px_minmax(0,1fr)_320px]">
-        {/* Left rail */}
-        <aside className="order-3 space-y-4 lg:order-1 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pe-1">
-          <VerseOfTheDayCard locale={locale} />
-          <nav className="mq-card mq-card-pad">
-            <div className="mq-rail-title">{t("onThisPage")}</div>
-            <ul className="space-y-1 text-sm">
-              <li><a href="#posts" className={railLink}>{t("tabPosts")}</a></li>
-              <li><a href="#about" className={railLink}>{t("tabAbout")}</a></li>
-              <li><a href="#events" className={railLink}>{t("tabEvents")}</a></li>
-              {hasPhotos && <li><a href="#photos" className={railLink}>{t("tabPhotos")}</a></li>}
-            </ul>
-          </nav>
-          <ContactRailCard mosque={mosque} />
-        </aside>
+      {view === "events" && (
+        <div className="mx-auto max-w-3xl">
+          <MosqueEventsCard
+            mosqueSlug={mosque.slug}
+            canAddEvent={context.canManage}
+            limit={50}
+            showWhenEmpty
+          />
+        </div>
+      )}
 
-        {/* Center feed */}
-        <section className="order-1 space-y-4 lg:order-2">
-          <div id="posts" className="scroll-mt-24">
+      {view === "posts" && (
+        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[260px_minmax(0,1fr)_320px]">
+          {/* Left rail */}
+          <aside className="order-3 space-y-4 lg:order-1 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pe-1">
+            <VerseOfTheDayCard locale={locale} />
+            <ContactRailCard mosque={mosque} />
+          </aside>
+
+          {/* Center feed */}
+          <section className="order-1 space-y-4 lg:order-2">
             <MosqueNewsFeed
               slug={mosque.slug}
               mosqueName={name}
@@ -100,45 +113,43 @@ export async function MosqueCommunityHome({
               canManage={context.canManage}
               canModerate={context.canModerate}
             />
-          </div>
 
-          <AboutSection mosque={mosque} locale={locale} />
+            {showDiscussion && (
+              <div className="mq-card mq-card-pad">
+                <h2 className="mq-rail-title">{t("discussion")}</h2>
+                <CommentThread
+                  entityType="mosque"
+                  entityId={mosque.slug}
+                  itemMeta={{
+                    title: name,
+                    subtitle: `${mosque.city}, ${countryName(mosque.country)}`,
+                    href: canonicalHref,
+                    locale,
+                  }}
+                  bare
+                />
+              </div>
+            )}
+          </section>
 
-          <PhotosGrid mosque={mosque} />
-
-          {showDiscussion && (
-            <div id="discussion" className="mq-card mq-card-pad scroll-mt-24">
-              <h2 className="mq-rail-title">{t("discussion")}</h2>
-              <CommentThread
-                entityType="mosque"
-                entityId={mosque.slug}
-                itemMeta={{
-                  title: name,
-                  subtitle: `${mosque.city}, ${countryName(mosque.country)}`,
-                  href: canonicalHref,
-                  locale,
-                }}
-                bare
-              />
-            </div>
-          )}
-        </section>
-
-        {/* Right rail */}
-        <aside className="order-2 space-y-4 lg:order-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:ps-1">
-          <PrayerCountdownCard mosque={mosque} locale={locale} />
-          <div id="events" className="scroll-mt-24">
-            <MosqueEventsCard mosqueSlug={mosque.slug} canAddEvent={context.canManage} />
-          </div>
-          <DuaWall
-            slug={mosque.slug}
-            signedIn={context.signedIn}
-            currentUid={context.currentUid}
-            canModerate={context.canModerate}
-          />
-          <MembersRail slug={mosque.slug} followerCount={mosque.followerCount ?? 0} />
-        </aside>
-      </div>
+          {/* Right rail */}
+          <aside className="order-2 space-y-4 lg:order-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:ps-1">
+            <PrayerCountdownCard mosque={mosque} locale={locale} />
+            <MosqueEventsCard
+              mosqueSlug={mosque.slug}
+              canAddEvent={context.canManage}
+              viewAllHref={`${baseHref}?view=events`}
+            />
+            <DuaWall
+              slug={mosque.slug}
+              signedIn={context.signedIn}
+              currentUid={context.currentUid}
+              canModerate={context.canModerate}
+            />
+            <MembersRail slug={mosque.slug} followerCount={mosque.followerCount ?? 0} />
+          </aside>
+        </div>
+      )}
     </div>
   );
 }

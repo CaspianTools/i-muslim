@@ -64,12 +64,18 @@ export async function generateMetadata({
   };
 }
 
+function parseView(v: string | undefined): "posts" | "about" | "events" {
+  return v === "about" ? "about" : v === "events" ? "events" : "posts";
+}
+
 export default async function MasjidShortLinkPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ code: string }>;
+  searchParams: Promise<{ view?: string }>;
 }) {
-  const { code } = await params;
+  const [{ code }, { view: viewParam }] = await Promise.all([params, searchParams]);
   const [resolved, locale] = await Promise.all([resolveVisibleMosque(code), getLocale()]);
   if (!resolved) notFound();
   const { mosque, isDraftPreview } = resolved;
@@ -92,6 +98,8 @@ export default async function MasjidShortLinkPage({
         <MosqueCommunityHome
           mosque={mosque}
           locale={locale}
+          view={parseView(viewParam)}
+          baseHref={`/m/${code}`}
           context={{
             signedIn: Boolean(session),
             currentUid: session?.uid ?? null,

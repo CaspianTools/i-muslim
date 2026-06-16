@@ -51,12 +51,18 @@ export async function generateMetadata({
   };
 }
 
+function parseView(v: string | undefined): "posts" | "about" | "events" {
+  return v === "about" ? "about" : v === "events" ? "events" : "posts";
+}
+
 export default async function MosqueDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ view?: string }>;
 }) {
-  const { slug } = await params;
+  const [{ slug }, { view: viewParam }] = await Promise.all([params, searchParams]);
   const [{ mosque }, locale] = await Promise.all([fetchMosqueBySlug(slug), getLocale()]);
   if (!mosque) notFound();
   const t = await getTranslations("mosques.detail");
@@ -82,6 +88,8 @@ export default async function MosqueDetailPage({
       <MosqueCommunityHome
         mosque={mosque}
         locale={locale}
+        view={parseView(viewParam)}
+        baseHref={`/mosques/${mosque.slug}`}
         context={{
           signedIn: Boolean(session),
           currentUid: session?.uid ?? null,

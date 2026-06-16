@@ -1,4 +1,3 @@
-import { getTranslations } from "next-intl/server";
 import { listMosqueNews, getMyNewsReactions } from "@/lib/mosques/news";
 import { MosqueNewsComposer } from "@/components/mosque/news/MosqueNewsComposer";
 import { MosqueNewsItem } from "@/components/mosque/news/MosqueNewsItem";
@@ -29,12 +28,15 @@ export async function MosqueNewsFeed({
   canManage: boolean;
   canModerate: boolean;
 }) {
-  const t = await getTranslations("mosques.news");
   const posts = await listMosqueNews(slug, { limit: 20 });
   const myReactions = currentUid
     ? await getMyNewsReactions(slug, currentUid, posts.map((p) => p.id))
     : new Map<string, MosqueNewsMyReactions>();
   const mosqueInitial = (mosqueName.trim()[0] ?? "M").toUpperCase();
+
+  // Nothing to show a visitor on a quiet masjid — render nothing (no empty
+  // "No updates yet" card). Managers always get the composer.
+  if (posts.length === 0 && !canManage) return null;
 
   return (
     <div className="space-y-4">
@@ -43,27 +45,21 @@ export async function MosqueNewsFeed({
           <MosqueNewsComposer slug={slug} />
         </div>
       )}
-      {posts.length === 0 ? (
-        <div className="mq-card mq-card-pad text-center text-sm text-muted-foreground">
-          {t("empty")}
+      {posts.map((post) => (
+        <div key={post.id} className="mq-card">
+          <MosqueNewsItem
+            post={post}
+            slug={slug}
+            mosqueName={mosqueName}
+            mosqueInitial={mosqueInitial}
+            locale={locale}
+            myReactions={myReactions.get(post.id) ?? NO_REACTIONS}
+            signedIn={signedIn}
+            canManage={canManage}
+            canModerate={canModerate}
+          />
         </div>
-      ) : (
-        posts.map((post) => (
-          <div key={post.id} className="mq-card">
-            <MosqueNewsItem
-              post={post}
-              slug={slug}
-              mosqueName={mosqueName}
-              mosqueInitial={mosqueInitial}
-              locale={locale}
-              myReactions={myReactions.get(post.id) ?? NO_REACTIONS}
-              signedIn={signedIn}
-              canManage={canManage}
-              canModerate={canModerate}
-            />
-          </div>
-        ))
-      )}
+      ))}
     </div>
   );
 }
