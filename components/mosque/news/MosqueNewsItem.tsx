@@ -34,7 +34,7 @@ export async function MosqueNewsItem({
 }) {
   const t = await getTranslations("mosques.news");
   return (
-    <article className="rounded-xl border border-border bg-card p-5">
+    <article className="p-5">
       <header className="mb-2 flex items-center justify-between gap-2">
         <span className="text-sm font-semibold text-foreground">{mosqueName}</span>
         <time className="text-xs text-muted-foreground" dateTime={post.createdAt}>
@@ -56,22 +56,22 @@ export async function MosqueNewsItem({
           postId={post.id}
           initialLiked={liked}
           initialLikeCount={post.likeCount}
+          commentCount={post.commentCount}
           signedIn={signedIn}
           canManage={canManage}
           canModerate={canModerate}
-        />
-      </div>
-      <div className="mt-2">
-        <CommentThread
-          entityType="mosque_news"
-          entityId={`${slug}:${post.id}`}
-          itemMeta={{
-            title: t("commentItemTitle", { name: mosqueName }),
-            href: `/mosques/${slug}`,
-            locale,
-          }}
-          bare
-        />
+        >
+          <CommentThread
+            entityType="mosque_news"
+            entityId={`${slug}:${post.id}`}
+            itemMeta={{
+              title: t("commentItemTitle", { name: mosqueName }),
+              href: `/mosques/${slug}`,
+              locale,
+            }}
+            bare
+          />
+        </NewsPostActions>
       </div>
     </article>
   );

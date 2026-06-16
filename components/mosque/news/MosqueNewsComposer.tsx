@@ -7,7 +7,10 @@ import { toast } from "sonner";
 import { ImagePlus, Loader2, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createNewsPost } from "@/app/[locale]/(site)/mosques/news-actions";
-import { getManageUploadUrlAction } from "@/app/[locale]/(site)/mosques/manage-actions";
+import {
+  getManageUploadUrlAction,
+  finalizeMosqueUploadAction,
+} from "@/app/[locale]/(site)/mosques/manage-actions";
 
 export function MosqueNewsComposer({ slug }: { slug: string }) {
   const t = useTranslations("mosques.news");
@@ -39,7 +42,12 @@ export function MosqueNewsComposer({ slug }: { slug: string }) {
         toast.error(t("postFailed"));
         return;
       }
-      setImage({ url: up.publicUrl, storagePath: up.storagePath });
+      const fin = await finalizeMosqueUploadAction(slug, up.storagePath);
+      if (!fin.ok || !fin.url) {
+        toast.error(t("postFailed"));
+        return;
+      }
+      setImage({ url: fin.url, storagePath: up.storagePath });
     } finally {
       setUploading(false);
     }
@@ -67,7 +75,7 @@ export function MosqueNewsComposer({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <div className="p-4">
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}

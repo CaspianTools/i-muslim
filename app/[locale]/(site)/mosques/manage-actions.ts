@@ -9,6 +9,7 @@ import { canManageMosque } from "@/lib/mosques/authz";
 import {
   createMosqueUploadUrl,
   publicUrlFor,
+  finalizeMosquePublicUrl,
   type MosqueUploadKind,
 } from "@/lib/mosques/storage";
 
@@ -116,6 +117,29 @@ export async function getManageUploadUrlAction(input: {
   } catch (err) {
     console.warn("[mosques/manage] upload url failed:", err);
     return { ok: false, error: "upload_url_failed" };
+  }
+}
+
+/**
+ * Called by the client after it PUTs a file to the signed upload URL. Stamps a
+ * Firebase download token on the object and returns a permanent media URL that
+ * renders regardless of the bucket's public-access policy.
+ */
+export async function finalizeMosqueUploadAction(
+  slug: string,
+  storagePath: string,
+): Promise<{ ok: boolean; url?: string; error?: string }> {
+  if (!(await authorize(slug))) return { ok: false, error: "forbidden" };
+  // Defense in depth: only finalize public-media objects under a mosque folder,
+  // never proof docs (those stay private behind admin-only signed reads).
+  if (!storagePath.startsWith("mosques/") || storagePath.includes("/proof/")) {
+    return { ok: false, error: "bad_path" };
+  }
+  try {
+    return { ok: true, url: await finalizeMosquePublicUrl(storagePath) };
+  } catch (err) {
+    console.warn("[mosques/manage] finalize failed:", err);
+    return { ok: false, error: "finalize_failed" };
   }
 }
 

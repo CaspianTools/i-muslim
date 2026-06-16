@@ -1,5 +1,5 @@
 import "server-only";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { getApps } from "firebase-admin/app";
 import { getStorage } from "firebase-admin/storage";
 import { requireDb } from "@/lib/firebase/admin";
@@ -96,6 +96,32 @@ export async function createMosqueUploadUrl(
 export function publicUrlFor(storagePath: string): string {
   const bucket = getBucketName();
   return `https://storage.googleapis.com/${bucket}/${encodeURI(storagePath)}`;
+}
+
+/**
+ * Build a Firebase Storage download URL for an object that carries the given
+ * download token. Unlike the raw `storage.googleapis.com` URL, this works even
+ * when the bucket has uniform bucket-level access with no public IAM grant — the
+ * token authorizes the read.
+ */
+export function downloadUrlFor(storagePath: string, token: string): string {
+  const bucket = getBucketName();
+  return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(storagePath)}?alt=media&token=${token}`;
+}
+
+/**
+ * Assign a Firebase download token to a freshly-uploaded object (set via the
+ * Admin SDK so the camel-cased `firebaseStorageDownloadTokens` metadata key is
+ * preserved) and return a permanent media URL. Call after the client PUTs a file
+ * to a signed upload URL for public media (logo / cover / gallery / news). This
+ * avoids depending on the bucket being publicly readable over the GCS URL.
+ */
+export async function finalizeMosquePublicUrl(storagePath: string): Promise<string> {
+  const token = randomUUID();
+  await getBucket()
+    .file(storagePath)
+    .setMetadata({ metadata: { firebaseStorageDownloadTokens: token } });
+  return downloadUrlFor(storagePath, token);
 }
 
 /**

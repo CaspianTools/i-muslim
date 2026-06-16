@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Heart, ShieldOff, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, ShieldOff, Trash2 } from "lucide-react";
 import {
   likeNewsPost,
   deleteNewsPost,
@@ -16,23 +16,29 @@ export function NewsPostActions({
   postId,
   initialLiked,
   initialLikeCount,
+  commentCount,
   signedIn,
   canManage,
   canModerate,
+  children,
 }: {
   slug: string;
   postId: string;
   initialLiked: boolean;
   initialLikeCount: number;
+  commentCount: number;
   signedIn: boolean;
   canManage: boolean;
   canModerate: boolean;
+  /** The comment thread, revealed only when the viewer expands comments. */
+  children: ReactNode;
 }) {
   const t = useTranslations("mosques.news");
   const router = useRouter();
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialLikeCount);
   const [busy, setBusy] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   async function toggleLike() {
     if (!signedIn) {
@@ -78,41 +84,62 @@ export function NewsPostActions({
   }
 
   return (
-    <div className="flex items-center gap-3 text-sm">
-      <button
-        type="button"
-        onClick={toggleLike}
-        className={
-          "inline-flex items-center gap-1.5 " +
-          (liked ? "text-danger" : "text-muted-foreground hover:text-foreground")
-        }
-        aria-pressed={liked}
-      >
-        <Heart className={"size-4 " + (liked ? "fill-current" : "")} />
-        {count > 0 ? count : t("like")}
-      </button>
-
-      {canManage && (
+    <div>
+      <div className="flex items-center gap-3 text-sm">
         <button
           type="button"
-          onClick={remove}
-          disabled={busy}
-          className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-danger"
+          onClick={toggleLike}
+          className={
+            "inline-flex items-center gap-1.5 " +
+            (liked ? "text-danger" : "text-muted-foreground hover:text-foreground")
+          }
+          aria-pressed={liked}
+          title={t("like")}
         >
-          <Trash2 className="size-4" /> {t("delete")}
+          <Heart className={"size-4 " + (liked ? "fill-current" : "")} />
+          {count > 0 ? count : t("like")}
         </button>
-      )}
 
-      {canModerate && (
         <button
           type="button"
-          onClick={takeDown}
-          disabled={busy}
-          className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-danger"
+          onClick={() => setShowComments((v) => !v)}
+          className={
+            "inline-flex items-center gap-1.5 " +
+            (showComments ? "text-foreground" : "text-muted-foreground hover:text-foreground")
+          }
+          aria-expanded={showComments}
+          title={t("comment")}
         >
-          <ShieldOff className="size-4" /> {t("takeDown")}
+          <MessageCircle className="size-4" />
+          {commentCount > 0 ? commentCount : t("comment")}
         </button>
-      )}
+
+        {canManage && (
+          <button
+            type="button"
+            onClick={remove}
+            disabled={busy}
+            className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-danger"
+            title={t("delete")}
+          >
+            <Trash2 className="size-4" /> {t("delete")}
+          </button>
+        )}
+
+        {canModerate && (
+          <button
+            type="button"
+            onClick={takeDown}
+            disabled={busy}
+            className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-danger"
+            title={t("takeDown")}
+          >
+            <ShieldOff className="size-4" /> {t("takeDown")}
+          </button>
+        )}
+      </div>
+
+      {showComments && <div className="mt-3 border-t border-border pt-3">{children}</div>}
     </div>
   );
 }

@@ -34,26 +34,26 @@ export async function MosqueNewsFeed({
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-semibold text-foreground">{t("heading")}</h2>
-      {canManage && <MosqueNewsComposer slug={slug} />}
-      {posts.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          {t("empty")}
-        </p>
-      ) : (
-        posts.map((post) => (
-          <MosqueNewsItem
-            key={post.id}
-            post={post}
-            slug={slug}
-            mosqueName={mosqueName}
-            locale={locale}
-            liked={likedSet.has(post.id)}
-            signedIn={signedIn}
-            canManage={canManage}
-            canModerate={canModerate}
-          />
-        ))
-      )}
+      <div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
+        {canManage && <MosqueNewsComposer slug={slug} />}
+        {posts.length === 0 ? (
+          <p className="p-6 text-center text-sm text-muted-foreground">{t("empty")}</p>
+        ) : (
+          posts.map((post) => (
+            <MosqueNewsItem
+              key={post.id}
+              post={post}
+              slug={slug}
+              mosqueName={mosqueName}
+              locale={locale}
+              liked={likedSet.has(post.id)}
+              signedIn={signedIn}
+              canManage={canManage}
+              canModerate={canModerate}
+            />
+          ))
+        )}
+      </div>
     </section>
   );
 }

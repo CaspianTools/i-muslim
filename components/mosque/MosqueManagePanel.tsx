@@ -18,6 +18,7 @@ import {
   updateMosqueCover,
   updateMosqueGallery,
   getManageUploadUrlAction,
+  finalizeMosqueUploadAction,
   publishMosque,
 } from "@/app/[locale]/(site)/mosques/manage-actions";
 
@@ -100,7 +101,12 @@ export function MosqueManagePanel({
         toast.error(t("saveFailed"));
         return;
       }
-      const res = await updateMosqueLogo(mosque.slug, { url: up.publicUrl, storagePath: up.storagePath });
+      const fin = await finalizeMosqueUploadAction(mosque.slug, up.storagePath);
+      if (!fin.ok || !fin.url) {
+        toast.error(t("saveFailed"));
+        return;
+      }
+      const res = await updateMosqueLogo(mosque.slug, { url: fin.url, storagePath: up.storagePath });
       if (!res.ok) {
         toast.error(t("saveFailed"));
         return;
@@ -123,10 +129,12 @@ export function MosqueManagePanel({
       contentType: file.type,
       contentLength: file.size,
     });
-    if (!up.ok || !up.url || !up.storagePath || !up.publicUrl) return null;
+    if (!up.ok || !up.url || !up.storagePath) return null;
     const put = await fetch(up.url, { method: "PUT", headers: { "content-type": file.type }, body: file });
     if (!put.ok) return null;
-    return { url: up.publicUrl, storagePath: up.storagePath };
+    const fin = await finalizeMosqueUploadAction(mosque.slug, up.storagePath);
+    if (!fin.ok || !fin.url) return null;
+    return { url: fin.url, storagePath: up.storagePath };
   }
 
   async function handleCover(e: React.ChangeEvent<HTMLInputElement>) {
