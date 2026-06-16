@@ -1,12 +1,16 @@
 import { getTranslations } from "next-intl/server";
-import { listMosqueNews, getLikedPostIds } from "@/lib/mosques/news";
+import { listMosqueNews, getMyNewsReactions } from "@/lib/mosques/news";
 import { MosqueNewsComposer } from "@/components/mosque/news/MosqueNewsComposer";
 import { MosqueNewsItem } from "@/components/mosque/news/MosqueNewsItem";
+import type { MosqueNewsMyReactions } from "@/types/mosque-news";
+
+const NO_REACTIONS: MosqueNewsMyReactions = { amen: false, dua: false, heart: false };
 
 /**
- * News feed for a masjid page. Server component: fetches posts + the viewer's
- * like state, renders the manager composer (if allowed) and each post (which in
- * turn embeds the shared comment thread via entityType `mosque_news`).
+ * News feed for a masjid page (Facebook-style — one card per post). Server
+ * component: fetches posts + the viewer's reaction state, renders the manager
+ * composer (if allowed) and each post (which embeds the shared comment thread
+ * via entityType `mosque_news`).
  */
 export async function MosqueNewsFeed({
   slug,
@@ -27,33 +31,39 @@ export async function MosqueNewsFeed({
 }) {
   const t = await getTranslations("mosques.news");
   const posts = await listMosqueNews(slug, { limit: 20 });
-  const likedSet = currentUid
-    ? await getLikedPostIds(slug, currentUid, posts.map((p) => p.id))
-    : new Set<string>();
+  const myReactions = currentUid
+    ? await getMyNewsReactions(slug, currentUid, posts.map((p) => p.id))
+    : new Map<string, MosqueNewsMyReactions>();
+  const mosqueInitial = (mosqueName.trim()[0] ?? "M").toUpperCase();
 
   return (
-    <section className="space-y-4">
-      <h2 className="text-lg font-semibold text-foreground">{t("heading")}</h2>
-      <div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
-        {canManage && <MosqueNewsComposer slug={slug} />}
-        {posts.length === 0 ? (
-          <p className="p-6 text-center text-sm text-muted-foreground">{t("empty")}</p>
-        ) : (
-          posts.map((post) => (
+    <div className="space-y-4">
+      {canManage && (
+        <div className="mq-card">
+          <MosqueNewsComposer slug={slug} />
+        </div>
+      )}
+      {posts.length === 0 ? (
+        <div className="mq-card mq-card-pad text-center text-sm text-muted-foreground">
+          {t("empty")}
+        </div>
+      ) : (
+        posts.map((post) => (
+          <div key={post.id} className="mq-card">
             <MosqueNewsItem
-              key={post.id}
               post={post}
               slug={slug}
               mosqueName={mosqueName}
+              mosqueInitial={mosqueInitial}
               locale={locale}
-              liked={likedSet.has(post.id)}
+              myReactions={myReactions.get(post.id) ?? NO_REACTIONS}
               signedIn={signedIn}
               canManage={canManage}
               canModerate={canModerate}
             />
-          ))
-        )}
-      </div>
-    </section>
+          </div>
+        ))
+      )}
+    </div>
   );
 }

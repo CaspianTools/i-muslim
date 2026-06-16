@@ -7,6 +7,7 @@ import {
   Scheherazade_New,
   Noto_Naskh_Arabic,
   IBM_Plex_Sans_Arabic,
+  DM_Serif_Display,
 } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -71,6 +72,16 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   variable: "--font-plex-arabic",
   subsets: ["arabic"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Serif display accent — used for headings on the mosque community pages
+// (`.font-display`). Adopts the design's typographic flavor without changing
+// the site-wide body font.
+const dmSerif = DM_Serif_Display({
+  variable: "--font-dm-serif",
+  subsets: ["latin"],
+  weight: ["400"],
   display: "swap",
 });
 
@@ -143,7 +154,7 @@ export default async function RootLayout({
       lang={locale}
       dir={dir}
       suppressHydrationWarning
-      className={`${inter.variable} ${plexSans.variable} ${roboto.variable} ${amiri.variable} ${scheherazade.variable} ${notoNaskh.variable} ${plexArabic.variable} antialiased`}
+      className={`${inter.variable} ${plexSans.variable} ${roboto.variable} ${amiri.variable} ${scheherazade.variable} ${notoNaskh.variable} ${plexArabic.variable} ${dmSerif.variable} antialiased`}
       style={fontStyle}
     >
       <body className="min-h-dvh flex flex-col">

@@ -9,7 +9,12 @@ import { canManageMosque } from "@/lib/mosques/authz";
 import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
 import { NEWS_SUBCOLLECTION } from "@/lib/mosques/news";
 import { sendPushToFollowers } from "@/lib/push/send";
-import { MAX_NEWS_BODY_LENGTH } from "@/types/mosque-news";
+import {
+  MAX_NEWS_BODY_LENGTH,
+  NEWS_REACTION_KINDS,
+  isNewsReactionKind,
+  type MosqueNewsReactionKind,
+} from "@/types/mosque-news";
 
 export interface NewsActionResult {
   ok: boolean;
@@ -43,6 +48,7 @@ export async function createNewsPost(
     authorUid: session.uid,
     status: "visible",
     likeCount: 0,
+    reactionCounts: { amen: 0, dua: 0, heart: 0 },
     commentCount: 0,
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),
@@ -88,31 +94,42 @@ export async function deleteNewsPost(slug: string, postId: string): Promise<News
   return { ok: true };
 }
 
-export async function likeNewsPost(
+/**
+ * Toggle one of the three reactions (amen / du'a / heart) for the signed-in
+ * user. Reactions are independent — a user may give any combination. State lives
+ * in `news/{postId}/reactions/{uid}` and counts in `reactionCounts.<kind>`.
+ */
+export async function reactNewsPost(
   slug: string,
   postId: string,
-): Promise<{ ok: boolean; error?: string; liked?: boolean }> {
+  kind: MosqueNewsReactionKind,
+): Promise<{ ok: boolean; error?: string; active?: boolean }> {
   const session = await getSiteSession();
   if (!session) return { ok: false, error: "auth" };
+  if (!isNewsReactionKind(kind)) return { ok: false, error: "bad_kind" };
   const db = getDb();
   if (!db) return { ok: false, error: "firestore_not_configured" };
 
   const postRef = newsCol(db, slug).doc(postId);
-  const likeRef = postRef.collection("likes").doc(session.uid);
+  const reactRef = postRef.collection("reactions").doc(session.uid);
   try {
-    const liked = await db.runTransaction(async (tx) => {
-      const [post, like] = await Promise.all([tx.get(postRef), tx.get(likeRef)]);
+    const active = await db.runTransaction(async (tx) => {
+      const [post, react] = await Promise.all([tx.get(postRef), tx.get(reactRef)]);
       if (!post.exists) throw new Error("not_found");
-      if (like.exists) {
-        tx.delete(likeRef);
-        tx.update(postRef, { likeCount: FieldValue.increment(-1) });
-        return false;
+      const cur = (react.exists ? react.data() : {}) as Record<string, unknown>;
+      const had = cur[kind] === true;
+      const next: Record<string, boolean> = {};
+      for (const k of NEWS_REACTION_KINDS) next[k] = k === kind ? !had : cur[k] === true;
+
+      if (NEWS_REACTION_KINDS.some((k) => next[k])) {
+        tx.set(reactRef, { uid: session.uid, ...next, updatedAt: FieldValue.serverTimestamp() });
+      } else {
+        tx.delete(reactRef);
       }
-      tx.set(likeRef, { uid: session.uid, createdAt: FieldValue.serverTimestamp() });
-      tx.update(postRef, { likeCount: FieldValue.increment(1) });
-      return true;
+      tx.update(postRef, { [`reactionCounts.${kind}`]: FieldValue.increment(had ? -1 : 1) });
+      return !had;
     });
-    return { ok: true, liked };
+    return { ok: true, active };
   } catch {
     return { ok: false, error: "failed" };
   }

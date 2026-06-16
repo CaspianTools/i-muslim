@@ -8,12 +8,10 @@ import { fetchMosqueBySlug, fetchAllSlugs } from "@/lib/admin/data/mosques";
 import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { getSiteUrl } from "@/lib/mosques/constants";
-import { MosqueProfile } from "@/components/mosque/MosqueProfile";
+import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
 import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
-import { MosqueEventsCard } from "@/components/mosque/MosqueEventsCard";
-import { MosqueNewsFeed } from "@/components/mosque/news/MosqueNewsFeed";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
-import { CommentThread } from "@/components/comments/CommentThread";
+import { MosqueShareButton } from "@/components/mosque/community/MosqueShareButton";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { getSiteSession } from "@/lib/auth/session";
 import { isFollowingMosque } from "@/lib/mosques/follows";
@@ -77,83 +75,65 @@ export default async function MosqueDetailPage({
   const analytics = canAddEvent ? await getMosqueAnalytics(mosque.slug) : undefined;
   const showClaim = (mosque.managers?.length ?? 0) === 0 && !canAddEvent;
 
+  const published = mosque.status === "published";
+
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      <Link
-        href="/mosques"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4 rtl:rotate-180" /> {t("back")}
-      </Link>
-
-      {mosque.status === "published" && mosque.shortCode && (
-        <div className="mt-4">
-          <Link
-            href={`/m/${mosque.shortCode}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
-          >
-            <ExternalLink className="size-4" /> {t("viewPublicPage")}
-          </Link>
-        </div>
-      )}
-
-      {showClaim && (
-        <Link
-          href={`/mosques/apply?slug=${mosque.slug}`}
-          className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-accent/40 bg-accent/5 px-4 py-3 text-sm font-medium text-foreground hover:bg-accent/10"
-        >
-          {t("claimCta")}
-          <span aria-hidden className="text-accent">→</span>
-        </Link>
-      )}
-
-      {!canAddEvent && mosque.status === "published" && (
-        <div className="mt-4 flex justify-end">
-          <MosqueFollowButton
-            slug={mosque.slug}
-            initialFollowing={following}
-            initialCount={mosque.followerCount ?? 0}
-            signedIn={Boolean(session)}
-          />
-        </div>
-      )}
-
-      {canAddEvent && (
-        <div className="mt-4">
-          <MosqueManagePanel mosque={mosque} analytics={analytics} />
-        </div>
-      )}
-
-      <div className="mt-4">
-        <MosqueProfile
-          mosque={mosque}
-          eventsSlot={
-            <MosqueEventsCard mosqueSlug={mosque.slug} canAddEvent={canAddEvent} />
-          }
-        />
-      </div>
-
-      <div className="mt-8">
-        <MosqueNewsFeed
-          slug={mosque.slug}
-          mosqueName={localizedName}
-          locale={locale}
-          signedIn={Boolean(session)}
-          currentUid={session?.uid ?? null}
-          canManage={canAddEvent}
-          canModerate={canModerate}
-        />
-      </div>
-
-      <CommentThread
-        entityType="mosque"
-        entityId={mosque.slug}
-        itemMeta={{
-          title: localizedName,
-          subtitle: `${mosque.city}, ${countryName(mosque.country)}`,
-          href: `/mosques/${mosque.slug}`,
-          locale,
+    <div className="mx-auto max-w-[1340px] px-4 py-6">
+      <MosqueCommunityHome
+        mosque={mosque}
+        locale={locale}
+        context={{
+          signedIn: Boolean(session),
+          currentUid: session?.uid ?? null,
+          canManage: canAddEvent,
+          canModerate,
         }}
+        canonicalHref={`/mosques/${mosque.slug}`}
+        topSlot={
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/mosques"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="size-4 rtl:rotate-180" /> {t("back")}
+            </Link>
+            {published && mosque.shortCode && (
+              <Link
+                href={`/m/${mosque.shortCode}`}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-accent"
+              >
+                <ExternalLink className="size-4" /> {t("viewPublicPage")}
+              </Link>
+            )}
+            {showClaim && (
+              <Link
+                href={`/mosques/apply?slug=${mosque.slug}`}
+                className="ms-auto inline-flex items-center gap-2 rounded-lg border border-accent/40 bg-accent/5 px-3 py-1.5 text-sm font-medium text-foreground hover:bg-accent/10"
+              >
+                {t("claimCta")}
+                <span aria-hidden className="text-accent">→</span>
+              </Link>
+            )}
+          </div>
+        }
+        followSlot={
+          published && !canAddEvent ? (
+            <MosqueFollowButton
+              slug={mosque.slug}
+              initialFollowing={following}
+              initialCount={mosque.followerCount ?? 0}
+              signedIn={Boolean(session)}
+            />
+          ) : undefined
+        }
+        shareSlot={
+          published && mosque.shortCode ? (
+            <MosqueShareButton code={mosque.shortCode} name={localizedName} />
+          ) : undefined
+        }
+        manageSlot={
+          canAddEvent ? <MosqueManagePanel mosque={mosque} analytics={analytics} /> : undefined
+        }
       />
 
       <script

@@ -45,6 +45,7 @@
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-arabic: var(--font-amiri), "Amiri", "Scheherazade New", serif;
   --font-arabic-ui: var(--font-plex-arabic), "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-display: var(--font-dm-serif), "DM Serif Display", "Cormorant Garamond", Georgia, serif;
 
   --radius-lg: 0.5rem;
   --radius-md: 0.375rem;
@@ -426,6 +427,90 @@ body {
     color: var(--muted-foreground);
     flex-shrink: 0;
   }
+
+  /* ---------- Mosque community-home (design refactor) ----------
+     Soft Facebook-style cards + rails, built entirely from theme tokens so the
+     look adapts to light/dark. Reused across components/mosque/community/*. */
+  .mq-card {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    box-shadow:
+      0 1px 0 color-mix(in oklab, var(--foreground) 4%, transparent),
+      0 6px 20px color-mix(in oklab, var(--foreground) 5%, transparent);
+    overflow: hidden;
+  }
+  .mq-card-pad {
+    padding: 1.125rem;
+  }
+  .mq-rail-title {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  /* Cover-photo fallback gradient from theme tokens (dark-mode safe). */
+  .mq-cover-fallback {
+    background:
+      radial-gradient(
+        1200px 400px at 30% 120%,
+        color-mix(in oklab, var(--accent) 40%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        900px 300px at 80% -10%,
+        color-mix(in oklab, var(--warning) 28%, transparent),
+        transparent 60%
+      ),
+      linear-gradient(
+        135deg,
+        color-mix(in oklab, var(--accent) 16%, var(--card)),
+        var(--muted)
+      );
+  }
+  .mq-tab {
+    padding: 0.875rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+  }
+  .mq-tab:hover {
+    color: var(--foreground);
+  }
+  .mq-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+  /* Reaction button (Amen / Du'a / Heart) in the post footer. */
+  .mq-react-btn {
+    flex: 1 1 0%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.5rem;
+    border-radius: 0.625rem;
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .mq-react-btn:hover {
+    background-color: var(--muted);
+    color: var(--foreground);
+  }
+  .mq-react-btn.active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .mq-react-btn.active.heart {
+    color: var(--danger);
+  }
 }
 
 /*
@@ -510,6 +595,14 @@ body {
 
 .font-arabic-ui {
   font-family: var(--font-arabic-ui);
+}
+
+/* Serif display accent used by the mosque community-home pages (cover name,
+   card titles). DM Serif Display via --font-dm-serif; degrades to Georgia. */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .tabular-nums {

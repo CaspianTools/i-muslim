@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { CommentThread } from "@/components/comments/CommentThread";
 import { NewsPostActions } from "@/components/mosque/news/NewsPostActions";
-import type { MosqueNewsPost } from "@/types/mosque-news";
+import type { MosqueNewsPost, MosqueNewsMyReactions } from "@/types/mosque-news";
 
 function formatDate(iso: string, locale: string): string {
   try {
@@ -17,8 +17,9 @@ export async function MosqueNewsItem({
   post,
   slug,
   mosqueName,
+  mosqueInitial,
   locale,
-  liked,
+  myReactions,
   signedIn,
   canManage,
   canModerate,
@@ -26,8 +27,9 @@ export async function MosqueNewsItem({
   post: MosqueNewsPost;
   slug: string;
   mosqueName: string;
+  mosqueInitial: string;
   locale: string;
-  liked: boolean;
+  myReactions: MosqueNewsMyReactions;
   signedIn: boolean;
   canManage: boolean;
   canModerate: boolean;
@@ -35,13 +37,18 @@ export async function MosqueNewsItem({
   const t = await getTranslations("mosques.news");
   return (
     <article className="p-5">
-      <header className="mb-2 flex items-center justify-between gap-2">
-        <span className="text-sm font-semibold text-foreground">{mosqueName}</span>
-        <time className="text-xs text-muted-foreground" dateTime={post.createdAt}>
-          {formatDate(post.createdAt, locale)}
-        </time>
+      <header className="mb-3 flex items-center gap-3">
+        <div className="grid size-10 shrink-0 place-items-center rounded-full bg-selected font-display text-base text-accent">
+          {mosqueInitial}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-foreground">{mosqueName}</p>
+          <time className="text-xs text-muted-foreground" dateTime={post.createdAt}>
+            {formatDate(post.createdAt, locale)}
+          </time>
+        </div>
       </header>
-      <p className="whitespace-pre-wrap text-sm text-foreground">{post.body}</p>
+      <p className="whitespace-pre-wrap text-[0.925rem] leading-relaxed text-foreground">{post.body}</p>
       {post.image?.url && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -50,12 +57,12 @@ export async function MosqueNewsItem({
           className="mt-3 max-h-96 w-full rounded-lg border border-border object-cover"
         />
       )}
-      <div className="mt-3 border-t border-border pt-3">
+      <div className="mt-3 border-t border-border pt-2">
         <NewsPostActions
           slug={slug}
           postId={post.id}
-          initialLiked={liked}
-          initialLikeCount={post.likeCount}
+          initialCounts={post.reactionCounts}
+          initialMine={myReactions}
           commentCount={post.commentCount}
           signedIn={signedIn}
           canManage={canManage}

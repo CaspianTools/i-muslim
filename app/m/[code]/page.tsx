@@ -6,14 +6,12 @@ import { fetchMosqueByShortCode } from "@/lib/admin/data/mosques";
 import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { getSiteUrl } from "@/lib/mosques/constants";
-import { MosqueProfile } from "@/components/mosque/MosqueProfile";
+import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
 import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
-import { MosqueEventsCard } from "@/components/mosque/MosqueEventsCard";
-import { MosqueNewsFeed } from "@/components/mosque/news/MosqueNewsFeed";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
 import { InstallMasjidButton } from "@/components/mosque/InstallMasjidButton";
+import { MosqueShareButton } from "@/components/mosque/community/MosqueShareButton";
 import { MasjidViewTracker } from "@/components/mosque/MasjidViewTracker";
-import { CommentThread } from "@/components/comments/CommentThread";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { getSiteSession } from "@/lib/auth/session";
 import { isFollowingMosque } from "@/lib/mosques/follows";
@@ -86,70 +84,51 @@ export default async function MasjidShortLinkPage({
   const following = session && !canManage ? await isFollowingMosque(session.uid, mosque.slug) : false;
   const analytics = canManage ? await getMosqueAnalytics(mosque.slug) : undefined;
 
+  const published = mosque.status === "published";
+
   return (
     <main className="min-h-dvh bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-8">
-        {isDraftPreview && (
-          <div className="mb-6 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-foreground">
-            {t("draftPreviewNote")}
-          </div>
-        )}
-
-        {mosque.status === "published" && <MasjidViewTracker slug={mosque.slug} />}
-
-        {canManage && (
-          <div className="mb-6">
-            <MosqueManagePanel mosque={mosque} analytics={analytics} />
-          </div>
-        )}
-
-        {mosque.status === "published" && (
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <InstallMasjidButton />
-            {!canManage && (
+      <div className="mx-auto max-w-[1340px] px-4 py-6">
+        <MosqueCommunityHome
+          mosque={mosque}
+          locale={locale}
+          context={{
+            signedIn: Boolean(session),
+            currentUid: session?.uid ?? null,
+            canManage,
+            canModerate,
+          }}
+          canonicalHref={`/m/${code}`}
+          topSlot={
+            <>
+              {isDraftPreview && (
+                <div className="rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-foreground">
+                  {t("draftPreviewNote")}
+                </div>
+              )}
+              {published && <MasjidViewTracker slug={mosque.slug} />}
+            </>
+          }
+          installSlot={published ? <InstallMasjidButton /> : undefined}
+          followSlot={
+            published && !canManage ? (
               <MosqueFollowButton
                 slug={mosque.slug}
                 initialFollowing={following}
                 initialCount={mosque.followerCount ?? 0}
                 signedIn={Boolean(session)}
               />
-            )}
-          </div>
-        )}
-
-        <MosqueProfile
-          mosque={mosque}
-          eventsSlot={
-            <MosqueEventsCard mosqueSlug={mosque.slug} canAddEvent={canManage} />
+            ) : undefined
+          }
+          shareSlot={
+            published ? <MosqueShareButton code={code} name={localizedName} /> : undefined
+          }
+          manageSlot={
+            canManage ? <MosqueManagePanel mosque={mosque} analytics={analytics} /> : undefined
           }
         />
 
-        <div className="mt-8">
-          <MosqueNewsFeed
-            slug={mosque.slug}
-            mosqueName={localizedName}
-            locale={locale}
-            signedIn={Boolean(session)}
-            currentUid={session?.uid ?? null}
-            canManage={canManage}
-            canModerate={canModerate}
-          />
-        </div>
-
-        {mosque.status === "published" && (
-          <CommentThread
-            entityType="mosque"
-            entityId={mosque.slug}
-            itemMeta={{
-              title: localizedName,
-              subtitle: `${mosque.city}, ${countryName(mosque.country)}`,
-              href: `/m/${code}`,
-              locale,
-            }}
-          />
-        )}
-
-        {mosque.status === "published" && (
+        {published && (
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(mosqueJsonLd(mosque)) }}

@@ -36,6 +36,32 @@ export async function listFollowerUids(slug: string, limit = 1000): Promise<stri
   }
 }
 
+export interface MosqueMember {
+  uid: string;
+  name: string;
+  avatarUrl: string | null;
+}
+
+/** Recent followers of a masjid, joined to their user profile (for the members rail). */
+export async function listRecentFollowers(slug: string, limit = 8): Promise<MosqueMember[]> {
+  const db = getDb();
+  if (!db) return [];
+  const uids = await listFollowerUids(slug, limit);
+  if (uids.length === 0) return [];
+  try {
+    const refs = uids.map((uid) => db.collection("users").doc(uid));
+    const snaps = await db.getAll(...refs);
+    return snaps.map((snap, i) => {
+      const d = snap.data() ?? {};
+      const name = ((d.displayName as string) || (d.name as string) || "").trim();
+      return { uid: uids[i]!, name, avatarUrl: (d.avatarUrl as string) ?? null };
+    });
+  } catch (err) {
+    console.warn("[mosqueFollows] member profiles read failed:", err);
+    return uids.map((uid) => ({ uid, name: "", avatarUrl: null }));
+  }
+}
+
 export async function listFollowedSlugs(uid: string, limit = 200): Promise<string[]> {
   const db = getDb();
   if (!db) return [];
