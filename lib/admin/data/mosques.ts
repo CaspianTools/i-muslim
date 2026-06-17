@@ -225,6 +225,26 @@ export async function generateUniqueShortCode(): Promise<string> {
   return randomShortCode(10);
 }
 
+/**
+ * Idempotently ensure a masjid has a `shortCode`, returning the existing one or a
+ * freshly-minted unique code (persisted). Pure data layer — no auth, no cache
+ * revalidation — so it's safe to call during a server render (the manage actions
+ * wrapper adds the authorization + `revalidatePath`). Returns null when the doc
+ * is missing or Firestore isn't configured.
+ */
+export async function ensureMosqueShortCodeValue(slug: string): Promise<string | null> {
+  const db = getDb();
+  if (!db) return null;
+  const ref = db.collection(MOSQUES_COLLECTION).doc(slug);
+  const snap = await ref.get();
+  if (!snap.exists) return null;
+  const existing = snap.data()?.shortCode as string | undefined;
+  if (existing) return existing;
+  const shortCode = await generateUniqueShortCode();
+  await ref.update({ shortCode });
+  return shortCode;
+}
+
 export async function fetchAllSlugs(limit = 200): Promise<string[]> {
   const db = getDb();
   if (!db) return MOCK_MOSQUES.slice(0, limit).map((m) => m.slug);

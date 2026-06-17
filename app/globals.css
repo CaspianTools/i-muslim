@@ -748,3 +748,185 @@ body.reading-mode-on > main {
   padding-bottom: 0 !important;
 }
 
+/* ----------------------------------------------------------------------------
+ * Masjid QR poster — /m/<code>/poster. A self-contained A4 sheet the manager
+ * picks a language for and prints / saves as PDF. The sheet uses a fixed
+ * print-safe palette (white paper, dark ink, brand green) rather than theme
+ * tokens, so it looks identical whether the manager is in light or dark mode.
+ * Sizes are in mm so screen preview and paper match. `.no-print` chrome (the
+ * language + print controls) is hidden on paper.
+ * -------------------------------------------------------------------------- */
+.mq-poster-screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 1rem 3rem;
+  background: var(--muted);
+}
+.mq-poster-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.mq-poster-toolbar label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+.mq-poster-toolbar select {
+  height: 2.25rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card);
+  color: var(--foreground);
+}
+.mq-poster-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.25rem;
+  padding: 0 0.9rem;
+  border-radius: 0.5rem;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.mq-poster {
+  width: 210mm;
+  max-width: 100%;
+  aspect-ratio: 210 / 297;
+  background: #ffffff;
+  color: #161a17;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.mq-poster-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14mm 16mm;
+  border: 6px solid #eef3e6;
+  border-radius: inherit;
+}
+.mq-poster-logo {
+  width: 30mm;
+  height: 30mm;
+  margin-bottom: 6mm;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: #eef3e6;
+  color: #5e8b2a;
+  font-family: var(--font-display);
+  font-size: 14mm;
+  line-height: 1;
+}
+.mq-poster-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mq-poster-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 11mm;
+  line-height: 1.1;
+}
+.mq-poster-name-ar {
+  margin: 2mm 0 0;
+  font-size: 9mm;
+  line-height: 1.2;
+  color: #5e8b2a;
+}
+.mq-poster-city {
+  margin: 2mm 0 0;
+  font-size: 4.5mm;
+  color: #6b7280;
+}
+.mq-poster-heading {
+  margin: 10mm 0 0;
+  font-size: 6mm;
+  font-weight: 700;
+  color: #5e8b2a;
+}
+.mq-poster-qr {
+  margin-top: 6mm;
+  padding: 4mm;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 3mm;
+}
+.mq-poster-qr img {
+  display: block;
+  width: 70mm;
+  height: 70mm;
+}
+.mq-poster-url {
+  margin: 6mm 0 0;
+  font-size: 5mm;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.mq-poster-tagline {
+  margin: 2mm 0 0;
+  font-size: 4mm;
+  color: #6b7280;
+}
+.mq-poster-powered {
+  margin-top: auto;
+  font-size: 3.2mm;
+  color: #9ca3af;
+}
+
+/* Utility: keep an element on screen but off the printed page. */
+.no-print {
+  /* no-op on screen; hidden in the print block below */
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .mq-poster-screen {
+    min-height: 0;
+    padding: 0;
+    gap: 0;
+    background: #ffffff;
+  }
+  .mq-poster {
+    width: 210mm;
+    height: 297mm;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .mq-poster-inner {
+    border: none;
+    border-radius: 0;
+  }
+}
+

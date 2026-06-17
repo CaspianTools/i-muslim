@@ -6,6 +6,7 @@ import { Timestamp } from "firebase-admin/firestore";
 import { getDb } from "@/lib/firebase/admin";
 import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
 import { canManageMosque } from "@/lib/mosques/authz";
+import { generateUniqueShortCode, ensureMosqueShortCodeValue } from "@/lib/admin/data/mosques";
 import {
   createMosqueUploadUrl,
   publicUrlFor,
@@ -194,10 +195,29 @@ export async function publishMosque(slug: string): Promise<ManageResult & { miss
   const now = new Date();
   await ref.update({
     status: "published",
+    // Mint the share code at go-live if the masjid doesn't have one yet, so the
+    // public `/m/<code>` page, QR and poster are immediately available.
+    shortCode: (data.shortCode as string | undefined) ?? (await generateUniqueShortCode()),
     publishedAt: data.publishedAt ?? Timestamp.fromDate(now),
     updatedAt: Timestamp.fromDate(now),
   });
   revalidatePath(`/mosques/${slug}`);
   revalidatePath("/mosques");
   return { ok: true };
+}
+
+/**
+ * Idempotently ensure a masjid has a `shortCode` (the `/m/<code>` segment used by
+ * the public page, QR code and poster). Returns the existing code, or mints and
+ * persists a unique one. Backfills masjids published before share codes existed
+ * (or via a flow that didn't assign one). Manager-gated.
+ */
+export async function ensureMosqueShortCode(
+  slug: string,
+): Promise<{ ok: boolean; error?: string; shortCode?: string }> {
+  if (!(await authorize(slug))) return { ok: false, error: "forbidden" };
+  const shortCode = await ensureMosqueShortCodeValue(slug);
+  if (!shortCode) return { ok: false, error: "not_found" };
+  revalidatePath(`/mosques/${slug}`);
+  return { ok: true, shortCode };
 }

@@ -1813,9 +1813,20 @@
       "shareHint": "شارك هذا الرابط أو اطبع ملصق QR للوحة إعلانات مسجدك.",
       "copyLink": "نسخ",
       "copied": "تم نسخ الرابط.",
-      "downloadPoster": "ملصق قابل للطباعة (PDF)",
       "downloadPng": "QR (PNG)",
-      "downloadSvg": "QR (SVG)"
+      "downloadSvg": "QR (SVG)",
+      "statsLifetime": "الإجماليات الكلية",
+      "posterLanguage": "لغة الملصق",
+      "viewPoster": "عرض / طباعة الملصق",
+      "createShareLink": "إنشاء رابط المشاركة",
+      "qrPreviewAlt": "رمز QR لصفحة مسجدك"
+    },
+    "poster": {
+      "scanHeading": "امسح لزيارة صفحتنا",
+      "tagline": "مواقيت الصلاة · الأخبار · الفعاليات",
+      "poweredBy": "بدعم من i-muslim",
+      "print": "طباعة / حفظ بصيغة PDF",
+      "language": "لغة الملصق"
     },
     "install": {
       "install": "تثبيت التطبيق"

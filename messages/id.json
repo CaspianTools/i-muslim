@@ -1813,9 +1813,20 @@
       "shareHint": "Bagikan tautan ini atau cetak poster QR untuk papan pengumuman masjid Anda.",
       "copyLink": "Salin",
       "copied": "Tautan disalin.",
-      "downloadPoster": "Poster cetak (PDF)",
       "downloadPng": "QR (PNG)",
-      "downloadSvg": "QR (SVG)"
+      "downloadSvg": "QR (SVG)",
+      "statsLifetime": "Total sepanjang waktu",
+      "posterLanguage": "Bahasa poster",
+      "viewPoster": "Lihat / cetak poster",
+      "createShareLink": "Buat tautan berbagi",
+      "qrPreviewAlt": "Kode QR untuk halaman masjid Anda"
+    },
+    "poster": {
+      "scanHeading": "Pindai untuk mengunjungi halaman kami",
+      "tagline": "Jadwal salat · Berita · Acara",
+      "poweredBy": "Didukung oleh i-muslim",
+      "print": "Cetak / Simpan sebagai PDF",
+      "language": "Bahasa poster"
     },
     "install": {
       "install": "Pasang aplikasi"

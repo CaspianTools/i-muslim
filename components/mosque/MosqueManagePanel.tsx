@@ -2,18 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import {
   Copy,
   Download,
-  FileText,
   Loader2,
+  Printer,
   QrCode,
   Rocket,
   Save,
   Settings2,
 } from "lucide-react";
+import { BUNDLED_LOCALES, LOCALE_META } from "@/i18n/config";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +36,7 @@ import {
   updateMosqueLogo,
   updateMosqueCover,
   publishMosque,
+  ensureMosqueShortCode,
 } from "@/app/[locale]/(site)/mosques/manage-actions";
 
 const DAILY = ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const;
@@ -55,7 +57,13 @@ export function MosqueManagePanel({
   const t = useTranslations("mosques.manage");
   const tPrayer = useTranslations("mosques.prayer");
   const router = useRouter();
+  const uiLocale = useLocale();
   const [saving, setSaving] = useState<string | null>(null);
+  // Poster print language — defaults to the manager's UI language when it's one
+  // of the bundled (fully translated) locales, else English.
+  const [posterLang, setPosterLang] = useState<string>(
+    (BUNDLED_LOCALES as readonly string[]).includes(uiLocale) ? uiLocale : "en",
+  );
 
   const [about, setAbout] = useState(mosque.about ?? "");
   const [contact, setContact] = useState({
@@ -129,6 +137,21 @@ export function MosqueManagePanel({
       toast.success(t("copied"));
     } catch {
       toast.error(t("saveFailed"));
+    }
+  }
+
+  async function createShareLink() {
+    setSaving("shortcode");
+    try {
+      const res = await ensureMosqueShortCode(mosque.slug);
+      if (res.ok) {
+        toast.success(t("saved"));
+        router.refresh();
+      } else {
+        toast.error(t("saveFailed"));
+      }
+    } finally {
+      setSaving(null);
     }
   }
 
@@ -280,40 +303,101 @@ export function MosqueManagePanel({
             {/* Share + analytics */}
             <TabsContent value="share" className="space-y-6">
               {analytics && (
-                <div className="grid grid-cols-3 gap-3">
-                  <Stat label={t("statViews")} value={analytics.views} />
-                  <Stat label={t("statScans")} value={analytics.scans} />
-                  <Stat label={t("statFollowers")} value={mosque.followerCount ?? 0} />
+                <div className="space-y-1.5">
+                  <div className="grid grid-cols-3 gap-3">
+                    <Stat label={t("statViews")} value={analytics.views} />
+                    <Stat label={t("statScans")} value={analytics.scans} />
+                    <Stat label={t("statFollowers")} value={mosque.followerCount ?? 0} />
+                  </div>
+                  <p className="text-center text-xs text-muted-foreground">{t("statsLifetime")}</p>
                 </div>
               )}
               {mosque.shortCode ? (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="inline-flex items-center gap-1.5">
                     <QrCode className="size-4" /> {t("shareTitle")}
                   </Label>
                   <p className="text-xs text-muted-foreground">{t("shareHint")}</p>
-                  <div className="flex items-center gap-2">
-                    <code className="flex-1 truncate rounded-md border border-border bg-muted/40 px-3 py-2 text-xs">
-                      i-muslim.com/m/{mosque.shortCode}
-                    </code>
-                    <Button variant="secondary" size="sm" onClick={copyLink} type="button">
-                      <Copy className="size-4" /> {t("copyLink")}
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <a href={`/m/${mosque.shortCode}/poster`} className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted">
-                      <FileText className="size-4" /> {t("downloadPoster")}
-                    </a>
-                    <a href={`/m/${mosque.shortCode}/qr?format=png`} className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted">
-                      <Download className="size-4" /> {t("downloadPng")}
-                    </a>
-                    <a href={`/m/${mosque.shortCode}/qr?format=svg`} className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted">
-                      <Download className="size-4" /> {t("downloadSvg")}
-                    </a>
+
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                    {/* Live QR preview the manager can see before printing. */}
+                    <div className="shrink-0 self-center rounded-lg border border-border bg-white p-2 sm:self-start">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/m/${mosque.shortCode}/qr?format=svg`}
+                        alt={t("qrPreviewAlt")}
+                        width={132}
+                        height={132}
+                        className="size-[132px]"
+                      />
+                    </div>
+
+                    <div className="min-w-0 flex-1 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <code className="flex-1 truncate rounded-md border border-border bg-muted/40 px-3 py-2 text-xs">
+                          i-muslim.com/m/{mosque.shortCode}
+                        </code>
+                        <Button variant="secondary" size="sm" onClick={copyLink} type="button">
+                          <Copy className="size-4" /> {t("copyLink")}
+                        </Button>
+                      </div>
+
+                      {/* Printable poster — pick the language, then view / print it. */}
+                      <div className="flex flex-wrap items-center gap-2">
+                        <label className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                          {t("posterLanguage")}
+                          <select
+                            value={posterLang}
+                            onChange={(e) => setPosterLang(e.target.value)}
+                            className="h-8 rounded-md border border-input bg-background px-2 text-sm text-foreground"
+                          >
+                            {BUNDLED_LOCALES.map((l) => (
+                              <option key={l} value={l}>
+                                {LOCALE_META[l].nativeName}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <a
+                          href={`/m/${mosque.shortCode}/poster?lang=${posterLang}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted"
+                        >
+                          <Printer className="size-4" /> {t("viewPoster")}
+                        </a>
+                      </div>
+
+                      {/* Raw QR image downloads (logos, flyers, slides). */}
+                      <div className="flex flex-wrap gap-2">
+                        <a href={`/m/${mosque.shortCode}/qr?format=png`} className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted">
+                          <Download className="size-4" /> {t("downloadPng")}
+                        </a>
+                        <a href={`/m/${mosque.shortCode}/qr?format=svg`} className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted">
+                          <Download className="size-4" /> {t("downloadSvg")}
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">{t("shareUnavailable")}</p>
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">{t("shareUnavailable")}</p>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    type="button"
+                    disabled={saving === "shortcode"}
+                    onClick={createShareLink}
+                  >
+                    {saving === "shortcode" ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <QrCode className="size-4" />
+                    )}
+                    {t("createShareLink")}
+                  </Button>
+                </div>
               )}
             </TabsContent>
           </div>

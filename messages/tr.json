@@ -1813,9 +1813,20 @@
       "shareHint": "Bu bağlantıyı paylaşın veya mescit panonuz için QR posterini yazdırın.",
       "copyLink": "Kopyala",
       "copied": "Bağlantı kopyalandı.",
-      "downloadPoster": "Yazdırılabilir poster (PDF)",
       "downloadPng": "QR (PNG)",
-      "downloadSvg": "QR (SVG)"
+      "downloadSvg": "QR (SVG)",
+      "statsLifetime": "Tüm zamanların toplamı",
+      "posterLanguage": "Poster dili",
+      "viewPoster": "Posteri görüntüle / yazdır",
+      "createShareLink": "Paylaşım bağlantısı oluştur",
+      "qrPreviewAlt": "Mescit sayfanız için QR kodu"
+    },
+    "poster": {
+      "scanHeading": "Sayfamızı ziyaret etmek için tarayın",
+      "tagline": "Namaz vakitleri · Haberler · Etkinlikler",
+      "poweredBy": "i-muslim ile hazırlanmıştır",
+      "print": "Yazdır / PDF olarak kaydet",
+      "language": "Poster dili"
     },
     "install": {
       "install": "Uygulamayı yükle"

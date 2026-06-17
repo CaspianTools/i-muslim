@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { pickLocalized } from "@/lib/utils";
-import { fetchMosqueBySlug, fetchAllSlugs } from "@/lib/admin/data/mosques";
+import { fetchMosqueBySlug, fetchAllSlugs, ensureMosqueShortCodeValue } from "@/lib/admin/data/mosques";
 import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
@@ -12,6 +12,7 @@ import { MosqueActionsMenu } from "@/components/mosque/community/MosqueActionsMe
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
 import { MosqueLikeButton } from "@/components/mosque/MosqueLikeButton";
 import { MosqueShareButton } from "@/components/mosque/community/MosqueShareButton";
+import { MasjidViewTracker } from "@/components/mosque/MasjidViewTracker";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { getSiteSession } from "@/lib/auth/session";
 import { isFollowingMosque } from "@/lib/mosques/follows";
@@ -76,6 +77,15 @@ export default async function MosqueDetailPage({
     getSiteSession(),
   ]);
   const canModerate = hasPermission(session?.permissions ?? [], "comments.moderate");
+
+  // A manager viewing their masjid by slug: ensure a share code exists so the
+  // Share tab (QR, link, poster) and the public /m/<code> page are available even
+  // if it was published before share codes were minted. Idempotent + manager-only.
+  if (canAddEvent && !mosque.shortCode) {
+    const code = await ensureMosqueShortCodeValue(mosque.slug);
+    if (code) mosque.shortCode = code;
+  }
+
   const [following, liked] = session
     ? await Promise.all([
         isFollowingMosque(session.uid, mosque.slug),
@@ -102,7 +112,9 @@ export default async function MosqueDetailPage({
         }}
         canonicalHref={`/mosques/${mosque.slug}`}
         topSlot={
-          <div className="flex flex-wrap items-center gap-3">
+          <>
+            {published && <MasjidViewTracker slug={mosque.slug} />}
+            <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/mosques"
               className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -126,7 +138,8 @@ export default async function MosqueDetailPage({
                 <span aria-hidden className="text-accent">→</span>
               </Link>
             )}
-          </div>
+            </div>
+          </>
         }
         followSlot={
           <MosqueFollowButton

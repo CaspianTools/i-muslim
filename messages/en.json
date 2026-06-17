@@ -1810,9 +1810,20 @@
       "shareHint": "Share this link or print the QR poster for your masjid noticeboard.",
       "copyLink": "Copy",
       "copied": "Link copied.",
-      "downloadPoster": "Printable poster (PDF)",
       "downloadPng": "QR (PNG)",
-      "downloadSvg": "QR (SVG)"
+      "downloadSvg": "QR (SVG)",
+      "statsLifetime": "Lifetime totals",
+      "posterLanguage": "Poster language",
+      "viewPoster": "View / print poster",
+      "createShareLink": "Create share link",
+      "qrPreviewAlt": "QR code for your masjid page"
+    },
+    "poster": {
+      "scanHeading": "Scan to visit our page",
+      "tagline": "Prayer times · News · Events",
+      "poweredBy": "Powered by i-muslim",
+      "print": "Print / Save as PDF",
+      "language": "Poster language"
     },
     "install": {
       "install": "Install app"
