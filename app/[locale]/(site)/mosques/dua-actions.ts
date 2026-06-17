@@ -29,14 +29,23 @@ export async function addDua(slug: string, text: string): Promise<DuaActionResul
   const db = getDb();
   if (!db) return { ok: false, error: "firestore_not_configured" };
 
-  const ref = await duasCol(db, slug).add({
-    text: clean,
-    authorUid: session.uid,
-    authorName: session.name ?? "",
-    madeDuaCount: 0,
-    status: "visible",
-    createdAt: FieldValue.serverTimestamp(),
-  });
+  // Wrap the write (the sibling actions do) so a transient Firestore reject
+  // returns an error the client can toast, instead of rejecting the action and
+  // leaving the composer's submit button spinning forever.
+  let ref: FirebaseFirestore.DocumentReference;
+  try {
+    ref = await duasCol(db, slug).add({
+      text: clean,
+      authorUid: session.uid,
+      authorName: session.name ?? "",
+      madeDuaCount: 0,
+      status: "visible",
+      createdAt: FieldValue.serverTimestamp(),
+    });
+  } catch (err) {
+    console.warn("[mosques/duas] add failed:", err);
+    return { ok: false, error: "write_failed" };
+  }
   revalidatePath(`/mosques/${slug}`);
   return { ok: true, id: ref.id };
 }

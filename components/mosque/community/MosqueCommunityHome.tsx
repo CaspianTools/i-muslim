@@ -96,12 +96,13 @@ export async function MosqueCommunityHome({
       )}
 
       {view === "duas" && (
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-5xl">
           <DuaWall
             slug={mosque.slug}
             signedIn={context.signedIn}
             currentUid={context.currentUid}
             canModerate={context.canModerate}
+            variant="wall"
           />
         </div>
       )}

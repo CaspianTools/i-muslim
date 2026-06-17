@@ -50,18 +50,25 @@ export async function listMosqueDuas(
 ): Promise<MosqueDua[]> {
   const db = getDb();
   if (!db) return [];
+  const want = opts.limit ?? 12;
   try {
+    // Order by a single field only (createdAt has an auto-provisioned index) and
+    // filter `status` in memory. Combining `.where("status","==")` with
+    // `.orderBy("createdAt")` would require a deployed COMPOSITE index — when it
+    // is missing the query throws and the wall silently shows nothing, which
+    // reads as "my du'as weren't saved." Over-fetch a buffer so the handful of
+    // taken-down du'as filtered out here don't starve the visible list.
     const snap = await db
       .collection(MOSQUES_COLLECTION)
       .doc(slug)
       .collection(DUAS_SUBCOLLECTION)
-      .where("status", "==", "visible")
       .orderBy("createdAt", "desc")
-      .limit(opts.limit ?? 12)
+      .limit(want * 4)
       .get();
     return snap.docs
       .map((d) => normalizeDua(d.id, d.data() as Record<string, unknown>))
-      .filter((d): d is MosqueDua => d !== null);
+      .filter((d): d is MosqueDua => d !== null && d.status === "visible")
+      .slice(0, want);
   } catch (err) {
     console.warn("[mosques/duas] list failed:", err);
     return [];

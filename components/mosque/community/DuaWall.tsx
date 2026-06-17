@@ -12,14 +12,18 @@ export async function DuaWall({
   signedIn,
   currentUid,
   canModerate,
+  variant = "rail",
 }: {
   slug: string;
   signedIn: boolean;
   currentUid: string | null;
   canModerate: boolean;
+  /** "rail" = compact right-rail card; "wall" = full-tab masonry. */
+  variant?: "rail" | "wall";
 }) {
   const t = await getTranslations("mosques.dua");
-  const duas = await listMosqueDuas(slug, { limit: 12 });
+  // The full wall is the primary du'a surface, so pull more than the rail teaser.
+  const duas = await listMosqueDuas(slug, { limit: variant === "wall" ? 60 : 12 });
   const myAmins = currentUid
     ? await getMyAminDuaIds(slug, currentUid, duas.map((d) => d.id))
     : new Set<string>();
@@ -31,6 +35,22 @@ export async function DuaWall({
     madeDuaCount: d.madeDuaCount,
     mine: myAmins.has(d.id),
   }));
+
+  if (variant === "wall") {
+    return (
+      <div>
+        <h2 className="font-display text-2xl text-foreground">{t("title")}</h2>
+        <p className="mb-4 mt-0.5 text-sm text-muted-foreground">{t("subtitle")}</p>
+        <DuaWallClient
+          slug={slug}
+          signedIn={signedIn}
+          canModerate={canModerate}
+          initialDuas={vms}
+          variant="wall"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mq-card mq-card-pad">
