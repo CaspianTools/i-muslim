@@ -71,19 +71,20 @@ export async function MosqueCoverHeader({
         </p>
       </div>
 
-      {/* Meta row — `relative z-10` lifts it above the absolutely-positioned
-          cover image so the logo + text are never covered by the photo. */}
-      <div className="relative z-10 -mt-12 px-5 pb-2">
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow">
-            {mosque.logoUrl ? (
-              <Image src={mosque.logoUrl} alt="" width={96} height={96} className="size-full object-cover" />
-            ) : (
-              <span className="font-display text-4xl text-accent">{initial}</span>
-            )}
-          </div>
+      {/* Meta — only the logo overlaps the cover; the name/tags/stats sit on the
+          card below it so they stay readable over any cover photo. `relative z-10`
+          keeps the avatar above the absolutely-positioned cover image. */}
+      <div className="relative z-10 px-5 pb-3">
+        <div className="-mt-14 grid size-28 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow">
+          {mosque.logoUrl ? (
+            <Image src={mosque.logoUrl} alt="" width={112} height={112} className="size-full object-cover" />
+          ) : (
+            <span className="font-display text-5xl text-accent">{initial}</span>
+          )}
+        </div>
 
-          <div className="min-w-0 flex-1 pb-1">
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <h1 className="font-display text-2xl text-foreground sm:text-3xl">{name}</h1>
             {mosque.name.ar && locale !== "ar" && (
               <p dir="rtl" lang="ar" className="font-arabic text-xl text-accent">
@@ -118,7 +119,7 @@ export async function MosqueCoverHeader({
           </div>
 
           {(manageSlot || installSlot || followSlot || likeSlot || shareSlot) && (
-            <div className="flex flex-wrap items-center gap-2 pb-1">
+            <div className="flex flex-wrap items-center gap-2">
               {followSlot}
               {likeSlot}
               {shareSlot}
