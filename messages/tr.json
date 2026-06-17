@@ -1710,7 +1710,8 @@
       "unverified": "Doğrulanmamış giriş",
       "unverifiedNote": "Bu camiyi temsil ediyorsanız, yönetimi devralmak için talepte bulunabilirsiniz.",
       "reportTitle": "Sorun bildir",
-      "reportNote": "Bir hata mı fark ettiniz? Bize bildirin, düzeltelim."
+      "reportNote": "Bir hata mı fark ettiniz? Bize bildirin, düzeltelim.",
+      "viewPublicPage": "Herkese açık sayfayı görüntüle"
     },
     "apply": {
       "title": "Manage a masjid",
@@ -1798,7 +1799,23 @@
       "copied": "Link copied.",
       "downloadPoster": "Printable poster (PDF)",
       "downloadPng": "QR (PNG)",
-      "downloadSvg": "QR (SVG)"
+      "downloadSvg": "QR (SVG)",
+      "tabProfile": "Profil",
+      "tabMedia": "Medya",
+      "tabPrayer": "Namaz",
+      "tabContact": "İletişim",
+      "tabSocial": "Sosyal",
+      "tabShare": "Paylaş",
+      "shareUnavailable": "Paylaşım bağlantınız ve QR kodunuz, sayfa yayımlandığında burada görünür.",
+      "dropHere": "Resminizi buraya bırakın veya",
+      "browse": "göz atın",
+      "uploadSupports": "PNG, JPG, JPEG, WEBP desteklenir",
+      "uploadTypeError": "PNG, JPG veya WEBP resmi kullanın.",
+      "uploadSizeError": "Resim 5 MB'den küçük olmalı.",
+      "addLink": "Bağlantı ekle",
+      "removeLink": "Bağlantıyı kaldır",
+      "socialEmpty": "Henüz sosyal bağlantı yok. Instagram, Facebook ve daha fazlasını ekleyin.",
+      "socialPlaceholder": "Kullanıcı adı veya tam URL"
     },
     "install": {
       "install": "Install app"
@@ -1833,12 +1850,19 @@
       "takeDown": "Take down",
       "takenDown": "Update taken down.",
       "takeDownFailed": "Couldn't take down the update.",
-      "commentItemTitle": "{name} update"
+      "commentItemTitle": "{name} update",
+      "comment": "Yorum",
+      "amen": "Âmin",
+      "dua": "Dua",
+      "heart": "Kalp",
+      "signInToReact": "Güncellemelere tepki vermek için giriş yapın.",
+      "reactFailed": "Tepkiniz güncellenemedi."
     },
     "events": {
       "title": "Upcoming events",
       "empty": "No upcoming events at this mosque yet.",
-      "addEvent": "Add event"
+      "addEvent": "Add event",
+      "viewAll": "Tüm etkinlikleri gör"
     },
     "hub": {
       "byCountryTitle": "Ülkeye göre",
@@ -1876,6 +1900,54 @@
       "ahmadi": "Ahmedi",
       "other": "Diğer",
       "unspecified": "Belirtilmemiş"
+    },
+    "like": {
+      "like": "Beğen",
+      "liked": "Beğenildi",
+      "signInToLike": "Bu mescidi beğenmek için giriş yapın.",
+      "failed": "Güncellenemedi. Lütfen tekrar deneyin."
+    },
+    "community": {
+      "verseTitle": "Günün ayeti",
+      "verseCitation": "Kur'an · {surah} {ayah}",
+      "greeting": "Es-selâmü aleyküm",
+      "greetingSub": "Selam üzerinize olsun",
+      "tabPosts": "Gönderiler",
+      "tabAbout": "Hakkında",
+      "tabEvents": "Etkinlikler",
+      "tabPhotos": "Fotoğraflar",
+      "statFollowers": "Takipçi",
+      "statPosts": "Gönderi",
+      "share": "Paylaş",
+      "linkCopied": "Bağlantı kopyalandı.",
+      "nextPrayer": "Sonraki namaz",
+      "now": "Şimdi",
+      "prayerHeading": "Namaz vakitleri",
+      "membersTitle": "Topluluk",
+      "membersEmpty": "Bu mescidi ilk takip eden siz olun.",
+      "membersCount": "{count} takip ediyor",
+      "member": "Üye",
+      "photosTitle": "Fotoğraflar",
+      "aboutTitle": "Hakkında",
+      "onThisPage": "Bu sayfada",
+      "discussion": "Topluluk tartışması"
+    },
+    "dua": {
+      "title": "Dua duvarı",
+      "subtitle": "Toplulukla bir dua isteği paylaşın.",
+      "placeholder": "Topluluktan dua isteyin…",
+      "add": "Dua isteği ekle",
+      "post": "Paylaş",
+      "cancel": "İptal",
+      "madeDua": "Dua et",
+      "madeDuaCount": "{count} kişi dua etti",
+      "empty": "Henüz dua isteği yok — ilk siz olun.",
+      "signInToAdd": "Dua isteği eklemek için giriş yapın.",
+      "signInToMake": "Dua etmek için giriş yapın.",
+      "addFailed": "Duanız eklenemedi. Lütfen tekrar deneyin.",
+      "anonymous": "Bir topluluk üyesi",
+      "takeDown": "Kaldır",
+      "takenDown": "Dua kaldırıldı."
     }
   },
   "mosquesAdmin": {

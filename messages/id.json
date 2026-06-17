@@ -1710,7 +1710,8 @@
       "unverified": "Listing belum terverifikasi",
       "unverifiedNote": "Jika Anda mewakili masjid ini, klaim listing untuk mengelolanya.",
       "reportTitle": "Laporkan masalah",
-      "reportNote": "Menemukan ketidakakuratan? Beri tahu kami untuk memperbaikinya."
+      "reportNote": "Menemukan ketidakakuratan? Beri tahu kami untuk memperbaikinya.",
+      "viewPublicPage": "Lihat halaman publik"
     },
     "apply": {
       "title": "Manage a masjid",
@@ -1798,7 +1799,23 @@
       "copied": "Link copied.",
       "downloadPoster": "Printable poster (PDF)",
       "downloadPng": "QR (PNG)",
-      "downloadSvg": "QR (SVG)"
+      "downloadSvg": "QR (SVG)",
+      "tabProfile": "Profil",
+      "tabMedia": "Media",
+      "tabPrayer": "Salat",
+      "tabContact": "Kontak",
+      "tabSocial": "Sosial",
+      "tabShare": "Bagikan",
+      "shareUnavailable": "Tautan berbagi & kode QR Anda muncul di sini setelah halaman dipublikasikan.",
+      "dropHere": "Letakkan gambar Anda di sini, atau",
+      "browse": "telusuri",
+      "uploadSupports": "Mendukung PNG, JPG, JPEG, WEBP",
+      "uploadTypeError": "Gunakan gambar PNG, JPG, atau WEBP.",
+      "uploadSizeError": "Gambar harus di bawah 5 MB.",
+      "addLink": "Tambah tautan",
+      "removeLink": "Hapus tautan",
+      "socialEmpty": "Belum ada tautan sosial. Tambahkan Instagram, Facebook, dan lainnya.",
+      "socialPlaceholder": "Nama pengguna atau URL lengkap"
     },
     "install": {
       "install": "Install app"
@@ -1833,12 +1850,19 @@
       "takeDown": "Take down",
       "takenDown": "Update taken down.",
       "takeDownFailed": "Couldn't take down the update.",
-      "commentItemTitle": "{name} update"
+      "commentItemTitle": "{name} update",
+      "comment": "Komentar",
+      "amen": "Amin",
+      "dua": "Doa",
+      "heart": "Hati",
+      "signInToReact": "Masuk untuk bereaksi pada pembaruan.",
+      "reactFailed": "Gagal memperbarui reaksi Anda."
     },
     "events": {
       "title": "Upcoming events",
       "empty": "No upcoming events at this mosque yet.",
-      "addEvent": "Add event"
+      "addEvent": "Add event",
+      "viewAll": "Lihat semua acara"
     },
     "hub": {
       "byCountryTitle": "Jelajahi per negara",
@@ -1876,6 +1900,54 @@
       "ahmadi": "Ahmadi",
       "other": "Lainnya",
       "unspecified": "Tidak ditentukan"
+    },
+    "like": {
+      "like": "Suka",
+      "liked": "Disukai",
+      "signInToLike": "Masuk untuk menyukai masjid ini.",
+      "failed": "Gagal memperbarui. Silakan coba lagi."
+    },
+    "community": {
+      "verseTitle": "Ayat hari ini",
+      "verseCitation": "Al-Qur'an · {surah} {ayah}",
+      "greeting": "Assalamu'alaikum",
+      "greetingSub": "Semoga keselamatan atasmu",
+      "tabPosts": "Kiriman",
+      "tabAbout": "Tentang",
+      "tabEvents": "Acara",
+      "tabPhotos": "Foto",
+      "statFollowers": "Pengikut",
+      "statPosts": "Kiriman",
+      "share": "Bagikan",
+      "linkCopied": "Tautan disalin.",
+      "nextPrayer": "Salat berikutnya",
+      "now": "Sekarang",
+      "prayerHeading": "Jadwal salat",
+      "membersTitle": "Komunitas",
+      "membersEmpty": "Jadilah yang pertama mengikuti masjid ini.",
+      "membersCount": "{count} mengikuti",
+      "member": "Anggota",
+      "photosTitle": "Foto",
+      "aboutTitle": "Tentang",
+      "onThisPage": "Di halaman ini",
+      "discussion": "Diskusi komunitas"
+    },
+    "dua": {
+      "title": "Dinding doa",
+      "subtitle": "Bagikan permintaan doa dengan komunitas.",
+      "placeholder": "Minta doa dari komunitas…",
+      "add": "Tambah permintaan doa",
+      "post": "Kirim",
+      "cancel": "Batal",
+      "madeDua": "Doakan",
+      "madeDuaCount": "{count} mendoakan",
+      "empty": "Belum ada permintaan doa — jadilah yang pertama.",
+      "signInToAdd": "Masuk untuk menambah permintaan doa.",
+      "signInToMake": "Masuk untuk mendoakan.",
+      "addFailed": "Gagal menambahkan doa Anda. Silakan coba lagi.",
+      "anonymous": "Anggota komunitas",
+      "takeDown": "Turunkan",
+      "takenDown": "Doa dihapus."
     }
   },
   "mosquesAdmin": {

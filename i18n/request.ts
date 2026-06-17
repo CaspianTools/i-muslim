@@ -49,12 +49,19 @@ export default getRequestConfig(async ({ requestLocale }) => {
   if (isBundled(locale)) {
     const bundled = (await import(`../messages/${locale}.json`))
       .default as Messages;
+    // Merge the bundled JSON over the English base so any key not yet translated
+    // in this locale falls back to English text rather than rendering a raw key
+    // path. `en` itself is already the base, so it needs no self-merge.
+    const base =
+      locale === DEFAULT_LOCALE
+        ? bundled
+        : deepMerge((await import(`../messages/en.json`)).default as Messages, bundled);
     const overlayDoc = await getUiLocaleDoc(locale);
     const overlay = overlayDoc?.messages as Messages | undefined;
     if (!overlay || Object.keys(overlay).length === 0) {
-      return { locale, messages: bundled };
+      return { locale, messages: base };
     }
-    return { locale, messages: deepMerge(bundled, overlay) };
+    return { locale, messages: deepMerge(base, overlay) };
   }
 
   // Reserved locales: read uploaded translations from Firestore and deep-merge
