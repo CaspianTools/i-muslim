@@ -82,7 +82,7 @@ export function MosqueNewsComposer({ slug }: { slug: string }) {
         rows={3}
         maxLength={2000}
         placeholder={t("composerPlaceholder")}
-        className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm"
+        className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-base sm:text-sm"
       />
       {image && (
         <div className="relative mt-2 w-fit">
@@ -99,12 +99,12 @@ export function MosqueNewsComposer({ slug }: { slug: string }) {
         </div>
       )}
       <div className="mt-3 flex items-center justify-between gap-2">
-        <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted">
+        <label className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted sm:h-9">
           {uploading ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
           {t("addPhoto")}
           <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleImage} disabled={uploading} />
         </label>
-        <Button onClick={handlePost} disabled={busy || uploading} size="sm">
+        <Button onClick={handlePost} disabled={busy || uploading} size="sm" className="h-11 sm:h-9">
           {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
           {t("post")}
         </Button>

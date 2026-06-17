@@ -15,7 +15,7 @@ export async function VerseOfTheDayCard({ locale }: { locale: string }) {
   return (
     <div className="mq-card mq-card-pad bg-selected/40">
       <div className="mq-rail-title">{t("verseTitle")}</div>
-      <p dir="rtl" lang="ar" className="font-arabic text-right text-xl leading-loose text-foreground">
+      <p dir="rtl" lang="ar" className="font-arabic text-right text-xl leading-relaxed text-foreground sm:leading-loose">
         {verse.arabic}
       </p>
       {verse.translation && (

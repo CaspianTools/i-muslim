@@ -125,13 +125,13 @@ export function NewsPostActions({
       </div>
 
       {(canManage || canModerate) && (
-        <div className="flex items-center gap-3 px-1 pt-1 text-xs">
+        <div className="flex items-center gap-2 px-1 pt-2 text-xs">
           {canManage && (
             <button
               type="button"
               onClick={remove}
               disabled={busy}
-              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-danger"
+              className="inline-flex min-h-11 items-center gap-1.5 px-2 text-muted-foreground hover:text-danger sm:min-h-0 sm:px-0"
             >
               <Trash2 className="size-3.5" /> {t("delete")}
             </button>
@@ -141,7 +141,7 @@ export function NewsPostActions({
               type="button"
               onClick={takeDown}
               disabled={busy}
-              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-danger"
+              className="inline-flex min-h-11 items-center gap-1.5 px-2 text-muted-foreground hover:text-danger sm:min-h-0 sm:px-0"
             >
               <ShieldOff className="size-3.5" /> {t("takeDown")}
             </button>

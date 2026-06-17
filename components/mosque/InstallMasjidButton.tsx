@@ -40,6 +40,7 @@ export function InstallMasjidButton() {
     <Button
       size="sm"
       variant="secondary"
+      className="h-10 w-full sm:h-8 sm:w-auto"
       onClick={async () => {
         await promptEvent.prompt();
         setPromptEvent(null);

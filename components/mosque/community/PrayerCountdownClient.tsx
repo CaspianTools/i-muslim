@@ -52,7 +52,7 @@ export function PrayerCountdownClient({
       {next && now != null && (
         <div className="mb-3 grid grid-cols-[1fr_auto] items-center gap-2 rounded-xl bg-accent px-4 py-3 text-accent-foreground">
           <div>
-            <div className="text-[0.65rem] font-medium uppercase tracking-wider opacity-80">
+            <div className="text-[0.7rem] font-medium uppercase tracking-wider opacity-80 sm:text-[0.65rem]">
               {t("nextPrayer")}
             </div>
             <div className="font-display text-xl leading-none">{tp(next.key)}</div>
@@ -70,7 +70,7 @@ export function PrayerCountdownClient({
           return (
             <li
               key={p.key}
-              className={`grid grid-cols-[1fr_auto_auto] items-center gap-3 rounded-lg px-2 py-1.5 text-sm ${
+              className={`grid grid-cols-[1fr_auto_auto] items-center gap-2 rounded-lg px-2 py-2 text-sm sm:gap-3 sm:py-1.5 ${
                 isNext ? "bg-selected font-semibold text-accent" : passed ? "text-muted-foreground" : "text-foreground"
               }`}
             >

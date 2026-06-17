@@ -101,7 +101,7 @@ export default async function MasjidShortLinkPage({
 
   return (
     <main className="min-h-dvh bg-background">
-      <div className="mx-auto max-w-[1340px] px-4 py-6">
+      <div className="mx-auto max-w-[1340px] px-3 py-4 sm:px-4 sm:py-6">
         <MosqueCommunityHome
           mosque={mosque}
           locale={locale}

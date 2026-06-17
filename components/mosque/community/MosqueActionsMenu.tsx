@@ -35,7 +35,7 @@ export function MosqueActionsMenu({
           <button
             type="button"
             aria-label={t("manage")}
-            className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:size-9"
           >
             <MoreHorizontal className="size-5" />
           </button>

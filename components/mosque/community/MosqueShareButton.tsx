@@ -28,7 +28,7 @@ export function MosqueShareButton({ code, name }: { code: string; name: string }
   }
 
   return (
-    <Button variant="secondary" size="sm" onClick={share}>
+    <Button variant="secondary" size="sm" className="h-10 w-full sm:h-8 sm:w-auto" onClick={share}>
       <Share2 className="size-4" /> {t("share")}
     </Button>
   );

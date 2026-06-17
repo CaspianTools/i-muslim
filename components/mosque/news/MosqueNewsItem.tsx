@@ -36,7 +36,7 @@ export async function MosqueNewsItem({
 }) {
   const t = await getTranslations("mosques.news");
   return (
-    <article className="p-5">
+    <article className="p-4 sm:p-5">
       <header className="mb-3 flex items-center gap-3">
         <div className="grid size-10 shrink-0 place-items-center rounded-full bg-selected font-display text-base text-accent">
           {mosqueInitial}
@@ -48,13 +48,13 @@ export async function MosqueNewsItem({
           </time>
         </div>
       </header>
-      <p className="whitespace-pre-wrap text-[0.925rem] leading-relaxed text-foreground">{post.body}</p>
+      <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground sm:text-[0.925rem]">{post.body}</p>
       {post.image?.url && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={post.image.url}
           alt=""
-          className="mt-3 max-h-96 w-full rounded-lg border border-border object-cover"
+          className="mt-3 max-h-80 w-full rounded-lg border border-border object-cover sm:max-h-96"
         />
       )}
       <div className="mt-3 border-t border-border pt-2">

@@ -63,7 +63,7 @@ export async function MosqueCommunityHome({
   const showDiscussion = mosque.status === "published" || context.canManage;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 lg:space-y-5">
       {topSlot}
 
       <MosqueCoverHeader
@@ -108,7 +108,13 @@ export async function MosqueCommunityHome({
       )}
 
       {view === "posts" && (
-        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[260px_minmax(0,1fr)_320px]">
+        <>
+        {/* On phones a masjid visitor wants prayer times first — surface the
+            countdown above the feed; the rail keeps its desktop copy (below). */}
+        <div className="lg:hidden">
+          <PrayerCountdownCard mosque={mosque} locale={locale} />
+        </div>
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[260px_minmax(0,1fr)_320px] lg:gap-5">
           {/* Left rail */}
           <aside className="order-3 space-y-4 lg:order-1 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pe-1">
             <VerseOfTheDayCard locale={locale} />
@@ -147,7 +153,9 @@ export async function MosqueCommunityHome({
 
           {/* Right rail */}
           <aside className="order-2 space-y-4 lg:order-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:ps-1">
-            <PrayerCountdownCard mosque={mosque} locale={locale} />
+            <div className="hidden lg:block">
+              <PrayerCountdownCard mosque={mosque} locale={locale} />
+            </div>
             <MosqueEventsCard
               mosqueSlug={mosque.slug}
               canAddEvent={context.canManage}
@@ -162,6 +170,7 @@ export async function MosqueCommunityHome({
             <MembersRail slug={mosque.slug} followerCount={mosque.followerCount ?? 0} />
           </aside>
         </div>
+        </>
       )}
     </div>
   );

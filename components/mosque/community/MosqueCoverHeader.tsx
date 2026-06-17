@@ -65,7 +65,7 @@ export async function MosqueCoverHeader({
         <p
           dir="rtl"
           lang="ar"
-          className="font-arabic absolute start-5 top-4 text-2xl text-white/90 drop-shadow"
+          className="font-arabic absolute start-4 top-3 text-2xl text-white/90 drop-shadow sm:start-5 sm:top-4"
         >
           {ARABIC_GREETING}
         </p>
@@ -74,18 +74,18 @@ export async function MosqueCoverHeader({
       {/* Meta — the logo overlaps the cover (left); name/tags/stats sit beside it
           on the card, below the cover line, so they stay readable over any photo.
           `relative z-10` keeps the avatar above the absolutely-positioned image. */}
-      <div className="relative z-10 px-5 pb-3">
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="-mt-16 grid size-32 shrink-0 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow">
+      <div className="relative z-10 px-4 pb-3 sm:px-5">
+        <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+          <div className="-mt-12 grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow sm:-mt-16 sm:size-32">
             {mosque.logoUrl ? (
               <Image src={mosque.logoUrl} alt="" width={128} height={128} className="size-full object-cover" />
             ) : (
-              <span className="font-display text-5xl text-accent">{initial}</span>
+              <span className="font-display text-4xl text-accent sm:text-5xl">{initial}</span>
             )}
           </div>
 
-          <div className="min-w-0 flex-1">
-            <h1 className="font-display text-2xl text-foreground sm:text-3xl">{name}</h1>
+          <div className="min-w-0 flex-1 basis-full sm:basis-0">
+            <h1 className="font-display text-xl text-foreground line-clamp-2 sm:text-3xl">{name}</h1>
             {mosque.name.ar && locale !== "ar" && (
               <p dir="rtl" lang="ar" className="font-arabic text-xl text-accent">
                 {mosque.name.ar}
@@ -105,13 +105,13 @@ export async function MosqueCoverHeader({
             <div className="mt-2 flex gap-5">
               <div className="leading-tight">
                 <span className="font-display text-lg text-foreground">{followers}</span>{" "}
-                <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">
+                <span className="text-[0.72rem] uppercase tracking-wide text-muted-foreground sm:text-[0.7rem]">
                   {t("statFollowers")}
                 </span>
               </div>
               <div className="leading-tight">
                 <span className="font-display text-lg text-foreground">{posts}</span>{" "}
-                <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">
+                <span className="text-[0.72rem] uppercase tracking-wide text-muted-foreground sm:text-[0.7rem]">
                   {t("statPosts")}
                 </span>
               </div>
@@ -119,7 +119,7 @@ export async function MosqueCoverHeader({
           </div>
 
           {(installSlot || followSlot || likeSlot || shareSlot) && (
-            <div className="flex flex-wrap items-center gap-2 pb-1">
+            <div className="grid w-full grid-cols-2 gap-2 pb-1 sm:flex sm:w-auto sm:flex-wrap sm:items-center">
               {followSlot}
               {likeSlot}
               {shareSlot}
@@ -145,7 +145,7 @@ export async function MosqueCoverHeader({
               {t("tabDuas")}
             </Link>
           </div>
-          {manageSlot && <div className="shrink-0 ps-2">{manageSlot}</div>}
+          {manageSlot && <div className="shrink-0 ps-1 pe-0">{manageSlot}</div>}
         </nav>
       </div>
     </div>

@@ -46,7 +46,14 @@ export function MosqueLikeButton({
   }
 
   return (
-    <Button variant="secondary" size="sm" onClick={toggle} disabled={busy} aria-pressed={liked}>
+    <Button
+      variant="secondary"
+      size="sm"
+      className="h-10 w-full sm:h-8 sm:w-auto"
+      onClick={toggle}
+      disabled={busy}
+      aria-pressed={liked}
+    >
       {busy ? (
         <Loader2 className="size-4 animate-spin" />
       ) : (
