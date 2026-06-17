@@ -42,7 +42,7 @@ export async function MosqueCommunityHome({
   likeSlot,
   installSlot,
   shareSlot,
-  manageSlot,
+  analytics,
 }: {
   mosque: Mosque;
   locale: string;
@@ -56,7 +56,8 @@ export async function MosqueCommunityHome({
   likeSlot?: ReactNode;
   installSlot?: ReactNode;
   shareSlot?: ReactNode;
-  manageSlot?: ReactNode;
+  /** Manager analytics for the cover's Manage panel (managers only). */
+  analytics?: { views: number; scans: number };
 }) {
   const t = await getTranslations("mosques.community");
   const name = pickLocalized(mosque.name, locale, "en") ?? mosque.name.en;
@@ -75,7 +76,8 @@ export async function MosqueCommunityHome({
         likeSlot={likeSlot}
         installSlot={installSlot}
         shareSlot={shareSlot}
-        manageSlot={manageSlot}
+        analytics={analytics}
+        canManage={context.canManage}
       />
 
       {view === "about" && (

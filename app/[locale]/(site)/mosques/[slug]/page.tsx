@@ -8,7 +8,6 @@ import { fetchMosqueBySlug, fetchAllSlugs, ensureMosqueShortCodeValue } from "@/
 import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
-import { MosqueActionsMenu } from "@/components/mosque/community/MosqueActionsMenu";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
 import { MosqueLikeButton } from "@/components/mosque/MosqueLikeButton";
 import { MosqueShareButton } from "@/components/mosque/community/MosqueShareButton";
@@ -162,9 +161,7 @@ export default async function MosqueDetailPage({
             <MosqueShareButton code={mosque.shortCode} name={localizedName} />
           ) : undefined
         }
-        manageSlot={
-          canAddEvent ? <MosqueActionsMenu mosque={mosque} analytics={analytics} /> : undefined
-        }
+        analytics={analytics}
       />
 
       <script

@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { MapPin } from "lucide-react";
+import { BadgeCheck, MapPin } from "lucide-react";
 import { pickLocalized } from "@/lib/utils";
 import { countryName } from "@/lib/mosques/countries";
 import { coverFallbackUrl } from "@/lib/mosques/cover-fallback";
-import { Badge } from "@/components/ui/badge";
+import { MosqueNav } from "./MosqueNav";
 import type { Mosque } from "@/types/mosque";
 
 const ARABIC_GREETING = "السَّلَامُ عَلَيْكُمْ";
@@ -26,7 +25,8 @@ export async function MosqueCoverHeader({
   likeSlot,
   installSlot,
   shareSlot,
-  manageSlot,
+  analytics,
+  canManage,
 }: {
   mosque: Mosque;
   locale: string;
@@ -37,7 +37,8 @@ export async function MosqueCoverHeader({
   likeSlot?: ReactNode;
   installSlot?: ReactNode;
   shareSlot?: ReactNode;
-  manageSlot?: ReactNode;
+  analytics?: { views: number; scans: number };
+  canManage?: boolean;
 }) {
   const t = await getTranslations("mosques.community");
   const tDenom = await getTranslations("mosques.denominations");
@@ -51,15 +52,15 @@ export async function MosqueCoverHeader({
 
   return (
     <div className="mq-card">
-      {/* Cover photo — uploaded, else a royalty-free fallback over the gradient. */}
-      <div className="mq-cover-fallback relative h-44 overflow-hidden sm:h-60">
+      {/* Cover photo — uploaded, else a royalty-free fallback over the gradient.
+          Hidden on phones (the header opens straight at the logo/name). */}
+      <div className="mq-cover-fallback relative hidden h-60 overflow-hidden sm:block">
         <Image
           src={mosque.coverImage?.url ?? coverFallbackUrl(mosque.slug)}
           alt=""
           fill
           sizes="(min-width: 1024px) 920px, 100vw"
           className="object-cover"
-          priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-transparent" />
         <p
@@ -74,9 +75,9 @@ export async function MosqueCoverHeader({
       {/* Meta — the logo overlaps the cover (left); name/tags/stats sit beside it
           on the card, below the cover line, so they stay readable over any photo.
           `relative z-10` keeps the avatar above the absolutely-positioned image. */}
-      <div className="relative z-10 px-4 pb-3 sm:px-5">
+      <div className="relative z-10 px-4 pb-3 pt-4 sm:px-5 sm:pt-0">
         <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-          <div className="-mt-12 grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow sm:-mt-16 sm:size-32">
+          <div className="mt-0 grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow sm:-mt-16 sm:size-32">
             {mosque.logoUrl ? (
               <Image src={mosque.logoUrl} alt="" width={128} height={128} className="size-full object-cover" />
             ) : (
@@ -85,7 +86,15 @@ export async function MosqueCoverHeader({
           </div>
 
           <div className="min-w-0 flex-1 basis-full sm:basis-0">
-            <h1 className="font-display text-xl text-foreground line-clamp-2 sm:text-3xl">{name}</h1>
+            <h1 className="font-display text-xl text-foreground line-clamp-2 sm:text-3xl">
+              {name}
+              {isVerified && (
+                <BadgeCheck
+                  className="ms-1.5 inline size-5 shrink-0 align-[-0.15em] text-accent sm:size-6"
+                  aria-label={tDetail("verified")}
+                />
+              )}
+            </h1>
             {mosque.name.ar && locale !== "ar" && (
               <p dir="rtl" lang="ar" className="font-arabic text-xl text-accent">
                 {mosque.name.ar}
@@ -96,11 +105,6 @@ export async function MosqueCoverHeader({
               <span className="inline-flex items-center gap-1">
                 <MapPin className="size-3.5" /> {mosque.city}, {countryName(mosque.country)}
               </span>
-              {isVerified ? (
-                <Badge variant="success">{tDetail("verified")}</Badge>
-              ) : (
-                <Badge variant="warning">{tDetail("unverified")}</Badge>
-              )}
             </div>
             <div className="mt-2 flex gap-5">
               <div className="leading-tight">
@@ -119,7 +123,7 @@ export async function MosqueCoverHeader({
           </div>
 
           {(installSlot || followSlot || likeSlot || shareSlot) && (
-            <div className="grid w-full grid-cols-2 gap-2 pb-1 sm:flex sm:w-auto sm:flex-wrap sm:items-center">
+            <div className="flex flex-wrap items-center gap-2 pb-1">
               {followSlot}
               {likeSlot}
               {shareSlot}
@@ -128,25 +132,20 @@ export async function MosqueCoverHeader({
           )}
         </div>
 
-        {/* Sub-tabs (left) + actions kebab (right). The tabs scroll horizontally
-            on narrow screens; overflow-y-hidden avoids a spurious vertical bar. */}
-        <nav className="mt-4 flex items-center border-t border-border">
-          <div className="flex flex-1 gap-1 overflow-x-auto overflow-y-hidden">
-            <Link href={baseHref} className={`mq-tab${activeView === "posts" ? " active" : ""}`}>
-              {t("tabPosts")}
-            </Link>
-            <Link href={`${baseHref}?view=about`} className={`mq-tab${activeView === "about" ? " active" : ""}`}>
-              {t("tabAbout")}
-            </Link>
-            <Link href={`${baseHref}?view=events`} className={`mq-tab${activeView === "events" ? " active" : ""}`}>
-              {t("tabEvents")}
-            </Link>
-            <Link href={`${baseHref}?view=duas`} className={`mq-tab${activeView === "duas" ? " active" : ""}`}>
-              {t("tabDuas")}
-            </Link>
-          </div>
-          {manageSlot && <div className="shrink-0 ps-1 pe-0">{manageSlot}</div>}
-        </nav>
+        {/* Sub-navigation: desktop tab strip + manage kebab; phones collapse to
+            the active view's name + a hamburger that opens a bottom drawer. */}
+        <MosqueNav
+          activeView={activeView}
+          items={[
+            { key: "posts", label: t("tabPosts"), href: baseHref },
+            { key: "about", label: t("tabAbout"), href: `${baseHref}?view=about` },
+            { key: "events", label: t("tabEvents"), href: `${baseHref}?view=events` },
+            { key: "duas", label: t("tabDuas"), href: `${baseHref}?view=duas` },
+          ]}
+          mosque={mosque}
+          analytics={analytics}
+          canManage={Boolean(canManage)}
+        />
       </div>
     </div>
   );

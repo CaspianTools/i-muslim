@@ -11,17 +11,17 @@ import { enablePush } from "@/lib/push/client";
 export function MosqueFollowButton({
   slug,
   initialFollowing,
-  initialCount,
   signedIn,
 }: {
   slug: string;
   initialFollowing: boolean;
-  initialCount: number;
+  /** Retained for call-site compatibility; the follower total is shown once, in
+   *  the cover stats row, so the button no longer renders a count. */
+  initialCount?: number;
   signedIn: boolean;
 }) {
   const t = useTranslations("mosques.follow");
   const [following, setFollowing] = useState(initialFollowing);
-  const [count, setCount] = useState(initialCount);
   const [busy, setBusy] = useState(false);
 
   async function toggle() {
@@ -33,12 +33,10 @@ export function MosqueFollowButton({
     // optimistic
     const next = !following;
     setFollowing(next);
-    setCount((c) => c + (next ? 1 : -1));
     try {
       const res = await toggleMosqueFollow(slug);
       if (!res.ok) {
         setFollowing(!next);
-        setCount((c) => c + (next ? -1 : 1));
         toast.error(t("failed"));
         return;
       }
@@ -53,10 +51,11 @@ export function MosqueFollowButton({
     <Button
       variant={following ? "secondary" : "primary"}
       size="sm"
-      className="h-10 w-full sm:h-8 sm:w-auto"
+      className="h-10 w-10 px-0 sm:h-8 sm:w-auto sm:px-3"
       onClick={toggle}
       disabled={busy}
       aria-pressed={following}
+      aria-label={following ? t("following") : t("follow")}
     >
       {busy ? (
         <Loader2 className="size-4 animate-spin" />
@@ -65,8 +64,7 @@ export function MosqueFollowButton({
       ) : (
         <Bell className="size-4" />
       )}
-      {following ? t("following") : t("follow")}
-      {count > 0 ? ` · ${count}` : ""}
+      <span className="hidden sm:inline">{following ? t("following") : t("follow")}</span>
     </Button>
   );
 }

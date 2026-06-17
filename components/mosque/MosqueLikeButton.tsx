@@ -49,18 +49,21 @@ export function MosqueLikeButton({
     <Button
       variant="secondary"
       size="sm"
-      className="h-10 w-full sm:h-8 sm:w-auto"
+      className="h-10 w-10 px-0 sm:h-8 sm:w-auto sm:px-3"
       onClick={toggle}
       disabled={busy}
       aria-pressed={liked}
+      aria-label={liked ? t("liked") : t("like")}
     >
       {busy ? (
         <Loader2 className="size-4 animate-spin" />
       ) : (
         <Heart className={`size-4${liked ? " fill-current text-danger" : ""}`} />
       )}
-      {liked ? t("liked") : t("like")}
-      {count > 0 ? ` · ${count}` : ""}
+      <span className="hidden sm:inline">
+        {liked ? t("liked") : t("like")}
+        {count > 0 ? ` · ${count}` : ""}
+      </span>
     </Button>
   );
 }

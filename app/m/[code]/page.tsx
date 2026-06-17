@@ -7,7 +7,6 @@ import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { getSiteUrl } from "@/lib/mosques/constants";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
-import { MosqueActionsMenu } from "@/components/mosque/community/MosqueActionsMenu";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
 import { MosqueLikeButton } from "@/components/mosque/MosqueLikeButton";
 import { InstallMasjidButton } from "@/components/mosque/InstallMasjidButton";
@@ -142,9 +141,7 @@ export default async function MasjidShortLinkPage({
             />
           }
           shareSlot={<MosqueShareButton code={code} name={localizedName} />}
-          manageSlot={
-            canManage ? <MosqueActionsMenu mosque={mosque} analytics={analytics} /> : undefined
-          }
+          analytics={analytics}
         />
 
         {published && (

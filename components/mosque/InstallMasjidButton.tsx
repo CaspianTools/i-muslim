@@ -40,13 +40,15 @@ export function InstallMasjidButton() {
     <Button
       size="sm"
       variant="secondary"
-      className="h-10 w-full sm:h-8 sm:w-auto"
+      className="h-10 w-10 px-0 sm:h-8 sm:w-auto sm:px-3"
       onClick={async () => {
         await promptEvent.prompt();
         setPromptEvent(null);
       }}
+      aria-label={t("install")}
     >
-      <Download className="size-4" /> {t("install")}
+      <Download className="size-4" />
+      <span className="hidden sm:inline">{t("install")}</span>
     </Button>
   );
 }

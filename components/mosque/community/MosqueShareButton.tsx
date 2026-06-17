@@ -28,8 +28,15 @@ export function MosqueShareButton({ code, name }: { code: string; name: string }
   }
 
   return (
-    <Button variant="secondary" size="sm" className="h-10 w-full sm:h-8 sm:w-auto" onClick={share}>
-      <Share2 className="size-4" /> {t("share")}
+    <Button
+      variant="secondary"
+      size="sm"
+      className="h-10 w-10 px-0 sm:h-8 sm:w-auto sm:px-3"
+      onClick={share}
+      aria-label={t("share")}
+    >
+      <Share2 className="size-4" />
+      <span className="hidden sm:inline">{t("share")}</span>
     </Button>
   );
 }
