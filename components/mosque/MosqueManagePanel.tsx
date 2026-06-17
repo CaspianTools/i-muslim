@@ -42,9 +42,15 @@ const DAILY = ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const;
 export function MosqueManagePanel({
   mosque,
   analytics,
+  open,
+  onOpenChange,
 }: {
   mosque: Mosque;
   analytics?: { views: number; scans: number };
+  /** When provided, the dialog is controlled (e.g. opened from the kebab menu)
+   *  and renders no trigger button of its own. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const t = useTranslations("mosques.manage");
   const tPrayer = useTranslations("mosques.prayer");
@@ -127,19 +133,22 @@ export function MosqueManagePanel({
   }
 
   const isDraft = mosque.status !== "published";
+  const controlled = open !== undefined;
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="primary" size="sm">
-          <Settings2 className="size-4" /> {t("manage")}
-          {isDraft && (
-            <span className="ms-1 rounded bg-warning/20 px-1.5 py-0.5 text-[0.65rem] font-medium text-foreground">
-              {t("draftBadge")}
-            </span>
-          )}
-        </Button>
-      </DialogTrigger>
+    <Dialog open={controlled ? open : undefined} onOpenChange={onOpenChange}>
+      {!controlled && (
+        <DialogTrigger asChild>
+          <Button variant="primary" size="sm">
+            <Settings2 className="size-4" /> {t("manage")}
+            {isDraft && (
+              <span className="ms-1 rounded bg-warning/20 px-1.5 py-0.5 text-[0.65rem] font-medium text-foreground">
+                {t("draftBadge")}
+              </span>
+            )}
+          </Button>
+        </DialogTrigger>
+      )}
 
       <DialogContent className="max-w-2xl">
         <DialogHeader>

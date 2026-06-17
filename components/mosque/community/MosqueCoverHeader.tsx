@@ -32,7 +32,7 @@ export async function MosqueCoverHeader({
   locale: string;
   /** e.g. `/m/<code>` or `/mosques/<slug>` — tabs link off this. */
   baseHref: string;
-  activeView: "posts" | "about" | "events";
+  activeView: "posts" | "about" | "events" | "duas";
   followSlot?: ReactNode;
   likeSlot?: ReactNode;
   installSlot?: ReactNode;
@@ -71,19 +71,19 @@ export async function MosqueCoverHeader({
         </p>
       </div>
 
-      {/* Meta — only the logo overlaps the cover; the name/tags/stats sit on the
-          card below it so they stay readable over any cover photo. `relative z-10`
-          keeps the avatar above the absolutely-positioned cover image. */}
+      {/* Meta — the logo overlaps the cover (left); name/tags/stats sit beside it
+          on the card, below the cover line, so they stay readable over any photo.
+          `relative z-10` keeps the avatar above the absolutely-positioned image. */}
       <div className="relative z-10 px-5 pb-3">
-        <div className="-mt-14 grid size-28 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow">
-          {mosque.logoUrl ? (
-            <Image src={mosque.logoUrl} alt="" width={112} height={112} className="size-full object-cover" />
-          ) : (
-            <span className="font-display text-5xl text-accent">{initial}</span>
-          )}
-        </div>
+        <div className="flex flex-wrap items-end gap-4">
+          <div className="-mt-16 grid size-32 shrink-0 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow">
+            {mosque.logoUrl ? (
+              <Image src={mosque.logoUrl} alt="" width={128} height={128} className="size-full object-cover" />
+            ) : (
+              <span className="font-display text-5xl text-accent">{initial}</span>
+            )}
+          </div>
 
-        <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <h1 className="font-display text-2xl text-foreground sm:text-3xl">{name}</h1>
             {mosque.name.ar && locale !== "ar" && (
@@ -118,34 +118,34 @@ export async function MosqueCoverHeader({
             </div>
           </div>
 
-          {(manageSlot || installSlot || followSlot || likeSlot || shareSlot) && (
-            <div className="flex flex-wrap items-center gap-2">
+          {(installSlot || followSlot || likeSlot || shareSlot) && (
+            <div className="flex flex-wrap items-center gap-2 pb-1">
               {followSlot}
               {likeSlot}
               {shareSlot}
-              {manageSlot}
               {installSlot}
             </div>
           )}
         </div>
 
-        {/* Sub-tabs — navigate to the Posts / About / Events views. */}
-        <nav className="mt-4 flex gap-1 overflow-x-auto border-t border-border">
-          <Link href={baseHref} className={`mq-tab${activeView === "posts" ? " active" : ""}`}>
-            {t("tabPosts")}
-          </Link>
-          <Link
-            href={`${baseHref}?view=about`}
-            className={`mq-tab${activeView === "about" ? " active" : ""}`}
-          >
-            {t("tabAbout")}
-          </Link>
-          <Link
-            href={`${baseHref}?view=events`}
-            className={`mq-tab${activeView === "events" ? " active" : ""}`}
-          >
-            {t("tabEvents")}
-          </Link>
+        {/* Sub-tabs (left) + actions kebab (right). The tabs scroll horizontally
+            on narrow screens; overflow-y-hidden avoids a spurious vertical bar. */}
+        <nav className="mt-4 flex items-center border-t border-border">
+          <div className="flex flex-1 gap-1 overflow-x-auto overflow-y-hidden">
+            <Link href={baseHref} className={`mq-tab${activeView === "posts" ? " active" : ""}`}>
+              {t("tabPosts")}
+            </Link>
+            <Link href={`${baseHref}?view=about`} className={`mq-tab${activeView === "about" ? " active" : ""}`}>
+              {t("tabAbout")}
+            </Link>
+            <Link href={`${baseHref}?view=events`} className={`mq-tab${activeView === "events" ? " active" : ""}`}>
+              {t("tabEvents")}
+            </Link>
+            <Link href={`${baseHref}?view=duas`} className={`mq-tab${activeView === "duas" ? " active" : ""}`}>
+              {t("tabDuas")}
+            </Link>
+          </div>
+          {manageSlot && <div className="shrink-0 ps-2">{manageSlot}</div>}
         </nav>
       </div>
     </div>

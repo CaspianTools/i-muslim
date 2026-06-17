@@ -7,7 +7,7 @@ import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { getSiteUrl } from "@/lib/mosques/constants";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
-import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
+import { MosqueActionsMenu } from "@/components/mosque/community/MosqueActionsMenu";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
 import { MosqueLikeButton } from "@/components/mosque/MosqueLikeButton";
 import { InstallMasjidButton } from "@/components/mosque/InstallMasjidButton";
@@ -66,8 +66,8 @@ export async function generateMetadata({
   };
 }
 
-function parseView(v: string | undefined): "posts" | "about" | "events" {
-  return v === "about" ? "about" : v === "events" ? "events" : "posts";
+function parseView(v: string | undefined): "posts" | "about" | "events" | "duas" {
+  return v === "about" ? "about" : v === "events" ? "events" : v === "duas" ? "duas" : "posts";
 }
 
 export default async function MasjidShortLinkPage({
@@ -143,7 +143,7 @@ export default async function MasjidShortLinkPage({
           }
           shareSlot={<MosqueShareButton code={code} name={localizedName} />}
           manageSlot={
-            canManage ? <MosqueManagePanel mosque={mosque} analytics={analytics} /> : undefined
+            canManage ? <MosqueActionsMenu mosque={mosque} analytics={analytics} /> : undefined
           }
         />
 

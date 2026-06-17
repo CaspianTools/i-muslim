@@ -8,7 +8,7 @@ import { fetchMosqueBySlug, fetchAllSlugs } from "@/lib/admin/data/mosques";
 import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
-import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
+import { MosqueActionsMenu } from "@/components/mosque/community/MosqueActionsMenu";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
 import { MosqueLikeButton } from "@/components/mosque/MosqueLikeButton";
 import { MosqueShareButton } from "@/components/mosque/community/MosqueShareButton";
@@ -50,8 +50,8 @@ export async function generateMetadata({
   });
 }
 
-function parseView(v: string | undefined): "posts" | "about" | "events" {
-  return v === "about" ? "about" : v === "events" ? "events" : "posts";
+function parseView(v: string | undefined): "posts" | "about" | "events" | "duas" {
+  return v === "about" ? "about" : v === "events" ? "events" : v === "duas" ? "duas" : "posts";
 }
 
 export default async function MosqueDetailPage({
@@ -150,7 +150,7 @@ export default async function MosqueDetailPage({
           ) : undefined
         }
         manageSlot={
-          canAddEvent ? <MosqueManagePanel mosque={mosque} analytics={analytics} /> : undefined
+          canAddEvent ? <MosqueActionsMenu mosque={mosque} analytics={analytics} /> : undefined
         }
       />
 

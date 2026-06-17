@@ -14,7 +14,7 @@ import { DuaWall } from "./DuaWall";
 import { MembersRail } from "./MembersRail";
 import type { Mosque } from "@/types/mosque";
 
-export type CommunityView = "posts" | "about" | "events";
+export type CommunityView = "posts" | "about" | "events" | "duas";
 
 export interface CommunityContext {
   signedIn: boolean;
@@ -91,6 +91,17 @@ export async function MosqueCommunityHome({
             canAddEvent={context.canManage}
             limit={50}
             showWhenEmpty
+          />
+        </div>
+      )}
+
+      {view === "duas" && (
+        <div className="mx-auto max-w-2xl">
+          <DuaWall
+            slug={mosque.slug}
+            signedIn={context.signedIn}
+            currentUid={context.currentUid}
+            canModerate={context.canModerate}
           />
         </div>
       )}
