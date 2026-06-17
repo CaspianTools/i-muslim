@@ -10,18 +10,23 @@ import { Label } from "@/components/ui/label";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
 import { LanguageCombobox } from "@/components/common/LanguageCombobox";
 import { MosqueMap } from "@/components/mosque/MosqueMap";
-import { MosqueImageUploader } from "@/components/admin/mosques/MosqueImageUploader";
+import { ImageDropzone } from "@/components/mosque/community/ImageDropzone";
+import { SocialLinksEditor } from "@/components/mosque/community/SocialLinksEditor";
 import { getCallingCode } from "@/lib/countries/calling-codes";
 import { suggestCountryForTimezone } from "@/lib/countries/tz-to-country";
 import { cn } from "@/lib/utils";
 import { DENOMINATIONS, deriveFacilitiesFromServices } from "@/lib/mosques/constants";
 import { defaultPrayerCalc, suggestPrayerCalc } from "@/lib/mosques/adhan";
+import { SOCIAL_LABELS } from "@/lib/mosques/social";
 import {
   createMosque,
+  deleteMosqueImageAction,
+  getMosqueUploadUrlAction,
   lookupUserByEmailAction,
   updateMosque,
   type MosqueInput,
 } from "@/app/[locale]/(admin)/admin/mosques/actions";
+import { SOCIAL_PLATFORMS } from "@/types/mosque";
 import type {
   AsrMethod,
   CalcMethod,
@@ -29,10 +34,25 @@ import type {
   HighLatitudeRule,
   Mosque,
   MosqueFacility,
+  MosqueSocial,
   MosqueStatus,
 } from "@/types/mosque";
 
 const PUBLIC_STEPS = ["basics", "location", "contact", "review"] as const;
+// Daily prayers with a single iqamah time (Jumu'ah handled separately).
+const DAILY = ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const;
+
+/**
+ * Build the public display URL for an admin-uploaded image from its storage
+ * path. The admin upload flow has no token-finalize step (unlike the manager
+ * flow), so the URL is derived directly from the configured bucket — mirroring
+ * the prior `MosqueImageUploader` behavior.
+ */
+function publicUrlFor(storagePath: string): string {
+  const bucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+  if (bucket) return `https://storage.googleapis.com/${bucket}/${encodeURI(storagePath)}`;
+  return storagePath;
+}
 const ADMIN_STEPS = [
   "basics",
   "location",
@@ -61,6 +81,9 @@ interface FormState {
   nameAr: string;
   legalName: string;
   description: string;
+  // Manager-style long "about" text shown on the masjid detail page. Distinct
+  // from the short, localized `description` used for listings/SEO.
+  about: string;
   denomination: Denomination;
   // Location
   addressLine1: string;
@@ -76,10 +99,7 @@ interface FormState {
   phone: string;
   email: string;
   website: string;
-  facebook: string;
-  instagram: string;
-  youtube: string;
-  whatsapp: string;
+  social: MosqueSocial;
   languages: string[];
   altSpellings: string;
   capacity: string;
@@ -89,6 +109,15 @@ interface FormState {
   calcMethod: CalcMethod;
   asrMethod: AsrMethod;
   highLatitudeRule: HighLatitudeRule;
+  // Iqamah / Jama'ah congregation times (single "HH:mm"; jumuah is one time here)
+  iqamah: {
+    fajr: string;
+    dhuhr: string;
+    asr: string;
+    maghrib: string;
+    isha: string;
+    jumuah: string;
+  };
   // Media
   coverImageUrl: string;
   coverImageStoragePath: string;
@@ -112,6 +141,7 @@ function emptyState(): FormState {
     nameAr: "",
     legalName: "",
     description: "",
+    about: "",
     denomination: "unspecified",
     addressLine1: "",
     addressLine2: "",
@@ -125,10 +155,7 @@ function emptyState(): FormState {
     phone: "",
     email: "",
     website: "",
-    facebook: "",
-    instagram: "",
-    youtube: "",
-    whatsapp: "",
+    social: {},
     languages: [],
     altSpellings: "",
     capacity: "",
@@ -136,6 +163,7 @@ function emptyState(): FormState {
     calcMethod: calc.method,
     asrMethod: calc.asrMethod,
     highLatitudeRule: calc.highLatitudeRule,
+    iqamah: { fajr: "", dhuhr: "", asr: "", maghrib: "", isha: "", jumuah: "" },
     coverImageUrl: "",
     coverImageStoragePath: "",
     logoUrl: "",
@@ -153,6 +181,7 @@ function fromMosque(m: Mosque): FormState {
     nameAr: m.name.ar ?? "",
     legalName: m.legalName ?? "",
     description: m.description?.en ?? "",
+    about: m.about ?? "",
     denomination: m.denomination,
     addressLine1: m.address.line1 ?? "",
     addressLine2: m.address.line2 ?? "",
@@ -166,10 +195,7 @@ function fromMosque(m: Mosque): FormState {
     phone: m.contact?.phone ?? "",
     email: m.contact?.email ?? "",
     website: m.contact?.website ?? "",
-    facebook: m.social?.facebook ?? "",
-    instagram: m.social?.instagram ?? "",
-    youtube: m.social?.youtube ?? "",
-    whatsapp: m.social?.whatsapp ?? "",
+    social: { ...(m.social ?? {}) },
     languages: m.languages ?? [],
     altSpellings: (m.altSpellings ?? []).join(", "),
     capacity: typeof m.capacity === "number" ? String(m.capacity) : "",
@@ -182,6 +208,14 @@ function fromMosque(m: Mosque): FormState {
     calcMethod: calc.method,
     asrMethod: calc.asrMethod,
     highLatitudeRule: calc.highLatitudeRule,
+    iqamah: {
+      fajr: m.iqamah?.fajr ?? "",
+      dhuhr: m.iqamah?.dhuhr ?? "",
+      asr: m.iqamah?.asr ?? "",
+      maghrib: m.iqamah?.maghrib ?? "",
+      isha: m.iqamah?.isha ?? "",
+      jumuah: m.iqamah?.jumuah?.[0] ?? "",
+    },
     coverImageUrl: m.coverImage?.url ?? "",
     coverImageStoragePath: m.coverImage?.storagePath ?? "",
     logoUrl: m.logoUrl ?? "",
@@ -226,6 +260,7 @@ export function SubmitMosqueForm({
   const tQuick = useTranslations("quickCreate");
   const tStatuses = useTranslations("mosquesAdmin.statuses");
   const tForm = useTranslations("mosquesAdmin.form");
+  const tPrayer = useTranslations("mosques.prayer");
 
   const isEdit = adminMode && mode === "edit" && Boolean(initial);
   const STEPS: readonly Step[] = adminMode ? ADMIN_STEPS : PUBLIC_STEPS;
@@ -276,6 +311,33 @@ export function SubmitMosqueForm({
 
   function removeManager(uid: string) {
     setState((s) => ({ ...s, managers: s.managers.filter((m) => m.uid !== uid) }));
+  }
+
+  // Admin-auth upload adapter for ImageDropzone. Create mode has no slug yet, so
+  // images land under the "_new" prefix (preserved through the save).
+  async function adminRequestUpload(
+    kind: "cover" | "logo",
+    file: File,
+  ): Promise<{ putUrl: string; storagePath: string }> {
+    const res = await getMosqueUploadUrlAction({
+      slug: initial?.slug ?? "_new",
+      kind,
+      filename: file.name,
+      contentType: file.type,
+      contentLength: file.size,
+    });
+    if (!res.ok) throw new Error(res.error);
+    return { putUrl: res.data.url, storagePath: res.data.storagePath };
+  }
+
+  async function adminRemoveImage(kind: "cover" | "logo") {
+    const path = kind === "cover" ? state.coverImageStoragePath : state.logoStoragePath;
+    setState((s) =>
+      kind === "cover"
+        ? { ...s, coverImageUrl: "", coverImageStoragePath: "" }
+        : { ...s, logoUrl: "", logoStoragePath: "" },
+    );
+    if (path) await deleteMosqueImageAction(path).catch(() => {});
   }
 
   // On first mount, default the country from the browser's TZ for nicer UX.
@@ -420,21 +482,8 @@ export function SubmitMosqueForm({
           next.website = t("validation.websiteInvalid");
         }
       }
-      if (adminMode) {
-        for (const [field, val] of [
-          ["facebook", state.facebook],
-          ["instagram", state.instagram],
-          ["youtube", state.youtube],
-        ] as const) {
-          const v = val.trim();
-          if (!v) continue;
-          try {
-            new URL(/^https?:\/\//i.test(v) ? v : `https://${v}`);
-          } catch {
-            next[field] = tForm("validation.urlInvalid");
-          }
-        }
-      }
+      // Social links are entered via SocialLinksEditor and stored as lenient
+      // handles/URLs (display components build the real href), so no URL check.
     }
     if (step === "media" && adminMode) {
       for (const [field, val] of [
@@ -465,9 +514,6 @@ export function SubmitMosqueForm({
       phone: "sub-phone",
       email: "sub-email",
       website: "sub-website",
-      facebook: "sub-facebook",
-      instagram: "sub-instagram",
-      youtube: "sub-youtube",
       coverImageUrl: "sub-cover",
       logoUrl: "sub-logo",
     };
@@ -508,12 +554,6 @@ export function SubmitMosqueForm({
 
   function normalizedWebsite(): string {
     const trimmed = state.website.trim();
-    if (!trimmed) return "";
-    return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-  }
-
-  function normalizedUrl(input: string): string {
-    const trimmed = input.trim();
     if (!trimmed) return "";
     return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
   }
@@ -565,6 +605,7 @@ export function SubmitMosqueForm({
       legalName: state.legalName.trim() || undefined,
       denomination: state.denomination,
       ...(description.length >= 2 ? { description: { en: description } } : {}),
+      about: state.about.trim() || undefined,
       address: {
         line1: state.addressLine1.trim(),
         ...(state.addressLine2.trim() ? { line2: state.addressLine2.trim() } : {}),
@@ -580,12 +621,7 @@ export function SubmitMosqueForm({
         email: state.email.trim() || undefined,
         website: website || undefined,
       },
-      social: {
-        facebook: normalizedUrl(state.facebook) || undefined,
-        instagram: normalizedUrl(state.instagram) || undefined,
-        youtube: normalizedUrl(state.youtube) || undefined,
-        whatsapp: state.whatsapp.trim() || undefined,
-      },
+      social: state.social,
       capacity: Number.isFinite(capacity) ? capacity : undefined,
       facilities: state.facilities,
       languages: state.languages,
@@ -594,6 +630,14 @@ export function SubmitMosqueForm({
         method: state.calcMethod,
         asrMethod: state.asrMethod,
         highLatitudeRule: state.highLatitudeRule,
+      },
+      iqamah: {
+        fajr: state.iqamah.fajr || undefined,
+        dhuhr: state.iqamah.dhuhr || undefined,
+        asr: state.iqamah.asr || undefined,
+        maghrib: state.iqamah.maghrib || undefined,
+        isha: state.iqamah.isha || undefined,
+        jumuah: state.iqamah.jumuah ? [state.iqamah.jumuah] : [],
       },
       coverImageUrl: state.coverImageUrl.trim() || "",
       coverImageStoragePath: state.coverImageStoragePath || "",
@@ -822,6 +866,25 @@ export function SubmitMosqueForm({
                 })()}
               </div>
             </div>
+
+            {adminMode && (
+              <div className="space-y-1.5">
+                <Label htmlFor="sub-about">{tForm("about")}</Label>
+                <textarea
+                  id="sub-about"
+                  className="min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={state.about}
+                  onChange={(e) => setState((s) => ({ ...s, about: e.target.value }))}
+                  maxLength={2000}
+                />
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">{tForm("aboutHint")}</p>
+                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                    {state.about.length} / 2000
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -986,46 +1049,10 @@ export function SubmitMosqueForm({
 
             {adminMode && (
               <>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="sub-facebook">{tForm("facebook")}</Label>
-                    <Input
-                      id="sub-facebook"
-                      type="url"
-                      value={state.facebook}
-                      onChange={(e) => setState((s) => ({ ...s, facebook: e.target.value }))}
-                    />
-                    {errors.facebook && <p className="text-xs text-danger">{errors.facebook}</p>}
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="sub-instagram">{tForm("instagram")}</Label>
-                    <Input
-                      id="sub-instagram"
-                      type="url"
-                      value={state.instagram}
-                      onChange={(e) => setState((s) => ({ ...s, instagram: e.target.value }))}
-                    />
-                    {errors.instagram && <p className="text-xs text-danger">{errors.instagram}</p>}
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="sub-youtube">{tForm("youtube")}</Label>
-                    <Input
-                      id="sub-youtube"
-                      type="url"
-                      value={state.youtube}
-                      onChange={(e) => setState((s) => ({ ...s, youtube: e.target.value }))}
-                    />
-                    {errors.youtube && <p className="text-xs text-danger">{errors.youtube}</p>}
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="sub-whatsapp">{tForm("whatsapp")}</Label>
-                    <Input
-                      id="sub-whatsapp"
-                      value={state.whatsapp}
-                      onChange={(e) => setState((s) => ({ ...s, whatsapp: e.target.value }))}
-                    />
-                  </div>
-                </div>
+                <SocialLinksEditor
+                  value={state.social}
+                  onChange={(next) => setState((s) => ({ ...s, social: next }))}
+                />
                 <div className="space-y-1.5">
                   <Label htmlFor="sub-alt">{tForm("altSpellings")}</Label>
                   <Input
@@ -1084,7 +1111,7 @@ export function SubmitMosqueForm({
         )}
 
         {step === "prayer" && adminMode && (
-          <div className="space-y-5">
+          <div className="space-y-6">
             <p className="text-sm text-muted-foreground">{tForm("sectionPrayerHint")}</p>
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="space-y-1.5">
@@ -1139,6 +1166,35 @@ export function SubmitMosqueForm({
                 </select>
               </div>
             </div>
+
+            <div className="space-y-2 border-t border-border pt-5">
+              <Label>{tForm("iqamah")}</Label>
+              <p className="text-xs text-muted-foreground">{tForm("iqamahHint")}</p>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {DAILY.map((p) => (
+                  <div key={p} className="space-y-1">
+                    <span className="text-xs text-muted-foreground">{tPrayer(p)}</span>
+                    <Input
+                      type="time"
+                      value={state.iqamah[p]}
+                      onChange={(e) =>
+                        setState((s) => ({ ...s, iqamah: { ...s.iqamah, [p]: e.target.value } }))
+                      }
+                    />
+                  </div>
+                ))}
+                <div className="space-y-1">
+                  <span className="text-xs text-muted-foreground">{tPrayer("jumuah")}</span>
+                  <Input
+                    type="time"
+                    value={state.iqamah.jumuah}
+                    onChange={(e) =>
+                      setState((s) => ({ ...s, iqamah: { ...s.iqamah, jumuah: e.target.value } }))
+                    }
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -1146,33 +1202,31 @@ export function SubmitMosqueForm({
           <div className="space-y-6">
             <div className="space-y-2">
               <Label>{tForm("coverImageLabel")}</Label>
-              <MosqueImageUploader
+              <ImageDropzone
                 slug={initial?.slug ?? "_new"}
                 kind="cover"
-                value={state.coverImageStoragePath}
-                previewUrl={state.coverImageUrl}
-                onChange={(next) =>
-                  setState((s) => ({
-                    ...s,
-                    coverImageStoragePath: next?.storagePath ?? "",
-                    coverImageUrl: next?.url ?? "",
-                  }))
+                currentUrl={state.coverImageUrl || undefined}
+                previewClassName="h-24 w-full rounded-lg border border-border object-cover"
+                requestUpload={(file) => adminRequestUpload("cover", file)}
+                resolveUrl={(p) => Promise.resolve(publicUrlFor(p))}
+                onRemove={() => adminRemoveImage("cover")}
+                onUploaded={(img) =>
+                  setState((s) => ({ ...s, coverImageUrl: img.url, coverImageStoragePath: img.storagePath }))
                 }
               />
             </div>
             <div className="space-y-2">
               <Label>{tForm("logoLabel")}</Label>
-              <MosqueImageUploader
+              <ImageDropzone
                 slug={initial?.slug ?? "_new"}
                 kind="logo"
-                value={state.logoStoragePath}
-                previewUrl={state.logoUrl}
-                onChange={(next) =>
-                  setState((s) => ({
-                    ...s,
-                    logoStoragePath: next?.storagePath ?? "",
-                    logoUrl: next?.url ?? "",
-                  }))
+                currentUrl={state.logoUrl || undefined}
+                previewClassName="size-20 rounded-xl border border-border object-cover"
+                requestUpload={(file) => adminRequestUpload("logo", file)}
+                resolveUrl={(p) => Promise.resolve(publicUrlFor(p))}
+                onRemove={() => adminRemoveImage("logo")}
+                onUploaded={(img) =>
+                  setState((s) => ({ ...s, logoUrl: img.url, logoStoragePath: img.storagePath }))
                 }
               />
             </div>
@@ -1278,6 +1332,7 @@ export function SubmitMosqueForm({
                   : []),
                 { label: t("fields.denomination"), value: tDenominations(state.denomination) },
                 ...(state.description ? [{ label: t("fields.description"), value: state.description }] : []),
+                ...(adminMode && state.about ? [{ label: tForm("about"), value: state.about }] : []),
               ]}
             />
 
@@ -1322,10 +1377,12 @@ export function SubmitMosqueForm({
                 ...(state.languages.length > 0
                   ? [{ label: t("fields.languages"), value: state.languages.join(", ") }]
                   : []),
-                ...(adminMode && state.facebook ? [{ label: tForm("facebook"), value: state.facebook }] : []),
-                ...(adminMode && state.instagram ? [{ label: tForm("instagram"), value: state.instagram }] : []),
-                ...(adminMode && state.youtube ? [{ label: tForm("youtube"), value: state.youtube }] : []),
-                ...(adminMode && state.whatsapp ? [{ label: tForm("whatsapp"), value: state.whatsapp }] : []),
+                ...(adminMode
+                  ? SOCIAL_PLATFORMS.filter((p) => state.social[p]).map((p) => ({
+                      label: SOCIAL_LABELS[p],
+                      value: state.social[p]!,
+                    }))
+                  : []),
                 ...(adminMode && state.altSpellings
                   ? [{ label: tForm("altSpellings"), value: state.altSpellings }]
                   : []),
@@ -1358,6 +1415,16 @@ export function SubmitMosqueForm({
                     { label: tForm("calcMethod"), value: state.calcMethod },
                     { label: tForm("asrMethod"), value: state.asrMethod },
                     { label: tForm("highLatRule"), value: state.highLatitudeRule },
+                    {
+                      label: tForm("iqamah"),
+                      value:
+                        [
+                          ...DAILY.map((p) => (state.iqamah[p] ? `${tPrayer(p)} ${state.iqamah[p]}` : null)),
+                          state.iqamah.jumuah ? `${tPrayer("jumuah")} ${state.iqamah.jumuah}` : null,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ") || "—",
+                    },
                   ]}
                 />
                 <ReviewSection

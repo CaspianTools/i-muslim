@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check, ImageIcon, Loader2 } from "lucide-react";
+import { Check, ImageIcon, Loader2, X } from "lucide-react";
 import {
   getManageUploadUrlAction,
   finalizeMosqueUploadAction,
@@ -33,9 +33,14 @@ function humanSize(bytes: number): string {
 }
 
 /**
- * Drag-and-drop image upload field for masjid logo/cover. Uploads via the
- * signed-URL flow with a real progress bar (XHR), then finalizes a permanent
- * token URL and reports it to `onUploaded`.
+ * Drag-and-drop image upload field for masjid logo/cover. Uploads via a
+ * signed-URL flow with a real progress bar (XHR) and reports the resulting
+ * `{ url, storagePath }` to `onUploaded`.
+ *
+ * By default it uses the manager-auth flow (signed URL → PUT → finalize token
+ * URL) used by the public Manage panel. The admin form passes `requestUpload`
+ * + `resolveUrl` overrides so the same UI drives the admin-auth upload backend
+ * (which has no separate finalize step and builds the URL from the path).
  */
 export function ImageDropzone({
   slug,
@@ -43,12 +48,21 @@ export function ImageDropzone({
   currentUrl,
   onUploaded,
   previewClassName = "size-16 rounded-md border border-border object-cover",
+  requestUpload,
+  resolveUrl,
+  onRemove,
 }: {
   slug: string;
   kind: "logo" | "cover";
   currentUrl?: string | null;
   onUploaded: (img: { url: string; storagePath: string }) => void;
   previewClassName?: string;
+  /** Override the upload backend. Returns the signed PUT URL + storage path. */
+  requestUpload?: (file: File) => Promise<{ putUrl: string; storagePath: string }>;
+  /** Override how the final display URL is derived from the storage path. */
+  resolveUrl?: (storagePath: string) => Promise<string>;
+  /** When provided, renders a remove affordance over the current preview. */
+  onRemove?: () => void | Promise<void>;
 }) {
   const t = useTranslations("mosques.manage");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -59,6 +73,24 @@ export function ImageDropzone({
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  async function defaultRequestUpload(file: File): Promise<{ putUrl: string; storagePath: string }> {
+    const up = await getManageUploadUrlAction({
+      slug,
+      kind,
+      filename: file.name,
+      contentType: file.type,
+      contentLength: file.size,
+    });
+    if (!up.ok || !up.url || !up.storagePath) throw new Error("url");
+    return { putUrl: up.url, storagePath: up.storagePath };
+  }
+
+  async function defaultResolveUrl(storagePath: string): Promise<string> {
+    const fin = await finalizeMosqueUploadAction(slug, storagePath);
+    if (!fin.ok || !fin.url) throw new Error("finalize");
+    return fin.url;
+  }
+
   async function handleFile(file: File) {
     setError(null);
     setDone(false);
@@ -68,20 +100,12 @@ export function ImageDropzone({
     setBusy(true);
     setProgress(0);
     try {
-      const up = await getManageUploadUrlAction({
-        slug,
-        kind,
-        filename: file.name,
-        contentType: file.type,
-        contentLength: file.size,
-      });
-      if (!up.ok || !up.url || !up.storagePath) throw new Error("url");
-      await putWithProgress(up.url, file, setProgress);
-      const fin = await finalizeMosqueUploadAction(slug, up.storagePath);
-      if (!fin.ok || !fin.url) throw new Error("finalize");
+      const { putUrl, storagePath } = await (requestUpload ?? defaultRequestUpload)(file);
+      await putWithProgress(putUrl, file, setProgress);
+      const url = await (resolveUrl ?? defaultResolveUrl)(storagePath);
       setProgress(100);
       setDone(true);
-      onUploaded({ url: fin.url, storagePath: up.storagePath });
+      onUploaded({ url, storagePath });
     } catch {
       setError(t("saveFailed"));
       setProgress(null);
@@ -89,6 +113,14 @@ export function ImageDropzone({
     } finally {
       setBusy(false);
     }
+  }
+
+  async function handleRemove() {
+    setError(null);
+    setDone(false);
+    setProgress(null);
+    setFileMeta(null);
+    await onRemove?.();
   }
 
   return (
@@ -109,10 +141,24 @@ export function ImageDropzone({
           const f = e.dataTransfer.files?.[0];
           if (f) void handleFile(f);
         }}
-        className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-6 text-center transition-colors ${
+        className={`relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-6 text-center transition-colors ${
           dragging ? "border-accent bg-selected/50" : "border-input hover:border-accent/60 hover:bg-muted/40"
         }`}
       >
+        {currentUrl && onRemove && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              void handleRemove();
+            }}
+            disabled={busy}
+            aria-label={t("removePhoto")}
+            className="absolute end-2 top-2 inline-flex size-7 items-center justify-center rounded-md bg-background/90 text-danger transition-colors hover:bg-background"
+          >
+            <X className="size-4" />
+          </button>
+        )}
         {currentUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={currentUrl} alt="" className={previewClassName} />

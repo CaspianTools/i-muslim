@@ -29,11 +29,33 @@ const descriptionSchema = z
   .object({ en: z.string().optional().or(z.literal("")) })
   .optional();
 
+// Social values may be a full URL or a bare handle (e.g. "luivante"), matching
+// the manager-side editor in mosques/manage-actions — display components build
+// the real href. Validated leniently as a short string.
+const socialValue = z.string().trim().max(200).optional().or(z.literal(""));
+
+// Iqamah / Jama'ah congregation times, "HH:mm" 24-hour. Mirrors the shape in
+// mosques/manage-actions so admin-created and manager-edited records match.
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+const iqamahInputSchema = z
+  .object({
+    fajr: z.string().regex(TIME_RE).optional().or(z.literal("")),
+    dhuhr: z.string().regex(TIME_RE).optional().or(z.literal("")),
+    asr: z.string().regex(TIME_RE).optional().or(z.literal("")),
+    maghrib: z.string().regex(TIME_RE).optional().or(z.literal("")),
+    isha: z.string().regex(TIME_RE).optional().or(z.literal("")),
+    jumuah: z.array(z.string().regex(TIME_RE)).max(4).optional(),
+  })
+  .optional();
+
 const mosqueInputSchema = z.object({
   name: nameSchema,
   legalName: z.string().optional(),
   denomination: z.enum(["sunni", "shia", "ibadi", "ahmadi", "other", "unspecified"]),
   description: descriptionSchema,
+  // Manager-style long-form text shown on the masjid detail page (distinct from
+  // the short, localized `description` used for listings/SEO).
+  about: z.string().max(2000).optional().or(z.literal("")),
   address: z.object({
     line1: z.string().min(2),
     line2: z.string().optional(),
@@ -56,10 +78,14 @@ const mosqueInputSchema = z.object({
     .optional(),
   social: z
     .object({
-      facebook: z.string().url().optional().or(z.literal("")),
-      instagram: z.string().url().optional().or(z.literal("")),
-      youtube: z.string().url().optional().or(z.literal("")),
-      whatsapp: z.string().optional(),
+      instagram: socialValue,
+      facebook: socialValue,
+      youtube: socialValue,
+      x: socialValue,
+      tiktok: socialValue,
+      telegram: socialValue,
+      whatsapp: socialValue,
+      website: socialValue,
     })
     .optional(),
   capacity: z.number().int().nonnegative().optional(),
@@ -73,6 +99,7 @@ const mosqueInputSchema = z.object({
       highLatitudeRule: z.enum(["MIDDLE_OF_NIGHT", "ANGLE_BASED", "ONE_SEVENTH"]),
     })
     .optional(),
+  iqamah: iqamahInputSchema,
   coverImageUrl: z.string().url().optional().or(z.literal("")),
   coverImageStoragePath: z.string().optional().or(z.literal("")),
   logoUrl: z.string().url().optional().or(z.literal("")),
@@ -164,6 +191,7 @@ function buildPersistable(
     legalName: input.legalName?.trim() || undefined,
     denomination: input.denomination,
     description: input.description ? trimmedDescription(input.description) : undefined,
+    about: input.about?.trim() || undefined,
     address: input.address,
     city: input.city,
     citySlug,
@@ -182,6 +210,7 @@ function buildPersistable(
     languages: input.languages ?? [],
     prayerCalc:
       input.prayerCalc ?? suggestPrayerCalc(partial.country, input.denomination) ?? defaultPrayerCalc(),
+    iqamah: cleanIqamah(input.iqamah),
     coverImage: input.coverImageUrl
       ? {
           url: input.coverImageUrl,
@@ -211,6 +240,19 @@ function cleanObject<T extends Record<string, unknown> | undefined>(obj: T): T |
     if (v !== undefined && v !== null && v !== "") out[k] = v;
   }
   return Object.keys(out).length > 0 ? (out as T) : undefined;
+}
+
+/** Drop empty daily times and an empty jumuah array; undefined if nothing set. */
+function cleanIqamah(iq: MosqueInput["iqamah"]): Record<string, unknown> | undefined {
+  if (!iq) return undefined;
+  const out: Record<string, unknown> = {};
+  for (const k of ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const) {
+    const v = iq[k];
+    if (typeof v === "string" && v.trim()) out[k] = v.trim();
+  }
+  const jumuah = (iq.jumuah ?? []).filter((s) => typeof s === "string" && s.trim());
+  if (jumuah.length > 0) out.jumuah = jumuah;
+  return Object.keys(out).length > 0 ? out : undefined;
 }
 
 function stripUndefinedTopLevel(obj: Record<string, unknown>): Record<string, unknown> {
@@ -271,6 +313,21 @@ export async function updateMosque(slug: string, rawInput: unknown): Promise<Act
   );
   // Preserve createdAt
   if (prev.createdAt) data.createdAt = prev.createdAt;
+  // The admin form rewrites the doc wholesale (merge:false), so carry forward
+  // fields it doesn't manage — otherwise an edit silently drops them. Most
+  // critical: `shortCode` backs the public /m/<code> short link.
+  for (const key of [
+    "shortCode",
+    "openingHours",
+    "followerCount",
+    "likeCount",
+    "newsCount",
+    "verifiedBadge",
+    "claimedBy",
+    "stats",
+  ] as const) {
+    if (prev[key] !== undefined && data[key] === undefined) data[key] = prev[key];
+  }
 
   await ref.set(data, { merge: false });
   revalidatePath("/mosques");

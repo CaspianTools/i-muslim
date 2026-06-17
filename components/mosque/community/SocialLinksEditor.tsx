@@ -16,35 +16,67 @@ interface Row {
   value: string;
 }
 
-export function SocialLinksEditor({ slug, initial }: { slug: string; initial?: MosqueSocial }) {
+function rowsToSocial(rows: Row[]): MosqueSocial {
+  const social: MosqueSocial = {};
+  for (const r of rows) {
+    const v = r.value.trim();
+    if (v) social[r.platform] = v;
+  }
+  return social;
+}
+
+/**
+ * Social-links editor. Two modes:
+ * - **Uncontrolled** (default): owns its rows and self-saves via
+ *   `updateMosqueSocial(slug)` with its own Save button (the Manage panel).
+ * - **Controlled**: pass `value` + `onChange` and it edits local form state
+ *   only — no Save button, no server action (the admin create/edit wizard,
+ *   which submits everything at once).
+ */
+export function SocialLinksEditor({
+  slug,
+  initial,
+  value,
+  onChange,
+}: {
+  slug?: string;
+  initial?: MosqueSocial;
+  value?: MosqueSocial;
+  onChange?: (next: MosqueSocial) => void;
+}) {
+  const controlled = typeof onChange === "function";
   const t = useTranslations("mosques.manage");
-  const [rows, setRows] = useState<Row[]>(() =>
-    SOCIAL_PLATFORMS.filter((p) => initial?.[p]).map((p) => ({ platform: p, value: initial![p]! })),
-  );
+  const [rows, setRows] = useState<Row[]>(() => {
+    const src = value ?? initial;
+    return SOCIAL_PLATFORMS.filter((p) => src?.[p]).map((p) => ({ platform: p, value: src![p]! }));
+  });
   const [busy, setBusy] = useState(false);
 
   const used = new Set(rows.map((r) => r.platform));
 
+  // Commit row changes locally, and in controlled mode push the derived social
+  // object up to the parent on every edit (no auto-save).
+  function commit(next: Row[]) {
+    setRows(next);
+    onChange?.(rowsToSocial(next));
+  }
+
   function addRow() {
     const next = SOCIAL_PLATFORMS.find((p) => !used.has(p));
-    if (next) setRows((r) => [...r, { platform: next, value: "" }]);
+    if (next) commit([...rows, { platform: next, value: "" }]);
   }
   function setRow(i: number, patch: Partial<Row>) {
-    setRows((r) => r.map((row, idx) => (idx === i ? { ...row, ...patch } : row)));
+    commit(rows.map((row, idx) => (idx === i ? { ...row, ...patch } : row)));
   }
   function removeRow(i: number) {
-    setRows((r) => r.filter((_, idx) => idx !== i));
+    commit(rows.filter((_, idx) => idx !== i));
   }
 
   async function save() {
+    if (!slug) return;
     setBusy(true);
-    const social: MosqueSocial = {};
-    for (const r of rows) {
-      const v = r.value.trim();
-      if (v) social[r.platform] = v;
-    }
     try {
-      const res = await updateMosqueSocial(slug, social);
+      const res = await updateMosqueSocial(slug, rowsToSocial(rows));
       if (!res.ok) toast.error(t("saveFailed"));
       else toast.success(t("saved"));
     } finally {
@@ -109,10 +141,12 @@ export function SocialLinksEditor({ slug, initial }: { slug: string; initial?: M
         </div>
       )}
 
-      <Button variant="secondary" size="sm" onClick={save} disabled={busy}>
-        {busy ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-        {t("save")}
-      </Button>
+      {!controlled && (
+        <Button variant="secondary" size="sm" onClick={save} disabled={busy}>
+          {busy ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+          {t("save")}
+        </Button>
+      )}
     </div>
   );
 }
