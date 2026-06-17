@@ -8,7 +8,7 @@ import { MosqueApplyForm, type ClaimTarget } from "@/components/mosque/MosqueApp
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("mosques.apply");
-  return { title: t("title"), description: t("subtitle"), robots: { index: false } };
+  return { title: t("title"), description: t("subtitle"), robots: { index: false, follow: false } };
 }
 
 export default async function MosqueApplyPage({

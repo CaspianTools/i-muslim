@@ -1763,8 +1763,18 @@
       "tabMedia": "Media",
       "tabPrayer": "Prayer",
       "tabContact": "Contact",
+      "tabSocial": "Social",
       "tabShare": "Share",
       "shareUnavailable": "Your share link & QR code appear here once the page is published.",
+      "dropHere": "Drop your image here, or",
+      "browse": "browse",
+      "uploadSupports": "Supports PNG, JPG, JPEG, WEBP",
+      "uploadTypeError": "Use a PNG, JPG, or WEBP image.",
+      "uploadSizeError": "Image must be under 5 MB.",
+      "addLink": "Add link",
+      "removeLink": "Remove link",
+      "socialEmpty": "No social links yet. Add your Instagram, Facebook, and more.",
+      "socialPlaceholder": "Handle or full URL",
       "publish": "Publish page",
       "publishHint": "Your page isn't public yet. Add a logo and an About description, then publish.",
       "published": "Your masjid page is now live.",
@@ -1806,6 +1816,12 @@
     },
     "install": {
       "install": "Install app"
+    },
+    "like": {
+      "like": "Like",
+      "liked": "Liked",
+      "signInToLike": "Sign in to like this masjid.",
+      "failed": "Couldn't update. Please try again."
     },
     "community": {
       "verseTitle": "Verse of the day",

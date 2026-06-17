@@ -11,7 +11,7 @@ import type { CommentRecord } from "@/types/comments";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("profileComments");
-  return { title: t("pageTitle") };
+  return { title: t("pageTitle"), robots: { index: false, follow: false } };
 }
 
 function statusVariant(s: CommentRecord["status"]): "success" | "warning" | "danger" | "neutral" {

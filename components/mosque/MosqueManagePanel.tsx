@@ -8,14 +8,11 @@ import {
   Copy,
   Download,
   FileText,
-  ImagePlus,
-  ImageUp,
   Loader2,
   QrCode,
   Rocket,
   Save,
   Settings2,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,17 +25,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ImageDropzone } from "@/components/mosque/community/ImageDropzone";
+import { SocialLinksEditor } from "@/components/mosque/community/SocialLinksEditor";
 import type { Mosque } from "@/types/mosque";
 import {
   updateMosqueAbout,
   updateMosqueContact,
-  updateMosqueSocial,
   updateMosqueIqamah,
   updateMosqueLogo,
   updateMosqueCover,
-  updateMosqueGallery,
-  getManageUploadUrlAction,
-  finalizeMosqueUploadAction,
   publishMosque,
 } from "@/app/[locale]/(site)/mosques/manage-actions";
 
@@ -62,12 +57,6 @@ export function MosqueManagePanel({
     email: mosque.contact?.email ?? "",
     website: mosque.contact?.website ?? "",
   });
-  const [social, setSocial] = useState({
-    facebook: mosque.social?.facebook ?? "",
-    instagram: mosque.social?.instagram ?? "",
-    youtube: mosque.social?.youtube ?? "",
-    whatsapp: mosque.social?.whatsapp ?? "",
-  });
   const [iqamah, setIqamah] = useState({
     fajr: mosque.iqamah?.fajr ?? "",
     dhuhr: mosque.iqamah?.dhuhr ?? "",
@@ -76,11 +65,6 @@ export function MosqueManagePanel({
     isha: mosque.iqamah?.isha ?? "",
     jumuah: mosque.iqamah?.jumuah?.[0] ?? "",
   });
-  const [gallery, setGallery] = useState<Array<{ url: string; storagePath: string }>>(
-    (mosque.gallery ?? [])
-      .map((g) => ({ url: g.url, storagePath: g.storagePath ?? "" }))
-      .filter((g) => g.storagePath),
-  );
 
   async function run(key: string, fn: () => Promise<{ ok: boolean; error?: string }>) {
     setSaving(key);
@@ -88,109 +72,29 @@ export function MosqueManagePanel({
       const res = await fn();
       if (!res.ok) {
         toast.error(t("saveFailed"));
-        return false;
+        return;
       }
       toast.success(t("saved"));
       router.refresh();
-      return true;
     } finally {
       setSaving(null);
     }
   }
 
-  async function handleLogo(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-    setSaving("logo");
-    try {
-      const up = await getManageUploadUrlAction({
-        slug: mosque.slug,
-        kind: "logo",
-        filename: file.name,
-        contentType: file.type,
-        contentLength: file.size,
-      });
-      if (!up.ok || !up.url || !up.storagePath) return toast.error(t("saveFailed"));
-      const put = await fetch(up.url, { method: "PUT", headers: { "content-type": file.type }, body: file });
-      if (!put.ok) return toast.error(t("saveFailed"));
-      const fin = await finalizeMosqueUploadAction(mosque.slug, up.storagePath);
-      if (!fin.ok || !fin.url) return toast.error(t("saveFailed"));
-      const res = await updateMosqueLogo(mosque.slug, { url: fin.url, storagePath: up.storagePath });
-      if (!res.ok) return toast.error(t("saveFailed"));
+  async function saveLogo(img: { url: string; storagePath: string }) {
+    const res = await updateMosqueLogo(mosque.slug, img);
+    if (res.ok) {
       toast.success(t("saved"));
       router.refresh();
-    } finally {
-      setSaving(null);
-    }
+    } else toast.error(t("saveFailed"));
   }
 
-  async function uploadImage(
-    kind: "cover" | "gallery",
-    file: File,
-  ): Promise<{ url: string; storagePath: string } | null> {
-    const up = await getManageUploadUrlAction({
-      slug: mosque.slug,
-      kind,
-      filename: file.name,
-      contentType: file.type,
-      contentLength: file.size,
-    });
-    if (!up.ok || !up.url || !up.storagePath) return null;
-    const put = await fetch(up.url, { method: "PUT", headers: { "content-type": file.type }, body: file });
-    if (!put.ok) return null;
-    const fin = await finalizeMosqueUploadAction(mosque.slug, up.storagePath);
-    if (!fin.ok || !fin.url) return null;
-    return { url: fin.url, storagePath: up.storagePath };
-  }
-
-  async function handleCover(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-    setSaving("cover");
-    try {
-      const img = await uploadImage("cover", file);
-      if (!img) return toast.error(t("saveFailed"));
-      const res = await updateMosqueCover(mosque.slug, img);
-      if (!res.ok) return toast.error(t("saveFailed"));
+  async function saveCover(img: { url: string; storagePath: string }) {
+    const res = await updateMosqueCover(mosque.slug, img);
+    if (res.ok) {
       toast.success(t("saved"));
       router.refresh();
-    } finally {
-      setSaving(null);
-    }
-  }
-
-  async function handleGalleryAdd(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-    setSaving("gallery");
-    try {
-      const img = await uploadImage("gallery", file);
-      if (!img) return toast.error(t("saveFailed"));
-      const next = [...gallery, img].slice(0, 12);
-      const res = await updateMosqueGallery(mosque.slug, next);
-      if (!res.ok) return toast.error(t("saveFailed"));
-      setGallery(next);
-      toast.success(t("saved"));
-      router.refresh();
-    } finally {
-      setSaving(null);
-    }
-  }
-
-  async function handleGalleryRemove(idx: number) {
-    const next = gallery.filter((_, i) => i !== idx);
-    setSaving("gallery");
-    try {
-      const res = await updateMosqueGallery(mosque.slug, next);
-      if (!res.ok) return toast.error(t("saveFailed"));
-      setGallery(next);
-      router.refresh();
-    } finally {
-      setSaving(null);
-    }
+    } else toast.error(t("saveFailed"));
   }
 
   async function handlePublish() {
@@ -258,6 +162,7 @@ export function MosqueManagePanel({
             <TabsTrigger value="media">{t("tabMedia")}</TabsTrigger>
             <TabsTrigger value="prayer">{t("tabPrayer")}</TabsTrigger>
             <TabsTrigger value="contact">{t("tabContact")}</TabsTrigger>
+            <TabsTrigger value="social">{t("tabSocial")}</TabsTrigger>
             <TabsTrigger value="share">{t("tabShare")}</TabsTrigger>
           </TabsList>
 
@@ -281,63 +186,27 @@ export function MosqueManagePanel({
               />
             </TabsContent>
 
-            {/* Media */}
+            {/* Media — logo + cover dropzones */}
             <TabsContent value="media" className="space-y-6">
               <div className="space-y-2">
                 <Label>{t("logo")}</Label>
-                <div className="flex items-center gap-3">
-                  {mosque.logoUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={mosque.logoUrl} alt="" className="size-12 rounded-md border border-border object-cover" />
-                  )}
-                  <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted">
-                    {saving === "logo" ? <Loader2 className="size-4 animate-spin" /> : <ImageUp className="size-4" />}
-                    {mosque.logoUrl ? t("replaceLogo") : t("uploadLogo")}
-                    <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleLogo} />
-                  </label>
-                </div>
+                <ImageDropzone
+                  slug={mosque.slug}
+                  kind="logo"
+                  currentUrl={mosque.logoUrl}
+                  onUploaded={saveLogo}
+                  previewClassName="size-20 rounded-xl border border-border object-cover"
+                />
               </div>
-
               <div className="space-y-2">
                 <Label>{t("cover")}</Label>
-                <div className="flex items-center gap-3">
-                  {mosque.coverImage?.url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={mosque.coverImage.url} alt="" className="h-16 w-28 rounded-md border border-border object-cover" />
-                  )}
-                  <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 text-sm hover:bg-muted">
-                    {saving === "cover" ? <Loader2 className="size-4 animate-spin" /> : <ImageUp className="size-4" />}
-                    {mosque.coverImage?.url ? t("replaceCover") : t("uploadCover")}
-                    <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleCover} />
-                  </label>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>{t("gallery")}</Label>
-                <div className="flex flex-wrap gap-2">
-                  {gallery.map((g, idx) => (
-                    <div key={g.storagePath} className="relative">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={g.url} alt="" className="size-20 rounded-md border border-border object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => handleGalleryRemove(idx)}
-                        disabled={saving === "gallery"}
-                        className="absolute end-0.5 top-0.5 inline-flex size-5 items-center justify-center rounded bg-background/90 text-danger"
-                        aria-label={t("removePhoto")}
-                      >
-                        <X className="size-3" />
-                      </button>
-                    </div>
-                  ))}
-                  {gallery.length < 12 && (
-                    <label className="inline-flex size-20 cursor-pointer items-center justify-center rounded-md border border-dashed border-input bg-background hover:bg-muted">
-                      {saving === "gallery" ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-5 text-muted-foreground" />}
-                      <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleGalleryAdd} />
-                    </label>
-                  )}
-                </div>
+                <ImageDropzone
+                  slug={mosque.slug}
+                  kind="cover"
+                  currentUrl={mosque.coverImage?.url}
+                  onUploaded={saveCover}
+                  previewClassName="h-24 w-full rounded-lg border border-border object-cover"
+                />
               </div>
             </TabsContent>
 
@@ -383,27 +252,20 @@ export function MosqueManagePanel({
               />
             </TabsContent>
 
-            {/* Contact + Social */}
-            <TabsContent value="contact" className="space-y-6">
-              <div className="space-y-2">
-                <Label>{t("contact")}</Label>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <Input placeholder={t("phone")} value={contact.phone} onChange={(e) => setContact((s) => ({ ...s, phone: e.target.value }))} />
-                  <Input placeholder={t("email")} value={contact.email} onChange={(e) => setContact((s) => ({ ...s, email: e.target.value }))} />
-                  <Input placeholder={t("website")} value={contact.website} onChange={(e) => setContact((s) => ({ ...s, website: e.target.value }))} />
-                </div>
-                <SaveButton label={t("save")} busy={saving === "contact"} onClick={() => run("contact", () => updateMosqueContact(mosque.slug, contact))} />
+            {/* Contact */}
+            <TabsContent value="contact" className="space-y-2">
+              <Label>{t("contact")}</Label>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Input placeholder={t("phone")} value={contact.phone} onChange={(e) => setContact((s) => ({ ...s, phone: e.target.value }))} />
+                <Input placeholder={t("email")} value={contact.email} onChange={(e) => setContact((s) => ({ ...s, email: e.target.value }))} />
+                <Input placeholder={t("website")} value={contact.website} onChange={(e) => setContact((s) => ({ ...s, website: e.target.value }))} />
               </div>
-              <div className="space-y-2">
-                <Label>{t("social")}</Label>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Input placeholder={t("facebook")} value={social.facebook} onChange={(e) => setSocial((s) => ({ ...s, facebook: e.target.value }))} />
-                  <Input placeholder={t("instagram")} value={social.instagram} onChange={(e) => setSocial((s) => ({ ...s, instagram: e.target.value }))} />
-                  <Input placeholder={t("youtube")} value={social.youtube} onChange={(e) => setSocial((s) => ({ ...s, youtube: e.target.value }))} />
-                  <Input placeholder={t("whatsapp")} value={social.whatsapp} onChange={(e) => setSocial((s) => ({ ...s, whatsapp: e.target.value }))} />
-                </div>
-                <SaveButton label={t("save")} busy={saving === "social"} onClick={() => run("social", () => updateMosqueSocial(mosque.slug, social))} />
-              </div>
+              <SaveButton label={t("save")} busy={saving === "contact"} onClick={() => run("contact", () => updateMosqueContact(mosque.slug, contact))} />
+            </TabsContent>
+
+            {/* Social */}
+            <TabsContent value="social">
+              <SocialLinksEditor slug={mosque.slug} initial={mosque.social} />
             </TabsContent>
 
             {/* Share + analytics */}

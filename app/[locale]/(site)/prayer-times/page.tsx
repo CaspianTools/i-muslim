@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { PrayerTimesPanel, type PanelInit } from "@/components/prayer/PrayerTimesPanel";
 import { NotificationPermissionCard } from "@/components/prayer/NotificationPermissionCard";
 import { MECCA_FALLBACK } from "@/lib/prayer/location";
@@ -9,11 +11,14 @@ import {
 } from "@/lib/prayer/methods";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("prayer");
-  return {
+  return buildPageMetadata({
+    locale,
+    path: "/prayer-times",
     title: t("pageTitle"),
     description: t("pageSubtitleGeneric"),
-  };
+  });
 }
 
 export default function PrayerTimesPage() {

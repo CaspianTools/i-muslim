@@ -1,13 +1,20 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { TocSidebar } from "@/components/site/TocSidebar";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Developer API — i-muslim",
-  description:
-    "Public read/write HTTP API for prayer times, Qibla, Hijri dates, Quran, Hadith, and mosque data. Free, key-authenticated, browser-friendly.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
+  return buildPageMetadata({
+    locale,
+    path: "/developers",
+    title: "Developer API — i-muslim",
+    description:
+      "Public read/write HTTP API for prayer times, Qibla, Hijri dates, Quran, Hadith, and mosque data. Free, key-authenticated, browser-friendly.",
+  });
+}
 
 const H2 = "mt-12 mb-3 scroll-mt-24 text-2xl font-semibold tracking-tight text-foreground";
 const SUB = "mt-1 text-sm text-muted-foreground";

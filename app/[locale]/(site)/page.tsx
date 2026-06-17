@@ -1,4 +1,8 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { HomeHero } from "@/components/home/HomeHero";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { AyahOfTheDay } from "@/components/home/AyahOfTheDay";
@@ -34,6 +38,19 @@ function ListSkeleton() {
       </div>
     </div>
   );
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [locale, t] = await Promise.all([
+    getLocale() as Promise<Locale>,
+    getTranslations("home"),
+  ]);
+  return buildPageMetadata({
+    locale,
+    path: "",
+    title: t("headline"),
+    description: t("tagline"),
+  });
 }
 
 export default function Home() {

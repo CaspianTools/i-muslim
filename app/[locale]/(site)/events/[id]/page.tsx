@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import {
   ArrowLeft,
   CalendarDays,
@@ -35,15 +37,13 @@ export async function generateMetadata({ params }: PageContext): Promise<Metadat
   const event = await fetchPublicEvent(id);
   if (!event) return { title: "Event not found" };
   const t = await getTranslations("eventsPublic");
-  return {
+  const locale = (await getLocale()) as Locale;
+  return buildPageMetadata({
+    locale,
+    path: `/events/${id}`,
     title: t("metaDetailTitle", { name: event.title }),
     description: event.description ?? t("metaDescription"),
-    openGraph: {
-      title: event.title,
-      description: event.description,
-      type: "website",
-    },
-  };
+  });
 }
 
 function categoryVariant(category: EventCategory): "accent" | "info" | "success" | "warning" | "danger" | "neutral" {

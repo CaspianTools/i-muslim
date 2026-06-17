@@ -13,7 +13,7 @@ import { ResetReadsButton } from "@/components/site/reads/ResetReadsButton";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("reading");
-  return { title: t("title") };
+  return { title: t("title"), robots: { index: false, follow: false } };
 }
 
 const TOTAL_SURAHS = 114;

@@ -7,7 +7,11 @@ import { getSiteSession } from "@/lib/auth/session";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("businesses.submit");
-  return { title: t("title"), description: t("subtitle") };
+  return {
+    title: t("title"),
+    description: t("subtitle"),
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function SubmitBusinessPage() {

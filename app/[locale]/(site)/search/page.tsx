@@ -9,6 +9,7 @@ import type { HadithEntry } from "@/types/hadith";
 export const metadata = {
   title: "Search",
   description: "Search the Quran and major Hadith collections.",
+  robots: { index: false, follow: false },
 };
 
 function stripHtml(s: string): string {

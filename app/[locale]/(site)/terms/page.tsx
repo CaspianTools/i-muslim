@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { TocSidebar } from "@/components/site/TocSidebar";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("legal.terms");
-  return {
+  return buildPageMetadata({
+    locale,
+    path: "/terms",
     title: t("title"),
     description: t("description"),
-  };
+  });
 }
 
 const H2 = "scroll-mt-24 pt-4 text-lg font-semibold text-foreground";

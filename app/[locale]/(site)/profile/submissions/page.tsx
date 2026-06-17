@@ -9,7 +9,7 @@ import { formatRelative } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("profileSubmissions");
-  return { title: t("pageTitle") };
+  return { title: t("pageTitle"), robots: { index: false, follow: false } };
 }
 
 type StatusKey =

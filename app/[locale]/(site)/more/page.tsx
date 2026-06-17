@@ -19,13 +19,19 @@ import { hasPermission } from "@/lib/permissions/check";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { listActivatedReservedLocales } from "@/lib/admin/data/ui-locales";
 import { BUNDLED_LOCALES, type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("more");
-  return {
+  const [t, locale] = await Promise.all([
+    getTranslations("more"),
+    getLocale(),
+  ]);
+  return buildPageMetadata({
+    locale: locale as Locale,
+    path: "/more",
     title: t("title"),
     description: t("description"),
-  };
+  });
 }
 
 export default async function MorePage() {

@@ -27,7 +27,7 @@ function getBucket() {
   return getStorage(app).bucket(getBucketName());
 }
 
-export type MosqueUploadKind = "cover" | "logo" | "gallery" | "news" | "proof";
+export type MosqueUploadKind = "cover" | "logo" | "news" | "proof";
 
 export interface MosqueUploadInput {
   /** Owning mosque slug — for an in-progress create/application, pass a temp id. */

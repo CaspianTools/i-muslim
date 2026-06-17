@@ -19,7 +19,7 @@ import {
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("profileMatrimonial");
-  return { title: t("pageTitle") };
+  return { title: t("pageTitle"), robots: { index: false, follow: false } };
 }
 
 export default async function ProfileMatrimonialPage() {

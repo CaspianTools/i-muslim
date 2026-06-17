@@ -6,7 +6,11 @@ import { SubmitMosqueForm } from "@/components/mosque/SubmitMosqueForm";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("mosques.submit");
-  return { title: t("title"), description: t("subtitle") };
+  return {
+    title: t("title"),
+    description: t("subtitle"),
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function SubmitMosquePage() {

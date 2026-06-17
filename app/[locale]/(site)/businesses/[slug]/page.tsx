@@ -6,6 +6,7 @@ import { ArrowLeft, AtSign, ExternalLink, Globe, Mail, MapPin, Phone, MessageCir
 import { getBySlug } from "@/lib/businesses/public";
 import { fetchAmenities, fetchCategories, fetchCertBodies } from "@/lib/admin/data/business-taxonomies";
 import { buildLocalBusinessJsonLd } from "@/lib/businesses/seo";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HalalBadge } from "@/components/businesses/HalalBadge";
@@ -29,15 +30,14 @@ export async function generateMetadata({ params }: RouteParams): Promise<Metadat
   const { slug } = await params;
   const business = await getBySlug(slug);
   if (!business) return { title: "Not found" };
-  return {
+  const locale = (await getLocale()) as Locale;
+  const description = pickLocalized(business.description, locale, "en") ?? business.description.en;
+  return buildPageMetadata({
+    locale,
+    path: `/businesses/${slug}`,
     title: business.name,
-    description: business.description.en,
-    openGraph: {
-      title: business.name,
-      description: business.description.en,
-      type: "website",
-    },
-  };
+    description,
+  });
 }
 
 export default async function BusinessDetailPage({ params }: RouteParams) {

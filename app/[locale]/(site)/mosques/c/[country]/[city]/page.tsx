@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
 import { MosqueCard } from "@/components/mosque/MosqueCard";
 import { fetchPublishedMosques } from "@/lib/admin/data/mosques";
 import { countryName, countryCodeFromSlug } from "@/lib/mosques/countries";
-import { getSiteUrl } from "@/lib/mosques/constants";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { type Locale } from "@/i18n/config";
 
 export const revalidate = 86400;
 
@@ -16,14 +17,16 @@ export async function generateMetadata({
   params: Promise<{ country: string; city: string }>;
 }): Promise<Metadata> {
   const { country, city } = await params;
+  const locale = (await getLocale()) as Locale;
   const cc = countryCodeFromSlug(country);
   const name = countryName(cc);
   const cityLabel = city.replace(/-/g, " ");
-  return {
+  return buildPageMetadata({
+    locale,
+    path: `/mosques/c/${country}/${city}`,
     title: `Mosques in ${cityLabel}, ${name}`,
     description: `Find mosques in ${cityLabel}, ${name} — prayer times, addresses, and contact.`,
-    alternates: { canonical: `${getSiteUrl()}/mosques/c/${country}/${city}` },
-  };
+  });
 }
 
 export default async function CityHub({

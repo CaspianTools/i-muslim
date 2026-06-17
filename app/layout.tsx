@@ -19,6 +19,7 @@ import {
   type BodyFont,
   type ArabicFont,
 } from "@/lib/admin/data/site-config";
+import { metadataBase } from "@/lib/seo/metadata";
 import "./globals.css";
 
 // Body / UI font candidates. The Typography settings page swaps which one
@@ -110,23 +111,45 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const config = await getSiteConfig();
+  const [config, locale] = await Promise.all([
+    getSiteConfig(),
+    getLocale() as Promise<Locale>,
+  ]);
   const titleSuffix = config.siteName;
+  const defaultTitle = `${config.siteName} — Read Quran and Sunnah`;
   const description = config.tagline || FALLBACK_TAGLINE;
-  const meta: Metadata = {
+  // Admin-configured share image (Settings → social-share image). When unset,
+  // OG/Twitter tags still render (title/description/card) but carry no image.
+  const ogImages = config.ogImageUrl
+    ? [{ url: config.ogImageUrl, width: 1200, height: 630 }]
+    : undefined;
+
+  // Site-wide defaults. Pages that don't define their own openGraph/twitter
+  // inherit these (Next merges metadata shallowly); pages that do must emit a
+  // complete object — see lib/seo/metadata.ts buildPageMetadata().
+  return {
+    metadataBase,
     title: {
-      default: `${config.siteName} — Read Quran and Sunnah`,
+      default: defaultTitle,
       template: `%s · ${titleSuffix}`,
     },
     description,
+    icons: { icon: config.faviconUrl ?? "/favicon-default.ico" },
+    openGraph: {
+      type: "website",
+      siteName: config.siteName,
+      title: defaultTitle,
+      description,
+      locale,
+      images: ogImages,
+    },
+    twitter: {
+      card: ogImages ? "summary_large_image" : "summary",
+      title: defaultTitle,
+      description,
+      images: ogImages?.map((i) => i.url),
+    },
   };
-  meta.icons = { icon: config.faviconUrl ?? "/favicon-default.ico" };
-  if (config.ogImageUrl) {
-    meta.openGraph = {
-      images: [{ url: config.ogImageUrl, width: 1200, height: 630 }],
-    };
-  }
-  return meta;
 }
 
 export default async function RootLayout({

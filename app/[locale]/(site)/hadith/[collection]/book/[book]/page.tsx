@@ -9,6 +9,8 @@ import {
 } from "@/lib/hadith/db";
 import { parseLangsParam } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { type Locale } from "@/i18n/config";
 import { HadithCard, type HadithTranslationSlice } from "@/components/HadithCard";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
@@ -51,7 +53,12 @@ export async function generateMetadata({
   const bookName = tBookNames.has(bookKey)
     ? tBookNames(bookKey)
     : meta.books.find((b) => b.number === Number(book))?.name ?? `Book ${book}`;
-  return { title: t("bookMetaTitle", { name: collectionName, book: `${book} — ${bookName}` }) };
+  const locale = (await getLocale()) as Locale;
+  return buildPageMetadata({
+    locale,
+    path: `/hadith/${collection}/book/${book}`,
+    title: t("bookMetaTitle", { name: collectionName, book: `${book} — ${bookName}` }),
+  });
 }
 
 function docToHadithEntry(

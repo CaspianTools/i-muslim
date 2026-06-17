@@ -1,16 +1,24 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Heart, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getSiteSession } from "@/lib/auth/session";
 import { getFirebaseAdminStatus } from "@/lib/firebase/admin";
 import { getProfile } from "@/lib/matrimonial/store";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { type Locale } from "@/i18n/config";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("matrimonial.landing");
-  return { title: t("title") };
+  return buildPageMetadata({
+    locale,
+    path: "/matrimonial",
+    title: t("title"),
+    description: t("tagline"),
+  });
 }
 
 export default async function MatrimonialLandingPage() {

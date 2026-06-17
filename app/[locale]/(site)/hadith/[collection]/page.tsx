@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Heart } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { type Locale } from "@/i18n/config";
 import { getHadithCollection } from "@/lib/hadith/db";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
@@ -31,10 +33,13 @@ export async function generateMetadata({
     getTranslations("hadithCollectionNames"),
   ]);
   const name = tCollections.has(collection) ? tCollections(collection) : meta.name_en;
-  return {
+  const locale = (await getLocale()) as Locale;
+  return buildPageMetadata({
+    locale,
+    path: `/hadith/${collection}`,
     title: t("collectionMetaTitle", { name }),
     description: t("collectionMetaDescription", { name }),
-  };
+  });
 }
 
 export default async function CollectionPage({

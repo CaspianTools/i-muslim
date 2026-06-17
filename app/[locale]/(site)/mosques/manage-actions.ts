@@ -26,11 +26,18 @@ const contactSchema = z.object({
   website: z.string().url().optional().or(z.literal("")),
 });
 
+// Social values may be a full URL or a bare handle (e.g. "luivante"), so we
+// validate leniently as a short string; ContactRailCard builds the real href.
+const socialValue = z.string().trim().max(200).optional().or(z.literal(""));
 const socialSchema = z.object({
-  facebook: z.string().url().optional().or(z.literal("")),
-  instagram: z.string().url().optional().or(z.literal("")),
-  youtube: z.string().url().optional().or(z.literal("")),
-  whatsapp: z.string().max(40).optional().or(z.literal("")),
+  instagram: socialValue,
+  facebook: socialValue,
+  youtube: socialValue,
+  x: socialValue,
+  tiktok: socialValue,
+  telegram: socialValue,
+  whatsapp: socialValue,
+  website: socialValue,
 });
 
 const iqamahSchema = z.object({
@@ -99,7 +106,7 @@ export async function updateMosqueIqamah(slug: string, raw: unknown): Promise<Ma
 /** Manager-gated upload URL for logo/cover/news images on a mosque they manage. */
 export async function getManageUploadUrlAction(input: {
   slug: string;
-  kind: Extract<MosqueUploadKind, "logo" | "cover" | "gallery" | "news">;
+  kind: Extract<MosqueUploadKind, "logo" | "cover" | "news">;
   filename: string;
   contentType: string;
   contentLength: number;
@@ -160,18 +167,6 @@ export async function updateMosqueCover(
   return updateFields(slug, {
     coverImage: image ? { url: image.url, storagePath: image.storagePath } : null,
   });
-}
-
-/** Replace the whole gallery array (manager adds/removes images client-side). */
-export async function updateMosqueGallery(
-  slug: string,
-  images: Array<{ url: string; storagePath: string }>,
-): Promise<ManageResult> {
-  const clean = (Array.isArray(images) ? images : [])
-    .filter((i) => i && typeof i.url === "string" && typeof i.storagePath === "string")
-    .slice(0, 12)
-    .map((i) => ({ url: i.url, storagePath: i.storagePath }));
-  return updateFields(slug, { gallery: clean });
 }
 
 /**

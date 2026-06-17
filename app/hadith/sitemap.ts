@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { BUNDLED_LOCALES } from "@/i18n/config";
+import { DEFAULT_LOCALE } from "@/i18n/config";
+import { SITE_URL, indexableLocales } from "@/lib/seo/metadata";
 import {
   HADITH_COLLECTION_SLUGS,
   listPublishedHadithNumbers,
@@ -7,16 +8,9 @@ import {
 
 // One sharded sitemap per hadith collection. Sharding by collection (not
 // locale) keeps the count to 9 files; Bukhari (the largest, ~7,500 entries)
-// stays well under Google's 50,000-URL hard cap. Each <url> uses the English
-// locale as canonical and emits xhtml:link alternates for the other bundled
-// locales.
-
-function resolveSiteUrl(): string {
-  const raw =
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ?? "http://localhost:7777";
-  return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-}
-const SITE_URL = resolveSiteUrl();
+// stays well under Google's 50,000-URL hard cap. Each <url> uses the default
+// locale as canonical and emits xhtml:link alternates for every indexable
+// locale (bundled + activated reserved) plus x-default.
 
 export const revalidate = 86400;
 
@@ -32,16 +26,21 @@ export default async function sitemap({
   const slug = HADITH_COLLECTION_SLUGS[id];
   if (!slug) return [];
 
-  const numbers = await listPublishedHadithNumbers(slug);
+  const [numbers, locales] = await Promise.all([
+    listPublishedHadithNumbers(slug),
+    indexableLocales(),
+  ]);
   const now = new Date();
 
   return numbers.map((n) => {
+    const path = `/hadith/${slug}/${n}`;
     const languages: Record<string, string> = {};
-    for (const locale of BUNDLED_LOCALES) {
-      languages[locale] = `${SITE_URL}/${locale}/hadith/${slug}/${n}`;
+    for (const locale of locales) {
+      languages[locale] = `${SITE_URL}/${locale}${path}`;
     }
+    languages["x-default"] = `${SITE_URL}/${DEFAULT_LOCALE}${path}`;
     return {
-      url: `${SITE_URL}/en/hadith/${slug}/${n}`,
+      url: `${SITE_URL}/${DEFAULT_LOCALE}${path}`,
       lastModified: now,
       changeFrequency: "yearly" as const,
       priority: 0.5,

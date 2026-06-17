@@ -18,6 +18,7 @@ import { CommentThread } from "@/components/comments/CommentThread";
 import { getSiteSession } from "@/lib/auth/session";
 import { isFavorited } from "@/lib/profile/data";
 import { getSiteConfig } from "@/lib/admin/data/site-config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ?? "http://localhost:7777";
@@ -33,29 +34,19 @@ export async function generateMetadata({
   if (!article) return { title: "Not found" };
   const siteConfig = await getSiteConfig();
   const heroImageUrl = article.heroImageUrl ?? siteConfig.articlePlaceholderUrl;
-  const url = `${SITE_URL}/articles/${slug}`;
-  return {
+  return buildPageMetadata({
+    locale,
+    path: `/articles/${slug}`,
     title: article.title,
     description: article.excerpt,
-    alternates: {
-      canonical: url,
-    },
+    type: "article",
+    images: heroImageUrl ? [{ url: heroImageUrl }] : undefined,
     openGraph: {
-      type: "article",
-      title: article.title,
-      description: article.excerpt,
-      url,
-      images: heroImageUrl ? [{ url: heroImageUrl }] : undefined,
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt,
       authors: ["I-Muslim Editorial"],
     },
-    twitter: {
-      card: heroImageUrl ? "summary_large_image" : "summary",
-      title: article.title,
-      description: article.excerpt,
-    },
-  };
+  });
 }
 
 export default async function ArticleDetailPage({

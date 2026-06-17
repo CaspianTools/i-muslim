@@ -8,13 +8,17 @@ import { LocaleNotAvailable } from "@/components/articles/LocaleNotAvailable";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
 import { getSiteSession } from "@/lib/auth/session";
 import { getFavoritedSet } from "@/lib/profile/data";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("articles");
-  return {
+  return buildPageMetadata({
+    locale,
+    path: "/articles",
     title: t("pageTitle"),
     description: t("subtitle"),
-  };
+  });
 }
 
 export default async function ArticlesPage({

@@ -8,7 +8,8 @@ import {
   getAdjacentHadithNumbers,
 } from "@/lib/hadith/db";
 import { parseLangsParam, type LangCode } from "@/lib/translations";
-import { BUNDLED_LOCALES, type Locale } from "@/i18n/config";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { HadithCard, type HadithTranslationSlice } from "@/components/HadithCard";
 import { FavoritesProvider } from "@/components/site/favorites/FavoritesContext";
 import { NotesProvider } from "@/components/site/notes/NotesContext";
@@ -112,18 +113,6 @@ function resolveTranslation(
   };
 }
 
-function localeAlternates(
-  collection: string,
-  number: number,
-): Record<string, string> {
-  const map: Record<string, string> = {};
-  for (const l of BUNDLED_LOCALES) {
-    map[l] = `${SITE_URL}/${l}/hadith/${collection}/${number}`;
-  }
-  map["x-default"] = `${SITE_URL}/en/hadith/${collection}/${number}`;
-  return map;
-}
-
 export async function generateMetadata({
   params,
 }: {
@@ -161,34 +150,13 @@ export async function generateMetadata({
         number,
       });
 
-  const canonical = `${SITE_URL}/${locale}/hadith/${collection}/${number}`;
-  const isBundled = (BUNDLED_LOCALES as readonly string[]).includes(locale);
-  const alternateLocales = isBundled
-    ? BUNDLED_LOCALES.filter((l) => l !== locale)
-    : [...BUNDLED_LOCALES];
-
-  return {
+  return buildPageMetadata({
+    locale,
+    path: `/hadith/${collection}/${number}`,
     title,
     description,
-    alternates: {
-      canonical,
-      languages: localeAlternates(collection, number),
-    },
-    openGraph: {
-      type: "article",
-      title,
-      description,
-      url: canonical,
-      siteName: "i-muslim",
-      locale,
-      alternateLocale: alternateLocales,
-    },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
-  };
+    type: "article",
+  });
 }
 
 export default async function HadithDetailPage({

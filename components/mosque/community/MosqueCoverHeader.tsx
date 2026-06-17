@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { MapPin } from "lucide-react";
 import { pickLocalized } from "@/lib/utils";
 import { countryName } from "@/lib/mosques/countries";
+import { coverFallbackUrl } from "@/lib/mosques/cover-fallback";
 import { Badge } from "@/components/ui/badge";
 import type { Mosque } from "@/types/mosque";
 
@@ -22,6 +23,7 @@ export async function MosqueCoverHeader({
   baseHref,
   activeView,
   followSlot,
+  likeSlot,
   installSlot,
   shareSlot,
   manageSlot,
@@ -32,6 +34,7 @@ export async function MosqueCoverHeader({
   baseHref: string;
   activeView: "posts" | "about" | "events";
   followSlot?: ReactNode;
+  likeSlot?: ReactNode;
   installSlot?: ReactNode;
   shareSlot?: ReactNode;
   manageSlot?: ReactNode;
@@ -48,22 +51,21 @@ export async function MosqueCoverHeader({
 
   return (
     <div className="mq-card">
-      {/* Cover photo */}
-      <div className="mq-cover-fallback relative h-44 sm:h-60">
-        {mosque.coverImage?.url && (
-          <Image
-            src={mosque.coverImage.url}
-            alt=""
-            fill
-            sizes="(min-width: 1024px) 920px, 100vw"
-            className="object-cover"
-            priority
-          />
-        )}
+      {/* Cover photo — uploaded, else a royalty-free fallback over the gradient. */}
+      <div className="mq-cover-fallback relative h-44 overflow-hidden sm:h-60">
+        <Image
+          src={mosque.coverImage?.url ?? coverFallbackUrl(mosque.slug)}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 920px, 100vw"
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-transparent" />
         <p
           dir="rtl"
           lang="ar"
-          className="font-arabic absolute start-5 top-4 text-2xl text-foreground/70 drop-shadow-sm"
+          className="font-arabic absolute start-5 top-4 text-2xl text-white/90 drop-shadow"
         >
           {ARABIC_GREETING}
         </p>
@@ -115,12 +117,13 @@ export async function MosqueCoverHeader({
             </div>
           </div>
 
-          {(manageSlot || installSlot || followSlot || shareSlot) && (
+          {(manageSlot || installSlot || followSlot || likeSlot || shareSlot) && (
             <div className="flex flex-wrap items-center gap-2 pb-1">
+              {followSlot}
+              {likeSlot}
+              {shareSlot}
               {manageSlot}
               {installSlot}
-              {followSlot}
-              {shareSlot}
             </div>
           )}
         </div>

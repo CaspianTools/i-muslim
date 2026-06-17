@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { listPublished } from "@/lib/businesses/public";
@@ -14,13 +16,14 @@ import { BusinessFilters } from "@/components/businesses/BusinessFilters";
 import type { HalalStatus, PriceTier } from "@/types/business";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("businesses");
-  const title = t("publicTitle");
-  return {
-    title,
+  return buildPageMetadata({
+    locale,
+    path: "/businesses",
+    title: t("publicTitle"),
     description: t("publicSubtitle"),
-    openGraph: { title, description: t("publicSubtitle") },
-  };
+  });
 }
 
 export default async function BusinessesPage({

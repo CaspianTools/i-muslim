@@ -32,6 +32,8 @@ import {
 import { getNotesByItemType } from "@/lib/profile/notes-data";
 import { getCommentCountsForAyahs } from "@/lib/comments/data";
 import { CommentThread } from "@/components/comments/CommentThread";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { type Locale } from "@/i18n/config";
 
 export async function generateMetadata({
   params,
@@ -49,14 +51,17 @@ export async function generateMetadata({
     ]);
     if (!chapter) return {};
     const translatedName = tNames(String(chapter.id));
-    return {
+    const locale = (await getLocale()) as Locale;
+    return buildPageMetadata({
+      locale,
+      path: `/quran/${surah}`,
       title: t("surahMetaTitle", { name: chapter.name_simple, id }),
       description: t("surahMetaDescription", {
         name: chapter.name_simple,
         translatedName,
         verses: t("verseCount", { count: chapter.verses_count }),
       }),
-    };
+    });
   } catch {
     return {};
   }

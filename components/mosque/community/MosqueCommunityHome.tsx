@@ -8,7 +8,6 @@ import { MosqueEventsCard } from "@/components/mosque/MosqueEventsCard";
 import { MosqueCoverHeader } from "./MosqueCoverHeader";
 import { AboutSection } from "./AboutSection";
 import { ContactRailCard } from "./ContactRailCard";
-import { PhotosGrid } from "./PhotosGrid";
 import { VerseOfTheDayCard } from "./VerseOfTheDayCard";
 import { PrayerCountdownCard } from "./PrayerCountdownCard";
 import { DuaWall } from "./DuaWall";
@@ -40,6 +39,7 @@ export async function MosqueCommunityHome({
   canonicalHref,
   topSlot,
   followSlot,
+  likeSlot,
   installSlot,
   shareSlot,
   manageSlot,
@@ -53,6 +53,7 @@ export async function MosqueCommunityHome({
   canonicalHref: string;
   topSlot?: ReactNode;
   followSlot?: ReactNode;
+  likeSlot?: ReactNode;
   installSlot?: ReactNode;
   shareSlot?: ReactNode;
   manageSlot?: ReactNode;
@@ -71,6 +72,7 @@ export async function MosqueCommunityHome({
         baseHref={baseHref}
         activeView={view}
         followSlot={followSlot}
+        likeSlot={likeSlot}
         installSlot={installSlot}
         shareSlot={shareSlot}
         manageSlot={manageSlot}
@@ -79,7 +81,6 @@ export async function MosqueCommunityHome({
       {view === "about" && (
         <div className="mx-auto max-w-3xl space-y-4">
           <AboutSection mosque={mosque} locale={locale} />
-          <PhotosGrid mosque={mosque} />
         </div>
       )}
 

@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { TocSidebar } from "@/components/site/TocSidebar";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("legal.privacy");
-  return {
+  return buildPageMetadata({
+    locale,
+    path: "/privacy",
     title: t("title"),
     description: t("description"),
-  };
+  });
 }
 
 const H2 = "text-xl font-semibold tracking-tight text-foreground";

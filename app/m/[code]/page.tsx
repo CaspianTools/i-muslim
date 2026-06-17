@@ -9,12 +9,14 @@ import { getSiteUrl } from "@/lib/mosques/constants";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
 import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
+import { MosqueLikeButton } from "@/components/mosque/MosqueLikeButton";
 import { InstallMasjidButton } from "@/components/mosque/InstallMasjidButton";
 import { MosqueShareButton } from "@/components/mosque/community/MosqueShareButton";
 import { MasjidViewTracker } from "@/components/mosque/MasjidViewTracker";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { getSiteSession } from "@/lib/auth/session";
 import { isFollowingMosque } from "@/lib/mosques/follows";
+import { isLikingMosque } from "@/lib/mosques/likes";
 import { getMosqueAnalytics } from "@/lib/mosques/analytics";
 import { hasPermission } from "@/lib/permissions/check";
 
@@ -87,7 +89,12 @@ export default async function MasjidShortLinkPage({
     getSiteSession(),
   ]);
   const canModerate = hasPermission(session?.permissions ?? [], "comments.moderate");
-  const following = session && !canManage ? await isFollowingMosque(session.uid, mosque.slug) : false;
+  const [following, liked] = session
+    ? await Promise.all([
+        isFollowingMosque(session.uid, mosque.slug),
+        isLikingMosque(session.uid, mosque.slug),
+      ])
+    : [false, false];
   const analytics = canManage ? await getMosqueAnalytics(mosque.slug) : undefined;
 
   const published = mosque.status === "published";
@@ -119,18 +126,22 @@ export default async function MasjidShortLinkPage({
           }
           installSlot={published ? <InstallMasjidButton /> : undefined}
           followSlot={
-            published && !canManage ? (
-              <MosqueFollowButton
-                slug={mosque.slug}
-                initialFollowing={following}
-                initialCount={mosque.followerCount ?? 0}
-                signedIn={Boolean(session)}
-              />
-            ) : undefined
+            <MosqueFollowButton
+              slug={mosque.slug}
+              initialFollowing={following}
+              initialCount={mosque.followerCount ?? 0}
+              signedIn={Boolean(session)}
+            />
           }
-          shareSlot={
-            published ? <MosqueShareButton code={code} name={localizedName} /> : undefined
+          likeSlot={
+            <MosqueLikeButton
+              slug={mosque.slug}
+              initialLiked={liked}
+              initialCount={mosque.likeCount ?? 0}
+              signedIn={Boolean(session)}
+            />
           }
+          shareSlot={<MosqueShareButton code={code} name={localizedName} />}
           manageSlot={
             canManage ? <MosqueManagePanel mosque={mosque} analytics={analytics} /> : undefined
           }

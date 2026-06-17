@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { MapPin, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -17,12 +19,14 @@ import type { Denomination, MosqueFilters as MFilters } from "@/types/mosque";
 export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("mosques");
-  return {
+  return buildPageMetadata({
+    locale,
+    path: "/mosques",
     title: t("directory"),
     description: t("subtitle"),
-    alternates: { canonical: `${getSiteUrl()}/mosques` },
-  };
+  });
 }
 
 export default async function MosquesIndex({

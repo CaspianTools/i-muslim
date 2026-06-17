@@ -8,7 +8,7 @@ import { mutualFilter } from "@/lib/matrimonial/filters";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("matrimonial.browse");
-  return { title: t("title") };
+  return { title: t("title"), robots: { index: false, follow: false } };
 }
 
 export default async function BrowsePage() {

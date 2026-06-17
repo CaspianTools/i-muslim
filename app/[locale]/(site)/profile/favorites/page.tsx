@@ -16,7 +16,7 @@ import {
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("favorites");
-  return { title: t("pageTitle") };
+  return { title: t("pageTitle"), robots: { index: false, follow: false } };
 }
 
 const TAB_KEYS: ReadonlyArray<"all" | FavoriteItemType> = [

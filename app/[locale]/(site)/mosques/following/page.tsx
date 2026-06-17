@@ -10,7 +10,7 @@ import { pickLocalized } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("mosques.follow");
-  return { title: t("feedTitle"), robots: { index: false } };
+  return { title: t("feedTitle"), robots: { index: false, follow: false } };
 }
 
 export default async function FollowingFeedPage() {

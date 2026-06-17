@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Heart } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getHadithCollections } from "@/lib/hadith/db";
 import { getLanguageSettings } from "@/lib/admin/data/language-settings";
 import { HadithSidebar } from "@/components/site/hadith/HadithSidebar";
@@ -9,11 +11,14 @@ import { HadithMobileDrawer } from "@/components/site/hadith/HadithMobileDrawer"
 import { getFavoriteCountsForCollections } from "@/lib/profile/favoriteStats";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("hadithPage");
-  return {
+  return buildPageMetadata({
+    locale,
+    path: "/hadith",
     title: t("metaTitle"),
     description: t("metaDescription"),
-  };
+  });
 }
 
 export default async function HadithIndexPage({

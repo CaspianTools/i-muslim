@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
+import { type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Link } from "@/i18n/navigation";
 import {
   QURAN_TRANSLATION_CATALOG,
@@ -24,41 +27,35 @@ const PAGE_TITLE =
 const PAGE_DESCRIPTION =
   "Download the Quran and the major Hadith collections (Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasa'i, Ibn Majah, Malik, Nawawi 40, Qudsi 40) as JSON. Tens of thousands of Hadith translations authored by i-muslim are released under CC0; Arabic originals are public-domain; modern third-party translations carry full provenance and the upstream URL. Free, no API key, CORS-open, machine-readable.";
 
-export const metadata: Metadata = {
-  title: PAGE_TITLE,
-  description: PAGE_DESCRIPTION,
-  alternates: { canonical: `${SITE_URL}/downloads` },
-  openGraph: {
-    type: "website",
-    url: `${SITE_URL}/downloads`,
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    siteName: "i-muslim",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-  },
-  keywords: [
-    "Quran download",
-    "Quran JSON",
-    "Quran translation download",
-    "Hadith download",
-    "Hadith JSON",
-    "Bukhari JSON",
-    "Sahih Muslim JSON",
-    "Abu Dawud JSON",
-    "Tirmidhi JSON",
-    "open Islamic data",
-    "Islamic API",
-    "Quran API",
-    "Hadith API",
-    "CC0 hadith translation",
-    "open hadith dataset",
-  ],
-  robots: { index: true, follow: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as Locale;
+  return {
+    ...(await buildPageMetadata({
+      locale,
+      path: "/downloads",
+      title: PAGE_TITLE,
+      description: PAGE_DESCRIPTION,
+    })),
+    keywords: [
+      "Quran download",
+      "Quran JSON",
+      "Quran translation download",
+      "Hadith download",
+      "Hadith JSON",
+      "Bukhari JSON",
+      "Sahih Muslim JSON",
+      "Abu Dawud JSON",
+      "Tirmidhi JSON",
+      "open Islamic data",
+      "Islamic API",
+      "Quran API",
+      "Hadith API",
+      "CC0 hadith translation",
+      "open hadith dataset",
+    ],
+    robots: { index: true, follow: true },
+  };
+}
 
 const LANG_NAMES: Record<string, string> = {
   ar: "Arabic",

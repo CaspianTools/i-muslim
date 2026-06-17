@@ -7,16 +7,19 @@ import { pickLocalized } from "@/lib/utils";
 import { fetchMosqueBySlug, fetchAllSlugs } from "@/lib/admin/data/mosques";
 import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
-import { getSiteUrl } from "@/lib/mosques/constants";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
 import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
+import { MosqueLikeButton } from "@/components/mosque/MosqueLikeButton";
 import { MosqueShareButton } from "@/components/mosque/community/MosqueShareButton";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { getSiteSession } from "@/lib/auth/session";
 import { isFollowingMosque } from "@/lib/mosques/follows";
+import { isLikingMosque } from "@/lib/mosques/likes";
 import { getMosqueAnalytics } from "@/lib/mosques/analytics";
 import { hasPermission } from "@/lib/permissions/check";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { type Locale } from "@/i18n/config";
 
 export const revalidate = 3600;
 
@@ -33,22 +36,18 @@ export async function generateMetadata({
   const { slug } = await params;
   const { mosque } = await fetchMosqueBySlug(slug);
   if (!mosque) return {};
+  const locale = (await getLocale()) as Locale;
   const title = `${mosque.name.en} — ${mosque.city}, ${countryName(mosque.country)}`;
   const description =
     mosque.description?.en ??
     `Prayer times, address, and contact for ${mosque.name.en} in ${mosque.city}.`;
-  return {
+  return buildPageMetadata({
+    locale,
+    path: `/mosques/${slug}`,
     title,
     description,
-    alternates: { canonical: `${getSiteUrl()}/mosques/${slug}` },
-    openGraph: {
-      title,
-      description,
-      url: `${getSiteUrl()}/mosques/${slug}`,
-      images: mosque.coverImage?.url ? [{ url: mosque.coverImage.url }] : undefined,
-      type: "website",
-    },
-  };
+    images: mosque.coverImage?.url ? [{ url: mosque.coverImage.url }] : undefined,
+  });
 }
 
 function parseView(v: string | undefined): "posts" | "about" | "events" {
@@ -77,7 +76,12 @@ export default async function MosqueDetailPage({
     getSiteSession(),
   ]);
   const canModerate = hasPermission(session?.permissions ?? [], "comments.moderate");
-  const following = session && !canAddEvent ? await isFollowingMosque(session.uid, mosque.slug) : false;
+  const [following, liked] = session
+    ? await Promise.all([
+        isFollowingMosque(session.uid, mosque.slug),
+        isLikingMosque(session.uid, mosque.slug),
+      ])
+    : [false, false];
   const analytics = canAddEvent ? await getMosqueAnalytics(mosque.slug) : undefined;
   const showClaim = (mosque.managers?.length ?? 0) === 0 && !canAddEvent;
 
@@ -125,17 +129,23 @@ export default async function MosqueDetailPage({
           </div>
         }
         followSlot={
-          published && !canAddEvent ? (
-            <MosqueFollowButton
-              slug={mosque.slug}
-              initialFollowing={following}
-              initialCount={mosque.followerCount ?? 0}
-              signedIn={Boolean(session)}
-            />
-          ) : undefined
+          <MosqueFollowButton
+            slug={mosque.slug}
+            initialFollowing={following}
+            initialCount={mosque.followerCount ?? 0}
+            signedIn={Boolean(session)}
+          />
+        }
+        likeSlot={
+          <MosqueLikeButton
+            slug={mosque.slug}
+            initialLiked={liked}
+            initialCount={mosque.likeCount ?? 0}
+            signedIn={Boolean(session)}
+          />
         }
         shareSlot={
-          published && mosque.shortCode ? (
+          mosque.shortCode ? (
             <MosqueShareButton code={mosque.shortCode} name={localizedName} />
           ) : undefined
         }

@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import { ExternalLink, Globe, Mail, MessageCircle, Phone } from "lucide-react";
+import { Globe, Link2, Mail, Phone } from "lucide-react";
+import { SOCIAL_PLATFORMS, type SocialPlatform } from "@/types/mosque";
+import { SOCIAL_LABELS, socialHref } from "@/lib/mosques/social";
 import type { Mosque } from "@/types/mosque";
 
 const linkClass = "inline-flex items-center gap-2 text-foreground hover:text-accent";
@@ -11,9 +13,9 @@ export async function ContactRailCard({ mosque }: { mosque: Mosque }) {
 
   const c = mosque.contact ?? {};
   const s = mosque.social ?? {};
+  const socials = SOCIAL_PLATFORMS.filter((p) => s[p]) as SocialPlatform[];
   const hasContact = c.phone || c.email || c.website;
-  const hasSocial = s.facebook || s.instagram || s.youtube || s.whatsapp;
-  if (!hasContact && !hasSocial) return null;
+  if (!hasContact && socials.length === 0) return null;
 
   return (
     <div className="mq-card mq-card-pad">
@@ -40,39 +42,18 @@ export async function ContactRailCard({ mosque }: { mosque: Mosque }) {
             </a>
           </li>
         )}
-        {s.facebook && (
-          <li>
-            <a href={s.facebook} target="_blank" rel="noopener noreferrer" className={linkClass}>
-              <ExternalLink className="size-4" /> Facebook
-            </a>
-          </li>
-        )}
-        {s.instagram && (
-          <li>
-            <a href={s.instagram} target="_blank" rel="noopener noreferrer" className={linkClass}>
-              <ExternalLink className="size-4" /> Instagram
-            </a>
-          </li>
-        )}
-        {s.youtube && (
-          <li>
-            <a href={s.youtube} target="_blank" rel="noopener noreferrer" className={linkClass}>
-              <ExternalLink className="size-4" /> YouTube
-            </a>
-          </li>
-        )}
-        {s.whatsapp && (
-          <li>
+        {socials.map((p) => (
+          <li key={p}>
             <a
-              href={`https://wa.me/${s.whatsapp.replace(/[^0-9]/g, "")}`}
+              href={socialHref(p, s[p]!)}
               target="_blank"
               rel="noopener noreferrer"
               className={linkClass}
             >
-              <MessageCircle className="size-4" /> WhatsApp
+              <Link2 className="size-4" /> {SOCIAL_LABELS[p]}
             </a>
           </li>
-        )}
+        ))}
       </ul>
     </div>
   );

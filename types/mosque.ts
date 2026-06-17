@@ -74,11 +74,28 @@ export interface MosqueContact {
 }
 
 export interface MosqueSocial {
-  facebook?: string;
   instagram?: string;
+  facebook?: string;
   youtube?: string;
+  x?: string;
+  tiktok?: string;
+  telegram?: string;
   whatsapp?: string;
+  website?: string;
 }
+
+/** Platform keys offered in the manager's social-links editor, in display order. */
+export const SOCIAL_PLATFORMS = [
+  "instagram",
+  "facebook",
+  "youtube",
+  "x",
+  "tiktok",
+  "telegram",
+  "whatsapp",
+  "website",
+] as const;
+export type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];
 
 export interface MosqueImage {
   url: string;
@@ -169,7 +186,6 @@ export interface Mosque {
   prayerCalc?: PrayerCalcConfig;
   // Media
   coverImage?: MosqueImage;
-  gallery?: MosqueImage[];
   logoUrl?: string;
   /** Storage path for `logoUrl`, retained so the upload UI can clean up the
    *  previous blob when the admin replaces the logo. */
@@ -194,6 +210,8 @@ export interface Mosque {
   iqamah?: MosqueIqamah;
   /** Denormalized count of followers (see the `mosqueFollows` collection). */
   followerCount?: number;
+  /** Denormalized count of masjid-level likes (see the `mosqueLikes` collection). */
+  likeCount?: number;
   /** Denormalized count of visible news posts. */
   newsCount?: number;
   /** Admin-only "verified" identity badge. Managers cannot set this. */
