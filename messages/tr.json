@@ -1829,7 +1829,10 @@
       "language": "Poster dili"
     },
     "install": {
-      "install": "Uygulamayı yükle"
+      "install": "Uygulamayı yükle",
+      "bannerTitle": "Bu mescidi yükle",
+      "bannerSubtitle": "Hızlı erişim için {name} sayfasını ana ekranınıza ekleyin.",
+      "dismiss": "Kapat"
     },
     "like": {
       "like": "Beğen",

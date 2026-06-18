@@ -1829,7 +1829,10 @@
       "language": "لغة الملصق"
     },
     "install": {
-      "install": "تثبيت التطبيق"
+      "install": "تثبيت التطبيق",
+      "bannerTitle": "ثبّت هذا المسجد",
+      "bannerSubtitle": "أضف {name} إلى شاشتك الرئيسية للوصول السريع.",
+      "dismiss": "إغلاق"
     },
     "like": {
       "like": "إعجاب",

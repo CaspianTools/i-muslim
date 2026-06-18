@@ -11,6 +11,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { MosqueManagePanel } from "@/components/mosque/MosqueManagePanel";
+import { useInstallPrompt } from "@/components/pwa/InstallPromptProvider";
 import type { Mosque } from "@/types/mosque";
 
 export type CoverView = "posts" | "about" | "events" | "duas";
@@ -43,6 +44,8 @@ export function MosqueNav({
 }) {
   const t = useTranslations("mosques.community");
   const tManage = useTranslations("mosques.manage");
+  const tInstall = useTranslations("mosques.install");
+  const { canInstall, install } = useInstallPrompt();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const active = items.find((i) => i.key === activeView) ?? items[0];
@@ -108,6 +111,18 @@ export function MosqueNav({
                 {i.label}
               </Link>
             ))}
+            {canInstall && (
+              <button
+                type="button"
+                onClick={() => {
+                  setDrawerOpen(false);
+                  void install();
+                }}
+                className="block w-full rounded-lg px-3 py-3 text-start text-base text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                {tInstall("install")}
+              </button>
+            )}
             {canManage && (
               <button
                 type="button"
@@ -116,7 +131,7 @@ export function MosqueNav({
                   // defer so the drawer's focus restore doesn't fight the dialog
                   setTimeout(() => setManageOpen(true), 0);
                 }}
-                className="block w-full rounded-lg px-3 py-3 text-start text-base text-foreground hover:bg-muted"
+                className="block w-full rounded-lg px-3 py-3 text-start text-base text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 {tManage("manage")}
               </button>

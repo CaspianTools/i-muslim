@@ -1826,7 +1826,10 @@
       "language": "Poster language"
     },
     "install": {
-      "install": "Install app"
+      "install": "Install app",
+      "bannerTitle": "Install this masjid",
+      "bannerSubtitle": "Add {name} to your home screen for quick access.",
+      "dismiss": "Dismiss"
     },
     "like": {
       "like": "Like",

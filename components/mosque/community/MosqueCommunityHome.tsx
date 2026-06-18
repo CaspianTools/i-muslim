@@ -40,7 +40,6 @@ export async function MosqueCommunityHome({
   topSlot,
   followSlot,
   likeSlot,
-  installSlot,
   shareSlot,
   analytics,
 }: {
@@ -54,7 +53,6 @@ export async function MosqueCommunityHome({
   topSlot?: ReactNode;
   followSlot?: ReactNode;
   likeSlot?: ReactNode;
-  installSlot?: ReactNode;
   shareSlot?: ReactNode;
   /** Manager analytics for the cover's Manage panel (managers only). */
   analytics?: { views: number; scans: number };
@@ -74,7 +72,6 @@ export async function MosqueCommunityHome({
         activeView={view}
         followSlot={followSlot}
         likeSlot={likeSlot}
-        installSlot={installSlot}
         shareSlot={shareSlot}
         analytics={analytics}
         canManage={context.canManage}

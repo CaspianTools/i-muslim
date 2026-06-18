@@ -11,10 +11,11 @@ import type { Mosque } from "@/types/mosque";
 const ARABIC_GREETING = "السَّلَامُ عَلَيْكُمْ";
 
 /**
- * Community-home cover header: cover photo (or token gradient) with an Arabic
- * greeting, an overlapping logo avatar, name + Arabic name + tags + stats, the
- * CTA slots (install / follow / share, passed in by the page), and the in-page
- * sub-tabs.
+ * Community-home cover header: a cover photo (shown ≥sm) with an Arabic greeting,
+ * the logo avatar + name (with a verified check) + tags + a single followers
+ * count, the borderless CTA slots (follow / like / share, passed in by the page),
+ * and the in-page sub-navigation. Install lives in the bottom banner
+ * (MasjidInstallPrompt) and the nav drawer, not the header.
  */
 export async function MosqueCoverHeader({
   mosque,
@@ -23,7 +24,6 @@ export async function MosqueCoverHeader({
   activeView,
   followSlot,
   likeSlot,
-  installSlot,
   shareSlot,
   analytics,
   canManage,
@@ -35,7 +35,6 @@ export async function MosqueCoverHeader({
   activeView: "posts" | "about" | "events" | "duas";
   followSlot?: ReactNode;
   likeSlot?: ReactNode;
-  installSlot?: ReactNode;
   shareSlot?: ReactNode;
   analytics?: { views: number; scans: number };
   canManage?: boolean;
@@ -48,7 +47,6 @@ export async function MosqueCoverHeader({
   const initial = (name.trim()[0] ?? "M").toUpperCase();
   const isVerified = Boolean(mosque.moderation?.reviewedAt);
   const followers = mosque.followerCount ?? 0;
-  const posts = mosque.newsCount ?? 0;
 
   return (
     <div className="mq-card">
@@ -76,7 +74,8 @@ export async function MosqueCoverHeader({
           on the card, below the cover line, so they stay readable over any photo.
           `relative z-10` keeps the avatar above the absolutely-positioned image. */}
       <div className="relative z-10 px-4 pb-3 pt-4 sm:px-5 sm:pt-0">
-        <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+        {/* Row A: logo + name & meta on one line (beside the logo at every size). */}
+        <div className="flex items-center gap-4 sm:items-end">
           <div className="mt-0 grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border-4 border-card bg-selected shadow sm:-mt-16 sm:size-32">
             {mosque.logoUrl ? (
               <Image src={mosque.logoUrl} alt="" width={128} height={128} className="size-full object-cover" />
@@ -85,18 +84,18 @@ export async function MosqueCoverHeader({
             )}
           </div>
 
-          <div className="min-w-0 flex-1 basis-full sm:basis-0">
-            <h1 className="font-display text-xl text-foreground line-clamp-2 sm:text-3xl">
-              {name}
+          <div className="min-w-0 flex-1">
+            <h1 className="flex items-start gap-1.5 font-display text-xl text-foreground sm:text-3xl">
+              <span className="line-clamp-2 min-w-0">{name}</span>
               {isVerified && (
                 <BadgeCheck
-                  className="ms-1.5 inline size-5 shrink-0 align-[-0.15em] text-accent sm:size-6"
+                  className="mt-1 size-5 shrink-0 text-accent sm:mt-1.5 sm:size-6"
                   aria-label={tDetail("verified")}
                 />
               )}
             </h1>
             {mosque.name.ar && locale !== "ar" && (
-              <p dir="rtl" lang="ar" className="font-arabic text-xl text-accent">
+              <p dir="rtl" lang="ar" className="font-arabic text-xl text-accent line-clamp-1">
                 {mosque.name.ar}
               </p>
             )}
@@ -106,28 +105,22 @@ export async function MosqueCoverHeader({
                 <MapPin className="size-3.5" /> {mosque.city}, {countryName(mosque.country)}
               </span>
             </div>
-            <div className="mt-2 flex gap-5">
-              <div className="leading-tight">
-                <span className="font-display text-lg text-foreground">{followers}</span>{" "}
-                <span className="text-[0.72rem] uppercase tracking-wide text-muted-foreground sm:text-[0.7rem]">
-                  {t("statFollowers")}
-                </span>
-              </div>
-              <div className="leading-tight">
-                <span className="font-display text-lg text-foreground">{posts}</span>{" "}
-                <span className="text-[0.72rem] uppercase tracking-wide text-muted-foreground sm:text-[0.7rem]">
-                  {t("statPosts")}
-                </span>
-              </div>
-            </div>
           </div>
+        </div>
 
-          {(installSlot || followSlot || likeSlot || shareSlot) && (
-            <div className="flex flex-wrap items-center gap-2 pb-1">
+        {/* Row B: follower count + the action icons (borderless, blended in). */}
+        <div className="mt-3 flex items-center justify-between gap-3 sm:justify-start sm:gap-4">
+          <div className="leading-tight">
+            <span className="font-display text-lg text-foreground">{followers}</span>{" "}
+            <span className="text-[0.72rem] uppercase tracking-wide text-muted-foreground sm:text-[0.7rem]">
+              {t("statFollowers")}
+            </span>
+          </div>
+          {(followSlot || likeSlot || shareSlot) && (
+            <div className="flex items-center gap-1">
               {followSlot}
               {likeSlot}
               {shareSlot}
-              {installSlot}
             </div>
           )}
         </div>

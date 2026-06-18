@@ -49,9 +49,9 @@ export function MosqueFollowButton({
 
   return (
     <Button
-      variant={following ? "secondary" : "primary"}
+      variant="ghost"
       size="sm"
-      className="h-10 w-10 px-0 sm:h-8 sm:w-auto sm:px-3"
+      className="h-10 w-10 px-0 dark:hover:bg-white/5 sm:h-8 sm:w-auto sm:px-3"
       onClick={toggle}
       disabled={busy}
       aria-pressed={following}

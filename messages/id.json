@@ -1829,7 +1829,10 @@
       "language": "Bahasa poster"
     },
     "install": {
-      "install": "Pasang aplikasi"
+      "install": "Pasang aplikasi",
+      "bannerTitle": "Pasang masjid ini",
+      "bannerSubtitle": "Tambahkan {name} ke layar utama untuk akses cepat.",
+      "dismiss": "Tutup"
     },
     "like": {
       "like": "Suka",

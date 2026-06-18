@@ -9,7 +9,8 @@ import { getSiteUrl } from "@/lib/mosques/constants";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
 import { MosqueLikeButton } from "@/components/mosque/MosqueLikeButton";
-import { InstallMasjidButton } from "@/components/mosque/InstallMasjidButton";
+import { InstallPromptProvider } from "@/components/pwa/InstallPromptProvider";
+import { MasjidInstallPrompt } from "@/components/mosque/MasjidInstallPrompt";
 import { MosqueShareButton } from "@/components/mosque/community/MosqueShareButton";
 import { MasjidViewTracker } from "@/components/mosque/MasjidViewTracker";
 import { canManageMosque } from "@/lib/mosques/authz";
@@ -100,6 +101,7 @@ export default async function MasjidShortLinkPage({
 
   return (
     <main className="min-h-dvh bg-background">
+      <InstallPromptProvider>
       <div className="mx-auto max-w-[1340px] px-3 py-4 sm:px-4 sm:py-6">
         <MosqueCommunityHome
           mosque={mosque}
@@ -123,7 +125,6 @@ export default async function MasjidShortLinkPage({
               {published && <MasjidViewTracker slug={mosque.slug} />}
             </>
           }
-          installSlot={published ? <InstallMasjidButton /> : undefined}
           followSlot={
             <MosqueFollowButton
               slug={mosque.slug}
@@ -150,7 +151,9 @@ export default async function MasjidShortLinkPage({
             dangerouslySetInnerHTML={{ __html: JSON.stringify(mosqueJsonLd(mosque)) }}
           />
         )}
+        {published && <MasjidInstallPrompt name={localizedName} />}
       </div>
+      </InstallPromptProvider>
     </main>
   );
 }

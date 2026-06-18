@@ -29,9 +29,9 @@ export function MosqueShareButton({ code, name }: { code: string; name: string }
 
   return (
     <Button
-      variant="secondary"
+      variant="ghost"
       size="sm"
-      className="h-10 w-10 px-0 sm:h-8 sm:w-auto sm:px-3"
+      className="h-10 w-10 px-0 dark:hover:bg-white/5 sm:h-8 sm:w-auto sm:px-3"
       onClick={share}
       aria-label={t("share")}
     >
