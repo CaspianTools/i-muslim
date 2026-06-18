@@ -21,10 +21,13 @@ export function PrayerCountdownClient({
   prayers,
   tomorrowFajr,
   hasIqamah,
+  layout = "vertical",
 }: {
   prayers: CountdownPrayer[];
   tomorrowFajr: { label: string; epoch: number };
   hasIqamah: boolean;
+  /** "vertical" = rail list (desktop); "horizontal" = compact strip (mobile). */
+  layout?: "horizontal" | "vertical";
 }) {
   const t = useTranslations("mosques.community");
   const tp = useTranslations("mosques.prayer");
@@ -44,6 +47,51 @@ export function PrayerCountdownClient({
 
   const sequence = [...prayers, { key: "fajr", label: tomorrowFajr.label, epoch: tomorrowFajr.epoch, iqamah: null }];
   const next = now == null ? null : sequence.find((p) => p.epoch > now) ?? null;
+
+  // Mobile: a compact horizontal strip — each prayer is a column (name over
+  // time), the next prayer highlighted, with the countdown as a header pill.
+  if (layout === "horizontal") {
+    return (
+      <div>
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <div className="font-display text-[1.0625rem] text-foreground">{t("prayerHeading")}</div>
+          {next && now != null && (
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-accent-foreground">
+              <span className="font-display">{tp(next.key)}</span>
+              <span className="opacity-70">·</span>
+              <span className="tabular-nums">{fmtCountdown(next.epoch - now)}</span>
+            </span>
+          )}
+        </div>
+        <div className="grid grid-cols-5 gap-1.5">
+          {prayers.map((p) => {
+            const isNext = next != null && next.epoch === p.epoch;
+            const passed = now != null && p.epoch <= now;
+            return (
+              <div
+                key={p.key}
+                className={`flex flex-col items-center gap-1 rounded-xl px-0.5 py-2 ${
+                  isNext
+                    ? "bg-selected font-semibold text-accent"
+                    : passed
+                      ? "text-muted-foreground"
+                      : "text-foreground"
+                }`}
+              >
+                <span className="font-display text-[0.8rem] leading-none">{tp(p.key)}</span>
+                <span className="tabular-nums text-[0.8rem] leading-none">{p.label}</span>
+                {hasIqamah && (
+                  <span className={`tabular-nums text-[0.65rem] leading-none ${isNext ? "" : "text-accent"}`}>
+                    {p.iqamah ?? "—"}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

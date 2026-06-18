@@ -11,7 +11,15 @@ const DAILY = ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const;
  * server-side from the masjid's location/method; a client child ticks to find
  * the next prayer. Iqamah times come from the manager-set values.
  */
-export function PrayerCountdownCard({ mosque, locale }: { mosque: Mosque; locale: string }) {
+export function PrayerCountdownCard({
+  mosque,
+  locale,
+  layout = "vertical",
+}: {
+  mosque: Mosque;
+  locale: string;
+  layout?: "horizontal" | "vertical";
+}) {
   const tz = mosque.timezone ?? "UTC";
   const intlLocale = locale === "ar" ? "ar" : locale;
   const now = new Date();
@@ -33,6 +41,7 @@ export function PrayerCountdownCard({ mosque, locale }: { mosque: Mosque; locale
         prayers={prayers}
         tomorrowFajr={{ label: formatTimeInZone(tomorrow.fajr, tz, intlLocale), epoch: tomorrow.fajr.getTime() }}
         hasIqamah={hasIqamah}
+        layout={layout}
       />
     </div>
   );

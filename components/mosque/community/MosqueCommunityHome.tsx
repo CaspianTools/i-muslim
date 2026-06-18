@@ -114,7 +114,7 @@ export async function MosqueCommunityHome({
         {/* On phones a masjid visitor wants prayer times first — surface the
             countdown above the feed; the rail keeps its desktop copy (below). */}
         <div className="lg:hidden">
-          <PrayerCountdownCard mosque={mosque} locale={locale} />
+          <PrayerCountdownCard mosque={mosque} locale={locale} layout="horizontal" />
         </div>
         <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[260px_minmax(0,1fr)_320px] lg:gap-5">
           {/* Left rail */}
