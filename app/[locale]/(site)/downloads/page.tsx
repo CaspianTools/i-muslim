@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { type Locale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Link } from "@/i18n/navigation";
+import { TocSidebar } from "@/components/site/TocSidebar";
 import {
   QURAN_TRANSLATION_CATALOG,
   HADITH_TRANSLATION_CATALOG,
@@ -83,7 +84,8 @@ const COLLECTION_DISPLAY: Record<
 const QURAN_LANG_ORDER = ["ar", "en", "ru", "az", "tr"] as const;
 const HADITH_LANG_ORDER = ["ar", "en", "ru", "tr"] as const;
 
-const H2 = "mt-12 mb-3 text-2xl font-semibold tracking-tight text-foreground";
+const H2 =
+  "mt-12 mb-3 scroll-mt-24 text-2xl font-semibold tracking-tight text-foreground";
 const TABLE_WRAP = "mt-4 overflow-x-auto rounded-md border border-border";
 const TABLE = "w-full text-left text-sm";
 const TH =
@@ -247,8 +249,26 @@ export default async function DownloadsPage() {
     };
   }
 
+  const tc = await getTranslations("common");
+
+  const tocGroups = [
+    { id: "quran", label: "Quran translations" },
+    {
+      id: "hadith",
+      label: "Hadith collections",
+      items: HADITH_COLLECTION_SLUGS.map((slug) => ({
+        id: `hadith-${slug}`,
+        label: COLLECTION_DISPLAY[slug].name,
+      })),
+    },
+    { id: "how", label: "How to use the data" },
+    { id: "licence", label: "Licence model" },
+    { id: "contribute", label: "Contribute or correct" },
+    { id: "changes", label: "Versioning" },
+  ];
+
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:py-14">
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -256,6 +276,12 @@ export default async function DownloadsPage() {
         }}
       />
 
+      <div className="flex gap-8 lg:gap-10">
+        <aside className="hidden lg:block sticky top-20 self-start">
+          <TocSidebar label={tc("onThisPage")} groups={tocGroups} />
+        </aside>
+
+        <div className="min-w-0 max-w-3xl flex-1">
       <header className="mb-10 border-b border-border pb-8">
         <p className="text-xs font-semibold uppercase tracking-wider text-primary">
           Open data
@@ -292,45 +318,6 @@ export default async function DownloadsPage() {
           </p>
         )}
       </header>
-
-      <nav
-        aria-label="On this page"
-        className="mb-10 rounded-md border border-border bg-muted/30 p-4 text-sm"
-      >
-        <p className="font-semibold text-foreground">On this page</p>
-        <ul className="mt-2 grid gap-1 sm:grid-cols-2">
-          <li>
-            <a className="underline" href="#quran">
-              Quran translations
-            </a>
-          </li>
-          <li>
-            <a className="underline" href="#hadith">
-              Hadith collections
-            </a>
-          </li>
-          <li>
-            <a className="underline" href="#how">
-              How to use the data
-            </a>
-          </li>
-          <li>
-            <a className="underline" href="#licence">
-              Licence model
-            </a>
-          </li>
-          <li>
-            <a className="underline" href="#contribute">
-              Contribute or correct
-            </a>
-          </li>
-          <li>
-            <a className="underline" href="#changes">
-              Versioning
-            </a>
-          </li>
-        </ul>
-      </nav>
 
       <h2 id="quran" className={H2}>
         Quran translations
@@ -412,7 +399,10 @@ export default async function DownloadsPage() {
         const collectionTotal = bucket?.total ?? 0;
         return (
           <section key={slug} className="mt-8">
-            <h3 className="text-lg font-semibold text-foreground">
+            <h3
+              id={`hadith-${slug}`}
+              className="scroll-mt-24 text-lg font-semibold text-foreground"
+            >
               {display.name}{" "}
               <span
                 dir="rtl"
@@ -705,6 +695,8 @@ curl https://i-muslim.com/api/v1/translations/quran/ar/1`}
         text, or growing the authored-CC0 count is <em>not</em> a breaking
         change.
       </p>
+        </div>
+      </div>
     </div>
   );
 }
