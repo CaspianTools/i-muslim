@@ -5,16 +5,23 @@ import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import {
+  CalendarDays,
+  Clock,
   Copy,
   Download,
+  Image as ImageIcon,
   Loader2,
+  Phone,
   Printer,
   QrCode,
   Rocket,
   Save,
   Settings2,
+  Share2,
+  User,
 } from "lucide-react";
 import { BUNDLED_LOCALES, LOCALE_META } from "@/i18n/config";
+import { pickLocalized } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +35,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageDropzone } from "@/components/mosque/community/ImageDropzone";
 import { SocialLinksEditor } from "@/components/mosque/community/SocialLinksEditor";
+import { MosqueEventComposer } from "@/components/mosque/MosqueEventComposer";
 import type { Mosque } from "@/types/mosque";
 import {
   updateMosqueAbout,
@@ -40,6 +48,17 @@ import {
 } from "@/app/[locale]/(site)/mosques/manage-actions";
 
 const DAILY = ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const;
+
+// Sidebar menu items (icon + label key). Order = sidebar order top→bottom.
+const MANAGE_TABS = [
+  { value: "profile", Icon: User, labelKey: "tabProfile" },
+  { value: "media", Icon: ImageIcon, labelKey: "tabMedia" },
+  { value: "prayer", Icon: Clock, labelKey: "tabPrayer" },
+  { value: "contact", Icon: Phone, labelKey: "tabContact" },
+  { value: "social", Icon: Share2, labelKey: "tabSocial" },
+  { value: "events", Icon: CalendarDays, labelKey: "tabEvents" },
+  { value: "share", Icon: QrCode, labelKey: "tabShare" },
+] as const;
 
 export function MosqueManagePanel({
   mosque,
@@ -59,6 +78,8 @@ export function MosqueManagePanel({
   const router = useRouter();
   const uiLocale = useLocale();
   const [saving, setSaving] = useState<string | null>(null);
+  const [tab, setTab] = useState("profile");
+  const mosqueName = pickLocalized(mosque.name, uiLocale, "en") ?? mosque.name.en;
   // Poster print language — defaults to the manager's UI language when it's one
   // of the bundled (fully translated) locales, else English.
   const [posterLang, setPosterLang] = useState<string>(
@@ -173,32 +194,43 @@ export function MosqueManagePanel({
         </DialogTrigger>
       )}
 
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="flex max-w-4xl flex-col gap-0 p-0 sm:h-[min(82vh,720px)] sm:max-h-[82vh]">
+        <DialogHeader className="shrink-0 ps-6 pe-12 pt-6 pb-4">
           <DialogTitle className="font-display text-lg">{t("title")}</DialogTitle>
         </DialogHeader>
 
         {isDraft && (
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning/40 bg-warning/10 p-3">
-            <p className="text-sm text-foreground">{t("publishHint")}</p>
-            <Button onClick={handlePublish} disabled={saving === "publish"} size="sm">
-              {saving === "publish" ? <Loader2 className="size-4 animate-spin" /> : <Rocket className="size-4" />}
-              {t("publish")}
-            </Button>
+          <div className="shrink-0 px-6 pb-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning/40 bg-warning/10 p-3">
+              <p className="text-sm text-foreground">{t("publishHint")}</p>
+              <Button onClick={handlePublish} disabled={saving === "publish"} size="sm">
+                {saving === "publish" ? <Loader2 className="size-4 animate-spin" /> : <Rocket className="size-4" />}
+                {t("publish")}
+              </Button>
+            </div>
           </div>
         )}
 
-        <Tabs defaultValue="profile">
-          <TabsList className="flex w-full flex-wrap justify-start">
-            <TabsTrigger value="profile">{t("tabProfile")}</TabsTrigger>
-            <TabsTrigger value="media">{t("tabMedia")}</TabsTrigger>
-            <TabsTrigger value="prayer">{t("tabPrayer")}</TabsTrigger>
-            <TabsTrigger value="contact">{t("tabContact")}</TabsTrigger>
-            <TabsTrigger value="social">{t("tabSocial")}</TabsTrigger>
-            <TabsTrigger value="share">{t("tabShare")}</TabsTrigger>
+        <Tabs
+          value={tab}
+          onValueChange={setTab}
+          orientation="vertical"
+          className="flex min-h-0 flex-1 flex-col overflow-hidden sm:flex-row"
+        >
+          <TabsList className="flex h-auto w-full shrink-0 justify-start gap-1 overflow-x-auto rounded-none border-b border-border bg-transparent p-2 sm:w-64 sm:max-w-[300px] sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:border-b-0 sm:border-e sm:p-3">
+            {MANAGE_TABS.map(({ value, Icon, labelKey }) => (
+              <TabsTrigger
+                key={value}
+                value={value}
+                className="shrink-0 justify-start gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm sm:w-full data-[state=active]:bg-selected data-[state=active]:text-selected-foreground"
+              >
+                <Icon className="size-4 shrink-0" />
+                {t(labelKey)}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
-          <div className="mt-4 max-h-[60vh] overflow-y-auto pe-1">
+          <div className="min-w-0 flex-1 overflow-y-auto p-6 max-h-[60vh] sm:max-h-none">
             {/* Profile */}
             <TabsContent value="profile" className="space-y-2">
               <Label htmlFor="mng-about">{t("about")}</Label>
@@ -298,6 +330,17 @@ export function MosqueManagePanel({
             {/* Social */}
             <TabsContent value="social">
               <SocialLinksEditor slug={mosque.slug} initial={mosque.social} />
+            </TabsContent>
+
+            {/* Events — embedded submit form. Manager-only (Manage is gated to
+                managers); the public "Add event" CTA was removed. */}
+            <TabsContent value="events">
+              <MosqueEventComposer
+                slug={mosque.slug}
+                mosqueName={mosqueName}
+                active={tab === "events"}
+                onDone={() => onOpenChange?.(false)}
+              />
             </TabsContent>
 
             {/* Share + analytics */}

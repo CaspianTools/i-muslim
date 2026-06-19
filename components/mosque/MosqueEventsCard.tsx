@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ArrowRight, CalendarDays, Plus } from "lucide-react";
+import { ArrowRight, CalendarDays } from "lucide-react";
 import { fetchUpcomingEventsByMosque } from "@/lib/admin/data/events";
 
 interface Props {
   mosqueSlug: string;
-  /** When true, shows the "Add event" CTA wired to /events/submit?mosqueId=<slug>. */
+  /** When true (the viewer is a manager), keep the card visible even when empty.
+   *  Adding events is done from the Manage popup's Events tab, not from here. */
   canAddEvent: boolean;
   /** Max events to list (5 in the rail, larger on the Events view). */
   limit?: number;
@@ -45,14 +46,6 @@ export async function MosqueEventsCard({
     <section className="mq-card mq-card-pad">
       <header className="mq-rail-title">
         <span>{t("title")}</span>
-        {canAddEvent && (
-          <Link
-            href={`/events/submit?mosqueId=${encodeURIComponent(mosqueSlug)}`}
-            className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted"
-          >
-            <Plus className="size-3.5" /> {t("addEvent")}
-          </Link>
-        )}
       </header>
 
       {events.length === 0 ? (

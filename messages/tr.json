@@ -1767,6 +1767,7 @@
       "tabPrayer": "Namaz",
       "tabContact": "İletişim",
       "tabSocial": "Sosyal",
+      "tabEvents": "Etkinlikler",
       "tabShare": "Paylaş",
       "shareUnavailable": "Paylaşım bağlantınız ve QR kodunuz, sayfa yayımlandığında burada görünür.",
       "dropHere": "Resminizi buraya bırakın veya",
@@ -1926,7 +1927,8 @@
       "title": "Yaklaşan etkinlikler",
       "empty": "Bu mescitte henüz yaklaşan etkinlik yok.",
       "addEvent": "Etkinlik ekle",
-      "viewAll": "Tüm etkinlikleri gör"
+      "viewAll": "Tüm etkinlikleri gör",
+      "loadFailed": "Etkinlik formu yüklenemedi. Lütfen tekrar deneyin."
     },
     "hub": {
       "byCountryTitle": "Ülkeye göre",

@@ -6,7 +6,10 @@ import { Timestamp } from "firebase-admin/firestore";
 import { getDb } from "@/lib/firebase/admin";
 import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
 import { canManageMosque } from "@/lib/mosques/authz";
+import { getSiteSession } from "@/lib/auth/session";
 import { generateUniqueShortCode, ensureMosqueShortCodeValue } from "@/lib/admin/data/mosques";
+import { fetchEventCategories } from "@/lib/admin/data/event-categories";
+import type { EventCategoryDoc } from "@/types/event-category";
 import {
   createMosqueUploadUrl,
   publicUrlFor,
@@ -220,4 +223,17 @@ export async function ensureMosqueShortCode(
   if (!shortCode) return { ok: false, error: "not_found" };
   revalidatePath(`/mosques/${slug}`);
   return { ok: true, shortCode };
+}
+
+/**
+ * Manager-gated context for the embedded "Add event" form in the Manage popup:
+ * the active event categories + the manager's email (the form's submitter).
+ * Lazy-loaded by the Events tab so categories aren't fetched on every Manage open.
+ */
+export async function getMosqueEventFormContext(
+  slug: string,
+): Promise<{ ok: boolean; categories?: EventCategoryDoc[]; userEmail?: string }> {
+  if (!(await authorize(slug))) return { ok: false };
+  const [{ categories }, session] = await Promise.all([fetchEventCategories(), getSiteSession()]);
+  return { ok: true, categories, userEmail: session?.email ?? "" };
 }

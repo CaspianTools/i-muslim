@@ -1764,6 +1764,7 @@
       "tabPrayer": "Prayer",
       "tabContact": "Contact",
       "tabSocial": "Social",
+      "tabEvents": "Events",
       "tabShare": "Share",
       "shareUnavailable": "Your share link & QR code appear here once the page is published.",
       "dropHere": "Drop your image here, or",
@@ -1923,7 +1924,8 @@
       "title": "Upcoming events",
       "empty": "No upcoming events at this mosque yet.",
       "addEvent": "Add event",
-      "viewAll": "View all events"
+      "viewAll": "View all events",
+      "loadFailed": "Couldn't load the event form. Please try again."
     },
     "hub": {
       "byCountryTitle": "Browse by country",

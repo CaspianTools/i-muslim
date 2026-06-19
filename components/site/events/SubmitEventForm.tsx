@@ -124,6 +124,12 @@ interface SubmitEventFormProps {
   lockedMosque?: { slug: string; name: string };
   onAdminSaved?: (result: { id: string }) => void;
   onAdminCancel?: () => void;
+  /**
+   * Fired after a successful PUBLIC (non-admin) submit. When provided, the form
+   * resets and signals the host (e.g. a dialog) instead of rendering its own
+   * success panel — used to embed the form inside the masjid Manage popup.
+   */
+  onSubmitted?: () => void;
 }
 
 export function SubmitEventForm({
@@ -133,6 +139,7 @@ export function SubmitEventForm({
   lockedMosque,
   onAdminSaved,
   onAdminCancel,
+  onSubmitted,
 }: SubmitEventFormProps) {
   const t = useTranslations("eventsPublic.submit");
   const tStatuses = useTranslations("events.statuses");
@@ -382,9 +389,15 @@ export function SubmitEventForm({
         return;
       }
       toast.success(t("success.headline"));
-      setSubmitted({ ...state });
       setState(makeEmpty(userEmail, defaultCategory));
       timezoneTouched.current = false;
+      // Embedded host (e.g. the Manage dialog) handles its own success UX:
+      // reset + notify, and skip the in-form SuccessPanel.
+      if (onSubmitted) {
+        onSubmitted();
+        return;
+      }
+      setSubmitted({ ...state });
       setDone(true);
     } finally {
       setSubmitting(false);
