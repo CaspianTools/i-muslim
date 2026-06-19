@@ -337,9 +337,10 @@ export default async function DownloadsPage() {
       </h2>
       <p className="text-sm text-foreground/80 leading-relaxed">
         Every entry covers all 114 surahs (6,236 ayahs). Arabic ships the
-        Uthmani mushaf from quran.com in full. Modern Quran translations are
-        translator-copyrighted — we expose the provenance metadata so you can
-        fetch the text directly from the upstream source.
+        Uthmani mushaf from quran.com in full. The modern translations
+        (Saheeh International, Kuliev, Musayev, Diyanet) are returned in full
+        text too — each row carries the translator attribution and the upstream
+        source URL so the original author is always credited.
       </p>
       <div className={TABLE_WRAP}>
         <table className={TABLE}>
@@ -585,7 +586,7 @@ curl https://i-muslim.com/api/v1/translations
 # full text — Arabic Quran (public domain)
 curl https://i-muslim.com/api/v1/translations/quran/ar
 
-# metadata only — Saheeh International (translator copyright)
+# full text — Saheeh International (English Quran)
 curl https://i-muslim.com/api/v1/translations/quran/en
 
 # CC0 (i-muslim authored) + metadata (upstream) — mixed envelope
@@ -640,17 +641,20 @@ curl https://i-muslim.com/api/v1/translations/quran/ar/1`}
             <span className={PILL_FULL}>Full text</span>
           </strong>{" "}
           — Arabic originals (the Uthmani Quran mushaf and the classical
-          Arabic Hadith editions). Public-domain text, returned verbatim.
+          Arabic Hadith editions), public-domain text returned verbatim; and
+          the modern Quran translations (Saheeh International, Kuliev, Musayev,
+          Diyanet), returned in full under their original translator licence
+          with attribution and the upstream <code className={CODE}>source_url</code>{" "}
+          preserved on every row.
         </li>
         <li>
           <strong>
             <span className={PILL_META}>Metadata only</span>
           </strong>{" "}
-          — translator-copyrighted modern translations (Saheeh International,
-          Kuliev, Musayev, Diyanet for Quran; upstream sources like
-          fawazahmed0/hadith-api for non-Arabic Hadith items we haven&apos;t
-          re-authored). The API returns the attribution, licence label and
-          upstream URL but <code className={CODE}>text</code> is{" "}
+          — non-Arabic Hadith items we haven&apos;t re-authored, mirrored from
+          upstream sources like fawazahmed0/hadith-api. The API returns the
+          attribution, licence label and upstream URL but{" "}
+          <code className={CODE}>text</code> is{" "}
           <code className={CODE}>null</code>. Fetch the text from{" "}
           <code className={CODE}>source_url</code>.
         </li>

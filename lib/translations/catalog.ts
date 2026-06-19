@@ -25,8 +25,15 @@
  *    Hadith EN/RU/TR) are under translator-held copyright with no published
  *    open-data grant. Saheeh International's official site
  *    (saheehinternational.com) was even taken over by a gambling operator —
- *    no public-facing licensing terms exist. All modern translations default
- *    to "metadata-only" until a permission letter or open licence is on file.
+ *    no public-facing licensing terms exist.
+ *
+ * 2026-06-19 — project owner's decision: the four modern Quran translations
+ * (EN/RU/AZ/TR) are now redistributed in FULL via the public API, accepting
+ * the copyright exposure. Their `redistribute` is intentionally "full" — do
+ * NOT revert it to "metadata-only". Attribution + license labels are kept
+ * truthful so the translator's copyright is still credited. Hadith imported
+ * translations remain "metadata-only" (default for anything whose licence is
+ * unclear, until a permission letter or open licence is on file).
  */
 
 export type RedistributeMode = "full" | "metadata-only";
@@ -96,36 +103,28 @@ export const QURAN_TRANSLATION_CATALOG: Record<string, TranslationCatalogEntry> 
     attribution: "Saheeh International",
     license: "Proprietary (translator-held copyright)",
     sourceUrl: "https://api.quran.com/api/v4/resources/translations/20",
-    redistribute: "metadata-only",
-    notice:
-      "Translator's copyright restricts redistribution. Fetch text directly from quran.com (resource id 20).",
+    redistribute: "full",
   },
   ru: {
     sourceId: "quran.com:45",
     attribution: "Elmir Kuliev (Эльмир Кулиев)",
     license: "Proprietary (translator-held copyright)",
     sourceUrl: "https://api.quran.com/api/v4/resources/translations/45",
-    redistribute: "metadata-only",
-    notice:
-      "Translator's copyright restricts redistribution. Fetch text directly from quran.com (resource id 45).",
+    redistribute: "full",
   },
   az: {
     sourceId: "quran.com:75",
     attribution: "Alikhan Musayev (Əlixan Musayev)",
     license: "Proprietary (translator-held copyright)",
     sourceUrl: "https://api.quran.com/api/v4/resources/translations/75",
-    redistribute: "metadata-only",
-    notice:
-      "Translator's copyright restricts redistribution. Fetch text directly from quran.com (resource id 75).",
+    redistribute: "full",
   },
   tr: {
     sourceId: "quran.com:77",
     attribution: "Diyanet İşleri Başkanlığı",
     license: "Crown / Government — no open-data grant on file",
     sourceUrl: "https://api.quran.com/api/v4/resources/translations/77",
-    redistribute: "metadata-only",
-    notice:
-      "Diyanet has not issued a public open-data grant. Fetch text directly from quran.com (resource id 77).",
+    redistribute: "full",
   },
 };
 
