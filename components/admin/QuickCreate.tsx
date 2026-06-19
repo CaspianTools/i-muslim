@@ -43,6 +43,10 @@ import type { BusinessCategory } from "@/types/business";
 import type { EventCategoryDoc } from "@/types/event-category";
 import type { ArticleCategoryDoc } from "@/types/blog";
 import type { Mosque, MosqueFacility } from "@/types/mosque";
+import { usePermissions } from "./PermissionsContext";
+import { CREATE_PERMISSION } from "@/lib/admin/create-permissions";
+import { hasPermission } from "@/lib/permissions/check";
+import type { RolePermissions } from "@/lib/permissions/catalog";
 
 type ViewId =
   | "selector"
@@ -136,6 +140,11 @@ export function QuickCreate({
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<ViewId>("selector");
   const [editMosque, setEditMosque] = useState<Mosque | null>(null);
+  const permissions = usePermissions();
+  const visibleItems = useMemo(
+    () => ITEMS.filter((item) => hasPermission(permissions, CREATE_PERMISSION[item.id])),
+    [permissions],
+  );
 
   function close() {
     setOpen(false);
@@ -161,15 +170,25 @@ export function QuickCreate({
   useEffect(() => {
     function onOpen(e: Event) {
       const detail = (e as CustomEvent<QuickCreateOpenDetail>).detail;
-      setView(detail?.view ?? "selector");
+      const v = detail?.view;
+      // Block create requests the user lacks permission for. The mosque "edit"
+      // path (openQuickEditMosque) sets detail.mosque and is governed by its
+      // own entry point, so let it through.
+      if (v && !detail?.mosque && !hasPermission(permissions, CREATE_PERMISSION[v])) {
+        return;
+      }
+      setView(v ?? "selector");
       setEditMosque(detail?.mosque ?? null);
       setOpen(true);
     }
     window.addEventListener(QUICK_CREATE_OPEN_EVENT, onOpen);
     return () => window.removeEventListener(QUICK_CREATE_OPEN_EVENT, onOpen);
-  }, []);
+  }, [permissions]);
 
   const isForm = view !== "selector";
+
+  // Nothing creatable for this role → no "+" affordance at all.
+  if (visibleItems.length === 0) return null;
 
   return (
     <>
@@ -208,6 +227,7 @@ export function QuickCreate({
         >
           {!isForm ? (
             <SelectorView
+              items={visibleItems}
               onSelect={(id) => setView(id)}
               t={t}
               tTypes={tTypes}
@@ -215,6 +235,7 @@ export function QuickCreate({
           ) : (
             <FormView
               view={view}
+              permissions={permissions}
               onBack={back}
               onClose={close}
               backLabel={t("back")}
@@ -240,22 +261,24 @@ export function QuickCreate({
 }
 
 function SelectorView({
+  items: sourceItems,
   onSelect,
   t,
   tTypes,
 }: {
+  items: QuickCreateItem[];
   onSelect: (id: Exclude<ViewId, "selector">) => void;
   t: ReturnType<typeof useTranslations>;
   tTypes: ReturnType<typeof useTranslations>;
 }) {
   const items = useMemo(
     () =>
-      ITEMS.map((item) => ({
+      sourceItems.map((item) => ({
         ...item,
         name: tTypes(`${item.nameKey}.name`),
         description: tTypes(`${item.nameKey}.description`),
       })),
-    [tTypes],
+    [sourceItems, tTypes],
   );
   return (
     <Command className="rounded-2xl bg-transparent">
@@ -296,6 +319,7 @@ function SelectorView({
 
 function FormView({
   view,
+  permissions,
   onBack,
   onClose,
   backLabel,
@@ -310,6 +334,7 @@ function FormView({
   router,
 }: {
   view: Exclude<ViewId, "selector">;
+  permissions: RolePermissions;
   onBack: () => void;
   onClose: () => void;
   backLabel: string;
@@ -323,6 +348,12 @@ function FormView({
   editMosque: Mosque | null;
   router: ReturnType<typeof useRouter>;
 }) {
+  // Defense in depth: never render a create form the user lacks permission for.
+  // The mosque "edit" case (editMosque set) is governed by its own entry point.
+  if (!(view === "mosque" && editMosque) && !hasPermission(permissions, CREATE_PERMISSION[view])) {
+    return null;
+  }
+
   const BackButton = (
     <button
       type="button"

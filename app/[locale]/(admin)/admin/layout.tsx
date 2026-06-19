@@ -4,6 +4,7 @@ import { getAdminSession, getSiteSession } from "@/lib/auth/session";
 import { getFirebaseAdminStatus } from "@/lib/firebase/admin";
 import { Sidebar, type SidebarBadges } from "@/components/admin/Sidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { PermissionsProvider } from "@/components/admin/PermissionsContext";
 import { Toaster } from "@/components/ui/sonner";
 import { countOpenReports } from "@/lib/admin/data/business-reports";
 import { listProfiles } from "@/lib/matrimonial/store";
@@ -83,14 +84,16 @@ export default async function AdminLayout({
       <div className="hidden md:block shrink-0">
         <Sidebar badges={badges} logoUrl={siteConfig.logoUrl} permissions={session.permissions} />
       </div>
-      <div className="flex flex-1 flex-col min-w-0">
-        <AdminHeader session={session} badges={badges} logoUrl={siteConfig.logoUrl} />
-        <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-8 md:py-8">
-            {children}
-          </div>
-        </main>
-      </div>
+      <PermissionsProvider permissions={session.permissions}>
+        <div className="flex flex-1 flex-col min-w-0">
+          <AdminHeader session={session} badges={badges} logoUrl={siteConfig.logoUrl} />
+          <main className="flex-1 overflow-y-auto">
+            <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-8 md:py-8">
+              {children}
+            </div>
+          </main>
+        </div>
+      </PermissionsProvider>
       <Toaster />
     </div>
   );

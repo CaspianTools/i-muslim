@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { openQuickCreate } from "@/components/admin/QuickCreate";
+import { useCanCreate } from "@/components/admin/PermissionsContext";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -120,6 +121,7 @@ export function EventsPageClient({
     }
     return "all";
   })();
+  const canCreate = useCanCreate("event");
   const [events, setEvents] = useState<AdminEvent[]>(initialEvents);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<EventCategory | "all">("all");
@@ -453,14 +455,16 @@ export function EventsPageClient({
                 <LayoutGrid className="size-4" />
               </TabsTrigger>
             </TabsList>
-            <Button
-              size="sm"
-              onClick={() => openQuickCreate("event")}
-              disabled={!canPersist}
-              title={!canPersist ? t("noPersistTitle") : undefined}
-            >
-              <Plus /> {t("newEvent")}
-            </Button>
+            {canCreate && (
+              <Button
+                size="sm"
+                onClick={() => openQuickCreate("event")}
+                disabled={!canPersist}
+                title={!canPersist ? t("noPersistTitle") : undefined}
+              >
+                <Plus /> {t("newEvent")}
+              </Button>
+            )}
           </div>
         </div>
 

@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { openQuickCreate } from "@/components/admin/QuickCreate";
+import { useCanCreate } from "@/components/admin/PermissionsContext";
 import { toast } from "@/components/ui/sonner";
 import { cn, formatRelative } from "@/lib/utils";
 import type {
@@ -48,6 +49,7 @@ export function ArticlesPageClient({
   const [categoryFilter, setCategoryFilter] = useState<CategorySlug | "all">("all");
   const [deleteTarget, setDeleteTarget] = useState<AdminArticleRow | null>(null);
   const [pending, startTransition] = useTransition();
+  const canCreate = useCanCreate("article");
 
   const filtered = useMemo(() => {
     return items.filter((row) => {
@@ -124,15 +126,17 @@ export function ArticlesPageClient({
             <option key={c.slug} value={c.slug}>{c.name.en}</option>
           ))}
         </select>
-        <div className="ms-auto">
-          <Button
-            size="sm"
-            onClick={() => openQuickCreate("article")}
-            disabled={source === "mock"}
-          >
-            <Plus /> New article
-          </Button>
-        </div>
+        {canCreate && (
+          <div className="ms-auto">
+            <Button
+              size="sm"
+              onClick={() => openQuickCreate("article")}
+              disabled={source === "mock"}
+            >
+              <Plus /> New article
+            </Button>
+          </div>
+        )}
       </div>
 
       {source === "mock" && (

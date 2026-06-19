@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { useCanCreate } from "@/components/admin/PermissionsContext";
 import { toast } from "@/components/ui/sonner";
 import {
   archiveBusinessAction,
@@ -84,6 +85,7 @@ export function BusinessesPageClient({
   const tStatus = useTranslations("businesses.statuses");
   const tHalal = useTranslations("businesses.halalStatuses");
   const locale = useLocale() as "en" | "ar" | "tr" | "id";
+  const canCreate = useCanCreate("business");
 
   const [businesses, setBusinesses] = useState<Business[]>(initialBusinesses);
   const [query, setQuery] = useState("");
@@ -142,6 +144,7 @@ export function BusinessesPageClient({
   }, [businesses, pendingSubmissions, query, statusFilter, halalFilter, categoryFilter]);
 
   function openCreate() {
+    if (!canCreate) return;
     setEditing(null);
     setEditorOpen(true);
   }
@@ -234,9 +237,11 @@ export function BusinessesPageClient({
             <option key={c.id} value={c.id}>{c.name[locale] ?? c.name.en}</option>
           ))}
         </select>
-        <Button onClick={openCreate} disabled={!canPersist}>
-          <Plus className="size-4" /> {t("createCta")}
-        </Button>
+        {canCreate && (
+          <Button onClick={openCreate} disabled={!canPersist}>
+            <Plus className="size-4" /> {t("createCta")}
+          </Button>
+        )}
       </div>
 
       <div className="overflow-hidden rounded-md border border-border">

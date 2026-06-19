@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/editor-dialog";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { openQuickCreate } from "@/components/admin/QuickCreate";
+import { useCanCreate } from "@/components/admin/PermissionsContext";
 import { toast } from "@/components/ui/sonner";
 import { deleteCategoryAction } from "@/lib/admin/actions/business-taxonomies";
 import { BusinessCategoryForm } from "./BusinessCategoryForm";
@@ -35,6 +36,7 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<BusinessCategory | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<BusinessCategory | null>(null);
+  const canCreate = useCanCreate("businessCategory");
 
   function openEdit(c: BusinessCategory) {
     setEditing(c);
@@ -71,14 +73,16 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button
-          onClick={() => openQuickCreate("businessCategory")}
-          disabled={!canPersist}
-        >
-          <Plus className="size-4" /> {t("taxonomyAddCta")}
-        </Button>
-      </div>
+      {canCreate && (
+        <div className="flex justify-end">
+          <Button
+            onClick={() => openQuickCreate("businessCategory")}
+            disabled={!canPersist}
+          >
+            <Plus className="size-4" /> {t("taxonomyAddCta")}
+          </Button>
+        </div>
+      )}
       {items.length === 0 ? (
         <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
           {t("taxonomyEmpty")}

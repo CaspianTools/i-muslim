@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/editor-dialog";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { openQuickCreate } from "@/components/admin/QuickCreate";
+import { useCanCreate } from "@/components/admin/PermissionsContext";
 import { toast } from "sonner";
 import { deleteMosqueFacilityAction } from "@/lib/admin/actions/mosque-facilities";
 import { MosqueFacilityForm } from "./MosqueFacilityForm";
@@ -34,6 +35,7 @@ export function FacilitiesClient({ initialFacilities, canPersist }: Props) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<MosqueFacility | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<MosqueFacility | null>(null);
+  const canCreate = useCanCreate("mosqueFacility");
 
   function openEdit(f: MosqueFacility) {
     setEditing(f);
@@ -70,11 +72,13 @@ export function FacilitiesClient({ initialFacilities, canPersist }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button onClick={() => openQuickCreate("mosqueFacility")} disabled={!canPersist}>
-          <Plus className="size-4" /> {t("addCta")}
-        </Button>
-      </div>
+      {canCreate && (
+        <div className="flex justify-end">
+          <Button onClick={() => openQuickCreate("mosqueFacility")} disabled={!canPersist}>
+            <Plus className="size-4" /> {t("addCta")}
+          </Button>
+        </div>
+      )}
       {items.length === 0 ? (
         <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
           {t("empty")}

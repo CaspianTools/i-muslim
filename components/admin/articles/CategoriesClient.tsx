@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/editor-dialog";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { openQuickCreate } from "@/components/admin/QuickCreate";
+import { useCanCreate } from "@/components/admin/PermissionsContext";
 import { toast } from "@/components/ui/sonner";
 import { deleteArticleCategoryAction } from "@/lib/admin/actions/article-categories";
 import { ArticleCategoryForm } from "./ArticleCategoryForm";
@@ -32,6 +33,7 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ArticleCategoryDoc | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ArticleCategoryDoc | null>(null);
+  const canCreate = useCanCreate("articleCategory");
 
   function openEdit(c: ArticleCategoryDoc) {
     setEditing(c);
@@ -68,14 +70,16 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button
-          onClick={() => openQuickCreate("articleCategory")}
-          disabled={!canPersist}
-        >
-          <Plus className="size-4" /> Add category
-        </Button>
-      </div>
+      {canCreate && (
+        <div className="flex justify-end">
+          <Button
+            onClick={() => openQuickCreate("articleCategory")}
+            disabled={!canPersist}
+          >
+            <Plus className="size-4" /> Add category
+          </Button>
+        </div>
+      )}
 
       {items.length === 0 ? (
         <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
