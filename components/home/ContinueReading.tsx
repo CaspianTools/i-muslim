@@ -1,5 +1,5 @@
 import { ArrowRight, BookOpenCheck, Library } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getSiteSession } from "@/lib/auth/session";
 import { getReadingProgress } from "@/lib/profile/data";
@@ -33,6 +33,7 @@ export async function ContinueReading() {
 
   const t = await getTranslations("home.continueReading");
   const tReading = await getTranslations("reading");
+  const locale = await getLocale();
 
   if (useAyah && ayah) {
     return (
@@ -51,7 +52,7 @@ export async function ContinueReading() {
             {tReading("lastQuranAyah")} · {ayah.verseKey}
           </p>
           <p className="text-xs text-muted-foreground">
-            {tReading("viewedAt", { when: formatRelative(ayah.viewedAt) })}
+            {tReading("viewedAt", { when: formatRelative(ayah.viewedAt, locale) })}
           </p>
         </div>
         <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
@@ -79,7 +80,7 @@ export async function ContinueReading() {
             {hadith.collection} · {tReading("lastHadith")} #{hadith.number}
           </p>
           <p className="text-xs text-muted-foreground">
-            {tReading("viewedAt", { when: formatRelative(hadith.viewedAt) })}
+            {tReading("viewedAt", { when: formatRelative(hadith.viewedAt, locale) })}
           </p>
         </div>
         <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">

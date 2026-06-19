@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Bell, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -189,6 +189,7 @@ function NotificationRow({
   item: AdminNotification;
   onMark: (id: string) => void;
 }) {
+  const locale = useLocale();
   const inner = (
     <>
       <span className="mt-0.5 inline-flex size-7 items-center justify-center rounded-md bg-muted">
@@ -200,7 +201,7 @@ function NotificationRow({
           {!item.read && <span className="size-1.5 shrink-0 rounded-full bg-primary" />}
         </div>
         <p className="text-xs text-muted-foreground line-clamp-2">{item.body}</p>
-        <span className="text-[11px] text-muted-foreground">{formatRelative(item.createdAt)}</span>
+        <span className="text-[11px] text-muted-foreground">{formatRelative(item.createdAt, locale)}</span>
       </div>
     </>
   );

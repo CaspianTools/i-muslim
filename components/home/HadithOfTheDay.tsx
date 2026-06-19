@@ -4,13 +4,17 @@ import { Link } from "@/i18n/navigation";
 import { getHadithOfTheDay } from "@/lib/hadith/of-the-day";
 
 export async function HadithOfTheDay() {
-  const [t, locale] = await Promise.all([
+  const [t, tCollections, locale] = await Promise.all([
     getTranslations("home.hadithOfDay"),
+    getTranslations("hadithCollectionNames"),
     getLocale(),
   ]);
   const hadith = await getHadithOfTheDay(new Date(), locale);
   if (!hadith) return null;
-  const reference = `${hadith.collectionName} · #${hadith.number}`;
+  const collectionName = tCollections.has(hadith.collection)
+    ? tCollections(hadith.collection)
+    : hadith.collectionName;
+  const reference = `${collectionName} · #${hadith.number}`;
   return (
     <article className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-colors hover:border-accent">
       <header className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-accent">

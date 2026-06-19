@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Inbox, Mail, Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ interface Props {
 
 export function InboxTabs({ viewerId, incoming, outgoing, matchedIds, profilesById }: Props) {
   const t = useTranslations("matrimonial.inbox");
+  const locale = useLocale();
 
   const incomingActive = incoming.filter((i) => i.status === "pending");
   const matchedProfiles = matchedIds
@@ -62,7 +63,7 @@ export function InboxTabs({ viewerId, incoming, outgoing, matchedIds, profilesBy
               <Row
                 key={i.id}
                 profile={profilesById[i.fromUserId]}
-                label={t("receivedAt", { date: formatRelative(i.createdAt) })}
+                label={t("receivedAt", { date: formatRelative(i.createdAt, locale) })}
                 href={`/matrimonial/${i.fromUserId}`}
                 action={t("openProfile")}
               />
@@ -89,7 +90,7 @@ export function InboxTabs({ viewerId, incoming, outgoing, matchedIds, profilesBy
               <Row
                 key={i.id}
                 profile={profilesById[i.toUserId]}
-                label={t("sentAt", { date: formatRelative(i.createdAt) })}
+                label={t("sentAt", { date: formatRelative(i.createdAt, locale) })}
                 href={`/matrimonial/${i.toUserId}`}
                 action={t("openProfile")}
               />

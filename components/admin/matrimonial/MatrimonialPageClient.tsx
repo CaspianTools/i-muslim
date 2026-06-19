@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   flexRender,
   getCoreRowModel,
@@ -83,6 +83,7 @@ interface Props {
 }
 
 export function MatrimonialPageClient({ initialProfiles, initialReports, stats, source }: Props) {
+  const locale = useLocale();
   const t = useTranslations("matrimonial.admin");
   const tCommon = useTranslations("common");
   const tStatuses = useTranslations("matrimonial.statuses");
@@ -242,7 +243,7 @@ export function MatrimonialPageClient({ initialProfiles, initialReports, stats, 
         header: t("columns.joined"),
         cell: ({ row }) => (
           <span className="text-sm tabular-nums text-muted-foreground">
-            {formatRelative(row.original.createdAt)}
+            {formatRelative(row.original.createdAt, locale)}
           </span>
         ),
       },
@@ -290,7 +291,7 @@ export function MatrimonialPageClient({ initialProfiles, initialReports, stats, 
         size: 48,
       },
     ],
-    [t, tCommon, tGenders, tStatuses, bulkApply],
+    [t, tCommon, tGenders, tStatuses, bulkApply, locale],
   );
 
   const table = useReactTable({

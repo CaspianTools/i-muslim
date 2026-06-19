@@ -108,7 +108,7 @@ export default async function DashboardPage() {
                       <span className="text-muted-foreground">{entry.action}</span>{" "}
                       <span>{entry.target}</span>
                     </p>
-                    <span className="text-xs text-muted-foreground">{formatRelative(entry.createdAt)}</span>
+                    <span className="text-xs text-muted-foreground">{formatRelative(entry.createdAt, locale)}</span>
                   </div>
                 </li>
               ))}

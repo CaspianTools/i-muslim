@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { Link } from "@/i18n/navigation";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   ArrowDown,
   ArrowUp,
@@ -93,6 +93,7 @@ export function MosquesPageClient({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const locale = useLocale();
   const t = useTranslations("mosquesAdmin");
   const tCommon = useTranslations("common");
   const tStatuses = useTranslations("mosquesAdmin.statuses");
@@ -410,7 +411,7 @@ export function MosquesPageClient({
                       </Badge>
                     </td>
                     <td className="px-3 py-2 text-muted-foreground tabular-nums">
-                      {formatRelative(mosque.updatedAt)}
+                      {formatRelative(mosque.updatedAt, locale)}
                     </td>
                     <td
                       className="px-3 py-2 text-end"

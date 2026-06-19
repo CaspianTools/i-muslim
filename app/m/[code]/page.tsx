@@ -42,18 +42,20 @@ export async function generateMetadata({
   const { code } = await params;
   const { mosque } = await fetchMosqueByShortCode(code);
   if (!mosque || mosque.status !== "published") return { robots: { index: false } };
-  const title = `${mosque.name.en} — ${mosque.city}, ${countryName(mosque.country)}`;
+  const locale = await getLocale();
+  const name = pickLocalized(mosque.name, locale, "en") ?? mosque.name.en;
+  const title = `${name} — ${mosque.city}, ${countryName(mosque.country, locale)}`;
   const description =
     mosque.about ??
-    mosque.description?.en ??
-    `News, events, and prayer times for ${mosque.name.en} in ${mosque.city}.`;
+    (mosque.description ? pickLocalized(mosque.description, locale, "en") : undefined) ??
+    `News, events, and prayer times for ${name} in ${mosque.city}.`;
   return {
     title,
     description,
     // Per-masjid PWA: override the site-wide manifest so this page installs as
     // its own standalone app (masjid name + logo, launching into /m/<code>).
     manifest: `/m/${code}/manifest.webmanifest`,
-    appleWebApp: { capable: true, title: mosque.name.en, statusBarStyle: "default" },
+    appleWebApp: { capable: true, title: name, statusBarStyle: "default" },
     icons: { apple: `/m/${code}/app-icon?size=192` },
     alternates: { canonical: `${getSiteUrl()}/m/${code}` },
     openGraph: {

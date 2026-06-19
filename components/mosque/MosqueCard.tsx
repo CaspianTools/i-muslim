@@ -1,13 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ArrowRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { Mosque } from "@/types/mosque";
 import { countryName } from "@/lib/mosques/countries";
-import { initials } from "@/lib/utils";
+import { initials, pickLocalized } from "@/lib/utils";
 
 export function MosqueCard({ mosque }: { mosque: Mosque }) {
   const t = useTranslations("mosques.actions");
+  const locale = useLocale();
+  const name = pickLocalized(mosque.name, locale, "en") ?? mosque.name.en;
+  const description = mosque.description
+    ? pickLocalized(mosque.description, locale, "en")
+    : undefined;
   return (
     <Link
       href={`/mosques/${mosque.slug}`}
@@ -28,13 +33,13 @@ export function MosqueCard({ mosque }: { mosque: Mosque }) {
           // Monogram fallback — far less visually noisy than 30 cards each
           // showing the same starburst placeholder.
           <div className="flex h-full w-full items-center justify-center bg-[var(--selected)] text-2xl md:text-3xl font-semibold text-[var(--selected-foreground)]">
-            {initials(mosque.name.en)}
+            {initials(name)}
           </div>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
-          <h3 className="text-base font-semibold leading-snug text-foreground">{mosque.name.en}</h3>
+          <h3 className="text-base font-semibold leading-snug text-foreground">{name}</h3>
           {mosque.name.ar && (
             <p dir="rtl" lang="ar" className="font-arabic text-sm text-muted-foreground">
               {mosque.name.ar}
@@ -42,10 +47,10 @@ export function MosqueCard({ mosque }: { mosque: Mosque }) {
           )}
         </div>
         <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <MapPin className="size-3.5" /> {mosque.city}, {countryName(mosque.country)}
+          <MapPin className="size-3.5" /> {mosque.city}, {countryName(mosque.country, locale)}
         </p>
-        {mosque.description?.en && (
-          <p className="line-clamp-2 text-sm text-muted-foreground">{mosque.description.en}</p>
+        {description && (
+          <p className="line-clamp-2 text-sm text-muted-foreground">{description}</p>
         )}
         <span className="mt-auto inline-flex items-center gap-1 text-xs font-medium text-accent">
           {t("viewDetails")} <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />

@@ -128,7 +128,10 @@ export async function generateMetadata({
 
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("hadithPage");
-  const collectionLabel = meta.short_name ?? meta.name_en;
+  const tCollections = await getTranslations("hadithCollectionNames");
+  const collectionLabel = tCollections.has(collection)
+    ? tCollections(collection)
+    : meta.short_name ?? meta.name_en;
   const resolved = resolveTranslation(doc, locale as LangCode);
 
   const title = doc.narrator
@@ -189,8 +192,20 @@ export default async function HadithDetailPage({
   const bookMeta = meta.books.find((b) => b.number === doc.book);
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("hadithPage");
-  const collectionShortName = meta.short_name ?? meta.name_en;
-  const collectionLabel = meta.short_name ?? meta.name_en;
+  const tCollections = await getTranslations("hadithCollectionNames");
+  const tBookNames = await getTranslations("hadithBookNames");
+  // Localized names, mirroring the collection/book pages: prefer the
+  // hadithCollectionNames / hadithBookNames message keys, fall back to the
+  // English Firestore name when a key is absent.
+  const localizedCollectionName = tCollections.has(collection)
+    ? tCollections(collection)
+    : meta.name_en;
+  const bookNameKey = `${collection}.${doc.book}` as const;
+  const localizedBookName = tBookNames.has(bookNameKey)
+    ? tBookNames(bookNameKey)
+    : bookMeta?.name ?? `Book ${doc.book}`;
+  const collectionShortName = localizedCollectionName;
+  const collectionLabel = localizedCollectionName;
 
   const resolved = resolveTranslation(doc, locale as LangCode);
   const session = await getSiteSession();
@@ -376,7 +391,7 @@ export default async function HadithDetailPage({
                         href={`/hadith/${collection}`}
                         className="hover:text-foreground"
                       >
-                        {meta.name_en}
+                        {localizedCollectionName}
                       </Link>
                     </li>
                     {bookMeta ? (
@@ -387,7 +402,7 @@ export default async function HadithDetailPage({
                             href={`/hadith/${collection}/book/${doc.book}`}
                             className="hover:text-foreground"
                           >
-                            {bookMeta.name}
+                            {localizedBookName}
                           </Link>
                         </li>
                       </>
@@ -400,7 +415,7 @@ export default async function HadithDetailPage({
                 <header className="mt-4 border-b border-border pb-6">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
                     {t("singleEyebrow", {
-                      collection: meta.name_en,
+                      collection: localizedCollectionName,
                       number: doc.number,
                     })}
                   </p>
@@ -410,7 +425,7 @@ export default async function HadithDetailPage({
                   {bookMeta ? (
                     <p className="mt-1 text-sm text-muted-foreground">
                       {t("singleReferenceValue", {
-                        collection: meta.name_en,
+                        collection: localizedCollectionName,
                         book: doc.book,
                         hadithInBook: doc.hadith_in_book ?? doc.number,
                       })}
@@ -425,9 +440,9 @@ export default async function HadithDetailPage({
                     translations={translationSlices}
                     collectionShortName={collectionShortName}
                     collectionId={collection}
-                    collectionName={meta.name_en}
+                    collectionName={localizedCollectionName}
                     bookNumber={doc.book}
-                    bookName={bookMeta?.name ?? `Book ${doc.book}`}
+                    bookName={localizedBookName}
                     locale={locale}
                     signedIn={Boolean(session)}
                     currentUid={session?.uid ?? null}
@@ -447,7 +462,7 @@ export default async function HadithDetailPage({
                       entityType="hadith"
                       entityId={`${collection}:${number}`}
                       itemMeta={{
-                        title: `${meta.name_en} — ${bookMeta?.name ?? `Book ${doc.book}`} #${doc.number}`,
+                        title: `${localizedCollectionName} — ${localizedBookName} #${doc.number}`,
                         subtitle: null,
                         href: `/hadith/${collection}/${doc.number}`,
                         locale,
@@ -459,7 +474,7 @@ export default async function HadithDetailPage({
                       itemType="hadith"
                       itemId={`${collection}/${doc.book}/${doc.number}`}
                       itemMeta={{
-                        title: `${meta.name_en} — ${bookMeta?.name ?? `Book ${doc.book}`} #${doc.number}`,
+                        title: `${localizedCollectionName} — ${localizedBookName} #${doc.number}`,
                         subtitle: null,
                         href: `/hadith/${collection}/${doc.number}`,
                         arabic: doc.text_ar,
@@ -486,7 +501,7 @@ export default async function HadithDetailPage({
                       href={`/hadith/${collection}/book/${doc.book}${langQS}`}
                       className="rounded-md border border-border bg-background px-3 py-2 text-muted-foreground hover:border-accent hover:text-foreground"
                     >
-                      {t("singleBackToBook", { bookName: bookMeta.name })}
+                      {t("singleBackToBook", { bookName: localizedBookName })}
                     </Link>
                   ) : null}
                   {nextHref && nextNumber ? (

@@ -113,7 +113,7 @@ export function BusinessFilters({ categories, amenities, total }: Props) {
           </Button>
         )}
       </div>
-      <p className="text-xs text-muted-foreground">{total} listings</p>
+      <p className="text-xs text-muted-foreground">{t("resultCount", { count: total })}</p>
     </div>
   );
 }

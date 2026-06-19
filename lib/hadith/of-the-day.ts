@@ -1,7 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
 import { getHadithCollection, getHadithsByBook, type HadithDoc } from "@/lib/hadith/db";
-import { HADITH_LANG_COVERAGE } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import { pickIndexByDate } from "@/lib/daily/date-seed";
 
@@ -27,11 +26,11 @@ function pickTranslation(
   locale: LangCode,
 ): { text: string; lang: LangCode } | null {
   const native = doc.translations[locale];
-  if (
-    native &&
-    HADITH_LANG_COVERAGE[locale]?.has(doc.collection) &&
-    doc.publishedTranslations?.[locale] !== false
-  ) {
+  // Show the UI-locale translation whenever it has been published — mirroring the
+  // reader's resolveTranslation contract — instead of gating on the seed-time CDN
+  // coverage table (which suppressed published Nawawi translations on the homepage
+  // card even though the detail page rendered them). Falls back to English below.
+  if (native && doc.publishedTranslations?.[locale] === true) {
     return { text: native, lang: locale };
   }
   if (locale !== "en") {

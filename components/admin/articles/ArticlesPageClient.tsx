@@ -2,6 +2,7 @@
 
 import { Link } from "@/i18n/navigation";
 import { useMemo, useState, useTransition } from "react";
+import { useLocale } from "next-intl";
 import { Pencil, Plus, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,6 +51,7 @@ export function ArticlesPageClient({
   const [deleteTarget, setDeleteTarget] = useState<AdminArticleRow | null>(null);
   const [pending, startTransition] = useTransition();
   const canCreate = useCanCreate("article");
+  const locale = useLocale();
 
   const filtered = useMemo(() => {
     return items.filter((row) => {
@@ -196,7 +198,7 @@ export function ArticlesPageClient({
                       </div>
                     </td>
                     <td className="px-3 py-2 align-middle text-xs text-muted-foreground tabular-nums">
-                      {formatRelative(row.updatedAt)}
+                      {formatRelative(row.updatedAt, locale)}
                     </td>
                     <td className="px-3 py-2 align-middle text-right">
                       <RowActions label="Actions">

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ChevronRight, Flag, MessageCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +29,7 @@ export default async function MyCommentsPage() {
   const tStatuses = await getTranslations("comments.statuses");
   const tEntities = await getTranslations("commentsAdmin.entityTypes");
   const tNav = await getTranslations("profileNav");
+  const locale = await getLocale();
 
   const comments = await listMyComments(session.uid, { limit: 200 });
 
@@ -77,7 +78,7 @@ export default async function MyCommentsPage() {
                 {c.body || <em className="text-muted-foreground">{t("emptyBody")}</em>}
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                <span>{formatRelative(c.createdAt)}</span>
+                <span>{formatRelative(c.createdAt, locale)}</span>
                 {c.editedAt && <span>· {t("edited")}</span>}
                 {c.replyCount > 0 && (
                   <span className="inline-flex items-center gap-1">

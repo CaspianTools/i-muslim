@@ -22,6 +22,7 @@ import {
 import type { ComponentType } from "react";
 import { pickLocalized } from "@/lib/utils";
 import { countryName } from "@/lib/mosques/countries";
+import { SLUG_TO_LEGACY } from "@/lib/mosques/constants";
 import { Badge } from "@/components/ui/badge";
 import { MosqueMap } from "@/components/mosque/MosqueMap";
 import { OpenInMapsLinks } from "@/components/mosque/OpenInMapsLinks";
@@ -76,6 +77,7 @@ export function MosqueProfile({
   const t = useTranslations("mosques.detail");
   const tDenomination = useTranslations("mosques.denominations");
   const tActions = useTranslations("mosques.actions");
+  const tServices = useTranslations("mosques.services");
 
   const facilities = mosque.facilities ?? [];
 
@@ -105,7 +107,7 @@ export function MosqueProfile({
             </p>
           )}
           <p className="flex items-center gap-1.5 text-muted-foreground">
-            <MapPin className="size-4" /> {mosque.city}, {countryName(mosque.country)}
+            <MapPin className="size-4" /> {mosque.city}, {countryName(mosque.country, locale)}
           </p>
           {localizedDesc && (
             <p
@@ -141,7 +143,7 @@ export function MosqueProfile({
               <div>
                 {mosque.city}{mosque.region ? `, ${mosque.region}` : ""}{mosque.address.postalCode ? ` ${mosque.address.postalCode}` : ""}
               </div>
-              <div>{countryName(mosque.country)}</div>
+              <div>{countryName(mosque.country, locale)}</div>
             </address>
             {showMap && (
               <>
@@ -163,11 +165,13 @@ export function MosqueProfile({
               <ul className="mt-3 flex flex-wrap gap-2">
                 {facilities.map((slug) => {
                   const Icon = FACILITY_ICONS[slug] ?? Coffee;
+                  const legacyKey = SLUG_TO_LEGACY[slug];
+                  const label = legacyKey ? tServices(legacyKey) : humanizeFacility(slug);
                   return (
                     <li key={slug}>
                       <span className="facility-chip">
                         <Icon />
-                        {humanizeFacility(slug)}
+                        {label}
                       </span>
                     </li>
                   );

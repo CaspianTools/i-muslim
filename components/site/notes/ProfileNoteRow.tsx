@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Pencil, Trash2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -22,6 +22,7 @@ export function ProfileNoteRow({ note }: Props) {
   const t = useTranslations("profileNotes");
   const tn = useTranslations("notes");
   const tFav = useTranslations("favorites");
+  const locale = useLocale();
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(note.text);
@@ -191,7 +192,7 @@ export function ProfileNoteRow({ note }: Props) {
       </div>
 
       <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-        <span>{tn("editedAt", { when: formatRelative(updatedAt) })}</span>
+        <span>{tn("editedAt", { when: formatRelative(updatedAt, locale) })}</span>
         <Link
           href={note.itemMeta.href}
           className="inline-flex items-center gap-0.5 text-primary hover:underline"

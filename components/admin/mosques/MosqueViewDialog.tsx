@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { CheckCircle2, Edit, XCircle } from "lucide-react";
 import { openQuickEditMosque } from "@/components/admin/QuickCreate";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,7 @@ export function MosqueViewDialog({
   mosque: Mosque | null;
 }) {
   const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations("mosquesAdmin.viewDialog");
   const tToast = useTranslations("mosquesAdmin.actions");
   const tCommon = useTranslations("common");
@@ -99,7 +100,7 @@ export function MosqueViewDialog({
                     mosque.submittedBy?.email
                     ?? mosque.submittedBy?.uid
                     ?? t("anonymous"),
-                  when: formatRelative(mosque.createdAt),
+                  when: formatRelative(mosque.createdAt, locale),
                 })}
               </span>
             </div>

@@ -10,7 +10,7 @@ import {
   DM_Serif_Display,
 } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
 import { dirFor, type Locale } from "@/i18n/config";
@@ -98,9 +98,6 @@ const ARABIC_FONT_VAR: Record<ArabicFont, string> = {
   "noto-naskh": "--font-noto-naskh",
 };
 
-const FALLBACK_TAGLINE =
-  "A clean, fast reader for the Quran and major Hadith collections with Arabic, English, Russian, and Azerbaijani translations.";
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -111,13 +108,17 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [config, locale] = await Promise.all([
+  const [config, locale, t] = await Promise.all([
     getSiteConfig(),
     getLocale() as Promise<Locale>,
+    getTranslations("home"),
   ]);
   const titleSuffix = config.siteName;
-  const defaultTitle = `${config.siteName} — Read Quran and Sunnah`;
-  const description = config.tagline || FALLBACK_TAGLINE;
+  // Localized default tab title — the English literal here was the source of the
+  // "i-muslim — Read Quran and Sunnah" leak on non-English routes whose page
+  // omits its own title. home.headline/tagline are translated in every locale.
+  const defaultTitle = `${config.siteName} — ${t("headline")}`;
+  const description = config.tagline || t("tagline");
   // Admin-configured share image (Settings → social-share image). When unset,
   // OG/Twitter tags still render (title/description/card) but carry no image.
   const ogImages = config.ogImageUrl

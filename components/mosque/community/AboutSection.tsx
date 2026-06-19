@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { pickLocalized } from "@/lib/utils";
 import { countryName } from "@/lib/mosques/countries";
+import { SLUG_TO_LEGACY } from "@/lib/mosques/constants";
 import { Badge } from "@/components/ui/badge";
 import { MosqueMap } from "@/components/mosque/MosqueMap";
 import { OpenInMapsLinks } from "@/components/mosque/OpenInMapsLinks";
@@ -47,6 +48,7 @@ function hasRealCoordinates(loc: { lat: number; lng: number } | undefined): bool
 export async function AboutSection({ mosque, locale }: { mosque: Mosque; locale: string }) {
   const t = await getTranslations("mosques.detail");
   const tc = await getTranslations("mosques.community");
+  const tServices = await getTranslations("mosques.services");
 
   const about = mosque.about?.trim();
   const localizedDesc = mosque.description
@@ -77,11 +79,13 @@ export async function AboutSection({ mosque, locale }: { mosque: Mosque; locale:
           <ul className="flex flex-wrap gap-2">
             {facilities.map((slug) => {
               const Icon = FACILITY_ICONS[slug] ?? Coffee;
+              const legacyKey = SLUG_TO_LEGACY[slug];
+              const label = legacyKey ? tServices(legacyKey) : humanizeFacility(slug);
               return (
                 <li key={slug}>
                   <span className="facility-chip">
                     <Icon />
-                    {humanizeFacility(slug)}
+                    {label}
                   </span>
                 </li>
               );
@@ -100,7 +104,7 @@ export async function AboutSection({ mosque, locale }: { mosque: Mosque; locale:
             {mosque.region ? `, ${mosque.region}` : ""}
             {mosque.address.postalCode ? ` ${mosque.address.postalCode}` : ""}
           </div>
-          <div>{countryName(mosque.country)}</div>
+          <div>{countryName(mosque.country, locale)}</div>
         </address>
         {showMap && (
           <>

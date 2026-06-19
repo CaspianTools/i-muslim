@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Check, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -163,6 +163,7 @@ function NotificationRow({
   markLabel: string;
   canPersist: boolean;
 }) {
+  const locale = useLocale();
   const body = (
     <>
       <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-muted">
@@ -174,7 +175,7 @@ function NotificationRow({
           {!item.read && <span className="size-1.5 shrink-0 rounded-full bg-primary" />}
         </div>
         <p className="text-xs text-muted-foreground line-clamp-2">{item.body}</p>
-        <span className="text-[11px] text-muted-foreground">{formatRelative(item.createdAt)}</span>
+        <span className="text-[11px] text-muted-foreground">{formatRelative(item.createdAt, locale)}</span>
       </div>
     </>
   );

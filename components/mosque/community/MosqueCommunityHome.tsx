@@ -140,7 +140,7 @@ export async function MosqueCommunityHome({
                   entityId={mosque.slug}
                   itemMeta={{
                     title: name,
-                    subtitle: `${mosque.city}, ${countryName(mosque.country)}`,
+                    subtitle: `${mosque.city}, ${countryName(mosque.country, locale)}`,
                     href: canonicalHref,
                     locale,
                   }}

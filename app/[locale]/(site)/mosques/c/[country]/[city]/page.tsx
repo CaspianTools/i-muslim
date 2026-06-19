@@ -18,14 +18,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { country, city } = await params;
   const locale = (await getLocale()) as Locale;
+  const t = await getTranslations("mosques.hub");
   const cc = countryCodeFromSlug(country);
-  const name = countryName(cc);
+  const name = countryName(cc, locale);
   const cityLabel = city.replace(/-/g, " ");
   return buildPageMetadata({
     locale,
     path: `/mosques/c/${country}/${city}`,
-    title: `Mosques in ${cityLabel}, ${name}`,
-    description: `Find mosques in ${cityLabel}, ${name} — prayer times, addresses, and contact.`,
+    title: t("cityTitle", { city: cityLabel, country: name }),
+    description: t("cityMetaDescription", { city: cityLabel, country: name }),
   });
 }
 
@@ -37,14 +38,15 @@ export default async function CityHub({
   const { country, city } = await params;
   const countrySlug = country.toLowerCase();
   const citySlug = city.toLowerCase();
-  const [{ mosques }, t] = await Promise.all([
+  const [{ mosques }, t, locale] = await Promise.all([
     fetchPublishedMosques({ countrySlug, citySlug, limit: 100 }),
     getTranslations("mosques"),
+    getLocale(),
   ]);
   if (mosques.length === 0) notFound();
 
   const cc = countryCodeFromSlug(countrySlug);
-  const name = countryName(cc);
+  const name = countryName(cc, locale);
   const cityName = mosques[0]?.city ?? citySlug;
 
   return (

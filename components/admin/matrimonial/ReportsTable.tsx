@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
@@ -25,6 +25,7 @@ function statusVariant(s: ReportStatus): "warning" | "success" | "neutral" {
 }
 
 export function ReportsTable({ reports, profilesById }: Props) {
+  const locale = useLocale();
   const t = useTranslations("matrimonial.admin.reports");
   const tStatuses = useTranslations("matrimonial.admin.reports.statuses");
   const tReasons = useTranslations("matrimonial.report.reasons");
@@ -118,7 +119,7 @@ export function ReportsTable({ reports, profilesById }: Props) {
                     <Badge variant={statusVariant(r.status)}>{tStatuses(r.status)}</Badge>
                   </td>
                   <td className="px-3 py-2 text-muted-foreground tabular-nums">
-                    {formatRelative(r.createdAt)}
+                    {formatRelative(r.createdAt, locale)}
                   </td>
                   <td className="px-3 py-2 text-right">
                     {r.status === "open" && (

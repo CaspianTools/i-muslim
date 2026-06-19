@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ChevronRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { getSiteSession } from "@/lib/auth/session";
@@ -37,6 +37,7 @@ export default async function MySubmissionsPage() {
 
   const t = await getTranslations("profileSubmissions");
   const tNav = await getTranslations("profileNav");
+  const locale = await getLocale();
 
   const { events, businesses, mosques } = await listMySubmissions(session.uid);
 
@@ -63,6 +64,7 @@ export default async function MySubmissionsPage() {
             items={events}
             statusLabel={(s) => t(`statuses.${s}` as `statuses.${StatusKey}`)}
             openLabel={t("viewLive")}
+            locale={locale}
           />
           <Section
             title={t("sections.businesses")}
@@ -70,6 +72,7 @@ export default async function MySubmissionsPage() {
             items={businesses}
             statusLabel={(s) => t(`statuses.${s}` as `statuses.${StatusKey}`)}
             openLabel={t("viewLive")}
+            locale={locale}
           />
           <Section
             title={t("sections.mosques")}
@@ -77,6 +80,7 @@ export default async function MySubmissionsPage() {
             items={mosques}
             statusLabel={(s) => t(`statuses.${s}` as `statuses.${StatusKey}`)}
             openLabel={t("viewLive")}
+            locale={locale}
           />
         </div>
       )}
@@ -90,12 +94,14 @@ function Section({
   items,
   statusLabel,
   openLabel,
+  locale,
 }: {
   title: string;
   empty: string;
   items: MySubmission[];
   statusLabel: (status: StatusKey) => string;
   openLabel: string;
+  locale: string;
 }) {
   return (
     <section>
@@ -134,7 +140,7 @@ function Section({
                   <p className="mt-1 truncate text-sm text-muted-foreground">{item.subtitle}</p>
                 )}
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{formatRelative(item.submittedAt)}</span>
+                  <span>{formatRelative(item.submittedAt, locale)}</span>
                   {item.liveUrl && (
                     <Link
                       href={item.liveUrl}

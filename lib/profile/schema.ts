@@ -7,6 +7,35 @@ const countryCodeSchema = z
   .regex(/^[A-Z]{2}$/, "Pick a country")
   .or(z.literal(""));
 
+// Canonical ethnicity taxonomy. Rendered as a localized dropdown
+// (matrimonial.ethnicities.*) so the value never leaks English under another UI
+// locale — replaces the old free-text field. "" is the unselected/"prefer not to
+// say" state (persisted as null via inputToRecord).
+export const ETHNICITIES = [
+  "arab",
+  "turkic",
+  "persian",
+  "south_asian",
+  "southeast_asian",
+  "central_asian",
+  "african",
+  "european",
+  "caucasian",
+  "mixed",
+  "other",
+] as const;
+export type Ethnicity = (typeof ETHNICITIES)[number];
+
+// Map a stored value (which may be a legacy free-text string like "Caucasian")
+// to a canonical slug for the dropdown. Recognizable text is slugified and
+// matched (so "Caucasian" → "caucasian"); anything unrecognized degrades to
+// "other"; empty stays empty. Keeps old profiles loading without a data migration.
+export function normalizeEthnicity(raw: string | null | undefined): Ethnicity | "" {
+  if (!raw) return "";
+  const slug = raw.toLowerCase().trim().replace(/\s+/g, "_");
+  return (ETHNICITIES as readonly string[]).includes(slug) ? (slug as Ethnicity) : "other";
+}
+
 // Identity + deen fields — the unified profile, used everywhere on the site
 // (event RSVPs, mosque submissions, matrimonial display, etc.).
 export const profileFieldsSchema = z.object({
@@ -15,7 +44,7 @@ export const profileFieldsSchema = z.object({
   dateOfBirth: z.string().min(8),
   country: countryCodeSchema,
   city: z.string().min(1).max(60),
-  ethnicity: z.string().max(60).optional().or(z.literal("")),
+  ethnicity: z.enum(ETHNICITIES).or(z.literal("")).optional(),
   // Lenient on values: legacy free-text entries are kept as-is per mus-1194
   // "no migration" decision; the LanguageCombobox UI guarantees valid ISO-639-1
   // codes for new writes.

@@ -10,7 +10,7 @@ import {
   useTransition,
   type ReactNode,
 } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { StickyNote } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 import {
@@ -253,6 +253,7 @@ export function NoteEditorPanel({ className }: { className?: string }) {
   const { itemType, itemId, note, editing, pending, draft, setDraft, cancel, save, remove } =
     useCard();
   const t = useTranslations("notes");
+  const locale = useLocale();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
@@ -319,7 +320,7 @@ export function NoteEditorPanel({ className }: { className?: string }) {
           <div className="note-callout">
             <div className="mb-1 flex items-center justify-between gap-2 text-xs text-muted-foreground">
               <span className="font-medium uppercase tracking-wide">{t("yourNote")}</span>
-              <span>{t("editedAt", { when: formatRelative(note.updatedAt) })}</span>
+              <span>{t("editedAt", { when: formatRelative(note.updatedAt, locale) })}</span>
             </div>
             <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
               {note.text}

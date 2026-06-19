@@ -18,13 +18,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { country } = await params;
   const cc = countryCodeFromSlug(country);
-  const name = countryName(cc);
   const locale = (await getLocale()) as Locale;
+  const t = await getTranslations("mosques.hub");
+  const name = countryName(cc, locale);
   return buildPageMetadata({
     locale,
     path: `/mosques/c/${country}`,
-    title: `Mosques in ${name}`,
-    description: `Find mosques across ${name} — prayer times, addresses, and contact.`,
+    title: t("countryTitle", { country: name }),
+    description: t("countryMetaDescription", { country: name }),
   });
 }
 
@@ -36,14 +37,15 @@ export default async function CountryHub({
   const { country } = await params;
   const countrySlug = country.toLowerCase();
   const cc = countryCodeFromSlug(countrySlug);
-  const [{ mosques }, cities, t] = await Promise.all([
+  const [{ mosques }, cities, t, locale] = await Promise.all([
     fetchPublishedMosques({ countrySlug, limit: 200 }),
     fetchCityAggregates(countrySlug),
     getTranslations("mosques"),
+    getLocale(),
   ]);
   if (mosques.length === 0) notFound();
 
-  const name = countryName(cc);
+  const name = countryName(cc, locale);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:py-12">

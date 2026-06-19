@@ -15,6 +15,8 @@ import { Section } from "./forms/Section";
 import { Field } from "./forms/Field";
 import { Select } from "./forms/Select";
 import {
+  ETHNICITIES,
+  normalizeEthnicity,
   profileFieldsSchema,
   type ProfileFieldsInput,
   type ProfileFieldsRecord,
@@ -28,7 +30,7 @@ function defaultsFrom(initial: ProfileFieldsRecord | null): ProfileFieldsInput {
     dateOfBirth: initial?.dateOfBirth?.slice(0, 10) ?? "",
     country: initial?.country ?? "",
     city: initial?.city ?? "",
-    ethnicity: initial?.ethnicity ?? "",
+    ethnicity: normalizeEthnicity(initial?.ethnicity),
     languages: initial?.languages ?? [],
     madhhab: initial?.madhhab ?? "none",
     sect: initial?.sect ?? "sunni",
@@ -50,6 +52,8 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
   const [pending, startTransition] = useTransition();
   const t = useTranslations("profileForm");
   const tGenders = useTranslations("matrimonial.genders");
+  const tEthnicities = useTranslations("matrimonial.ethnicities");
+  const tSects = useTranslations("matrimonial.sects");
   const tMadhhabs = useTranslations("matrimonial.madhhabs");
   const tPrayer = useTranslations("matrimonial.prayer");
   const tHijab = useTranslations("matrimonial.hijab");
@@ -108,7 +112,14 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
           <Input {...register("city")} />
         </Field>
         <Field label={t("ethnicity")}>
-          <Input {...register("ethnicity")} />
+          <Select {...register("ethnicity")}>
+            <option value="">{tEthnicities("unspecified")}</option>
+            {ETHNICITIES.map((e) => (
+              <option key={e} value={e}>
+                {tEthnicities(e)}
+              </option>
+            ))}
+          </Select>
         </Field>
         <Field label={t("languages")} span="full">
           <Controller
@@ -137,9 +148,11 @@ export function ProfileForm({ initial }: { initial: ProfileFieldsRecord | null }
         </Field>
         <Field label={t("sect")}>
           <Select {...register("sect")}>
-            <option value="sunni">Sunni</option>
-            <option value="shia">Shia</option>
-            <option value="other">Other</option>
+            {(["sunni", "shia", "other"] as const).map((s) => (
+              <option key={s} value={s}>
+                {tSects(s)}
+              </option>
+            ))}
           </Select>
         </Field>
         <Field label={t("prayerCommitment")}>

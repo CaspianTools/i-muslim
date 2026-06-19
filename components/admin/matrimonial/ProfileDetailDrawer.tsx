@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { BadgeCheck, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +48,7 @@ interface Props {
 export function ProfileDetailDrawer({ profile, onOpenChange, onUpdate, onDelete }: Props) {
   const [pending, startTransition] = useTransition();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const locale = useLocale();
   const t = useTranslations("matrimonial.admin");
   const tDrawer = useTranslations("matrimonial.admin.drawer");
   const tCommon = useTranslations("common");
@@ -146,8 +147,8 @@ export function ProfileDetailDrawer({ profile, onOpenChange, onUpdate, onDelete 
                 <Row label="Has children" value={profile.hasChildren ? tCommon("yes") : tCommon("no")} />
                 <Row label="Wants children" value={profile.wantsChildren} />
                 <Row label="Languages" value={profile.languages.join(", ") || "—"} />
-                <Row label="Joined" value={formatRelative(profile.createdAt)} />
-                <Row label="Last active" value={formatRelative(profile.lastActiveAt)} />
+                <Row label="Joined" value={formatRelative(profile.createdAt, locale)} />
+                <Row label="Last active" value={formatRelative(profile.lastActiveAt, locale)} />
               </div>
               <div className="mt-3 rounded-md border border-border p-3 text-sm text-muted-foreground">
                 {profile.bio}

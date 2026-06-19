@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Flag, MoreHorizontal, Pencil, Reply, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -64,6 +64,7 @@ export function CommentItem({
 }: Props) {
   const t = useTranslations("comments");
   const tActions = useTranslations("comments.actions");
+  const locale = useLocale();
 
   const isOwner = currentUid != null && currentUid === comment.author.uid;
   const isDeleted = comment.status === "deleted";
@@ -172,7 +173,7 @@ export function CommentItem({
           <span className="comment-author">{comment.author.name ?? t("anonymousAuthor")}</span>
           <span aria-hidden>·</span>
           <span title={new Date(comment.createdAt).toLocaleString()}>
-            {formatRelative(comment.createdAt)}
+            {formatRelative(comment.createdAt, locale)}
           </span>
           {comment.editedAt && (
             <>

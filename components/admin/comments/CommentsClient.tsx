@@ -300,7 +300,7 @@ export function CommentsClient({ initialComments }: Props) {
                     )}
                   </td>
                   <td className="px-3 py-2.5 text-xs text-muted-foreground">
-                    {formatRelative(c.createdAt)}
+                    {formatRelative(c.createdAt, locale)}
                   </td>
                   <td className="px-3 py-2.5 text-end">
                     <RowActions label={tCommon("actions")}>

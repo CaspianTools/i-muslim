@@ -102,7 +102,7 @@ export async function MosqueCoverHeader({
             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
               <span>{tDenom(mosque.denomination)}</span>
               <span className="inline-flex items-center gap-1">
-                <MapPin className="size-3.5" /> {mosque.city}, {countryName(mosque.country)}
+                <MapPin className="size-3.5" /> {mosque.city}, {countryName(mosque.country, locale)}
               </span>
             </div>
           </div>

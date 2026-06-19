@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { BookOpen, BookOpenCheck, CheckCircle2, Library } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { getSiteSession } from "@/lib/auth/session";
@@ -31,6 +31,7 @@ export default async function ReadingProgressPage() {
     getHadithCollections(),
     getSurahs(),
   ]);
+  const locale = await getLocale();
 
   const collectionNames = new Map(
     collections.map((c) => [c.slug, { name: c.name_en, total: c.total, books: c.books }]),
@@ -136,7 +137,7 @@ export default async function ReadingProgressPage() {
                       `Surah ${summary.quran.latest.surahId}`}
                   </div>
                   <div className="mt-0.5 text-xs text-muted-foreground">
-                    {t("viewedAt", { when: formatRelative(summary.quran.latest.at) })}
+                    {t("viewedAt", { when: formatRelative(summary.quran.latest.at, locale) })}
                   </div>
                   <Link
                     href={`/quran/${summary.quran.latest.surahId}`}
@@ -177,7 +178,7 @@ export default async function ReadingProgressPage() {
                     · #{summary.hadith.latest.number}
                   </div>
                   <div className="mt-0.5 text-xs text-muted-foreground">
-                    {t("viewedAt", { when: formatRelative(summary.hadith.latest.at) })}
+                    {t("viewedAt", { when: formatRelative(summary.hadith.latest.at, locale) })}
                   </div>
                   <Link
                     href={`/hadith/${summary.hadith.latest.collection}/${summary.hadith.latest.number}`}
@@ -267,7 +268,7 @@ export default async function ReadingProgressPage() {
                   </div>
                   <div className="text-lg font-semibold text-foreground">{card.title}</div>
                   <div className="text-xs text-muted-foreground">
-                    {t("viewedAt", { when: formatRelative(card.viewedAt) })}
+                    {t("viewedAt", { when: formatRelative(card.viewedAt, locale) })}
                   </div>
                   <Link
                     href={card.href}

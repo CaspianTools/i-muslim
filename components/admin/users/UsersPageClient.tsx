@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   flexRender,
   getCoreRowModel,
@@ -109,6 +109,7 @@ export function UsersPageClient({
   const tCommon = useTranslations("common");
   const tRoles = useTranslations("users.roles");
   const tStatuses = useTranslations("users.statuses");
+  const locale = useLocale();
 
   const filtered = useMemo(() => {
     return users.filter((u) => {
@@ -204,7 +205,7 @@ export function UsersPageClient({
         header: t("columns.joined"),
         cell: ({ row }) => (
           <span className="text-sm tabular-nums text-muted-foreground">
-            {formatRelative(row.original.joinedAt)}
+            {formatRelative(row.original.joinedAt, locale)}
           </span>
         ),
       },
@@ -214,7 +215,7 @@ export function UsersPageClient({
         header: t("columns.lastActive"),
         cell: ({ row }) => (
           <span className="text-sm tabular-nums text-muted-foreground">
-            {formatRelative(row.original.lastActiveAt)}
+            {formatRelative(row.original.lastActiveAt, locale)}
           </span>
         ),
       },
@@ -278,7 +279,7 @@ export function UsersPageClient({
         size: 48,
       },
     ],
-    [t, tCommon, tStatuses, roleMap],
+    [t, tCommon, tStatuses, roleMap, locale],
   );
 
   const table = useReactTable({

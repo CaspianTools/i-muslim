@@ -43,15 +43,16 @@ export default async function MosquesIndex({
     near: parseNearParam(sp.near) ?? undefined,
     limit: 200,
   };
-  const [{ mosques, source, total }, countries, t, tResults, tNearMe] = await Promise.all([
+  const [{ mosques, total }, countries, t, tResults, tNearMe, locale] = await Promise.all([
     fetchPublishedMosques(filters),
     fetchCountryAggregates(),
     getTranslations("mosques"),
     getTranslations("mosques.results"),
     getTranslations("mosques.nearMe"),
+    getLocale(),
   ]);
 
-  const countryOptions = countries.map((c) => ({ slug: c.countrySlug, name: countryName(c.country) }));
+  const countryOptions = countries.map((c) => ({ slug: c.countrySlug, name: countryName(c.country, locale) }));
   const total_ = total ?? mosques.length;
   const countLabel = total_ === 1 ? tResults("countOne", { count: total_ }) : tResults("countOther", { count: total_ });
 
@@ -78,11 +79,6 @@ export default async function MosquesIndex({
           </div>
         </div>
         <MosqueFilters countries={countryOptions} />
-        {source === "mock" && (
-          <p className="text-xs text-muted-foreground">
-            {t("subtitle")} — showing seed data; configure Firebase to load live mosques.
-          </p>
-        )}
       </header>
 
       <p className="mt-6 text-sm text-muted-foreground">{countLabel}</p>
@@ -120,7 +116,7 @@ export default async function MosquesIndex({
                   href={`/mosques/c/${c.countrySlug}`}
                   className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-sm hover:border-accent"
                 >
-                  <span className="font-medium">{countryName(c.country)}</span>
+                  <span className="font-medium">{countryName(c.country, locale)}</span>
                   <span className="text-xs text-muted-foreground">{c.count}</span>
                 </Link>
               </li>

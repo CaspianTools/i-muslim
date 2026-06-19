@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "@/components/ui/sonner";
 import {
   upsertNoteAction,
@@ -43,6 +43,7 @@ export function InlineNoteEditor({
   const [pending, startTransition] = useTransition();
   const t = useTranslations("notes");
   const tPage = useTranslations("hadithPage");
+  const locale = useLocale();
 
   if (!signedIn) {
     return (
@@ -141,7 +142,7 @@ export function InlineNoteEditor({
       <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
         <span className="font-medium uppercase tracking-wide">{t("yourNote")}</span>
         {hasNote && note && (
-          <span>{t("editedAt", { when: formatRelative(note.updatedAt) })}</span>
+          <span>{t("editedAt", { when: formatRelative(note.updatedAt, locale) })}</span>
         )}
       </div>
       <label className="sr-only" htmlFor={`inline-note-${itemType}-${itemId}`}>

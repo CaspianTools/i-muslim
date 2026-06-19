@@ -1,50 +1,36 @@
 import languages from "@cospired/i18n-iso-languages";
 import enLocale from "@cospired/i18n-iso-languages/langs/en.json";
-import arLocale from "@cospired/i18n-iso-languages/langs/ar.json";
-import idLocale from "@cospired/i18n-iso-languages/langs/id.json";
-import ruLocale from "@cospired/i18n-iso-languages/langs/ru.json";
-import frLocale from "@cospired/i18n-iso-languages/langs/fr.json";
-import msLocale from "@cospired/i18n-iso-languages/langs/ms.json";
-import deLocale from "@cospired/i18n-iso-languages/langs/de.json";
-import esLocale from "@cospired/i18n-iso-languages/langs/es.json";
 
 languages.registerLocale(enLocale);
-languages.registerLocale(arLocale);
-languages.registerLocale(idLocale);
-languages.registerLocale(ruLocale);
-languages.registerLocale(frLocale);
-languages.registerLocale(msLocale);
-languages.registerLocale(deLocale);
-languages.registerLocale(esLocale);
-
-// Locales the @cospired/i18n-iso-languages package ships translations for. Other
-// UI locales (tr, az, ur, fa, bn, hi) fall back to English language names.
-const SUPPORTED_LOCALES = new Set(["en", "ar", "id", "ru", "fr", "ms", "de", "es"]);
 
 export interface Language {
   code: string;
   name: string;
 }
 
-function resolveLocale(locale: string): string {
-  const short = locale.split(/[-_]/)[0]?.toLowerCase() ?? "en";
-  return SUPPORTED_LOCALES.has(short) ? short : "en";
+// Language *names* come from the runtime's Intl.DisplayNames, which localizes for
+// EVERY UI locale via CLDR (tr → "İngilizce", "Rusça"; az/ur/fa/bn/hi included) —
+// the @cospired/i18n-iso-languages package only shipped a handful of locales and
+// silently fell back to English for the rest. The package is kept solely for the
+// canonical ISO-639-1 code set and isValidLanguageCode; its registered locale
+// (en) is used only to enumerate codes, not to render names.
+const CODE_LIST: string[] = Object.keys(languages.getNames("en"));
+
+function displayNames(locale: string): Intl.DisplayNames {
+  return new Intl.DisplayNames([locale], { type: "language" });
 }
 
 export function getLanguages(locale: string = "en"): Language[] {
-  const lang = resolveLocale(locale);
-  const map = languages.getNames(lang);
-  const collator = new Intl.Collator(lang, { sensitivity: "base" });
-  return Object.entries(map)
-    .map(([code, name]) => ({ code, name }))
+  const dn = displayNames(locale);
+  const collator = new Intl.Collator(locale, { sensitivity: "base" });
+  return CODE_LIST.map((code) => ({ code, name: dn.of(code) ?? code.toUpperCase() }))
     .filter((l) => l.name)
     .sort((a, b) => collator.compare(a.name, b.name));
 }
 
 export function getLanguageName(code: string, locale: string = "en"): string {
   if (!code) return "";
-  const lang = resolveLocale(locale);
-  return languages.getName(code.toLowerCase(), lang) ?? code.toUpperCase();
+  return displayNames(locale).of(code.toLowerCase()) ?? code.toUpperCase();
 }
 
 export function isValidLanguageCode(code: string): boolean {

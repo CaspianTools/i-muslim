@@ -37,10 +37,14 @@ export async function generateMetadata({
   const { mosque } = await fetchMosqueBySlug(slug);
   if (!mosque) return {};
   const locale = (await getLocale()) as Locale;
-  const title = `${mosque.name.en} — ${mosque.city}, ${countryName(mosque.country)}`;
+  const t = await getTranslations("mosques.detail");
+  const name = pickLocalized(mosque.name, locale, "en") ?? mosque.name.en;
+  const title = `${name} — ${mosque.city}, ${countryName(mosque.country, locale)}`;
+  const localizedDescription = mosque.description
+    ? pickLocalized(mosque.description, locale, "en")
+    : undefined;
   const description =
-    mosque.description?.en ??
-    `Prayer times, address, and contact for ${mosque.name.en} in ${mosque.city}.`;
+    localizedDescription ?? t("metaDescription", { name, city: mosque.city });
   return buildPageMetadata({
     locale,
     path: `/mosques/${slug}`,

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ChevronRight, Star } from "lucide-react";
 import { getSiteSession } from "@/lib/auth/session";
@@ -36,6 +36,7 @@ export default async function FavoritesPage({
   const activeType: FavoriteItemType | null = isFavoriteItemType(sp.type) ? sp.type : null;
   const t = await getTranslations("favorites");
   const tNav = await getTranslations("profileNav");
+  const locale = await getLocale();
 
   const favorites = await listFavorites(session.uid, {
     itemType: activeType ?? undefined,
@@ -129,7 +130,7 @@ export default async function FavoritesPage({
                   </p>
                 )}
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{formatRelative(fav.createdAt)}</span>
+                  <span>{formatRelative(fav.createdAt, locale)}</span>
                   <Link
                     href={fav.itemMeta.href}
                     className="inline-flex items-center gap-0.5 text-primary hover:underline"

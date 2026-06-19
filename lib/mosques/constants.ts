@@ -90,6 +90,16 @@ const LEGACY_TO_SLUG: Record<keyof MosqueServices, string> = Object.fromEntries(
   DEFAULT_MOSQUE_FACILITIES.map((f) => [f.legacyKey, f.slug]),
 ) as Record<keyof MosqueServices, string>;
 
+/**
+ * Reverse of LEGACY_TO_SLUG: maps a facility slug back to its `mosques.services.*`
+ * message key, so renderers can localize a stored facility slug instead of
+ * title-casing the raw English slug. Unknown (admin-created) slugs have no entry
+ * and fall back to a humanized label.
+ */
+export const SLUG_TO_LEGACY: Record<string, keyof MosqueServices> = Object.fromEntries(
+  DEFAULT_MOSQUE_FACILITIES.map((f) => [f.slug, f.legacyKey]),
+) as Record<string, keyof MosqueServices>;
+
 /** Translate a legacy `services` boolean map into the new `facilities[]` slug list. */
 export function deriveFacilitiesFromServices(services: Partial<MosqueServices> | undefined): string[] {
   if (!services) return [];
