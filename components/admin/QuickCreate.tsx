@@ -171,10 +171,10 @@ export function QuickCreate({
     function onOpen(e: Event) {
       const detail = (e as CustomEvent<QuickCreateOpenDetail>).detail;
       const v = detail?.view;
-      // Block create requests the user lacks permission for. The mosque "edit"
-      // path (openQuickEditMosque) sets detail.mosque and is governed by its
-      // own entry point, so let it through.
-      if (v && !detail?.mosque && !hasPermission(permissions, CREATE_PERMISSION[v])) {
+      // Block any open the user lacks permission for. Editing a resource needs
+      // the same `<resource>.write` as creating it (the mosque edit path opened
+      // via openQuickEditMosque included), so one check covers both.
+      if (v && !hasPermission(permissions, CREATE_PERMISSION[v])) {
         return;
       }
       setView(v ?? "selector");
@@ -348,9 +348,9 @@ function FormView({
   editMosque: Mosque | null;
   router: ReturnType<typeof useRouter>;
 }) {
-  // Defense in depth: never render a create form the user lacks permission for.
-  // The mosque "edit" case (editMosque set) is governed by its own entry point.
-  if (!(view === "mosque" && editMosque) && !hasPermission(permissions, CREATE_PERMISSION[view])) {
+  // Defense in depth: never render a create/edit form the user lacks permission
+  // for. Edit needs the same `<resource>.write` as create (mosque edit too).
+  if (!hasPermission(permissions, CREATE_PERMISSION[view])) {
     return null;
   }
 

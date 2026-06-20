@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/editor-dialog";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { openQuickCreate } from "@/components/admin/QuickCreate";
-import { useCanCreate } from "@/components/admin/PermissionsContext";
+import { useCan } from "@/components/admin/PermissionsContext";
 import { toast } from "@/components/ui/sonner";
 import { deleteCertBodyAction } from "@/lib/admin/actions/business-taxonomies";
 import { CertBodyForm } from "./CertBodyForm";
@@ -37,7 +37,7 @@ export function CertBodiesClient({ initialCertBodies, canPersist }: Props) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<BusinessCertificationBody | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<BusinessCertificationBody | null>(null);
-  const canCreate = useCanCreate("businessCertBody");
+  const canWrite = useCan("businesses.write");
 
   function openEdit(c: BusinessCertificationBody) {
     setEditing(c);
@@ -74,7 +74,7 @@ export function CertBodiesClient({ initialCertBodies, canPersist }: Props) {
 
   return (
     <div className="space-y-4">
-      {canCreate && (
+      {canWrite && (
         <div className="flex justify-end">
           <Button
             onClick={() => openQuickCreate("businessCertBody")}
@@ -113,15 +113,17 @@ export function CertBodiesClient({ initialCertBodies, canPersist }: Props) {
                     {c.verifiedByPlatform ? <Badge variant="info">●</Badge> : <Badge>—</Badge>}
                   </td>
                   <td className="px-3 py-2.5 text-end">
-                    <RowActions label={tCommon("actions")}>
-                      <DropdownMenuItem onClick={() => openEdit(c)}>
-                        <Pencil /> {tCommon("edit")}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(c)}>
-                        <Trash2 /> {tCommon("delete")}
-                      </DropdownMenuItem>
-                    </RowActions>
+                    {canWrite && (
+                      <RowActions label={tCommon("actions")}>
+                        <DropdownMenuItem onClick={() => openEdit(c)}>
+                          <Pencil /> {tCommon("edit")}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(c)}>
+                          <Trash2 /> {tCommon("delete")}
+                        </DropdownMenuItem>
+                      </RowActions>
+                    )}
                   </td>
                 </tr>
               ))}

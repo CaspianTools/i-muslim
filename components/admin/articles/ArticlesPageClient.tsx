@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { openQuickCreate } from "@/components/admin/QuickCreate";
-import { useCanCreate } from "@/components/admin/PermissionsContext";
+import { useCan } from "@/components/admin/PermissionsContext";
 import { toast } from "@/components/ui/sonner";
 import { cn, formatRelative } from "@/lib/utils";
 import type {
@@ -50,7 +50,7 @@ export function ArticlesPageClient({
   const [categoryFilter, setCategoryFilter] = useState<CategorySlug | "all">("all");
   const [deleteTarget, setDeleteTarget] = useState<AdminArticleRow | null>(null);
   const [pending, startTransition] = useTransition();
-  const canCreate = useCanCreate("article");
+  const canWrite = useCan("articles.write");
   const locale = useLocale();
 
   const filtered = useMemo(() => {
@@ -128,7 +128,7 @@ export function ArticlesPageClient({
             <option key={c.slug} value={c.slug}>{c.name.en}</option>
           ))}
         </select>
-        {canCreate && (
+        {canWrite && (
           <div className="ms-auto">
             <Button
               size="sm"
@@ -201,20 +201,22 @@ export function ArticlesPageClient({
                       {formatRelative(row.updatedAt, locale)}
                     </td>
                     <td className="px-3 py-2 align-middle text-right">
-                      <RowActions label="Actions">
-                        <DropdownMenuItem asChild>
-                          <Link href={`/admin/articles/${row.id}`}>
-                            <Pencil /> Edit
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          variant="danger"
-                          onClick={() => setDeleteTarget(row)}
-                        >
-                          <Trash2 /> Delete
-                        </DropdownMenuItem>
-                      </RowActions>
+                      {canWrite && (
+                        <RowActions label="Actions">
+                          <DropdownMenuItem asChild>
+                            <Link href={`/admin/articles/${row.id}`}>
+                              <Pencil /> Edit
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            variant="danger"
+                            onClick={() => setDeleteTarget(row)}
+                          >
+                            <Trash2 /> Delete
+                          </DropdownMenuItem>
+                        </RowActions>
+                      )}
                     </td>
                   </tr>
                 );

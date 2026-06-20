@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { openQuickCreate } from "@/components/admin/QuickCreate";
-import { useCanCreate } from "@/components/admin/PermissionsContext";
+import { useCan } from "@/components/admin/PermissionsContext";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -121,7 +121,7 @@ export function EventsPageClient({
     }
     return "all";
   })();
-  const canCreate = useCanCreate("event");
+  const canWrite = useCan("events.write");
   const [events, setEvents] = useState<AdminEvent[]>(initialEvents);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<EventCategory | "all">("all");
@@ -306,6 +306,7 @@ export function EventsPageClient({
         id: "actions",
         cell: ({ row }) => {
           const e = row.original;
+          if (!canWrite) return null;
           return (
             <div onClick={(ev) => ev.stopPropagation()} className="text-right">
               <DropdownMenu>
@@ -343,7 +344,7 @@ export function EventsPageClient({
         size: 48,
       },
     ],
-    [t, categories, tStatuses, tHijriMonths, tCommon, locale],
+    [t, categories, tStatuses, tHijriMonths, tCommon, locale, canWrite],
   );
 
   const table = useReactTable({
@@ -455,7 +456,7 @@ export function EventsPageClient({
                 <LayoutGrid className="size-4" />
               </TabsTrigger>
             </TabsList>
-            {canCreate && (
+            {canWrite && (
               <Button
                 size="sm"
                 onClick={() => openQuickCreate("event")}
@@ -526,11 +527,18 @@ export function EventsPageClient({
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-b border-border last:border-b-0 hover:bg-muted/40 cursor-pointer"
-                    onClick={() => {
-                      setEditing(row.original);
-                      setEditorOpen(true);
-                    }}
+                    className={cn(
+                      "border-b border-border last:border-b-0 hover:bg-muted/40",
+                      canWrite && "cursor-pointer",
+                    )}
+                    onClick={
+                      canWrite
+                        ? () => {
+                            setEditing(row.original);
+                            setEditorOpen(true);
+                          }
+                        : undefined
+                    }
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="px-3 py-2 align-middle">
@@ -597,6 +605,7 @@ export function EventsPageClient({
         <EventsCalendarView
           events={filtered}
           onEdit={(e) => {
+            if (!canWrite) return;
             setEditing(e);
             setEditorOpen(true);
           }}

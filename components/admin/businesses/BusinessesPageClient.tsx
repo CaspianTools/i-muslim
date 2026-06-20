@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
-import { useCanCreate } from "@/components/admin/PermissionsContext";
+import { useCan } from "@/components/admin/PermissionsContext";
 import { toast } from "@/components/ui/sonner";
 import {
   archiveBusinessAction,
@@ -85,7 +85,7 @@ export function BusinessesPageClient({
   const tStatus = useTranslations("businesses.statuses");
   const tHalal = useTranslations("businesses.halalStatuses");
   const locale = useLocale() as "en" | "ar" | "tr" | "id";
-  const canCreate = useCanCreate("business");
+  const canWrite = useCan("businesses.write");
 
   const [businesses, setBusinesses] = useState<Business[]>(initialBusinesses);
   const [query, setQuery] = useState("");
@@ -144,12 +144,13 @@ export function BusinessesPageClient({
   }, [businesses, pendingSubmissions, query, statusFilter, halalFilter, categoryFilter]);
 
   function openCreate() {
-    if (!canCreate) return;
+    if (!canWrite) return;
     setEditing(null);
     setEditorOpen(true);
   }
 
   function openEdit(b: Business) {
+    if (!canWrite) return;
     setEditing(b);
     setEditorOpen(true);
   }
@@ -237,7 +238,7 @@ export function BusinessesPageClient({
             <option key={c.id} value={c.id}>{c.name[locale] ?? c.name.en}</option>
           ))}
         </select>
-        {canCreate && (
+        {canWrite && (
           <Button onClick={openCreate} disabled={!canPersist}>
             <Plus className="size-4" /> {t("createCta")}
           </Button>
@@ -317,13 +318,17 @@ export function BusinessesPageClient({
                 return (
                   <tr key={b.id} className="border-t border-border hover:bg-muted/30">
                     <td className="px-3 py-2.5">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(b)}
-                        className="block text-start font-medium text-foreground hover:underline"
-                      >
-                        {b.name}
-                      </button>
+                      {canWrite ? (
+                        <button
+                          type="button"
+                          onClick={() => openEdit(b)}
+                          className="block text-start font-medium text-foreground hover:underline"
+                        >
+                          {b.name}
+                        </button>
+                      ) : (
+                        <span className="block font-medium text-foreground">{b.name}</span>
+                      )}
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <MapPin className="size-3" /> {b.address.city}
                       </div>
@@ -353,9 +358,11 @@ export function BusinessesPageClient({
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onSelect={() => openEdit(b)}>
-                            <Pencil className="size-4" /> {t("editCta")}
-                          </DropdownMenuItem>
+                          {canWrite && (
+                            <DropdownMenuItem onSelect={() => openEdit(b)}>
+                              <Pencil className="size-4" /> {t("editCta")}
+                            </DropdownMenuItem>
+                          )}
                           {b.status === "published" && (
                             <DropdownMenuItem asChild>
                               <Link href={`/businesses/${b.slug}`} target="_blank" rel="noopener noreferrer">
@@ -363,18 +370,22 @@ export function BusinessesPageClient({
                               </Link>
                             </DropdownMenuItem>
                           )}
-                          <DropdownMenuSeparator />
-                          {b.status !== "archived" ? (
-                            <DropdownMenuItem
-                              onSelect={() => setArchiveTarget(b)}
-                              className="text-danger"
-                            >
-                              <Archive className="size-4" /> {t("archiveCta")}
-                            </DropdownMenuItem>
-                          ) : (
-                            <DropdownMenuItem onSelect={() => handleRestore(b)}>
-                              <ArchiveRestore className="size-4" /> {t("restoreCta")}
-                            </DropdownMenuItem>
+                          {canWrite && (
+                            <>
+                              <DropdownMenuSeparator />
+                              {b.status !== "archived" ? (
+                                <DropdownMenuItem
+                                  onSelect={() => setArchiveTarget(b)}
+                                  className="text-danger"
+                                >
+                                  <Archive className="size-4" /> {t("archiveCta")}
+                                </DropdownMenuItem>
+                              ) : (
+                                <DropdownMenuItem onSelect={() => handleRestore(b)}>
+                                  <ArchiveRestore className="size-4" /> {t("restoreCta")}
+                                </DropdownMenuItem>
+                              )}
+                            </>
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>

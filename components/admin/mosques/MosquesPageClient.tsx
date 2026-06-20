@@ -33,6 +33,7 @@ import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { NewMosqueButton } from "@/components/admin/mosques/NewMosqueButton";
 import { MosqueViewDialog } from "@/components/admin/mosques/MosqueViewDialog";
 import { openQuickEditMosque } from "@/components/admin/QuickCreate";
+import { useCan } from "@/components/admin/PermissionsContext";
 import { toast } from "sonner";
 import { cn, formatRelative } from "@/lib/utils";
 import type { Mosque, MosqueStatus } from "@/types/mosque";
@@ -99,6 +100,8 @@ export function MosquesPageClient({
   const tStatuses = useTranslations("mosquesAdmin.statuses");
   const tActions = useTranslations("mosquesAdmin.form.actions");
   const tToast = useTranslations("mosquesAdmin.actions");
+  const canWrite = useCan("mosques.write");
+  const canPublish = useCan("mosques.publish");
 
   const mosques = initialMosques;
   const [query, setQuery] = useState("");
@@ -240,11 +243,12 @@ export function MosquesPageClient({
 
   function openRow(mosque: Mosque) {
     // Pending submissions open in a read-only view dialog so the admin can
-    // approve/reject without losing context. Everything else opens the same
-    // UAPOP form used for creation, pre-filled.
+    // approve/reject without losing context — available to anyone who can see
+    // the page. Everything else opens the same UAPOP edit form, which is gated
+    // to writers.
     if (mosque.status === "pending_review") {
       setViewMosque(mosque);
-    } else {
+    } else if (canWrite) {
       openQuickEditMosque(mosque);
     }
   }
@@ -385,7 +389,8 @@ export function MosquesPageClient({
                   <tr
                     key={mosque.slug}
                     className={cn(
-                      "border-b border-border last:border-b-0 hover:bg-muted/40 cursor-pointer",
+                      "border-b border-border last:border-b-0 hover:bg-muted/40",
+                      (mosque.status === "pending_review" || canWrite) && "cursor-pointer",
                     )}
                     onClick={() => openRow(mosque)}
                   >
@@ -428,9 +433,11 @@ export function MosquesPageClient({
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openQuickEditMosque(mosque)}>
-                            <Edit /> {tCommon("edit")}
-                          </DropdownMenuItem>
+                          {canWrite && (
+                            <DropdownMenuItem onClick={() => openQuickEditMosque(mosque)}>
+                              <Edit /> {tCommon("edit")}
+                            </DropdownMenuItem>
+                          )}
                           {mosque.status === "published" && (
                             <DropdownMenuItem asChild>
                               <Link
@@ -443,35 +450,43 @@ export function MosquesPageClient({
                               </Link>
                             </DropdownMenuItem>
                           )}
-                          <DropdownMenuSeparator />
-                          {mosque.status !== "published" && (
-                            <DropdownMenuItem
-                              onClick={() => handleStatus(mosque, "published")}
-                            >
-                              <Upload /> {tActions("publish")}
-                            </DropdownMenuItem>
+                          {canPublish && (
+                            <>
+                              <DropdownMenuSeparator />
+                              {mosque.status !== "published" && (
+                                <DropdownMenuItem
+                                  onClick={() => handleStatus(mosque, "published")}
+                                >
+                                  <Upload /> {tActions("publish")}
+                                </DropdownMenuItem>
+                              )}
+                              {mosque.status === "published" && (
+                                <DropdownMenuItem
+                                  onClick={() => handleStatus(mosque, "draft")}
+                                >
+                                  {tActions("unpublish")}
+                                </DropdownMenuItem>
+                              )}
+                              {mosque.status !== "suspended" && (
+                                <DropdownMenuItem
+                                  onClick={() => handleStatus(mosque, "suspended")}
+                                >
+                                  <ShieldX /> {tActions("suspend")}
+                                </DropdownMenuItem>
+                              )}
+                            </>
                           )}
-                          {mosque.status === "published" && (
-                            <DropdownMenuItem
-                              onClick={() => handleStatus(mosque, "draft")}
-                            >
-                              {tActions("unpublish")}
-                            </DropdownMenuItem>
+                          {canWrite && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                variant="danger"
+                                onClick={() => setDeleteTarget(mosque)}
+                              >
+                                <Trash2 /> {tCommon("delete")}
+                              </DropdownMenuItem>
+                            </>
                           )}
-                          {mosque.status !== "suspended" && (
-                            <DropdownMenuItem
-                              onClick={() => handleStatus(mosque, "suspended")}
-                            >
-                              <ShieldX /> {tActions("suspend")}
-                            </DropdownMenuItem>
-                          )}
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            variant="danger"
-                            onClick={() => setDeleteTarget(mosque)}
-                          >
-                            <Trash2 /> {tCommon("delete")}
-                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>

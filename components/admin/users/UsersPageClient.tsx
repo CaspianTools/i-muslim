@@ -44,6 +44,7 @@ import { cn, formatRelative, initials } from "@/lib/utils";
 import type { AdminUser, AdminRole, AdminUserStatus } from "@/types/admin";
 import type { AdminRoleDoc } from "@/lib/admin/data/roles";
 import { WILDCARD } from "@/lib/permissions/catalog";
+import { useCan } from "@/components/admin/PermissionsContext";
 import { ALL_LANGS, LANG_LABELS } from "@/lib/translations";
 import { InviteUserDrawer } from "./InviteUserDrawer";
 
@@ -104,6 +105,11 @@ export function UsersPageClient({
   const [detailUser, setDetailUser] = useState<AdminUser | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
   const [bulkDelete, setBulkDelete] = useState(false);
+
+  const canEditUsers = useCan("users.edit");
+  const canSuspendUsers = useCan("users.suspend");
+  const canDeleteUsers = useCan("users.delete");
+  const canInviteUsers = useCan("users.invite");
 
   const t = useTranslations("users");
   const tCommon = useTranslations("common");
@@ -242,7 +248,7 @@ export function UsersPageClient({
                   >
                     <Mail /> {t("resetPassword")}
                   </DropdownMenuItem>
-                  {u.status !== "suspended" && (
+                  {canSuspendUsers && u.status !== "suspended" && (
                     <DropdownMenuItem
                       onClick={async () => {
                         try {
@@ -266,10 +272,14 @@ export function UsersPageClient({
                       <ShieldX /> {t("suspend")}
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(u)}>
-                    <Trash2 /> {tCommon("delete")}
-                  </DropdownMenuItem>
+                  {canDeleteUsers && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(u)}>
+                        <Trash2 /> {tCommon("delete")}
+                      </DropdownMenuItem>
+                    </>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -279,7 +289,7 @@ export function UsersPageClient({
         size: 48,
       },
     ],
-    [t, tCommon, tStatuses, roleMap, locale],
+    [t, tCommon, tStatuses, roleMap, locale, canSuspendUsers, canDeleteUsers],
   );
 
   const table = useReactTable({
@@ -446,9 +456,11 @@ export function UsersPageClient({
           >
             <Download /> {t("exportCsv")}
           </Button>
-          <Button size="sm" onClick={() => setInviteOpen(true)} disabled={source === "mock"}>
-            <Plus /> {t("inviteUser")}
-          </Button>
+          {canInviteUsers && (
+            <Button size="sm" onClick={() => setInviteOpen(true)} disabled={source === "mock"}>
+              <Plus /> {t("inviteUser")}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -456,18 +468,20 @@ export function UsersPageClient({
         <div className="flex flex-wrap items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-sm">
           <span className="font-medium">{t("selectedCount", { count: selectedCount })}</span>
           <div className="ms-auto flex flex-wrap items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="sm">{t("changeRole")}</Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {assignableRoles.map((r) => (
-                  <DropdownMenuItem key={r.id} onClick={() => applyBulkRole(r.id)}>
-                    {r.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {canEditUsers && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" size="sm">{t("changeRole")}</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {assignableRoles.map((r) => (
+                    <DropdownMenuItem key={r.id} onClick={() => applyBulkRole(r.id)}>
+                      {r.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <Button
               variant="secondary"
               size="sm"
@@ -478,9 +492,11 @@ export function UsersPageClient({
             >
               <Mail /> {t("email")}
             </Button>
-            <Button variant="secondary" size="sm" onClick={() => applyBulkStatus("suspended")}>
-              <ShieldX /> {t("suspend")}
-            </Button>
+            {canSuspendUsers && (
+              <Button variant="secondary" size="sm" onClick={() => applyBulkStatus("suspended")}>
+                <ShieldX /> {t("suspend")}
+              </Button>
+            )}
             <Button
               variant="secondary"
               size="sm"
@@ -490,9 +506,11 @@ export function UsersPageClient({
             >
               <Download /> {t("export")}
             </Button>
-            <Button variant="danger" size="sm" onClick={() => setBulkDelete(true)}>
-              <Trash2 /> {tCommon("delete")}
-            </Button>
+            {canDeleteUsers && (
+              <Button variant="danger" size="sm" onClick={() => setBulkDelete(true)}>
+                <Trash2 /> {tCommon("delete")}
+              </Button>
+            )}
           </div>
         </div>
       )}
@@ -634,6 +652,8 @@ export function UsersPageClient({
         user={detailUser}
         roles={assignableRoles}
         roleMap={roleMap}
+        canEdit={canEditUsers}
+        canDelete={canDeleteUsers}
         onOpenChange={(next) => !next && setDetailUser(null)}
         onUpdated={(updated) => {
           setUsers((prev) =>
@@ -674,6 +694,8 @@ function UserDetailSheet({
   user,
   roles,
   roleMap,
+  canEdit,
+  canDelete,
   onOpenChange,
   onDelete,
   onUpdated,
@@ -681,6 +703,8 @@ function UserDetailSheet({
   user: AdminUser | null;
   roles: AdminRoleDoc[];
   roleMap: Map<string, AdminRoleDoc>;
+  canEdit: boolean;
+  canDelete: boolean;
   onOpenChange: (open: boolean) => void;
   onDelete: (u: AdminUser) => void;
   onUpdated: (next: Partial<AdminUser> & { id: string }) => void;
@@ -746,6 +770,7 @@ function UserDetailSheet({
                   user={user}
                   roles={roles}
                   roleMap={roleMap}
+                  canEdit={canEdit}
                   onUpdated={onUpdated}
                 />
               </TabsContent>
@@ -760,15 +785,17 @@ function UserDetailSheet({
               </TabsContent>
             </Tabs>
 
-            <div className="rounded-md border border-danger/30 bg-danger/5 p-4">
-              <h3 className="text-sm font-semibold text-danger">{tDrawer("dangerZone")}</h3>
-              <p className="mt-1 text-xs text-muted-foreground">{tDrawer("dangerZoneNote")}</p>
-              <div className="mt-3">
-                <Button variant="danger" size="sm" onClick={() => onDelete(user)}>
-                  <Trash2 /> {tDrawer("deleteUser")}
-                </Button>
+            {canDelete && (
+              <div className="rounded-md border border-danger/30 bg-danger/5 p-4">
+                <h3 className="text-sm font-semibold text-danger">{tDrawer("dangerZone")}</h3>
+                <p className="mt-1 text-xs text-muted-foreground">{tDrawer("dangerZoneNote")}</p>
+                <div className="mt-3">
+                  <Button variant="danger" size="sm" onClick={() => onDelete(user)}>
+                    <Trash2 /> {tDrawer("deleteUser")}
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
         <DialogFooter>
@@ -795,11 +822,13 @@ function RoleAssignmentEditor({
   user,
   roles,
   roleMap,
+  canEdit,
   onUpdated,
 }: {
   user: AdminUser;
   roles: AdminRoleDoc[];
   roleMap: Map<string, AdminRoleDoc>;
+  canEdit: boolean;
   onUpdated: (next: Partial<AdminUser> & { id: string }) => void;
 }) {
   const tCommon = useTranslations("common");
@@ -861,6 +890,16 @@ function RoleAssignmentEditor({
           <code className="mx-1 rounded bg-muted px-1 py-0.5 font-mono">npm run seed:roles</code>
           script.
         </p>
+      ) : !canEdit ? (
+        <div className="space-y-2">
+          <Row label="Role" value={currentRoleDoc?.name ?? user.role} />
+          {(user.languages?.length ?? 0) > 0 && (
+            <Row
+              label="Approved languages"
+              value={user.languages!.map((l) => LANG_LABELS[l] ?? l).join(", ")}
+            />
+          )}
+        </div>
       ) : (
         <>
           <div className="space-y-1.5">
