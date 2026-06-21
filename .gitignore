@@ -52,3 +52,7 @@ next-env.d.ts
 
 # build-bundles output (SQLite content bundles for i-muslim-mobile)
 scripts/bundles-output/
+
+# one-off import source data (large, copyrighted upstream text — not committed;
+# see scripts/import-quran-tr.ts header for where to obtain/place it)
+scripts/data/

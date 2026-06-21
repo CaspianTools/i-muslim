@@ -120,11 +120,17 @@ export const QURAN_TRANSLATION_CATALOG: Record<string, TranslationCatalogEntry> 
     redistribute: "full",
   },
   tr: {
-    sourceId: "quran.com:77",
-    attribution: "Diyanet İşleri Başkanlığı",
+    // Diyanet ml=1 meal, imported via `npm run import:quran:tr` (not the
+    // un-split quran.com:77 text). The 746 "combined" ayahs were split per-ayah
+    // with AI assistance — surfaced in `notice` for honesty.
+    sourceId: "diyanet.gov.tr:ml-1",
+    attribution:
+      "Diyanet İşleri Başkanlığı — Kur'an-ı Kerim Meâli (Altuntaş & Şahin)",
     license: "Crown / Government — no open-data grant on file",
-    sourceUrl: "https://api.quran.com/api/v4/resources/translations/77",
+    sourceUrl: "https://kuran.diyanet.gov.tr",
     redistribute: "full",
+    notice:
+      "746 birleşik (combined) ayahs were split to per-ayah boundaries with AI assistance; this segmentation is unofficial, not Diyanet's own.",
   },
 };
 

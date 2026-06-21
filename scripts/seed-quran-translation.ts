@@ -190,6 +190,15 @@ async function main() {
     console.error("Arabic is the original text, not a translation. Run `npm run seed:quran` for Arabic + canonical text.");
     process.exit(1);
   }
+  if (lang === "tr" && !process.argv.includes("--force")) {
+    console.error(
+      "Turkish is no longer sourced from quran.com. The canonical TR meal is the\n" +
+        "Diyanet ml=1 (ayah-split) file imported via `npm run import:quran:tr`.\n" +
+        "Re-seeding from quran.com:77 would overwrite it with the un-split text.\n" +
+        "Pass --force only if you deliberately want the quran.com version back.",
+    );
+    process.exit(1);
+  }
   const resourceId = QURAN_TRANSLATION_IDS[lang];
   if (resourceId == null) {
     console.error(`No QURAN_TRANSLATION_IDS entry for "${lang}".`);
