@@ -26,6 +26,8 @@
  * Behaviour:
  *   - Repairs mojibake (latin1→utf8) ONLY if the file is detected double-encoded,
  *     then re-validates; aborts if any U+FFFD / residual corruption remains.
+ *   - Decodes HTML entities (the Diyanet meal encodes quotes as `&quot;` etc.)
+ *     so the stored text is plain UTF-8, not entity-escaped.
  *   - Validates 6,236 entries, contiguous 1..N ayahs per surah, no empty text.
  *   - Cross-checks coverage against `quran_surahs.ayah_count` and existing docs.
  *   - Overwrites `translations.tr` on ALL matched docs (replace ALL Turkish),
@@ -45,6 +47,7 @@ import {
   type Firestore,
 } from "firebase-admin/firestore";
 import { recomputeTranslationStats } from "./recompute-translation-stats";
+import { decodeHtmlEntities } from "../lib/text/html";
 
 loadEnv({ path: resolve(process.cwd(), ".env.local") });
 
@@ -178,6 +181,19 @@ function loadAndValidate(file: string): Item[] {
     console.warn(
       `[encoding] ${corruptCount} item(s) matched the mojibake heuristic but that is below the repair threshold — leaving text untouched (inspect manually if Turkish looks wrong).`,
     );
+  }
+
+  // --- HTML entity decode (the Diyanet meal encodes quotes as &quot; etc.) ---
+  let entityCount = 0;
+  for (const it of items) {
+    const decoded = decodeHtmlEntities(it.text);
+    if (decoded !== it.text) {
+      it.text = decoded;
+      entityCount++;
+    }
+  }
+  if (entityCount) {
+    console.warn(`[entities] decoded HTML entities in ${entityCount} item(s).`);
   }
 
   // --- post-repair text sanity ---

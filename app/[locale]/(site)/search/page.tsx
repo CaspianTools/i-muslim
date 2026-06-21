@@ -5,16 +5,13 @@ import { COLLECTIONS, getEditionsForLangs } from "@/lib/hadith";
 import { parseLangsParam, LANG_LABELS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import type { HadithEntry } from "@/types/hadith";
+import { stripHtml } from "@/lib/text/html";
 
 export const metadata = {
   title: "Search",
   description: "Search the Quran and major Hadith collections.",
   robots: { index: false, follow: false },
 };
-
-function stripHtml(s: string): string {
-  return s.replace(/<[^>]+>/g, "").trim();
-}
 
 export default async function SearchPage({
   searchParams,

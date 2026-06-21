@@ -4,6 +4,7 @@ import { getSurahs, getAyahsForSurah } from "@/lib/quran/db";
 import { QURAN_TRANSLATION_IDS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import { pickIndexByDate } from "@/lib/daily/date-seed";
+import { stripHtml } from "@/lib/text/html";
 import type { Verse } from "@/types/quran";
 
 export interface AyahOfTheDay {
@@ -79,7 +80,7 @@ export async function getAyahOfTheDay(
     surahName: surahMeta.name_simple,
     surahNameArabic: surahMeta.name_arabic,
     arabic: verse.text_uthmani,
-    translation: translation?.text ?? null,
+    translation: translation ? stripHtml(translation.text) : null,
     translationLang: translation?.lang ?? null,
   };
 }

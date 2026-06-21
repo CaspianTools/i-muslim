@@ -27,6 +27,7 @@ import {
   QURAN_TRANSLATION_NAMES,
 } from "../lib/translations";
 import { recomputeTranslationStats } from "./recompute-translation-stats";
+import { stripHtml } from "../lib/text/html";
 
 loadEnv({ path: resolve(process.cwd(), ".env.local") });
 
@@ -77,10 +78,6 @@ function required(name: string): string {
     process.exit(1);
   }
   return v;
-}
-
-function stripHtml(s: string): string {
-  return s.replace(/<[^>]+>/g, "").trim();
 }
 
 async function fetchJson<T>(url: string): Promise<T> {

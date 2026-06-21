@@ -15,11 +15,7 @@ import {
 import { AyahCommentsButton } from "@/components/comments/AyahCommentsButton";
 import { AyahActionsRow } from "@/components/AyahActionsRow";
 import { FlagContentButton } from "@/components/flags/FlagContentButton";
-
-function stripHtml(s: string): string {
-  // Translations from quran.com may contain <sup foot_note="...">N</sup> footnote markers.
-  return s.replace(/<[^>]+>/g, "").trim();
-}
+import { stripHtml } from "@/lib/text/html";
 
 export function AyahCard({
   verse,
