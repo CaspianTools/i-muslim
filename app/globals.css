@@ -754,6 +754,87 @@ body {
   --reader-translation-size: 17px;
 }
 
+/* ----------------------------------------------------------------------------
+ * Reading font-size sliders (Quran / Hadith filters panel). A native range
+ * input restyled into a slim filled track with a soft circular thumb. The
+ * filled portion is driven by --reader-range-pct (0–100%), set inline per
+ * value so the green progress fill stays in sync across WebKit and Firefox.
+ * -------------------------------------------------------------------------- */
+.reader-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 1.25rem;
+  background: transparent;
+  cursor: pointer;
+}
+.reader-range:focus {
+  outline: none;
+}
+
+/* WebKit / Blink — track carries the fill gradient, thumb sits on top. */
+.reader-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    to right,
+    var(--selected-foreground) 0%,
+    var(--selected-foreground) var(--reader-range-pct, 0%),
+    var(--muted) var(--reader-range-pct, 0%),
+    var(--muted) 100%
+  );
+}
+.reader-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -8px;
+  height: 20px;
+  width: 20px;
+  border-radius: 9999px;
+  background: var(--card);
+  border: 2px solid var(--selected-foreground);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+  transition: box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+/* Firefox — native progress element handles the fill. */
+.reader-range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--muted);
+}
+.reader-range::-moz-range-progress {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--selected-foreground);
+}
+.reader-range::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border: 2px solid var(--selected-foreground);
+  border-radius: 9999px;
+  background: var(--card);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+  transition: box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.reader-range:hover::-webkit-slider-thumb,
+.reader-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--selected-foreground) 22%, transparent);
+}
+.reader-range:hover::-moz-range-thumb,
+.reader-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--selected-foreground) 22%, transparent);
+}
+.reader-range:active::-webkit-slider-thumb {
+  transform: scale(1.08);
+}
+.reader-range:active::-moz-range-thumb {
+  transform: scale(1.08);
+}
+
 body.reading-mode-on [data-reading-chrome],
 body.reading-mode-on [data-reading-hide] {
   display: none !important;

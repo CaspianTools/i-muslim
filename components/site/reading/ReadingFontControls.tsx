@@ -1,6 +1,7 @@
 "use client";
 
-import { Minus, Plus, Type } from "lucide-react";
+import type { CSSProperties } from "react";
+import { Type } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   FONT_BOUNDS,
@@ -9,73 +10,81 @@ import {
   type ReaderFontKind,
 } from "@/lib/reading/reading-mode";
 
-function FontStepper({ kind }: { kind: ReaderFontKind }) {
+function FontSlider({ kind }: { kind: ReaderFontKind }) {
   const t = useTranslations("readingMode");
   const [size, setSize] = useReaderFont(kind);
   const { min, max, step } = FONT_BOUNDS[kind];
-  const dec = () => setSize(size - step);
-  const inc = () => setSize(size + step);
   const reset = () => setSize(FONT_DEFAULTS[kind]);
   const label = kind === "arabic" ? t("fontArabic") : t("fontTranslation");
+  const isDefault = size === FONT_DEFAULTS[kind];
+  const pct = ((size - min) / (max - min)) * 100;
 
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
         <span className="text-xs text-muted-foreground">{label}</span>
-        <button
-          type="button"
-          onClick={reset}
-          className="text-[11px] uppercase tracking-wide text-muted-foreground hover:text-foreground"
-          aria-label={t("fontReset", { label })}
-        >
-          {t("reset")}
-        </button>
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-flex min-w-[2.25rem] justify-center rounded-md border border-border bg-muted/50 px-1.5 py-0.5 text-xs tabular-nums"
+            aria-live="polite"
+          >
+            {size}
+          </span>
+          <button
+            type="button"
+            onClick={reset}
+            disabled={isDefault}
+            className="text-[11px] uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+            aria-label={t("fontReset", { label })}
+          >
+            {t("reset")}
+          </button>
+        </div>
       </div>
-      <div className="flex items-stretch gap-1">
-        <button
-          type="button"
-          onClick={dec}
-          disabled={size <= min}
-          aria-label={t("fontDecrease", { label })}
-          className="inline-flex h-9 flex-1 items-center justify-center rounded-md border ui-selected-chip-idle transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <Minus className="size-4" />
-        </button>
+      <div className="flex items-center gap-2.5">
         <span
-          className="inline-flex h-9 min-w-[3rem] items-center justify-center rounded-md border border-border bg-muted/50 px-2 text-sm tabular-nums"
-          aria-live="polite"
+          aria-hidden="true"
+          className="select-none text-xs leading-none text-muted-foreground"
         >
-          {size}
+          A
         </span>
-        <button
-          type="button"
-          onClick={inc}
-          disabled={size >= max}
-          aria-label={t("fontIncrease", { label })}
-          className="inline-flex h-9 flex-1 items-center justify-center rounded-md border ui-selected-chip-idle transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={size}
+          onChange={(e) => setSize(Number(e.target.value))}
+          aria-label={label}
+          className="reader-range flex-1"
+          style={{ "--reader-range-pct": `${pct}%` } as CSSProperties}
+        />
+        <span
+          aria-hidden="true"
+          className="select-none text-base leading-none text-muted-foreground"
         >
-          <Plus className="size-4" />
-        </button>
+          A
+        </span>
       </div>
     </div>
   );
 }
 
 /**
- * Pair of A−/A+ steppers for Arabic and translation font size. Sits in the
+ * Pair of size sliders for Arabic and translation font size. Sits in the
  * Quran / Hadith filters panel so the same control is reachable in normal
  * mode and in reading mode (the filters drawer remains accessible).
  */
 export function ReadingFontControls() {
   const t = useTranslations("readingMode");
   return (
-    <section className="space-y-3">
+    <section className="space-y-4">
       <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         <Type className="size-3.5" />
         {t("fontSection")}
       </h3>
-      <FontStepper kind="arabic" />
-      <FontStepper kind="translation" />
+      <FontSlider kind="arabic" />
+      <FontSlider kind="translation" />
     </section>
   );
 }
