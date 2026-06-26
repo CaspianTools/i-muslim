@@ -61,6 +61,11 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    // i-muslim Quran app — each signed-in user can read/write only their own backup.
+    match /quran_backups/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
