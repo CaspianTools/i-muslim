@@ -2,10 +2,14 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { searchQuran } from "@/lib/quran";
 import { COLLECTIONS, getEditionsForLangs } from "@/lib/hadith";
-import { parseLangsParam, LANG_LABELS } from "@/lib/translations";
+import {
+  parseLangsParam,
+  LANG_LABELS,
+  QURAN_TRANSLATION_IDS,
+} from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import type { HadithEntry } from "@/types/hadith";
-import { stripHtml } from "@/lib/text/html";
+import { stripHtml, cleanQuranTranslation } from "@/lib/text/html";
 
 export const metadata = {
   title: "Search",
@@ -106,7 +110,12 @@ async function QuranResults({ q, langs }: { q: string; langs: LangCode[] }) {
                   </p>
                   {firstTranslation && (
                     <p className="mt-2 text-sm text-muted-foreground">
-                      {stripHtml(firstTranslation.text)}
+                      {cleanQuranTranslation(
+                        firstTranslation.text,
+                        firstTranslation.resource_id === QURAN_TRANSLATION_IDS.en
+                          ? "en"
+                          : "",
+                      )}
                     </p>
                   )}
                 </Link>

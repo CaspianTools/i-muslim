@@ -27,7 +27,7 @@ import {
   QURAN_TRANSLATION_NAMES,
 } from "../lib/translations";
 import { recomputeTranslationStats } from "./recompute-translation-stats";
-import { stripHtml } from "../lib/text/html";
+import { cleanQuranTranslation } from "../lib/text/html";
 
 loadEnv({ path: resolve(process.cwd(), ".env.local") });
 
@@ -140,7 +140,7 @@ async function seedSurahForLang(
     if (preserveSet.has(id)) continue;
     const t = v.translations.find((tr) => tr.resource_id === resourceId);
     if (!t) continue;
-    const text = stripHtml(t.text);
+    const text = cleanQuranTranslation(t.text, lang);
     if (!text) continue;
 
     // Use nested-object form (NOT a dotted-key like "translations.tr") so

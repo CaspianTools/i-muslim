@@ -21,7 +21,7 @@ import {
   type Firestore,
 } from "firebase-admin/firestore";
 import { recomputeTranslationStats } from "./recompute-translation-stats";
-import { stripHtml } from "../lib/text/html";
+import { stripHtml, stripFootnoteMarkers } from "../lib/text/html";
 
 loadEnv({ path: resolve(process.cwd(), ".env.local") });
 
@@ -99,7 +99,12 @@ async function fetchVerses(chapterId: number): Promise<ApiVerse[]> {
 
 function pickTranslation(verse: ApiVerse, resourceId: number): string | null {
   const t = verse.translations.find((tr) => tr.resource_id === resourceId);
-  return t ? stripHtml(t.text) : null;
+  if (!t) return null;
+  const cleaned = stripHtml(t.text);
+  // English (Saheeh International, id 20) embeds footnote-marker digits; drop them.
+  return resourceId === TRANSLATION_IDS.en
+    ? stripFootnoteMarkers(cleaned)
+    : cleaned;
 }
 
 async function seedSurahMeta(firestore: Firestore, chapters: ApiChapter[]) {

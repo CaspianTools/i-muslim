@@ -15,7 +15,7 @@ import {
 import { AyahCommentsButton } from "@/components/comments/AyahCommentsButton";
 import { AyahActionsRow } from "@/components/AyahActionsRow";
 import { FlagContentButton } from "@/components/flags/FlagContentButton";
-import { stripHtml } from "@/lib/text/html";
+import { cleanQuranTranslation } from "@/lib/text/html";
 
 export function AyahCard({
   verse,
@@ -47,7 +47,7 @@ export function AyahCard({
     if (id == null) continue;
     const t = verse.translations.find((tr) => tr.resource_id === id);
     if (t) {
-      excerpt = stripHtml(t.text);
+      excerpt = cleanQuranTranslation(t.text, lang);
       break;
     }
   }
@@ -194,7 +194,7 @@ export function AyahCard({
                     style={{ fontSize: "var(--reader-translation-size)" }}
                     className="leading-relaxed"
                   >
-                    {stripHtml(t.text)}
+                    {cleanQuranTranslation(t.text, lang)}
                   </p>
                 </div>
               );
