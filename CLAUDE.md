@@ -47,9 +47,9 @@ When a task is functionally complete and verified (build/lint pass where relevan
 1. **Update [CHANGELOG.md](CHANGELOG.md)** — add a one-line entry under `## [Unreleased]` in the appropriate `### Added` / `### Changed` / `### Fixed` / `### Removed` group. Keep-a-Changelog format.
 2. **Update [README.md](README.md)** — only if the change affects setup, run commands, data sources, or user-visible behavior documented there. Skip for purely internal refactors.
 3. **Commit** all task-related changes in a single commit using the repo's existing message style (see `git log`). Do **not** sweep up unrelated pre-existing modifications — stage only the files this task touched.
-4. **Do not push** — leave the commit local for the user to review and push manually.
+4. **Push** the commit to the remote (`git push`) — this is **mandatory** at the end of every task so the change reaches production (e.g. App Hosting deploy / live site). If the push fails (no upstream, auth, protected branch, conflict), report the exact error instead of leaving it silently unpushed. If you created a new branch for the work, push it with `-u` to set the upstream.
 
-Skip steps 1–3 entirely for read-only investigations, planning sessions, or tasks the user explicitly marked as exploratory/draft.
+Skip steps 1–4 entirely for read-only investigations, planning sessions, or tasks the user explicitly marked as exploratory/draft.
 
 ## Islamic-domain notes
 
