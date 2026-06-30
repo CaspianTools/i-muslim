@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { Timestamp } from "firebase-admin/firestore";
+import tzlookup from "tz-lookup";
 import { getDb } from "@/lib/firebase/admin";
 import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
+import { geohashFor } from "@/lib/mosques/geo";
 import { canManageMosque } from "@/lib/mosques/authz";
 import { getSiteSession } from "@/lib/auth/session";
 import { generateUniqueShortCode, ensureMosqueShortCodeValue } from "@/lib/admin/data/mosques";
@@ -130,6 +132,9 @@ const manageSchema = z.object({
   social: socialSchema.optional(),
   iqamah: iqamahSchema.optional(),
   prayerCalc: prayerCalcSchema.optional(),
+  location: z
+    .object({ lat: z.number().min(-90).max(90), lng: z.number().min(-180).max(180) })
+    .optional(),
 });
 
 export async function updateMosqueManage(slug: string, raw: unknown): Promise<ManageResult> {
@@ -142,6 +147,17 @@ export async function updateMosqueManage(slug: string, raw: unknown): Promise<Ma
   if (d.social) fields.social = cleanStrings(d.social);
   if (d.iqamah) fields.iqamah = cleanStrings(d.iqamah);
   if (d.prayerCalc) fields.prayerCalc = d.prayerCalc;
+  if (d.location) {
+    // Setting coordinates also refreshes the geo index and the IANA timezone so
+    // prayer-time calculation (which needs both) stays correct for the location.
+    fields.location = { lat: d.location.lat, lng: d.location.lng };
+    fields.geohash = geohashFor(d.location.lat, d.location.lng);
+    try {
+      fields.timezone = tzlookup(d.location.lat, d.location.lng);
+    } catch {
+      /* keep the existing timezone if the lookup fails */
+    }
+  }
   return updateFields(slug, fields);
 }
 

@@ -11,6 +11,7 @@ import {
   Download,
   Image as ImageIcon,
   Loader2,
+  MapPin,
   Phone,
   Printer,
   QrCode,
@@ -110,26 +111,70 @@ export function MosqueManagePanel({
   const [prayerCalc, setPrayerCalc] = useState(mosque.prayerCalc ?? defaultPrayerCalc());
   const [social, setSocial] = useState<MosqueSocial>(mosque.social ?? {});
 
-  // Live adhan preview for today, recomputed as the calc-method selection
-  // changes, so the manager can verify the times before saving. Needs a real
-  // location (admin-set, geocoded on approval); falls back to a hint otherwise.
-  const [today] = useState(() => new Date());
-  const hasLocation =
+  // Location is editable here so prayer times can be calculated. Inputs start
+  // empty when the masjid has no real location yet ({0,0} = unset).
+  const locationSet =
     Number.isFinite(mosque.location?.lat) &&
     Number.isFinite(mosque.location?.lng) &&
     !(mosque.location.lat === 0 && mosque.location.lng === 0);
+  const [lat, setLat] = useState(locationSet ? String(mosque.location.lat) : "");
+  const [lng, setLng] = useState(locationSet ? String(mosque.location.lng) : "");
+  const [tz, setTz] = useState(mosque.timezone && mosque.timezone !== "UTC" ? mosque.timezone : "");
+  const [geoBusy, setGeoBusy] = useState(false);
+  const addressText = [mosque.address?.line1, mosque.city, mosque.country].filter(Boolean).join(", ");
+
+  const coords = useMemo(() => {
+    const la = parseFloat(lat);
+    const ln = parseFloat(lng);
+    if (!Number.isFinite(la) || !Number.isFinite(ln)) return null;
+    if (la < -90 || la > 90 || ln < -180 || ln > 180) return null;
+    return { lat: la, lng: ln };
+  }, [lat, lng]);
+  const hasLocation = coords !== null;
+
+  // Live adhan preview for today, recomputed as the location or calc-method
+  // selection changes, so the manager can verify the times before saving.
+  const [today] = useState(() => new Date());
   const adhan = useMemo(() => {
-    if (!hasLocation) return null;
-    const c = computeAdhan({ location: mosque.location, prayerCalc }, today);
-    const tz = mosque.timezone || "UTC";
+    if (!coords) return null;
+    const c = computeAdhan({ location: coords, prayerCalc }, today);
+    const zone = tz || mosque.timezone || "UTC";
     return {
-      fajr: formatTimeInZone(c.fajr, tz, uiLocale),
-      dhuhr: formatTimeInZone(c.dhuhr, tz, uiLocale),
-      asr: formatTimeInZone(c.asr, tz, uiLocale),
-      maghrib: formatTimeInZone(c.maghrib, tz, uiLocale),
-      isha: formatTimeInZone(c.isha, tz, uiLocale),
+      fajr: formatTimeInZone(c.fajr, zone, uiLocale),
+      dhuhr: formatTimeInZone(c.dhuhr, zone, uiLocale),
+      asr: formatTimeInZone(c.asr, zone, uiLocale),
+      maghrib: formatTimeInZone(c.maghrib, zone, uiLocale),
+      isha: formatTimeInZone(c.isha, zone, uiLocale),
     } as Record<(typeof DAILY)[number], string>;
-  }, [hasLocation, mosque.location, mosque.timezone, prayerCalc, today, uiLocale]);
+  }, [coords, prayerCalc, today, tz, mosque.timezone, uiLocale]);
+
+  async function geocodeFromAddress() {
+    if (!addressText) {
+      toast.error(t("geocodeFailed"));
+      return;
+    }
+    setGeoBusy(true);
+    try {
+      const res = await fetch(`/api/businesses/geocode?q=${encodeURIComponent(addressText)}`);
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        lat?: number;
+        lng?: number;
+        timezone?: string;
+      };
+      if (!res.ok || !data.ok || typeof data.lat !== "number" || typeof data.lng !== "number") {
+        toast.error(t("geocodeFailed"));
+        return;
+      }
+      setLat(String(data.lat));
+      setLng(String(data.lng));
+      if (data.timezone) setTz(data.timezone);
+    } catch {
+      toast.error(t("geocodeFailed"));
+    } finally {
+      setGeoBusy(false);
+    }
+  }
 
   async function run(key: string, fn: () => Promise<{ ok: boolean; error?: string }>) {
     setSaving(key);
@@ -163,6 +208,7 @@ export function MosqueManagePanel({
           isha: iqamah.isha,
           jumuah: iqamah.jumuah ? [iqamah.jumuah] : [],
         },
+        ...(coords ? { location: coords } : {}),
       }),
     );
   }
@@ -321,7 +367,50 @@ export function MosqueManagePanel({
             </TabsContent>
 
             {/* Prayer / Iqamah */}
-            <TabsContent value="prayer" className="space-y-2">
+            <TabsContent value="prayer" className="space-y-5">
+              <div className="space-y-2">
+                <Label>{t("locationHeading")}</Label>
+                <p className="text-xs text-muted-foreground">{t("locationHint")}</p>
+                <div className="flex flex-wrap items-end gap-3">
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground">{t("latitude")}</span>
+                    <Input
+                      className="max-w-[9rem]"
+                      inputMode="decimal"
+                      placeholder="41.0605"
+                      value={lat}
+                      onChange={(e) => setLat(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground">{t("longitude")}</span>
+                    <Input
+                      className="max-w-[9rem]"
+                      inputMode="decimal"
+                      placeholder="47.4602"
+                      value={lng}
+                      onChange={(e) => setLng(e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={geocodeFromAddress}
+                    disabled={geoBusy || !addressText}
+                  >
+                    {geoBusy ? <Loader2 className="size-4 animate-spin" /> : <MapPin className="size-4" />}
+                    {t("findFromAddress")}
+                  </Button>
+                </div>
+                {addressText && (
+                  <p className="text-xs text-muted-foreground">
+                    {t("locationFor", { address: addressText })}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2 border-t border-border pt-5">
               <Label>{tCalc("heading")}</Label>
               <p className="text-xs text-muted-foreground">{tCalc("hint")}</p>
               <div className="grid gap-3 sm:grid-cols-3">
@@ -376,6 +465,7 @@ export function MosqueManagePanel({
                     ))}
                   </select>
                 </div>
+              </div>
               </div>
 
               <div className="space-y-2 border-t border-border pt-5">

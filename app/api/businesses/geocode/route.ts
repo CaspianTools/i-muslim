@@ -1,8 +1,18 @@
 import { NextResponse } from "next/server";
 import { Timestamp } from "firebase-admin/firestore";
+import tzlookup from "tz-lookup";
 import { getSiteSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/firebase/admin";
 import { MOSQUE_GEOCODE_CACHE_COLLECTION } from "@/lib/mosques/constants";
+
+/** IANA timezone for coordinates; undefined if the lookup fails. */
+function tzFor(lat: number, lng: number): string | undefined {
+  try {
+    return tzlookup(lat, lng);
+  } catch {
+    return undefined;
+  }
+}
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -43,7 +53,13 @@ export async function GET(req: Request) {
         data.cachedAt &&
         Date.now() - (data.cachedAt as Timestamp).toMillis() < CACHE_TTL_MS
       ) {
-        return NextResponse.json({ ok: true, lat: data.lat, lng: data.lng, cached: true });
+        return NextResponse.json({
+          ok: true,
+          lat: data.lat,
+          lng: data.lng,
+          timezone: tzFor(data.lat, data.lng),
+          cached: true,
+        });
       }
     } catch {
       // ignore cache errors
@@ -85,5 +101,11 @@ export async function GET(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, lat, lng, displayName: results[0]!.display_name });
+  return NextResponse.json({
+    ok: true,
+    lat,
+    lng,
+    timezone: tzFor(lat, lng),
+    displayName: results[0]!.display_name,
+  });
 }
