@@ -1974,6 +1974,9 @@
       "calcMethod": "Calculation method",
       "asrMethod": "Asr method",
       "highLatRule": "High-latitude rule",
+      "adhanLabel": "Adhan",
+      "iqamahLabel": "Iqamah",
+      "previewNoLocation": "Add the masjid location to preview prayer times.",
       "methods": {
         "MWL": "Muslim World League",
         "ISNA": "Islamic Society of North America (ISNA)",

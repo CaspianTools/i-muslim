@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
@@ -42,6 +42,8 @@ import {
   ASR_METHODS,
   HIGH_LAT_RULES,
   defaultPrayerCalc,
+  computeAdhan,
+  formatTimeInZone,
 } from "@/lib/mosques/adhan";
 import {
   updateMosqueManage,
@@ -107,6 +109,27 @@ export function MosqueManagePanel({
   });
   const [prayerCalc, setPrayerCalc] = useState(mosque.prayerCalc ?? defaultPrayerCalc());
   const [social, setSocial] = useState<MosqueSocial>(mosque.social ?? {});
+
+  // Live adhan preview for today, recomputed as the calc-method selection
+  // changes, so the manager can verify the times before saving. Needs a real
+  // location (admin-set, geocoded on approval); falls back to a hint otherwise.
+  const [today] = useState(() => new Date());
+  const hasLocation =
+    Number.isFinite(mosque.location?.lat) &&
+    Number.isFinite(mosque.location?.lng) &&
+    !(mosque.location.lat === 0 && mosque.location.lng === 0);
+  const adhan = useMemo(() => {
+    if (!hasLocation) return null;
+    const c = computeAdhan({ location: mosque.location, prayerCalc }, today);
+    const tz = mosque.timezone || "UTC";
+    return {
+      fajr: formatTimeInZone(c.fajr, tz, uiLocale),
+      dhuhr: formatTimeInZone(c.dhuhr, tz, uiLocale),
+      asr: formatTimeInZone(c.asr, tz, uiLocale),
+      maghrib: formatTimeInZone(c.maghrib, tz, uiLocale),
+      isha: formatTimeInZone(c.isha, tz, uiLocale),
+    } as Record<(typeof DAILY)[number], string>;
+  }, [hasLocation, mosque.location, mosque.timezone, prayerCalc, today, uiLocale]);
 
   async function run(key: string, fn: () => Promise<{ ok: boolean; error?: string }>) {
     setSaving(key);
@@ -358,26 +381,42 @@ export function MosqueManagePanel({
               <div className="space-y-2 border-t border-border pt-5">
                 <Label>{t("iqamah")}</Label>
                 <p className="text-xs text-muted-foreground">{t("iqamahHint")}</p>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {DAILY.map((p) => (
-                  <div key={p} className="space-y-1">
-                    <span className="text-xs text-muted-foreground">{tPrayer(p)}</span>
+                {/* Each row pairs the computed adhan time (from the method above)
+                    with the editable iqamah time, so the selection is verifiable. */}
+                <div className="space-y-1.5 pt-1">
+                  <div className="grid grid-cols-[5rem_4.5rem_1fr] items-center gap-3 text-xs text-muted-foreground">
+                    <span></span>
+                    <span>{tCalc("adhanLabel")}</span>
+                    <span>{tCalc("iqamahLabel")}</span>
+                  </div>
+                  {DAILY.map((p) => (
+                    <div key={p} className="grid grid-cols-[5rem_4.5rem_1fr] items-center gap-3">
+                      <span className="text-sm font-medium">{tPrayer(p)}</span>
+                      <span className="text-sm tabular-nums text-muted-foreground">
+                        {adhan ? adhan[p] : "—"}
+                      </span>
+                      <Input
+                        type="time"
+                        className="max-w-[10rem]"
+                        value={iqamah[p]}
+                        onChange={(e) => setIqamah((s) => ({ ...s, [p]: e.target.value }))}
+                      />
+                    </div>
+                  ))}
+                  <div className="grid grid-cols-[5rem_4.5rem_1fr] items-center gap-3">
+                    <span className="text-sm font-medium">{tPrayer("jumuah")}</span>
+                    <span className="text-sm tabular-nums text-muted-foreground">—</span>
                     <Input
                       type="time"
-                      value={iqamah[p]}
-                      onChange={(e) => setIqamah((s) => ({ ...s, [p]: e.target.value }))}
+                      className="max-w-[10rem]"
+                      value={iqamah.jumuah}
+                      onChange={(e) => setIqamah((s) => ({ ...s, jumuah: e.target.value }))}
                     />
                   </div>
-                ))}
-                <div className="space-y-1">
-                  <span className="text-xs text-muted-foreground">{tPrayer("jumuah")}</span>
-                  <Input
-                    type="time"
-                    value={iqamah.jumuah}
-                    onChange={(e) => setIqamah((s) => ({ ...s, jumuah: e.target.value }))}
-                  />
+                  {!hasLocation && (
+                    <p className="pt-1 text-xs text-muted-foreground">{tCalc("previewNoLocation")}</p>
+                  )}
                 </div>
-              </div>
               </div>
             </TabsContent>
 
