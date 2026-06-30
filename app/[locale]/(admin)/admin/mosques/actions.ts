@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePermission } from "@/lib/permissions/server";
 import { getAdminAuth, getDb } from "@/lib/firebase/admin";
+import { fetchUsers } from "@/lib/admin/data/users";
 import { MOSQUES_COLLECTION } from "@/lib/mosques/constants";
 import { buildMosqueSlug, isReservedSlug, withCollisionSuffix } from "@/lib/mosques/slug";
 import { buildSearchTokens } from "@/lib/mosques/search";
@@ -460,6 +461,38 @@ export async function lookupUserByEmailAction(
     };
   } catch {
     return { ok: false, error: "not_found" };
+  }
+}
+
+/** Minimal user shape for the manager-picker combobox in the mosque editor. */
+export type ManagerCandidate = {
+  uid: string;
+  email: string;
+  name: string;
+  avatarUrl: string | null;
+};
+
+/**
+ * List all registered users (minimal fields) for the mosque-editor manager
+ * combobox. Reuses the admin users data source (Firebase Auth + Firestore
+ * overlay). Permission-gated to `mosques.write`.
+ */
+export async function listManagerCandidatesAction(): Promise<
+  { ok: true; data: ManagerCandidate[] } | { ok: false; error: string }
+> {
+  try {
+    await requirePermission("mosques.write");
+  } catch {
+    return { ok: false, error: "unauthorized" };
+  }
+  try {
+    const { users } = await fetchUsers();
+    const data: ManagerCandidate[] = users
+      .filter((u) => u.email)
+      .map((u) => ({ uid: u.id, email: u.email, name: u.name, avatarUrl: u.avatarUrl }));
+    return { ok: true, data };
+  } catch {
+    return { ok: false, error: "load_failed" };
   }
 }
 

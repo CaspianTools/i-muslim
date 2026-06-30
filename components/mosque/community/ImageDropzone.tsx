@@ -7,6 +7,7 @@ import {
   getManageUploadUrlAction,
   finalizeMosqueUploadAction,
 } from "@/app/[locale]/(site)/mosques/manage-actions";
+import { cn } from "@/lib/utils";
 
 const ACCEPT = "image/jpeg,image/png,image/webp";
 const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
@@ -51,6 +52,8 @@ export function ImageDropzone({
   requestUpload,
   resolveUrl,
   onRemove,
+  placeholderUrl,
+  placeholderLabel,
 }: {
   slug: string;
   kind: "logo" | "cover";
@@ -63,6 +66,14 @@ export function ImageDropzone({
   resolveUrl?: (storagePath: string) => Promise<string>;
   /** When provided, renders a remove affordance over the current preview. */
   onRemove?: () => void | Promise<void>;
+  /**
+   * Royalty-free stock image shown (dimmed, badged) when nothing is uploaded
+   * yet, so the field previews a real default rather than a bare icon. Not
+   * persisted — it's a display default only.
+   */
+  placeholderUrl?: string;
+  /** Caption for the placeholder badge (e.g. "Placeholder"). */
+  placeholderLabel?: string;
 }) {
   const t = useTranslations("mosques.manage");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -162,6 +173,16 @@ export function ImageDropzone({
         {currentUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={currentUrl} alt="" className={previewClassName} />
+        ) : placeholderUrl ? (
+          <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={placeholderUrl} alt="" className={cn(previewClassName, "opacity-70")} />
+            {placeholderLabel && (
+              <span className="absolute start-1.5 top-1.5 rounded bg-background/85 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                {placeholderLabel}
+              </span>
+            )}
+          </div>
         ) : (
           <div className="grid size-12 place-items-center rounded-xl bg-selected text-accent">
             <ImageIcon className="size-6" />

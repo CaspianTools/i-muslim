@@ -6,8 +6,11 @@ import { cn } from "@/lib/utils";
 
 export const Label = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & {
+    /** Appends a danger-colored asterisk to mark a mandatory field. */
+    required?: boolean;
+  }
+>(({ className, required, children, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}
     className={cn(
@@ -15,6 +18,13 @@ export const Label = React.forwardRef<
       className,
     )}
     {...props}
-  />
+  >
+    {children}
+    {required && (
+      <span aria-hidden="true" className="ms-0.5 text-danger">
+        *
+      </span>
+    )}
+  </LabelPrimitive.Root>
 ));
 Label.displayName = "Label";

@@ -31,6 +31,13 @@
     "noResults": "No mosques found.",
     "clear": "Clear selection"
   },
+  "userCombobox": {
+    "placeholder": "Select a user…",
+    "searchPlaceholder": "Search by name or email…",
+    "loading": "Loading users…",
+    "loadError": "Couldn't load users.",
+    "noResults": "No matching users."
+  },
   "madhhabCombobox": {
     "selectMadhhabs": "Select madhhabs",
     "searchPlaceholder": "Search madhhab…",
@@ -2061,6 +2068,7 @@
       "coverImageUrl": "Cover image URL",
       "logoUrl": "Logo URL",
       "coverImageLabel": "Cover image",
+      "coverPlaceholderBadge": "Placeholder",
       "logoLabel": "Logo",
       "facilitiesEmpty": "No facilities defined yet. Add some under /admin/mosques/facilities first.",
       "managers": {

@@ -34,6 +34,13 @@
     "noResults": "Cami bulunamadı.",
     "clear": "Seçimi temizle"
   },
+  "userCombobox": {
+    "placeholder": "Select a user…",
+    "searchPlaceholder": "Search by name or email…",
+    "loading": "Loading users…",
+    "loadError": "Couldn't load users.",
+    "noResults": "No matching users."
+  },
   "madhhabCombobox": {
     "selectMadhhabs": "Mezhep seç",
     "searchPlaceholder": "Mezhep ara…",
@@ -2064,6 +2071,7 @@
       "coverImageUrl": "Kapak görseli URL",
       "logoUrl": "Logo URL",
       "coverImageLabel": "Kapak görseli",
+      "coverPlaceholderBadge": "Placeholder",
       "logoLabel": "Logo",
       "facilitiesEmpty": "Henüz tanımlı olanak yok. Önce /admin/mosques/facilities altından ekleyin.",
       "managers": {

@@ -2,13 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, Loader2, MapPin, Pencil, Plus, Save, Send, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, MapPin, Pencil, Save, Send, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { CountryCombobox } from "@/components/common/CountryCombobox";
 import { LanguageCombobox } from "@/components/common/LanguageCombobox";
+import { UserCombobox } from "@/components/common/UserCombobox";
 import { MosqueMap } from "@/components/mosque/MosqueMap";
 import { ImageDropzone } from "@/components/mosque/community/ImageDropzone";
 import { SocialLinksEditor } from "@/components/mosque/community/SocialLinksEditor";
@@ -16,13 +18,13 @@ import { getCallingCode } from "@/lib/countries/calling-codes";
 import { suggestCountryForTimezone } from "@/lib/countries/tz-to-country";
 import { cn } from "@/lib/utils";
 import { DENOMINATIONS, deriveFacilitiesFromServices } from "@/lib/mosques/constants";
+import { coverFallbackUrl } from "@/lib/mosques/cover-fallback";
 import { defaultPrayerCalc, suggestPrayerCalc } from "@/lib/mosques/adhan";
 import { SOCIAL_LABELS } from "@/lib/mosques/social";
 import {
   createMosque,
   deleteMosqueImageAction,
   getMosqueUploadUrlAction,
-  lookupUserByEmailAction,
   updateMosque,
   type MosqueInput,
 } from "@/app/[locale]/(admin)/admin/mosques/actions";
@@ -279,34 +281,16 @@ export function SubmitMosqueForm({
   // an admin's deliberate override could be silently overwritten.
   const prayerCalcDirty = useRef(false);
 
-  // Add-manager-by-email controls (admin step). Local to the form — no need
-  // to live in `state` since they don't survive a save/reset.
-  const [managerEmailInput, setManagerEmailInput] = useState("");
-  const [managerLookupBusy, setManagerLookupBusy] = useState(false);
+  // The mosque editor closes via the dialog's own back/close affordances, so
+  // the footer no longer renders a Cancel button. Keep the prop for callers.
+  void onAdminCancel;
 
-  async function addManagerByEmail() {
-    const email = managerEmailInput.trim();
-    if (!email) return;
-    setManagerLookupBusy(true);
-    try {
-      const result = await lookupUserByEmailAction(email);
-      if (!result.ok) {
-        if (result.error === "not_found") toast.error(tForm("managers.notFound"));
-        else if (result.error === "invalid_email") toast.error(tForm("managers.invalidEmail"));
-        else toast.error(tForm("managers.errorGeneric"));
-        return;
-      }
-      setState((s) => {
-        if (s.managers.some((m) => m.uid === result.data.uid)) return s;
-        const label = result.data.displayName
-          ? `${result.data.displayName} <${result.data.email}>`
-          : result.data.email;
-        return { ...s, managers: [...s.managers, { uid: result.data.uid, label }] };
-      });
-      setManagerEmailInput("");
-    } finally {
-      setManagerLookupBusy(false);
-    }
+  function addManager(user: { uid: string; email: string; name: string }) {
+    setState((s) => {
+      if (s.managers.some((m) => m.uid === user.uid)) return s;
+      const label = user.name ? `${user.name} <${user.email}>` : user.email;
+      return { ...s, managers: [...s.managers, { uid: user.uid, label }] };
+    });
   }
 
   function removeManager(uid: string) {
@@ -750,52 +734,11 @@ export function SubmitMosqueForm({
         />
       )}
 
-      <div className={cn(adminMode && "border-b border-border px-4 pb-3 pt-4 md:px-6")}>
-        <ol className="flex items-center gap-2 overflow-x-auto text-xs">
-          {STEPS.map((s, i) => {
-            const active = i === stepIdx;
-            const completed = i < stepIdx;
-            const stepLabel = stepLabelFor(s, t, tQuick, tForm);
-            return (
-              <li key={s} className="flex shrink-0 items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => jumpToStep(i)}
-                  className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 transition ${
-                    active
-                      ? "bg-primary text-primary-foreground"
-                      : completed
-                        ? "border border-primary text-primary hover:bg-primary/10"
-                        : "border border-input text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  <span
-                    className={`flex size-5 items-center justify-center rounded-full text-[10px] font-semibold ${
-                      active
-                        ? "bg-primary-foreground text-primary"
-                        : completed
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {i + 1}
-                  </span>
-                  {stepLabel}
-                </button>
-                {i < STEPS.length - 1 && (
-                  <span aria-hidden className="text-muted-foreground">›</span>
-                )}
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-
       <div className={cn(adminMode && "flex-1 min-h-0 space-y-6 overflow-y-auto px-4 py-4 md:px-6")}>
         {step === "basics" && (
           <div className="space-y-5">
             <div className="space-y-1.5">
-              <Label htmlFor="sub-name-en">{t("fields.nameEn")}</Label>
+              <Label htmlFor="sub-name-en" required>{t("fields.nameEn")}</Label>
               <Input
                 id="sub-name-en"
                 value={state.nameEn}
@@ -891,7 +834,7 @@ export function SubmitMosqueForm({
         {step === "location" && (
           <div className="space-y-5">
             <div className="space-y-1.5">
-              <Label htmlFor="sub-address">{t("fields.addressLine1")}</Label>
+              <Label htmlFor="sub-address" required>{t("fields.addressLine1")}</Label>
               <Input
                 id="sub-address"
                 value={state.addressLine1}
@@ -913,7 +856,7 @@ export function SubmitMosqueForm({
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="sub-city">{t("fields.city")}</Label>
+                <Label htmlFor="sub-city" required>{t("fields.city")}</Label>
                 <Input
                   id="sub-city"
                   value={state.city}
@@ -933,7 +876,7 @@ export function SubmitMosqueForm({
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="sub-country">{t("fields.country")}</Label>
+                <Label htmlFor="sub-country" required>{t("fields.country")}</Label>
                 <CountryCombobox
                   id="sub-country"
                   value={state.countryCode}
@@ -962,7 +905,7 @@ export function SubmitMosqueForm({
                 </div>
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="space-y-1.5">
-                    <Label htmlFor="sub-lat">{tForm("lat")}</Label>
+                    <Label htmlFor="sub-lat" required>{tForm("lat")}</Label>
                     <Input
                       id="sub-lat"
                       type="number"
@@ -972,7 +915,7 @@ export function SubmitMosqueForm({
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="sub-lng">{tForm("lng")}</Label>
+                    <Label htmlFor="sub-lng" required>{tForm("lng")}</Label>
                     <Input
                       id="sub-lng"
                       type="number"
@@ -982,7 +925,7 @@ export function SubmitMosqueForm({
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="sub-tz">{tForm("timezone")}</Label>
+                    <Label htmlFor="sub-tz" required>{tForm("timezone")}</Label>
                     <Input
                       id="sub-tz"
                       placeholder="Europe/Istanbul"
@@ -1077,22 +1020,29 @@ export function SubmitMosqueForm({
               <div className="grid gap-2 sm:grid-cols-2">
                 {facilities.map((f) => {
                   const checked = state.facilities.includes(f.slug);
+                  const switchId = `sub-facility-${f.slug}`;
                   return (
-                    <label key={f.slug} className="inline-flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
+                    <div
+                      key={f.slug}
+                      className="flex items-center justify-between gap-3 rounded-md border border-border bg-background px-3 py-2"
+                    >
+                      <Label htmlFor={switchId} className="cursor-pointer font-normal">
+                        {f.name}
+                      </Label>
+                      <Switch
+                        id={switchId}
                         checked={checked}
-                        onChange={(e) =>
+                        aria-label={f.name}
+                        onCheckedChange={(next) =>
                           setState((s) => ({
                             ...s,
-                            facilities: e.target.checked
+                            facilities: next
                               ? [...s.facilities, f.slug]
                               : s.facilities.filter((slug) => slug !== f.slug),
                           }))
                         }
                       />
-                      {f.name}
-                    </label>
+                    </div>
                   );
                 })}
               </div>
@@ -1206,6 +1156,8 @@ export function SubmitMosqueForm({
                 slug={initial?.slug ?? "_new"}
                 kind="cover"
                 currentUrl={state.coverImageUrl || undefined}
+                placeholderUrl={coverFallbackUrl(initial?.slug ?? "_new")}
+                placeholderLabel={tForm("coverPlaceholderBadge")}
                 previewClassName="h-24 w-full rounded-lg border border-border object-cover"
                 requestUpload={(file) => adminRequestUpload("cover", file)}
                 resolveUrl={(p) => Promise.resolve(publicUrlFor(p))}
@@ -1281,38 +1233,15 @@ export function SubmitMosqueForm({
                   ))}
                 </ul>
               )}
-              <div className="flex items-end gap-2">
-                <div className="flex-1 space-y-1.5">
-                  <Label htmlFor="sub-manager-email" className="text-xs">
-                    {tForm("managers.addByEmail")}
-                  </Label>
-                  <Input
-                    id="sub-manager-email"
-                    type="email"
-                    value={managerEmailInput}
-                    onChange={(e) => setManagerEmailInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addManagerByEmail();
-                      }
-                    }}
-                    placeholder={tForm("managers.emailPlaceholder")}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={addManagerByEmail}
-                  disabled={managerLookupBusy || managerEmailInput.trim().length === 0}
-                >
-                  {managerLookupBusy ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <Plus />
-                  )}
-                  {tForm("managers.addButton")}
-                </Button>
+              <div className="space-y-1.5">
+                <Label htmlFor="sub-manager-user" className="text-xs">
+                  {tForm("managers.addByEmail")}
+                </Label>
+                <UserCombobox
+                  id="sub-manager-user"
+                  excludeIds={state.managers.map((m) => m.uid)}
+                  onSelect={addManager}
+                />
               </div>
             </div>
           </div>
@@ -1484,46 +1413,74 @@ export function SubmitMosqueForm({
 
       <div
         className={cn(
-          "flex flex-wrap items-center gap-2 border-t border-border pt-4",
-          adminMode && "border-t border-border bg-card px-4 pb-4 pt-3 md:px-6",
+          "flex items-center gap-3 border-t border-border pt-4",
+          adminMode && "bg-card px-4 pb-4 pt-3 md:px-6",
         )}
       >
-        {adminMode && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={onAdminCancel}
-            className="text-muted-foreground"
-            disabled={submitting}
-          >
-            {tQuick("cancel")}
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={handleBack}
+          disabled={submitting || stepIdx === 0}
+        >
+          <ArrowLeft /> {t("actions.back")}
+        </Button>
+
+        <ol className="flex flex-1 items-center justify-center gap-2 overflow-x-auto text-xs">
+          {STEPS.map((s, i) => {
+            const active = i === stepIdx;
+            const completed = i < stepIdx;
+            const stepLabel = stepLabelFor(s, t, tQuick, tForm);
+            return (
+              <li key={s} className="flex shrink-0 items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => jumpToStep(i)}
+                  className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 transition ${
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : completed
+                        ? "border border-primary text-primary hover:bg-primary/10"
+                        : "border border-input text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  <span
+                    className={`flex size-5 items-center justify-center rounded-full text-[10px] font-semibold ${
+                      active
+                        ? "bg-primary-foreground text-primary"
+                        : completed
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {i + 1}
+                  </span>
+                  {stepLabel}
+                </button>
+                {i < STEPS.length - 1 && (
+                  <span aria-hidden className="text-muted-foreground">›</span>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+
+        {!isLast ? (
+          <Button type="button" onClick={handleNext} disabled={submitting}>
+            {t("actions.next")} <ArrowRight />
+          </Button>
+        ) : (
+          <Button type="submit" disabled={submitting} aria-busy={submitting}>
+            {submitting ? <Loader2 className="animate-spin" /> : isEdit ? <Save /> : <Send />}
+            {submitting
+              ? t("actions.submitting")
+              : adminMode
+                ? isEdit
+                  ? tForm("actions.save")
+                  : tQuick("create")
+                : t("actions.submit")}
           </Button>
         )}
-        <div className="ml-auto flex items-center gap-2">
-          {stepIdx > 0 && (
-            <Button type="button" variant="secondary" onClick={handleBack} disabled={submitting}>
-              <ArrowLeft /> {t("actions.back")}
-            </Button>
-          )}
-          {!isLast && (
-            <Button type="button" onClick={handleNext}>
-              {t("actions.next")} <ArrowRight />
-            </Button>
-          )}
-          {isLast && (
-            <Button type="submit" disabled={submitting} aria-busy={submitting}>
-              {submitting ? <Loader2 className="animate-spin" /> : isEdit ? <Save /> : <Send />}
-              {submitting
-                ? t("actions.submitting")
-                : adminMode
-                  ? isEdit
-                    ? tForm("actions.save")
-                    : tQuick("create")
-                  : t("actions.submit")}
-            </Button>
-          )}
-        </div>
       </div>
     </form>
   );
