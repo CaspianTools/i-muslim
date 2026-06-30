@@ -121,6 +121,30 @@ export async function updateMosquePrayerCalc(slug: string, raw: unknown): Promis
   return updateFields(slug, { prayerCalc: parsed.data });
 }
 
+// Single combined save for the Manage panel's footer "Save" — persists every
+// editable field section in one authorized, atomic Firestore update. Media
+// (logo/cover) is saved on upload separately; Events/Share are their own flows.
+const manageSchema = z.object({
+  about: z.string().optional(),
+  contact: contactSchema.optional(),
+  social: socialSchema.optional(),
+  iqamah: iqamahSchema.optional(),
+  prayerCalc: prayerCalcSchema.optional(),
+});
+
+export async function updateMosqueManage(slug: string, raw: unknown): Promise<ManageResult> {
+  const parsed = manageSchema.safeParse(raw);
+  if (!parsed.success) return { ok: false, error: "invalid_input" };
+  const d = parsed.data;
+  const fields: Record<string, unknown> = {};
+  if (d.about !== undefined) fields.about = d.about.trim().slice(0, 2000) || null;
+  if (d.contact) fields.contact = cleanStrings(d.contact);
+  if (d.social) fields.social = cleanStrings(d.social);
+  if (d.iqamah) fields.iqamah = cleanStrings(d.iqamah);
+  if (d.prayerCalc) fields.prayerCalc = d.prayerCalc;
+  return updateFields(slug, fields);
+}
+
 /** Manager-gated upload URL for logo/cover/news images on a mosque they manage. */
 export async function getManageUploadUrlAction(input: {
   slug: string;

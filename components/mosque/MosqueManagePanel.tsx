@@ -36,7 +36,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageDropzone } from "@/components/mosque/community/ImageDropzone";
 import { SocialLinksEditor } from "@/components/mosque/community/SocialLinksEditor";
 import { MosqueEventComposer } from "@/components/mosque/MosqueEventComposer";
-import type { AsrMethod, CalcMethod, HighLatitudeRule, Mosque } from "@/types/mosque";
+import type { AsrMethod, CalcMethod, HighLatitudeRule, Mosque, MosqueSocial } from "@/types/mosque";
 import {
   CALC_METHODS,
   ASR_METHODS,
@@ -44,10 +44,7 @@ import {
   defaultPrayerCalc,
 } from "@/lib/mosques/adhan";
 import {
-  updateMosqueAbout,
-  updateMosqueContact,
-  updateMosqueIqamah,
-  updateMosquePrayerCalc,
+  updateMosqueManage,
   updateMosqueLogo,
   updateMosqueCover,
   publishMosque,
@@ -109,6 +106,7 @@ export function MosqueManagePanel({
     jumuah: mosque.iqamah?.jumuah?.[0] ?? "",
   });
   const [prayerCalc, setPrayerCalc] = useState(mosque.prayerCalc ?? defaultPrayerCalc());
+  const [social, setSocial] = useState<MosqueSocial>(mosque.social ?? {});
 
   async function run(key: string, fn: () => Promise<{ ok: boolean; error?: string }>) {
     setSaving(key);
@@ -123,6 +121,27 @@ export function MosqueManagePanel({
     } finally {
       setSaving(null);
     }
+  }
+
+  // Single "Save" for the whole panel — commits every editable field section at
+  // once. Logo/cover persist on upload; Events/Share are separate flows.
+  function saveAll() {
+    void run("all", () =>
+      updateMosqueManage(mosque.slug, {
+        about,
+        contact,
+        social,
+        prayerCalc,
+        iqamah: {
+          fajr: iqamah.fajr,
+          dhuhr: iqamah.dhuhr,
+          asr: iqamah.asr,
+          maghrib: iqamah.maghrib,
+          isha: iqamah.isha,
+          jumuah: iqamah.jumuah ? [iqamah.jumuah] : [],
+        },
+      }),
+    );
   }
 
   async function saveLogo(img: { url: string; storagePath: string }) {
@@ -226,7 +245,7 @@ export function MosqueManagePanel({
           orientation="vertical"
           className="flex min-h-0 flex-1 flex-col overflow-hidden sm:flex-row"
         >
-          <TabsList className="flex h-auto w-full shrink-0 justify-start gap-1 overflow-x-auto rounded-none border-b border-border bg-transparent p-2 sm:w-64 sm:max-w-[300px] sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:border-b-0 sm:border-e sm:p-3">
+          <TabsList className="flex h-auto w-full shrink-0 justify-start gap-1 overflow-x-auto rounded-none border-b border-border/50 bg-transparent p-2 sm:w-52 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:border-b-0 sm:border-e sm:p-3">
             {MANAGE_TABS.map(({ value, Icon, labelKey }) => (
               <TabsTrigger
                 key={value}
@@ -251,11 +270,6 @@ export function MosqueManagePanel({
                 maxLength={2000}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent"
                 placeholder={t("aboutPlaceholder")}
-              />
-              <SaveButton
-                label={t("save")}
-                busy={saving === "about"}
-                onClick={() => run("about", () => updateMosqueAbout(mosque.slug, about))}
               />
             </TabsContent>
 
@@ -340,11 +354,6 @@ export function MosqueManagePanel({
                   </select>
                 </div>
               </div>
-              <SaveButton
-                label={t("save")}
-                busy={saving === "prayerCalc"}
-                onClick={() => run("prayerCalc", () => updateMosquePrayerCalc(mosque.slug, prayerCalc))}
-              />
 
               <div className="space-y-2 border-t border-border pt-5">
                 <Label>{t("iqamah")}</Label>
@@ -369,22 +378,6 @@ export function MosqueManagePanel({
                   />
                 </div>
               </div>
-              <SaveButton
-                label={t("save")}
-                busy={saving === "iqamah"}
-                onClick={() =>
-                  run("iqamah", () =>
-                    updateMosqueIqamah(mosque.slug, {
-                      fajr: iqamah.fajr,
-                      dhuhr: iqamah.dhuhr,
-                      asr: iqamah.asr,
-                      maghrib: iqamah.maghrib,
-                      isha: iqamah.isha,
-                      jumuah: iqamah.jumuah ? [iqamah.jumuah] : [],
-                    }),
-                  )
-                }
-              />
               </div>
             </TabsContent>
 
@@ -396,12 +389,11 @@ export function MosqueManagePanel({
                 <Input placeholder={t("email")} value={contact.email} onChange={(e) => setContact((s) => ({ ...s, email: e.target.value }))} />
                 <Input placeholder={t("website")} value={contact.website} onChange={(e) => setContact((s) => ({ ...s, website: e.target.value }))} />
               </div>
-              <SaveButton label={t("save")} busy={saving === "contact"} onClick={() => run("contact", () => updateMosqueContact(mosque.slug, contact))} />
             </TabsContent>
 
             {/* Social */}
             <TabsContent value="social">
-              <SocialLinksEditor slug={mosque.slug} initial={mosque.social} />
+              <SocialLinksEditor value={social} onChange={setSocial} />
             </TabsContent>
 
             {/* Events — embedded submit form. Manager-only (Manage is gated to
@@ -517,6 +509,13 @@ export function MosqueManagePanel({
             </TabsContent>
           </div>
         </Tabs>
+
+        <div className="flex shrink-0 items-center justify-end gap-2 border-t border-border/50 px-6 py-3">
+          <Button variant="primary" size="sm" onClick={saveAll} disabled={saving === "all"}>
+            {saving === "all" ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+            {t("save")}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
@@ -531,11 +530,3 @@ function Stat({ label, value }: { label: string; value: number }) {
   );
 }
 
-function SaveButton({ label, busy, onClick }: { label: string; busy: boolean; onClick: () => void }) {
-  return (
-    <Button variant="secondary" size="sm" onClick={onClick} disabled={busy}>
-      {busy ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-      {label}
-    </Button>
-  );
-}
