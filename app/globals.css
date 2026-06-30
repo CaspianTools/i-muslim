@@ -627,6 +627,24 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Slim, unobtrusive horizontal scrollbar (no native arrow buttons). Used by the
+   mosque editor's footer step strip; reusable anywhere an overflow row needs a
+   subtle scrollbar instead of the chunky OS default. */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+
 .article-prose {
   color: var(--foreground);
   font-size: 1rem;

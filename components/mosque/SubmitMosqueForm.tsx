@@ -82,9 +82,7 @@ interface FormState {
   nameEn: string;
   nameAr: string;
   legalName: string;
-  description: string;
-  // Manager-style long "about" text shown on the masjid detail page. Distinct
-  // from the short, localized `description` used for listings/SEO.
+  // Manager-style long "about" text shown on the masjid detail page.
   about: string;
   denomination: Denomination;
   // Location
@@ -142,7 +140,6 @@ function emptyState(): FormState {
     nameEn: "",
     nameAr: "",
     legalName: "",
-    description: "",
     about: "",
     denomination: "unspecified",
     addressLine1: "",
@@ -182,7 +179,6 @@ function fromMosque(m: Mosque): FormState {
     nameEn: m.name.en ?? "",
     nameAr: m.name.ar ?? "",
     legalName: m.legalName ?? "",
-    description: m.description?.en ?? "",
     about: m.about ?? "",
     denomination: m.denomination,
     addressLine1: m.address.line1 ?? "",
@@ -280,6 +276,10 @@ export function SubmitMosqueForm({
   // we stop auto-suggesting based on country/denomination changes — otherwise
   // an admin's deliberate override could be silently overwritten.
   const prayerCalcDirty = useRef(false);
+  // Footer stepper: refs for auto-scrolling the active step pill into view (the
+  // strip can overflow horizontally with all 8 admin steps).
+  const stepsScrollRef = useRef<HTMLOListElement>(null);
+  const activeStepRef = useRef<HTMLLIElement>(null);
 
   // The mosque editor closes via the dialog's own back/close affordances, so
   // the footer no longer renders a Cancel button. Keep the prop for callers.
@@ -431,7 +431,6 @@ export function SubmitMosqueForm({
     const next: Record<string, string> = {};
     if (step === "basics") {
       if (state.nameEn.trim().length < 2) next.nameEn = t("validation.nameRequired");
-      if (state.description.trim().length > 500) next.description = t("validation.descriptionMax");
     }
     if (step === "location") {
       if (state.addressLine1.trim().length < 2) next.addressLine1 = t("validation.addressRequired");
@@ -489,7 +488,6 @@ export function SubmitMosqueForm({
   function focusFirstError(errs: Record<string, string>) {
     const FIELD_TO_ID: Record<string, string> = {
       nameEn: "sub-name-en",
-      description: "sub-desc",
       addressLine1: "sub-address",
       city: "sub-city",
       country: "sub-country",
@@ -536,6 +534,15 @@ export function SubmitMosqueForm({
     setStepIdx(target);
   }
 
+  // Center the active step pill in the footer stepper whenever the step changes.
+  useEffect(() => {
+    const c = stepsScrollRef.current;
+    const a = activeStepRef.current;
+    if (!c || !a) return;
+    const target = a.offsetLeft - c.clientWidth / 2 + a.clientWidth / 2;
+    c.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+  }, [stepIdx]);
+
   function normalizedWebsite(): string {
     const trimmed = state.website.trim();
     if (!trimmed) return "";
@@ -571,7 +578,6 @@ export function SubmitMosqueForm({
   }
 
   function buildAdminInput(): MosqueInput {
-    const description = state.description.trim();
     const nameAr = state.nameAr.trim();
     const website = normalizedWebsite();
     const lat = parseFloat(state.lat);
@@ -588,7 +594,6 @@ export function SubmitMosqueForm({
       },
       legalName: state.legalName.trim() || undefined,
       denomination: state.denomination,
-      ...(description.length >= 2 ? { description: { en: description } } : {}),
       about: state.about.trim() || undefined,
       address: {
         line1: state.addressLine1.trim(),
@@ -680,7 +685,6 @@ export function SubmitMosqueForm({
           phone: state.phone,
           website: normalizedWebsite(),
           email: state.email,
-          description: state.description,
           languages: state.languages,
           website_url_secondary: state.website_url_secondary,
         }),
@@ -784,30 +788,6 @@ export function SubmitMosqueForm({
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="sub-desc">{t("fields.description")}</Label>
-              <textarea
-                id="sub-desc"
-                className="min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={state.description}
-                onChange={(e) => setState((s) => ({ ...s, description: e.target.value }))}
-                maxLength={500}
-              />
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-xs text-danger">{errors.description ?? ""}</p>
-                {(() => {
-                  const len = state.description.length;
-                  const tone =
-                    len > 500
-                      ? "text-danger"
-                      : len >= 450
-                        ? "text-amber-600 dark:text-amber-400"
-                        : "text-muted-foreground";
-                  return <span className={`shrink-0 text-xs tabular-nums ${tone}`}>{len} / 500</span>;
-                })()}
-              </div>
             </div>
 
             {adminMode && (
@@ -1260,7 +1240,6 @@ export function SubmitMosqueForm({
                   ? [{ label: tForm("legalName"), value: state.legalName }]
                   : []),
                 { label: t("fields.denomination"), value: tDenominations(state.denomination) },
-                ...(state.description ? [{ label: t("fields.description"), value: state.description }] : []),
                 ...(adminMode && state.about ? [{ label: tForm("about"), value: state.about }] : []),
               ]}
             />
@@ -1426,13 +1405,20 @@ export function SubmitMosqueForm({
           <ArrowLeft /> {t("actions.back")}
         </Button>
 
-        <ol className="flex flex-1 items-center justify-center gap-2 overflow-x-auto text-xs">
+        <ol
+          ref={stepsScrollRef}
+          className="thin-scrollbar relative flex flex-1 items-center justify-start gap-2 overflow-x-auto text-xs"
+        >
           {STEPS.map((s, i) => {
             const active = i === stepIdx;
             const completed = i < stepIdx;
             const stepLabel = stepLabelFor(s, t, tQuick, tForm);
             return (
-              <li key={s} className="flex shrink-0 items-center gap-2">
+              <li
+                key={s}
+                ref={active ? activeStepRef : undefined}
+                className="flex shrink-0 items-center gap-2"
+              >
                 <button
                   type="button"
                   onClick={() => jumpToStep(i)}
@@ -1441,7 +1427,7 @@ export function SubmitMosqueForm({
                       ? "bg-primary text-primary-foreground"
                       : completed
                         ? "border border-primary text-primary hover:bg-primary/10"
-                        : "border border-input text-muted-foreground hover:bg-muted"
+                        : "border border-primary/25 bg-primary/5 text-primary/70 hover:bg-primary/10"
                   }`}
                 >
                   <span
@@ -1450,7 +1436,7 @@ export function SubmitMosqueForm({
                         ? "bg-primary-foreground text-primary"
                         : completed
                           ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground"
+                          : "bg-primary/15 text-primary/70"
                     }`}
                   >
                     {i + 1}
@@ -1458,7 +1444,7 @@ export function SubmitMosqueForm({
                   {stepLabel}
                 </button>
                 {i < STEPS.length - 1 && (
-                  <span aria-hidden className="text-muted-foreground">›</span>
+                  <span aria-hidden className="text-primary/30">›</span>
                 )}
               </li>
             );
