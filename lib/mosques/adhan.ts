@@ -78,7 +78,13 @@ export function computeAdhan(mosque: Pick<Mosque, "location" | "prayerCalc">, da
   };
 }
 
-const ASR_METHODS: AsrMethod[] = ["shafi", "hanafi"];
+// Option lists for the prayer-calc selectors (admin editor, manager Manage
+// panel, public submit form). Single source of truth so the three UIs stay in
+// sync with the `CalcMethod`/`AsrMethod`/`HighLatitudeRule` unions.
+export const CALC_METHODS: CalcMethod[] = ["MWL", "ISNA", "EGYPT", "MAKKAH", "KARACHI", "TEHRAN", "JAFARI"];
+export const ASR_METHODS: AsrMethod[] = ["shafi", "hanafi"];
+export const HIGH_LAT_RULES: HighLatitudeRule[] = ["MIDDLE_OF_NIGHT", "ANGLE_BASED", "ONE_SEVENTH"];
+
 export function isAsrMethod(v: unknown): v is AsrMethod {
   return typeof v === "string" && ASR_METHODS.includes(v as AsrMethod);
 }

@@ -1971,6 +1971,31 @@
       "isha": "العشاء",
       "jumuah": "الجمعة"
     },
+    "prayerCalc": {
+      "heading": "Calculation method",
+      "hint": "Controls how the daily prayer times shown for this masjid are calculated.",
+      "calcMethod": "Calculation method",
+      "asrMethod": "Asr method",
+      "highLatRule": "High-latitude rule",
+      "methods": {
+        "MWL": "Muslim World League",
+        "ISNA": "Islamic Society of North America (ISNA)",
+        "EGYPT": "Egyptian General Authority of Survey",
+        "MAKKAH": "Umm al-Qura University, Makkah",
+        "KARACHI": "University of Islamic Sciences, Karachi",
+        "TEHRAN": "Institute of Geophysics, Tehran",
+        "JAFARI": "Shia Ithna-Ashari, Ja'fari"
+      },
+      "asrMethods": {
+        "shafi": "Shafi / Maliki / Hanbali (standard)",
+        "hanafi": "Hanafi"
+      },
+      "highLatRules": {
+        "MIDDLE_OF_NIGHT": "Middle of the night",
+        "ANGLE_BASED": "Angle-based",
+        "ONE_SEVENTH": "One-seventh of the night"
+      }
+    },
     "services": {
       "fridayPrayer": "صلاة الجمعة",
       "womenSection": "قسم النساء",

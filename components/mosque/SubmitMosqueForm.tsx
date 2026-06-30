@@ -19,7 +19,13 @@ import { suggestCountryForTimezone } from "@/lib/countries/tz-to-country";
 import { cn } from "@/lib/utils";
 import { DENOMINATIONS, deriveFacilitiesFromServices } from "@/lib/mosques/constants";
 import { coverFallbackUrl } from "@/lib/mosques/cover-fallback";
-import { defaultPrayerCalc, suggestPrayerCalc } from "@/lib/mosques/adhan";
+import {
+  CALC_METHODS,
+  ASR_METHODS,
+  HIGH_LAT_RULES,
+  defaultPrayerCalc,
+  suggestPrayerCalc,
+} from "@/lib/mosques/adhan";
 import { SOCIAL_LABELS } from "@/lib/mosques/social";
 import {
   createMosque,
@@ -40,7 +46,7 @@ import type {
   MosqueStatus,
 } from "@/types/mosque";
 
-const PUBLIC_STEPS = ["basics", "location", "contact", "review"] as const;
+const PUBLIC_STEPS = ["basics", "location", "contact", "prayer", "review"] as const;
 // Daily prayers with a single iqamah time (Jumu'ah handled separately).
 const DAILY = ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const;
 
@@ -68,8 +74,6 @@ const ADMIN_STEPS = [
 type Step = (typeof ADMIN_STEPS)[number];
 
 const ADMIN_STATUSES: MosqueStatus[] = ["draft", "pending_review", "published", "suspended"];
-const CALC_METHODS: CalcMethod[] = ["MWL", "ISNA", "EGYPT", "MAKKAH", "KARACHI", "TEHRAN", "JAFARI"];
-const HIGH_LAT_RULES: HighLatitudeRule[] = ["MIDDLE_OF_NIGHT", "ANGLE_BASED", "ONE_SEVENTH"];
 
 type GeocodeState =
   | { status: "idle" }
@@ -259,6 +263,7 @@ export function SubmitMosqueForm({
   const tStatuses = useTranslations("mosquesAdmin.statuses");
   const tForm = useTranslations("mosquesAdmin.form");
   const tPrayer = useTranslations("mosques.prayer");
+  const tCalc = useTranslations("mosques.prayerCalc");
 
   const isEdit = adminMode && mode === "edit" && Boolean(initial);
   const STEPS: readonly Step[] = adminMode ? ADMIN_STEPS : PUBLIC_STEPS;
@@ -342,10 +347,10 @@ export function SubmitMosqueForm({
     });
   }, [initial]);
 
-  // Reactively suggest prayer calc based on (country, denomination) — only
-  // until the admin manually edits one of the prayer fields.
+  // Reactively suggest prayer calc based on (country, denomination) — for both
+  // admin and public flows, only until the user manually edits a prayer field.
   useEffect(() => {
-    if (!adminMode || prayerCalcDirty.current) return;
+    if (prayerCalcDirty.current) return;
     if (!state.countryCode) return;
     const suggested = suggestPrayerCalc(state.countryCode, state.denomination);
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -364,7 +369,7 @@ export function SubmitMosqueForm({
         highLatitudeRule: suggested.highLatitudeRule,
       };
     });
-  }, [adminMode, state.countryCode, state.denomination]);
+  }, [state.countryCode, state.denomination]);
 
   const reviewAddress =
     state.addressLine1.trim() && state.city.trim() && state.countryCode
@@ -686,6 +691,11 @@ export function SubmitMosqueForm({
           website: normalizedWebsite(),
           email: state.email,
           languages: state.languages,
+          prayerCalc: {
+            method: state.calcMethod,
+            asrMethod: state.asrMethod,
+            highLatitudeRule: state.highLatitudeRule,
+          },
           website_url_secondary: state.website_url_secondary,
         }),
       });
@@ -1040,12 +1050,12 @@ export function SubmitMosqueForm({
           </div>
         )}
 
-        {step === "prayer" && adminMode && (
+        {step === "prayer" && (
           <div className="space-y-6">
             <p className="text-sm text-muted-foreground">{tForm("sectionPrayerHint")}</p>
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="space-y-1.5">
-                <Label htmlFor="sub-calc">{tForm("calcMethod")}</Label>
+                <Label htmlFor="sub-calc">{tCalc("calcMethod")}</Label>
                 <select
                   id="sub-calc"
                   className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -1057,13 +1067,13 @@ export function SubmitMosqueForm({
                 >
                   {CALC_METHODS.map((m) => (
                     <option key={m} value={m}>
-                      {m}
+                      {tCalc(`methods.${m}`)}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sub-asr">{tForm("asrMethod")}</Label>
+                <Label htmlFor="sub-asr">{tCalc("asrMethod")}</Label>
                 <select
                   id="sub-asr"
                   className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -1073,12 +1083,15 @@ export function SubmitMosqueForm({
                     setState((s) => ({ ...s, asrMethod: e.target.value as AsrMethod }));
                   }}
                 >
-                  <option value="shafi">Shafi / Maliki / Hanbali</option>
-                  <option value="hanafi">Hanafi</option>
+                  {ASR_METHODS.map((m) => (
+                    <option key={m} value={m}>
+                      {tCalc(`asrMethods.${m}`)}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sub-highlat">{tForm("highLatRule")}</Label>
+                <Label htmlFor="sub-highlat">{tCalc("highLatRule")}</Label>
                 <select
                   id="sub-highlat"
                   className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -1090,41 +1103,43 @@ export function SubmitMosqueForm({
                 >
                   {HIGH_LAT_RULES.map((r) => (
                     <option key={r} value={r}>
-                      {r === "MIDDLE_OF_NIGHT" ? "Middle of night" : r === "ANGLE_BASED" ? "Angle-based" : "One seventh"}
+                      {tCalc(`highLatRules.${r}`)}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
 
-            <div className="space-y-2 border-t border-border pt-5">
-              <Label>{tForm("iqamah")}</Label>
-              <p className="text-xs text-muted-foreground">{tForm("iqamahHint")}</p>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {DAILY.map((p) => (
-                  <div key={p} className="space-y-1">
-                    <span className="text-xs text-muted-foreground">{tPrayer(p)}</span>
+            {adminMode && (
+              <div className="space-y-2 border-t border-border pt-5">
+                <Label>{tForm("iqamah")}</Label>
+                <p className="text-xs text-muted-foreground">{tForm("iqamahHint")}</p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {DAILY.map((p) => (
+                    <div key={p} className="space-y-1">
+                      <span className="text-xs text-muted-foreground">{tPrayer(p)}</span>
+                      <Input
+                        type="time"
+                        value={state.iqamah[p]}
+                        onChange={(e) =>
+                          setState((s) => ({ ...s, iqamah: { ...s.iqamah, [p]: e.target.value } }))
+                        }
+                      />
+                    </div>
+                  ))}
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground">{tPrayer("jumuah")}</span>
                     <Input
                       type="time"
-                      value={state.iqamah[p]}
+                      value={state.iqamah.jumuah}
                       onChange={(e) =>
-                        setState((s) => ({ ...s, iqamah: { ...s.iqamah, [p]: e.target.value } }))
+                        setState((s) => ({ ...s, iqamah: { ...s.iqamah, jumuah: e.target.value } }))
                       }
                     />
                   </div>
-                ))}
-                <div className="space-y-1">
-                  <span className="text-xs text-muted-foreground">{tPrayer("jumuah")}</span>
-                  <Input
-                    type="time"
-                    value={state.iqamah.jumuah}
-                    onChange={(e) =>
-                      setState((s) => ({ ...s, iqamah: { ...s.iqamah, jumuah: e.target.value } }))
-                    }
-                  />
                 </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 

@@ -53,6 +53,14 @@ const iqamahSchema = z.object({
   jumuah: z.array(z.string().regex(TIME_RE)).max(4).optional(),
 });
 
+// Prayer-calc config a manager may set (mirrors the admin schema in
+// (admin)/admin/mosques/actions.ts). Drives `computeAdhan()` for the masjid.
+const prayerCalcSchema = z.object({
+  method: z.enum(["MWL", "ISNA", "EGYPT", "MAKKAH", "KARACHI", "TEHRAN", "JAFARI"]),
+  asrMethod: z.enum(["shafi", "hanafi"]),
+  highLatitudeRule: z.enum(["MIDDLE_OF_NIGHT", "ANGLE_BASED", "ONE_SEVENTH"]),
+});
+
 async function authorize(slug: string): Promise<boolean> {
   return canManageMosque(slug);
 }
@@ -105,6 +113,12 @@ export async function updateMosqueIqamah(slug: string, raw: unknown): Promise<Ma
   const parsed = iqamahSchema.safeParse(raw);
   if (!parsed.success) return { ok: false, error: "invalid_input" };
   return updateFields(slug, { iqamah: cleanStrings(parsed.data) });
+}
+
+export async function updateMosquePrayerCalc(slug: string, raw: unknown): Promise<ManageResult> {
+  const parsed = prayerCalcSchema.safeParse(raw);
+  if (!parsed.success) return { ok: false, error: "invalid_input" };
+  return updateFields(slug, { prayerCalc: parsed.data });
 }
 
 /** Manager-gated upload URL for logo/cover/news images on a mosque they manage. */

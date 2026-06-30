@@ -27,6 +27,13 @@ const schema = z.object({
   email: z.string().email().optional().or(z.literal("")),
   description: z.string().optional(),
   languages: z.array(z.string()).max(20).default([]),
+  prayerCalc: z
+    .object({
+      method: z.enum(["MWL", "ISNA", "EGYPT", "MAKKAH", "KARACHI", "TEHRAN", "JAFARI"]),
+      asrMethod: z.enum(["shafi", "hanafi"]),
+      highLatitudeRule: z.enum(["MIDDLE_OF_NIGHT", "ANGLE_BASED", "ONE_SEVENTH"]),
+    })
+    .optional(),
   website_url_secondary: z.string().optional(), // honeypot
   turnstileToken: z.string().optional(),
 });
@@ -150,7 +157,7 @@ export async function POST(req: Request) {
     timezone: "UTC",
     facilities: [],
     languages: data.languages,
-    prayerCalc: defaultPrayerCalc(),
+    prayerCalc: data.prayerCalc ?? defaultPrayerCalc(),
     submittedBy: { uid: session.uid, email: session.email },
     submitterIp: ip,
     searchTokens: buildSearchTokens(searchTokenSeed),

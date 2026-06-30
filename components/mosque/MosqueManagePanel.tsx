@@ -36,11 +36,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageDropzone } from "@/components/mosque/community/ImageDropzone";
 import { SocialLinksEditor } from "@/components/mosque/community/SocialLinksEditor";
 import { MosqueEventComposer } from "@/components/mosque/MosqueEventComposer";
-import type { Mosque } from "@/types/mosque";
+import type { AsrMethod, CalcMethod, HighLatitudeRule, Mosque } from "@/types/mosque";
+import {
+  CALC_METHODS,
+  ASR_METHODS,
+  HIGH_LAT_RULES,
+  defaultPrayerCalc,
+} from "@/lib/mosques/adhan";
 import {
   updateMosqueAbout,
   updateMosqueContact,
   updateMosqueIqamah,
+  updateMosquePrayerCalc,
   updateMosqueLogo,
   updateMosqueCover,
   publishMosque,
@@ -75,6 +82,7 @@ export function MosqueManagePanel({
 }) {
   const t = useTranslations("mosques.manage");
   const tPrayer = useTranslations("mosques.prayer");
+  const tCalc = useTranslations("mosques.prayerCalc");
   const router = useRouter();
   const uiLocale = useLocale();
   const [saving, setSaving] = useState<string | null>(null);
@@ -100,6 +108,7 @@ export function MosqueManagePanel({
     isha: mosque.iqamah?.isha ?? "",
     jumuah: mosque.iqamah?.jumuah?.[0] ?? "",
   });
+  const [prayerCalc, setPrayerCalc] = useState(mosque.prayerCalc ?? defaultPrayerCalc());
 
   async function run(key: string, fn: () => Promise<{ ok: boolean; error?: string }>) {
     setSaving(key);
@@ -276,8 +285,70 @@ export function MosqueManagePanel({
 
             {/* Prayer / Iqamah */}
             <TabsContent value="prayer" className="space-y-2">
-              <Label>{t("iqamah")}</Label>
-              <p className="text-xs text-muted-foreground">{t("iqamahHint")}</p>
+              <Label>{tCalc("heading")}</Label>
+              <p className="text-xs text-muted-foreground">{tCalc("hint")}</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="space-y-1">
+                  <span className="text-xs text-muted-foreground">{tCalc("calcMethod")}</span>
+                  <select
+                    className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    value={prayerCalc.method}
+                    onChange={(e) =>
+                      setPrayerCalc((s) => ({ ...s, method: e.target.value as CalcMethod }))
+                    }
+                  >
+                    {CALC_METHODS.map((m) => (
+                      <option key={m} value={m}>
+                        {tCalc(`methods.${m}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-xs text-muted-foreground">{tCalc("asrMethod")}</span>
+                  <select
+                    className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    value={prayerCalc.asrMethod}
+                    onChange={(e) =>
+                      setPrayerCalc((s) => ({ ...s, asrMethod: e.target.value as AsrMethod }))
+                    }
+                  >
+                    {ASR_METHODS.map((m) => (
+                      <option key={m} value={m}>
+                        {tCalc(`asrMethods.${m}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-xs text-muted-foreground">{tCalc("highLatRule")}</span>
+                  <select
+                    className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    value={prayerCalc.highLatitudeRule}
+                    onChange={(e) =>
+                      setPrayerCalc((s) => ({
+                        ...s,
+                        highLatitudeRule: e.target.value as HighLatitudeRule,
+                      }))
+                    }
+                  >
+                    {HIGH_LAT_RULES.map((r) => (
+                      <option key={r} value={r}>
+                        {tCalc(`highLatRules.${r}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <SaveButton
+                label={t("save")}
+                busy={saving === "prayerCalc"}
+                onClick={() => run("prayerCalc", () => updateMosquePrayerCalc(mosque.slug, prayerCalc))}
+              />
+
+              <div className="space-y-2 border-t border-border pt-5">
+                <Label>{t("iqamah")}</Label>
+                <p className="text-xs text-muted-foreground">{t("iqamahHint")}</p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {DAILY.map((p) => (
                   <div key={p} className="space-y-1">
@@ -314,6 +385,7 @@ export function MosqueManagePanel({
                   )
                 }
               />
+              </div>
             </TabsContent>
 
             {/* Contact */}
