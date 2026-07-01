@@ -35,6 +35,33 @@ npm run start      # serve production build
 npm run lint
 ```
 
+## Testing
+
+End-to-end tests run a real browser against the app with
+[Playwright](https://playwright.dev). Specs live in [`tests/e2e/`](tests/e2e).
+
+First run only — install the browser binary:
+
+```sh
+npx playwright install chromium
+```
+
+Then:
+
+```sh
+npm run test:e2e          # headless run (auto-starts the dev server on :7777)
+npm run test:e2e:ui       # interactive UI mode
+npm run test:e2e:headed   # watch it drive a real browser
+npm run test:e2e:report   # open the last HTML report
+```
+
+The config ([playwright.config.ts](playwright.config.ts)) boots `npm run dev`
+and waits for it; if you already have a dev server on 7777 it reuses it. To run
+against a deployed/preview URL instead of a local server, set
+`PLAYWRIGHT_BASE_URL=https://…`. Pages under the `(site)` group show a first-run
+onboarding modal — the shared fixture ([tests/e2e/fixtures.ts](tests/e2e/fixtures.ts))
+pre-dismisses it so tests interact with the real page.
+
 ## Routes
 
 - `/` — landing
