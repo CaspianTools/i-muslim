@@ -62,3 +62,8 @@ scripts/bundles-output/
 # one-off import source data (large, copyrighted upstream text — not committed;
 # see scripts/import-quran-tr.ts header for where to obtain/place it)
 scripts/data/
+
+# Claude Code isolated worktrees (parallel sessions live under .claude/worktrees/).
+# Their contents must never surface as untracked files in the main checkout.
+# Only this subfolder is ignored — a committed .claude/settings.json stays tracked.
+.claude/worktrees/
