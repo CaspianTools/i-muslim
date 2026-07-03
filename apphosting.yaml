@@ -48,3 +48,16 @@ env:
     availability:
       - BUILD
       - RUNTIME
+
+# Cloud Run sizing/scaling. minInstances stays 0 so nothing bills while idle
+# (the app cold-starts on the first request); maxInstances caps worst-case
+# fan-out (a traffic spike or runaway loop) so spend is bounded. Bump the cap if
+# real traffic (e.g. Ramadan) starts hitting it. cpu/memory are the App Hosting
+# defaults, pinned here so they don't drift — keep memory at 512 (firebase-admin
+# + 8 preloaded fonts won't fit comfortably in 256).
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80

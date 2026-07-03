@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { Timestamp } from "firebase-admin/firestore";
 import { getDb } from "@/lib/firebase/admin";
 import {
@@ -209,33 +210,49 @@ export async function getCommentStats(
  * to seed the per-item comment icon badge. Mirrors the N+1-avoidance
  * pattern used by notes (see lib/profile/notes-data.ts:getNotesByItemType).
  */
+// Cached like favorite counts (see lib/profile/favoriteStats.ts): the comment
+// icon badge is a non-critical aggregate that previously cost one stat read per
+// item per render on a long list page. Cache the batched read briefly, keyed by
+// entityType + ids (stable per surah/book). `unstable_cache` can't serialize a
+// Map, so cache entries and rebuild the Map in the wrapper.
+const _getCommentCountEntries = unstable_cache(
+  async (
+    entityType: CommentEntityType,
+    entityIds: string[],
+  ): Promise<Array<[string, number]>> => {
+    if (entityIds.length === 0) return [];
+    const db = getDb();
+    if (!db) return [];
+
+    const refs = entityIds.map((id) =>
+      db.collection(COMMENT_STATS_COLLECTION).doc(commentStatsKey(entityType, id)),
+    );
+
+    try {
+      const snaps = await db.getAll(...refs);
+      const entries: Array<[string, number]> = [];
+      for (let i = 0; i < snaps.length; i++) {
+        const snap = snaps[i]!;
+        if (!snap.exists) continue;
+        const data = snap.data() ?? {};
+        const count = typeof data.count === "number" ? data.count : 0;
+        if (count > 0) entries.push([entityIds[i]!, count]);
+      }
+      return entries;
+    } catch (err) {
+      console.warn("[comments/data] getCommentCountsForEntities failed:", err);
+      return [];
+    }
+  },
+  ["comment-stats:batch"],
+  { revalidate: 300, tags: ["comment-stats"] },
+);
+
 export async function getCommentCountsForEntities(
   entityType: CommentEntityType,
   entityIds: string[],
 ): Promise<Map<string, number>> {
-  const out = new Map<string, number>();
-  if (entityIds.length === 0) return out;
-  const db = getDb();
-  if (!db) return out;
-
-  const refs = entityIds.map((id) =>
-    db.collection(COMMENT_STATS_COLLECTION).doc(commentStatsKey(entityType, id)),
-  );
-
-  try {
-    const snaps = await db.getAll(...refs);
-    for (let i = 0; i < snaps.length; i++) {
-      const snap = snaps[i]!;
-      if (!snap.exists) continue;
-      const data = snap.data() ?? {};
-      const count = typeof data.count === "number" ? data.count : 0;
-      if (count > 0) out.set(entityIds[i]!, count);
-    }
-    return out;
-  } catch (err) {
-    console.warn("[comments/data] getCommentCountsForEntities failed:", err);
-    return out;
-  }
+  return new Map(await _getCommentCountEntries(entityType, entityIds));
 }
 
 /** Convenience wrapper for the surah page. */

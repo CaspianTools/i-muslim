@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { getDb } from "@/lib/firebase/admin";
 import { MOCK_EVENTS } from "@/lib/admin/mock/events";
 import { normalizeEvent } from "@/lib/admin/data/events";
@@ -15,6 +16,42 @@ export interface PublicEventsResult {
   source: "firestore" | "mock";
 }
 
+// Published events change only on admin publish/edit, so cache the raw
+// Firestore read in the Data Cache; invalidate on write via
+// `revalidatePublicEvents`. Only the read is cached — the date windowing below
+// runs per request against a fresh `now`, so cached data never freezes the
+// "this week / upcoming" window.
+const EVENTS_PUBLISHED_TAG = "events:published";
+
+export function revalidatePublicEvents(): void {
+  revalidateTag(EVENTS_PUBLISHED_TAG, { expire: 0 });
+}
+
+const fetchAllPublishedEvents = unstable_cache(
+  async (): Promise<{ events: AdminEvent[]; source: "firestore" | "mock" }> => {
+    const db = getDb();
+    if (!db) {
+      return { events: MOCK_EVENTS.filter((e) => e.status === "published"), source: "mock" };
+    }
+    try {
+      const snap = await db
+        .collection("events")
+        .where("status", "==", "published")
+        .limit(500)
+        .get();
+      const events = snap.docs
+        .map((d) => normalizeEvent(d.id, d.data() as Record<string, unknown>))
+        .filter((e): e is AdminEvent => e !== null);
+      return { events, source: "firestore" };
+    } catch (err) {
+      console.warn("[events/public] firestore read failed, using mock:", err);
+      return { events: MOCK_EVENTS.filter((e) => e.status === "published"), source: "mock" };
+    }
+  },
+  ["events:all-published"],
+  { revalidate: 300, tags: [EVENTS_PUBLISHED_TAG] },
+);
+
 export async function fetchPublicEvents(opts?: {
   windowDays?: number;
   limit?: number;
@@ -24,28 +61,7 @@ export async function fetchPublicEvents(opts?: {
   const now = new Date();
   const horizon = new Date(now.getTime() + windowDays * 24 * 60 * 60 * 1000);
 
-  const db = getDb();
-  let events: AdminEvent[];
-  let source: "firestore" | "mock" = "mock";
-
-  if (db) {
-    try {
-      const snap = await db
-        .collection("events")
-        .where("status", "==", "published")
-        .limit(500)
-        .get();
-      events = snap.docs
-        .map((d) => normalizeEvent(d.id, d.data() as Record<string, unknown>))
-        .filter((e): e is AdminEvent => e !== null);
-      source = "firestore";
-    } catch (err) {
-      console.warn("[events/public] firestore read failed, using mock:", err);
-      events = MOCK_EVENTS.filter((e) => e.status === "published");
-    }
-  } else {
-    events = MOCK_EVENTS.filter((e) => e.status === "published");
-  }
+  const { events, source } = await fetchAllPublishedEvents();
 
   const items: PublicEventListItem[] = [];
   for (const event of events) {

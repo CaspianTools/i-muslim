@@ -7,7 +7,7 @@ import { AdminHeader } from "@/components/admin/AdminHeader";
 import { PermissionsProvider } from "@/components/admin/PermissionsContext";
 import { Toaster } from "@/components/ui/sonner";
 import { countOpenReports } from "@/lib/admin/data/business-reports";
-import { listProfiles } from "@/lib/matrimonial/store";
+import { countPendingProfiles } from "@/lib/matrimonial/store";
 import { countPendingMosques } from "@/lib/admin/data/mosques";
 import { countOpenContactMessages } from "@/lib/admin/data/contact-messages";
 import { countAutoHiddenComments } from "@/lib/admin/data/comments";
@@ -50,7 +50,7 @@ export default async function AdminLayout({
 
   const [
     openReports,
-    { profiles: matrimonialProfiles },
+    pendingMatrimonial,
     pendingMosques,
     openContactMessages,
     pendingUsers,
@@ -59,7 +59,7 @@ export default async function AdminLayout({
     siteConfig,
   ] = await Promise.all([
     countOpenReports(),
-    listProfiles(),
+    countPendingProfiles(),
     countPendingMosques(),
     countOpenContactMessages(),
     countPendingUsers(),
@@ -67,7 +67,6 @@ export default async function AdminLayout({
     countOpenContentFlags(),
     getSiteConfig(),
   ]);
-  const pendingMatrimonial = matrimonialProfiles.filter((p) => p.status === "pending").length;
 
   const badges: SidebarBadges = {
     pendingUsers,

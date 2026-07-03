@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { Timestamp } from "firebase-admin/firestore";
 import { getDb, requireDb } from "@/lib/firebase/admin";
 import {
@@ -94,7 +95,20 @@ function isKnownLocale(code: string): code is Locale {
   return (LOCALES as readonly string[]).includes(code);
 }
 
-export const listReservedLocaleDocs = cache(async (): Promise<UiLocaleDoc[]> => {
+// `i18n/request.ts` reads a locale doc on every render and the Footer lists the
+// reserved locales on every page. These change only on admin edits (or the
+// out-of-band `npm run sync:locales`), so cache the Firestore reads in the Data
+// Cache — invalidated on write via `revalidateUiLocales`, with a TTL fallback.
+export const UI_LOCALES_TAG = "config:uiLocales";
+const UI_LOCALES_REVALIDATE = 60 * 60; // 1 hour fallback; admin writes invalidate immediately
+
+// Call from admin write actions after mutating any `config/uiLocales/locales/*`
+// doc. The TTL is the only path for out-of-band writes (`npm run sync:locales`).
+export function revalidateUiLocales(): void {
+  revalidateTag(UI_LOCALES_TAG, { expire: 0 });
+}
+
+export const listReservedLocaleDocs = cache(unstable_cache(async (): Promise<UiLocaleDoc[]> => {
   const db = getDb();
   if (!db) return RESERVED_LOCALES.map((c) => defaultMeta(c));
   try {
@@ -113,7 +127,7 @@ export const listReservedLocaleDocs = cache(async (): Promise<UiLocaleDoc[]> => 
     console.warn("[admin/data/ui-locales] list failed:", err);
     return RESERVED_LOCALES.map((c) => defaultMeta(c));
   }
-});
+}, ["admin:ui-locales:reserved"], { revalidate: UI_LOCALES_REVALIDATE, tags: [UI_LOCALES_TAG] }));
 
 export const listActivatedReservedLocales = cache(async (): Promise<Locale[]> => {
   const docs = await listReservedLocaleDocs();
@@ -125,7 +139,7 @@ export const listActivatedReservedLocales = cache(async (): Promise<Locale[]> =>
 // so their `activated` field defaults to `true`. Reserved locales without a
 // Firestore doc default to `activated: false`. Both can carry an optional
 // `messages` overlay an admin/translator has saved through the phrase editor.
-export const listAllUiLocaleDocs = cache(async (): Promise<UiLocaleDoc[]> => {
+export const listAllUiLocaleDocs = cache(unstable_cache(async (): Promise<UiLocaleDoc[]> => {
   const db = getDb();
   const seedFor = (c: Locale): UiLocaleDoc =>
     (BUNDLED_LOCALES as readonly string[]).includes(c)
@@ -157,10 +171,13 @@ export const listAllUiLocaleDocs = cache(async (): Promise<UiLocaleDoc[]> => {
     console.warn("[admin/data/ui-locales] listAll failed:", err);
     return LOCALES.map(seedFor);
   }
-});
+}, ["admin:ui-locales:all"], { revalidate: UI_LOCALES_REVALIDATE, tags: [UI_LOCALES_TAG] }));
 
 export const getUiLocaleDoc = cache(
-  async (code: Locale): Promise<UiLocaleDoc | null> => {
+  // unstable_cache folds the `code` argument into the cache key, so this caches
+  // per-locale with a single wrapper.
+  unstable_cache(
+    async (code: Locale): Promise<UiLocaleDoc | null> => {
     const db = getDb();
     if (!db) return null;
     try {
@@ -176,7 +193,10 @@ export const getUiLocaleDoc = cache(
       console.warn(`[admin/data/ui-locales] get(${code}) failed:`, err);
       return null;
     }
-  },
+    },
+    ["admin:ui-locales:doc"],
+    { revalidate: UI_LOCALES_REVALIDATE, tags: [UI_LOCALES_TAG] },
+  ),
 );
 
 export type ActivateUiLocaleInput = {

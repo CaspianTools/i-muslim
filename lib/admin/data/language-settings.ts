@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { Timestamp } from "firebase-admin/firestore";
 import { getDb, requireDb } from "@/lib/firebase/admin";
 import { LOCALES, DEFAULT_LOCALE, type Locale } from "@/i18n/config";
@@ -49,7 +50,7 @@ function defaults(): LanguageSettings {
   };
 }
 
-export const getLanguageSettings = cache(async (): Promise<LanguageSettings> => {
+async function readLanguageSettings(): Promise<LanguageSettings> {
   const db = getDb();
   if (!db) return defaults();
   try {
@@ -74,7 +75,26 @@ export const getLanguageSettings = cache(async (): Promise<LanguageSettings> => 
     console.warn("[admin/data/language-settings] read failed:", err);
     return defaults();
   }
-});
+}
+
+// The Footer + Quran/Hadith pages read `config/languages` on every request, but
+// it only changes on admin edits. Cache in the Data Cache (invalidated on write
+// via `revalidateLanguageSettings`) with a TTL fallback, plus React `cache` for
+// per-render dedupe.
+export const LANGUAGE_SETTINGS_TAG = "config:languages";
+
+const cachedReadLanguageSettings = unstable_cache(
+  readLanguageSettings,
+  ["admin:language-settings"],
+  { revalidate: 60 * 60, tags: [LANGUAGE_SETTINGS_TAG] },
+);
+
+export const getLanguageSettings = cache(cachedReadLanguageSettings);
+
+// Call from admin write actions after mutating `config/languages`.
+export function revalidateLanguageSettings(): void {
+  revalidateTag(LANGUAGE_SETTINGS_TAG, { expire: 0 });
+}
 
 export type SetLanguageSettingsInput = {
   uiEnabled: readonly string[];

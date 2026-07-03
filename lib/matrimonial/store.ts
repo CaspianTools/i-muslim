@@ -169,6 +169,29 @@ export async function listProfiles(): Promise<{
   }
 }
 
+// The admin sidebar only needs the count of pending profiles for its badge.
+// A `.count()` aggregation bills ~1 read instead of the up-to-500-doc scan
+// `listProfiles()` did just to filter in JS.
+export async function countPendingProfiles(): Promise<number> {
+  const db = getDb();
+  if (!db) {
+    return Array.from(getMockState().profiles.values()).filter(
+      (p) => p.status === "pending",
+    ).length;
+  }
+  try {
+    const snap = await db
+      .collection(PROFILES_COLLECTION)
+      .where("status", "==", "pending")
+      .count()
+      .get();
+    return snap.data().count;
+  } catch (err) {
+    console.warn("[matrimonial/store] countPendingProfiles failed:", err);
+    return 0;
+  }
+}
+
 export async function getProfile(id: string): Promise<MatrimonialProfile | null> {
   const db = getDb();
   if (!db) {

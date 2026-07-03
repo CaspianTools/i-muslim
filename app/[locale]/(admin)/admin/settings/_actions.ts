@@ -15,6 +15,7 @@ import {
 import { ALL_LANGS, type LangCode } from "@/lib/translations";
 import {
   setLanguageSettings,
+  revalidateLanguageSettings,
   type LanguageSettings,
 } from "@/lib/admin/data/language-settings";
 import {
@@ -22,11 +23,13 @@ import {
   deactivateUiLocale,
   updateUiLocaleMessages,
   clearUiLocaleMessages,
+  revalidateUiLocales,
   type UiLocaleDoc,
 } from "@/lib/admin/data/ui-locales";
 import {
   setSiteIdentity,
   setSiteTypography,
+  revalidateSiteConfig,
   BODY_FONT_OPTIONS,
   ARABIC_FONT_OPTIONS,
   type BodyFont,
@@ -60,6 +63,7 @@ export async function updateLanguageSettings(
     const settings = await setLanguageSettings(parsed.data, session.email);
     // Public footer + Quran/Hadith pages read this — invalidate broadly.
     revalidatePath("/", "layout");
+    revalidateLanguageSettings();
     return { ok: true, settings };
   } catch (err) {
     console.warn("[admin/settings/_actions] write failed:", err);
@@ -102,6 +106,7 @@ export async function activateUiLocale(
   try {
     const locale = await setUiLocale(parsed.data, session.email);
     revalidatePath("/", "layout");
+    revalidateUiLocales();
     return { ok: true, locale };
   } catch (err) {
     console.warn("[admin/settings/_actions] activate failed:", err);
@@ -146,6 +151,7 @@ export async function updateUiLocaleMessagesAction(
       session.email,
     );
     revalidatePath("/", "layout");
+    revalidateUiLocales();
     return { ok: true, locale };
   } catch (err) {
     console.warn("[admin/settings/_actions] updateMessages failed:", err);
@@ -174,6 +180,7 @@ export async function updateSiteIdentityAction(
     const config = await setSiteIdentity(parsed.data, session.email);
     // Title and metadata read from this in the root layout — invalidate broadly.
     revalidatePath("/", "layout");
+    revalidateSiteConfig();
     return { ok: true, config };
   } catch (err) {
     console.warn("[admin/settings/_actions] updateSiteIdentity failed:", err);
@@ -204,6 +211,7 @@ export async function updateTypographyAction(
     const config = await setSiteTypography(parsed.data, session.email);
     // Fonts apply at the root layout — invalidate broadly.
     revalidatePath("/", "layout");
+    revalidateSiteConfig();
     return { ok: true, config };
   } catch (err) {
     console.warn("[admin/settings/_actions] updateTypography failed:", err);
@@ -231,6 +239,7 @@ export async function clearUiLocaleMessagesAction(
   try {
     const locale = await clearUiLocaleMessages(parsed.data.code, session.email);
     revalidatePath("/", "layout");
+    revalidateUiLocales();
     return { ok: true, locale };
   } catch (err) {
     console.warn("[admin/settings/_actions] clearMessages failed:", err);
@@ -249,6 +258,7 @@ export async function deactivateUiLocaleAction(
   try {
     await deactivateUiLocale(parsed.data, session.email);
     revalidatePath("/", "layout");
+    revalidateUiLocales();
     return { ok: true };
   } catch (err) {
     console.warn("[admin/settings/_actions] deactivate failed:", err);

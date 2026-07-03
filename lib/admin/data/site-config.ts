@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { Timestamp } from "firebase-admin/firestore";
 import { getDb, requireDb } from "@/lib/firebase/admin";
 import { publicUrlFor, type SiteUploadKind } from "@/lib/site-config/storage";
@@ -123,9 +124,25 @@ async function readSiteConfig(): Promise<SiteConfig> {
   }
 }
 
-// Cached per-render so multiple RSCs in one tree (root layout, admin layout,
-// site layout) share a single Firestore round-trip.
-export const getSiteConfig = cache(readSiteConfig);
+// `config/site` changes only on rare admin edits, yet the root layout reads it
+// on every request. Cache it in the cross-request Data Cache (invalidated on
+// write via `revalidateSiteConfig`); the TTL is only a fallback for out-of-band
+// writes. Wrapped again in React `cache` so the multiple RSCs in one render
+// (root layout, admin layout, Nav, Footer) still share a single call.
+export const SITE_CONFIG_TAG = "config:site";
+
+const cachedReadSiteConfig = unstable_cache(readSiteConfig, ["admin:site-config"], {
+  revalidate: 60 * 60, // 1 hour fallback; admin writes invalidate immediately
+  tags: [SITE_CONFIG_TAG],
+});
+
+export const getSiteConfig = cache(cachedReadSiteConfig);
+
+// Call from admin write actions after mutating `config/site` so the next public
+// read reflects the change without waiting for the TTL.
+export function revalidateSiteConfig(): void {
+  revalidateTag(SITE_CONFIG_TAG, { expire: 0 });
+}
 
 export interface SiteIdentityInput {
   siteName: string;

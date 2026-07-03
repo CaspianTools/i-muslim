@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { getDb } from "@/lib/firebase/admin";
 import { MOCK_MOSQUES, MOCK_MOSQUE_BY_SLUG } from "@/lib/admin/mock/mosques";
 import type {
@@ -98,25 +99,45 @@ export async function fetchPublishedMosques(filters: MosqueFilters = {}): Promis
   return { mosques: filtered, source, total: filtered.length };
 }
 
-async function fetchAllPublished(): Promise<{ mosques: Mosque[]; source: MosqueSource }> {
-  const db = getDb();
-  if (!db) return { mosques: MOCK_MOSQUES, source: "mock" };
-  try {
-    const snap = await db
-      .collection(MOSQUES_COLLECTION)
-      .where("status", "==", "published")
-      .limit(2000)
-      .get();
-    if (snap.empty) return { mosques: MOCK_MOSQUES, source: "mock" };
-    const mosques = snap.docs
-      .map((d) => normalizeMosque(d.id, d.data() as Record<string, unknown>))
-      .filter((m): m is Mosque => m !== null);
-    return { mosques, source: "firestore" };
-  } catch (err) {
-    console.warn("[mosques] firestore read failed, falling back to mock:", err);
-    return { mosques: MOCK_MOSQUES, source: "mock" };
-  }
+// The published-mosque list (up to 2000 docs) is read on the home page, the
+// mosques index, every country/city hub, and the sitemap — all of which filter
+// or aggregate this same set in JS (`fetchPublishedMosques`,
+// `fetchCountryAggregates`, `fetchCityAggregates`). Cache the single Firestore
+// scan in the Data Cache so those callers share one read per window instead of
+// each scanning the collection per request; invalidate on any mosque write via
+// `revalidatePublishedMosques`.
+export const MOSQUES_PUBLISHED_TAG = "mosques:published";
+
+// Call from admin/manage mosque write actions after a create/update/publish/
+// unpublish/delete so the public lists reflect the change without waiting for
+// the TTL.
+export function revalidatePublishedMosques(): void {
+  revalidateTag(MOSQUES_PUBLISHED_TAG, { expire: 0 });
 }
+
+const fetchAllPublished = unstable_cache(
+  async (): Promise<{ mosques: Mosque[]; source: MosqueSource }> => {
+    const db = getDb();
+    if (!db) return { mosques: MOCK_MOSQUES, source: "mock" };
+    try {
+      const snap = await db
+        .collection(MOSQUES_COLLECTION)
+        .where("status", "==", "published")
+        .limit(2000)
+        .get();
+      if (snap.empty) return { mosques: MOCK_MOSQUES, source: "mock" };
+      const mosques = snap.docs
+        .map((d) => normalizeMosque(d.id, d.data() as Record<string, unknown>))
+        .filter((m): m is Mosque => m !== null);
+      return { mosques, source: "firestore" };
+    } catch (err) {
+      console.warn("[mosques] firestore read failed, falling back to mock:", err);
+      return { mosques: MOCK_MOSQUES, source: "mock" };
+    }
+  },
+  ["mosques:all-published"],
+  { revalidate: 300, tags: [MOSQUES_PUBLISHED_TAG] },
+);
 
 function applyFilters(mosques: Mosque[], filters: MosqueFilters): Mosque[] {
   let out = mosques;

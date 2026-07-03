@@ -16,6 +16,7 @@ import {
   type MosqueUploadInput,
 } from "@/lib/mosques/storage";
 import type { Mosque, MosqueStatus } from "@/types/mosque";
+import { revalidatePublishedMosques } from "@/lib/admin/data/mosques";
 import { Timestamp } from "firebase-admin/firestore";
 
 // Mosque names/descriptions are English-only in the UI; `ar` is the optional
@@ -283,6 +284,7 @@ export async function createMosque(rawInput: unknown): Promise<ActionResult> {
 
   await db.collection(MOSQUES_COLLECTION).doc(slug).set(data, { merge: false });
   revalidatePath("/mosques");
+  revalidatePublishedMosques();
   revalidatePath(`/mosques/${slug}`);
   revalidatePath(`/mosques/c/${input.country.toLowerCase()}`);
   revalidatePath("/admin/mosques");
@@ -332,6 +334,7 @@ export async function updateMosque(slug: string, rawInput: unknown): Promise<Act
 
   await ref.set(data, { merge: false });
   revalidatePath("/mosques");
+  revalidatePublishedMosques();
   revalidatePath(`/mosques/${slug}`);
   revalidatePath(`/mosques/c/${input.country.toLowerCase()}`);
   revalidatePath(`/mosques/c/${input.country.toLowerCase()}/${citySlugFor(input.city)}`);
@@ -358,6 +361,7 @@ export async function setMosqueStatus(slug: string, status: MosqueStatus): Promi
   }
   await ref.update(update);
   revalidatePath("/mosques");
+  revalidatePublishedMosques();
   revalidatePath(`/mosques/${slug}`);
   revalidatePath("/admin/mosques");
   return { ok: true, slug };
@@ -369,6 +373,7 @@ export async function deleteMosque(slug: string): Promise<ActionResult> {
   if (!db) return { ok: false, error: "firestore_not_configured" };
   await db.collection(MOSQUES_COLLECTION).doc(slug).delete();
   revalidatePath("/mosques");
+  revalidatePublishedMosques();
   revalidatePath(`/mosques/${slug}`);
   revalidatePath("/admin/mosques");
   return { ok: true, slug };

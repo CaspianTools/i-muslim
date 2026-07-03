@@ -8,6 +8,7 @@ import { businessInputSchema, type BusinessInput } from "@/lib/businesses/schema
 import { slugify, withCollisionSuffix, buildSearchTokens } from "@/lib/businesses/slug";
 import { createUploadUrl, deleteStorageObject } from "@/lib/businesses/storage";
 import { normalizeBusiness } from "@/lib/admin/data/businesses";
+import { revalidatePublishedBusinesses } from "@/lib/businesses/public";
 import type { Business } from "@/types/business";
 
 export type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string };
@@ -55,6 +56,7 @@ function toFirestorePayload(input: BusinessInput, slug: string) {
 function revalidateAdmin() {
   revalidatePath("/admin/businesses");
   revalidatePath("/businesses");
+  revalidatePublishedBusinesses();
 }
 
 async function authorizeAdmin() {

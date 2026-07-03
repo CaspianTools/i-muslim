@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
     root: path.join(__dirname),
   },
   images: {
+    // Optimized remote images (mosque/article uploads, mostly static) were being
+    // re-optimized far more often than needed. Hold each variant for 31 days so
+    // the Cloud Run image optimizer does the CPU-heavy transform once, not per
+    // short window. (AVIF is intentionally not added — its encode is more CPU on
+    // the server, and CPU is the cost here; WebP default is the right tradeoff.)
+    minimumCacheTTL: 2592000,
     remotePatterns: [
       { protocol: "https", hostname: "firebasestorage.googleapis.com" },
       { protocol: "https", hostname: "storage.googleapis.com" },

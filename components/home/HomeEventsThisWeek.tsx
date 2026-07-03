@@ -1,7 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { fetchPublicEvents } from "@/lib/events/public";
-import { fetchIpLocation } from "@/lib/prayer/location";
-import { haversineKm } from "@/lib/events/geo";
 import { HomeSection } from "./HomeSection";
 import { HomeEventsRefiner } from "./HomeEventsRefiner";
 import type { SerializableEvent } from "./home-event-shapes";
@@ -10,39 +8,20 @@ import type { PublicEventListItem } from "@/lib/events/public";
 const MAX_EVENTS = 6;
 
 export async function HomeEventsThisWeek() {
-  const [t, locale, { events }, ip] = await Promise.all([
+  const [t, locale, { events }] = await Promise.all([
     getTranslations("home.eventsThisWeek"),
     getLocale(),
     fetchPublicEvents({ windowDays: 7, limit: 50 }),
-    fetchIpLocation().catch(() => null),
   ]);
   if (events.length === 0) return null;
 
-  const ipCoords = ip?.coords ?? null;
-  const sorted = ipCoords
-    ? [...events].sort((a, b) => {
-        const aLat = a.event.location.lat;
-        const aLng = a.event.location.lng;
-        const bLat = b.event.location.lat;
-        const bLng = b.event.location.lng;
-        const aHas = typeof aLat === "number" && typeof aLng === "number";
-        const bHas = typeof bLat === "number" && typeof bLng === "number";
-        if (aHas && bHas) {
-          return (
-            haversineKm(ipCoords, { lat: aLat!, lng: aLng! }) -
-            haversineKm(ipCoords, { lat: bLat!, lng: bLng! })
-          );
-        }
-        if (aHas) return -1;
-        if (bHas) return 1;
-        return 0;
-      })
-    : events;
-
-  const initial = sorted.slice(0, MAX_EVENTS);
-  const heading = ip?.city
-    ? t("headingNear", { city: ip.city })
-    : t("headingGlobal");
+  // Events arrive already sorted by soonest start. Location-based "near me"
+  // re-sorting happens client-side in HomeEventsRefiner using the visitor's
+  // real browser geolocation — the old server-side ipapi.co lookup only ever
+  // saw the datacenter IP, so it mislabeled the heading and cost a blocking
+  // external call on every render.
+  const initial = events.slice(0, MAX_EVENTS);
+  const heading = t("headingGlobal");
 
   return (
     <HomeSection

@@ -102,7 +102,15 @@ export async function GET(req: NextRequest) {
           isha: t.isha.toISOString(),
         },
       },
-      { headers: rateLimitHeaders(auth.rateLimit) },
+      {
+        headers: {
+          ...rateLimitHeaders(auth.rateLimit),
+          // Prayer times are astronomically deterministic per (lat,lng,date,
+          // method,madhab,tz) — all in the URL — so let the CDN serve repeats
+          // without re-hitting Cloud Run + the API-key lookup.
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      },
     ),
   );
 }

@@ -12,6 +12,7 @@ import {
 } from "@/lib/site-config/storage";
 import {
   setSiteAsset,
+  revalidateSiteConfig,
   type SiteConfig,
 } from "@/lib/admin/data/site-config";
 
@@ -83,6 +84,7 @@ export async function updateSiteAssetAction(
     // Favicon, logo, OG, article placeholder all read across the public site
     // and admin layouts — invalidate broadly so changes show up everywhere.
     revalidatePath("/", "layout");
+    revalidateSiteConfig();
     return { ok: true, config };
   } catch (err) {
     console.warn("[admin/settings/media/_actions] write failed:", err);

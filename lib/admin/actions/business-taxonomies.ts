@@ -12,6 +12,7 @@ import {
   type CategoryInput,
   type CertBodyInput,
 } from "@/lib/businesses/schemas";
+import { revalidateBusinessTaxonomies } from "@/lib/admin/data/business-taxonomies";
 
 export type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string };
 
@@ -25,6 +26,7 @@ function revalidateTaxonomy() {
   revalidatePath("/admin/businesses/cert-bodies");
   revalidatePath("/admin/businesses/amenities");
   revalidatePath("/businesses");
+  revalidateBusinessTaxonomies();
 }
 
 // ---------- Categories ----------

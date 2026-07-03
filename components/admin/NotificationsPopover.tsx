@@ -12,7 +12,10 @@ import { formatRelative } from "@/lib/utils";
 import { NotificationTypeIcon } from "@/components/admin/notifications/type-icon";
 import type { AdminNotification } from "@/types/admin";
 
-const POLL_INTERVAL_MS = 60_000;
+// Admin notifications aren't time-critical; poll every 3 min (was 60s) to cut
+// the repeating Cloud Run + Firestore hit per admin. A refresh also fires
+// immediately whenever the tab becomes visible, so reopening feels live.
+const POLL_INTERVAL_MS = 180_000;
 
 interface NotificationsPopoverProps {
   initialItems: AdminNotification[];

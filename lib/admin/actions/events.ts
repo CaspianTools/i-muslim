@@ -6,6 +6,7 @@ import { FieldValue } from "firebase-admin/firestore";
 import { requireDb } from "@/lib/firebase/admin";
 import { requirePermission } from "@/lib/permissions/server";
 import { normalizeEvent } from "@/lib/admin/data/events";
+import { revalidatePublicEvents } from "@/lib/events/public";
 import { fetchEventCategories } from "@/lib/admin/data/event-categories";
 import type { AdminEvent } from "@/types/admin";
 
@@ -156,6 +157,7 @@ export async function createEventAction(input: EventInput): Promise<ActionResult
 
     revalidatePath("/admin/events");
     revalidatePath("/admin");
+    revalidatePublicEvents();
     return { ok: true, data: created };
   } catch (err) {
     console.warn("[admin/actions/events] createEvent failed:", err);
@@ -206,6 +208,7 @@ export async function updateEventAction(id: string, input: EventInput): Promise<
 
     revalidatePath("/admin/events");
     revalidatePath("/admin");
+    revalidatePublicEvents();
     return { ok: true, data: updated };
   } catch (err) {
     console.warn("[admin/actions/events] updateEvent failed:", err);
@@ -232,6 +235,7 @@ export async function deleteEventAction(id: string): Promise<ActionResult<{ id: 
     await db.collection("events").doc(id).delete();
     revalidatePath("/admin/events");
     revalidatePath("/admin");
+    revalidatePublicEvents();
     return { ok: true, data: { id } };
   } catch (err) {
     console.warn("[admin/actions/events] deleteEvent failed:", err);
