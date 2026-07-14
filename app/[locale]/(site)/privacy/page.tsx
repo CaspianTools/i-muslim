@@ -48,6 +48,18 @@ export default async function PrivacyPage() {
         { id: "app-contact", label: t("app.contactHeading") },
       ],
     },
+    {
+      id: "prayer-app",
+      label: t("prayerApp.heading"),
+      items: [
+        { id: "prayer-collect", label: t("prayerApp.collectHeading") },
+        { id: "prayer-store", label: t("prayerApp.storeHeading") },
+        { id: "prayer-permissions", label: t("prayerApp.permissionsHeading") },
+        { id: "prayer-children", label: t("prayerApp.childrenHeading") },
+        { id: "prayer-changes", label: t("prayerApp.changesHeading") },
+        { id: "prayer-contact", label: t("prayerApp.contactHeading") },
+      ],
+    },
   ];
 
   // Shared rich-text renderer: turns the <contact>…</contact> tag in a message
@@ -158,6 +170,65 @@ export default async function PrivacyPage() {
               {t("app.contactHeading")}
             </h3>
             <p>{t.rich("app.contact", contactLink)}</p>
+          </section>
+
+          {/* i-muslim Prayer Times (Android app) */}
+          <section
+            id="prayer-app"
+            className="mt-12 scroll-mt-24 space-y-4 border-t border-border pt-8 leading-relaxed text-foreground/90"
+          >
+            <h2 className={H2}>{t("prayerApp.heading")}</h2>
+            <p className="text-sm text-muted-foreground">{t("prayerApp.updated")}</p>
+            <p>{t("prayerApp.intro")}</p>
+
+            <h3 id="prayer-collect" className={H3}>
+              {t("prayerApp.collectHeading")}
+            </h3>
+            <p>{t("prayerApp.collectIntro")}</p>
+            <ul className="list-disc space-y-1 pl-5">
+              <li>{t("prayerApp.collect1")}</li>
+              <li>{t("prayerApp.collect2")}</li>
+              <li>{t("prayerApp.collect3")}</li>
+            </ul>
+
+            <h3 id="prayer-store" className={H3}>
+              {t("prayerApp.storeHeading")}
+            </h3>
+            <p>{t("prayerApp.storeIntro")}</p>
+            <ul className="list-disc space-y-1 pl-5">
+              <li>{t("prayerApp.store1")}</li>
+              <li>{t("prayerApp.store2")}</li>
+              <li>{t("prayerApp.store3")}</li>
+            </ul>
+            <p>{t("prayerApp.storeNote")}</p>
+
+            <h3 id="prayer-permissions" className={H3}>
+              {t("prayerApp.permissionsHeading")}
+            </h3>
+            <p>{t("prayerApp.permissionsIntro")}</p>
+            <ul className="list-disc space-y-1 pl-5">
+              <li>{t("prayerApp.permission1")}</li>
+              <li>{t("prayerApp.permission2")}</li>
+              <li>{t("prayerApp.permission3")}</li>
+              <li>{t("prayerApp.permission4")}</li>
+              <li>{t("prayerApp.permission5")}</li>
+            </ul>
+            <p>{t("prayerApp.permissionNote")}</p>
+
+            <h3 id="prayer-children" className={H3}>
+              {t("prayerApp.childrenHeading")}
+            </h3>
+            <p>{t("prayerApp.children")}</p>
+
+            <h3 id="prayer-changes" className={H3}>
+              {t("prayerApp.changesHeading")}
+            </h3>
+            <p>{t("prayerApp.changes")}</p>
+
+            <h3 id="prayer-contact" className={H3}>
+              {t("prayerApp.contactHeading")}
+            </h3>
+            <p>{t.rich("prayerApp.contact", contactLink)}</p>
           </section>
         </div>
       </div>
