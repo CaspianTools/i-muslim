@@ -3849,5 +3849,11 @@
     "edited": "diubah",
     "replies": "{count, plural, one {1 balasan} other {# balasan}}",
     "flags": "{count, plural, one {1 laporan} other {# laporan}}"
+  },
+  "error": {
+    "title": "Terjadi kesalahan",
+    "body": "Terjadi kesalahan tak terduga. Anda dapat mencoba lagi atau kembali ke beranda.",
+    "retry": "Coba lagi",
+    "home": "Beranda"
   }
 }

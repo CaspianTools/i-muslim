@@ -7,6 +7,7 @@ import { getBySlug } from "@/lib/businesses/public";
 import { fetchAmenities, fetchCategories, fetchCertBodies } from "@/lib/admin/data/business-taxonomies";
 import { buildLocalBusinessJsonLd } from "@/lib/businesses/seo";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { jsonLdHtml } from "@/lib/seo/jsonld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HalalBadge } from "@/components/businesses/HalalBadge";
@@ -78,7 +79,7 @@ export default async function BusinessDetailPage({ params }: RouteParams) {
     <article className="mx-auto max-w-4xl px-4 py-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
 
       <Link

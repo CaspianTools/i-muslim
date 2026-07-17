@@ -64,10 +64,44 @@ export interface ComputedAdhan {
   isha: Date;
 }
 
-export function computeAdhan(mosque: Pick<Mosque, "location" | "prayerCalc">, date: Date = new Date()): ComputedAdhan {
+/**
+ * Return a Date whose *local* Y/M/D components equal the calendar day of
+ * `instant` in `timeZone`. `adhan` derives the target day from the input's
+ * getFullYear/getMonth/getDate (runtime-local — UTC on Cloud Run), so a bare
+ * `new Date()` computes times for the UTC calendar day, which is the wrong day
+ * for a mosque whose local date differs (e.g. UTC+13 / UTC-10 during the daily
+ * offset window). Rebuilding via the local Date constructor makes those getters
+ * return the mosque-local day regardless of the server's timezone; adhan then
+ * emits correct absolute instants for that day.
+ */
+function anchorToZone(instant: Date, timeZone: string | null | undefined): Date {
+  if (!timeZone) return instant;
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(instant);
+    const val = (t: string) => Number(parts.find((p) => p.type === t)?.value);
+    const y = val("year");
+    const m = val("month");
+    const d = val("day");
+    if (!Number.isFinite(y) || !Number.isFinite(m) || !Number.isFinite(d)) return instant;
+    // Noon avoids any edge slippage; adhan reads only the Y/M/D components.
+    return new Date(y, m - 1, d, 12, 0, 0, 0);
+  } catch {
+    return instant;
+  }
+}
+
+export function computeAdhan(
+  mosque: Pick<Mosque, "location" | "prayerCalc"> & { timezone?: string | null },
+  date: Date = new Date(),
+): ComputedAdhan {
   const calc = mosque.prayerCalc ?? DEFAULT_CALC;
   const coords = new Coordinates(mosque.location.lat, mosque.location.lng);
-  const times = new PrayerTimes(coords, date, paramsFor(calc));
+  const times = new PrayerTimes(coords, anchorToZone(date, mosque.timezone), paramsFor(calc));
   return {
     fajr: times.fajr,
     sunrise: times.sunrise,

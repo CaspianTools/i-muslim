@@ -3846,5 +3846,11 @@
     "edited": "edited",
     "replies": "{count, plural, one {1 reply} other {# replies}}",
     "flags": "{count, plural, one {1 flag} other {# flags}}"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "An unexpected error occurred. You can try again, or return to the homepage.",
+    "retry": "Try again",
+    "home": "Go home"
   }
 }

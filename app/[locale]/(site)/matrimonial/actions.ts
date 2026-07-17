@@ -6,7 +6,6 @@ import {
   findInterest,
   getProfile,
   isMatched,
-  listInterests,
   listInterestsForUser,
   listReports,
   patchProfile,
@@ -161,9 +160,4 @@ export async function fetchMyInbox(): Promise<{
     if (await isMatched(session.uid, a.toUserId)) matched.push(a.toUserId);
   }
   return { incoming, outgoing, matchedIds: matched };
-}
-
-export async function fetchAllInterestsServer(): Promise<MatrimonialInterest[]> {
-  await requireSiteSession();
-  return listInterests();
 }

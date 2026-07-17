@@ -3849,5 +3849,11 @@
     "edited": "düzenlendi",
     "replies": "{count, plural, one {1 yanıt} other {# yanıt}}",
     "flags": "{count, plural, one {1 bildiri} other {# bildiri}}"
+  },
+  "error": {
+    "title": "Bir şeyler ters gitti",
+    "body": "Beklenmedik bir hata oluştu. Tekrar deneyebilir veya ana sayfaya dönebilirsiniz.",
+    "retry": "Tekrar dene",
+    "home": "Ana sayfaya dön"
   }
 }

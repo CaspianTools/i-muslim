@@ -5,6 +5,7 @@ import { pickLocalized } from "@/lib/utils";
 import { fetchMosqueByShortCode } from "@/lib/admin/data/mosques";
 import { countryName } from "@/lib/mosques/countries";
 import { mosqueJsonLd } from "@/lib/mosques/jsonld";
+import { jsonLdHtml } from "@/lib/seo/jsonld";
 import { getSiteUrl } from "@/lib/mosques/constants";
 import { MosqueCommunityHome } from "@/components/mosque/community/MosqueCommunityHome";
 import { MosqueFollowButton } from "@/components/mosque/MosqueFollowButton";
@@ -150,7 +151,7 @@ export default async function MasjidShortLinkPage({
         {published && (
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(mosqueJsonLd(mosque)) }}
+            dangerouslySetInnerHTML={{ __html: jsonLdHtml(mosqueJsonLd(mosque)) }}
           />
         )}
         {published && <MasjidInstallPrompt name={localizedName} />}

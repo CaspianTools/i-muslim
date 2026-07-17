@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { type Locale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { jsonLdHtml } from "@/lib/seo/jsonld";
 import { Link } from "@/i18n/navigation";
 import { TocSidebar } from "@/components/site/TocSidebar";
 import {
@@ -272,7 +273,7 @@ export default async function DownloadsPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData(hadithStatsForJsonLd, authoredGrandTotal)),
+          __html: jsonLdHtml(structuredData(hadithStatsForJsonLd, authoredGrandTotal)),
         }}
       />
 

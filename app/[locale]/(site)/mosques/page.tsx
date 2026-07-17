@@ -13,6 +13,7 @@ import { fetchPublishedMosques, fetchCountryAggregates } from "@/lib/admin/data/
 import { parseNearParam } from "@/lib/mosques/geo";
 import { countryName } from "@/lib/mosques/countries";
 import { mosqueListJsonLd } from "@/lib/mosques/jsonld";
+import { jsonLdHtml } from "@/lib/seo/jsonld";
 import { getSiteUrl } from "@/lib/mosques/constants";
 import type { Denomination, MosqueFilters as MFilters } from "@/types/mosque";
 
@@ -128,7 +129,7 @@ export default async function MosquesIndex({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(mosqueListJsonLd(mosques.slice(0, 50), `${getSiteUrl()}/mosques`)),
+          __html: jsonLdHtml(mosqueListJsonLd(mosques.slice(0, 50), `${getSiteUrl()}/mosques`)),
         }}
       />
     </div>

@@ -1,3 +1,5 @@
+import { jsonLdHtml } from "@/lib/seo/jsonld";
+
 type ArticleData = {
   canonicalUrl: string;
   locale: string;
@@ -85,11 +87,11 @@ export function HadithJsonLd({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleData) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(articleData) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbData) }}
       />
     </>
   );

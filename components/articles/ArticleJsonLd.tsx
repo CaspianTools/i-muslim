@@ -1,4 +1,5 @@
 import type { PublicArticle } from "@/types/blog";
+import { jsonLdHtml } from "@/lib/seo/jsonld";
 
 export function ArticleJsonLd({
   article,
@@ -31,7 +32,7 @@ export function ArticleJsonLd({
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(data) }}
     />
   );
 }

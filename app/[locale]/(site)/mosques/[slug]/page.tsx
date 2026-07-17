@@ -19,6 +19,7 @@ import { isLikingMosque } from "@/lib/mosques/likes";
 import { getMosqueAnalytics } from "@/lib/mosques/analytics";
 import { hasPermission } from "@/lib/permissions/check";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { jsonLdHtml } from "@/lib/seo/jsonld";
 import { type Locale } from "@/i18n/config";
 
 export const revalidate = 3600;
@@ -170,7 +171,7 @@ export default async function MosqueDetailPage({
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(mosqueJsonLd(mosque)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(mosqueJsonLd(mosque)) }}
       />
     </div>
   );

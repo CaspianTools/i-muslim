@@ -54,11 +54,12 @@ service cloud.firestore {
     }
 
     match /businessReports/{reportId} {
-      allow create: if request.resource.data.keys().hasAll(['businessId', 'reason', 'createdAt'])
-                    && request.resource.data.businessId is string
-                    && request.resource.data.reason in ['not_halal','closed','wrong_info','offensive','duplicate','other']
-                    && (!('note' in request.resource.data) || request.resource.data.note is string);
-      allow read, update, delete: if false;
+      // Reports are submitted through /api/businesses/report → the Admin SDK
+      // (submitBusinessReportAction), which bypasses these rules. No client path
+      // writes here directly, so deny all client access — this closes the
+      // previous anonymous, unauthenticated, unbounded create vector (report
+      // spam) with no impact on the app.
+      allow read, create, update, delete: if false;
     }
 
     // i-muslim Quran app — each signed-in user can read/write only their own backup.

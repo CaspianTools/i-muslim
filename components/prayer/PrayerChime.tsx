@@ -62,7 +62,7 @@ function playChime(ctx: AudioContext) {
  * Default-on because this is a Muslim app — the chime IS the feature.
  */
 export function PrayerChime() {
-  const { effectivePrefs, today, tomorrow, next } = usePrayerTimes({
+  const { effectivePrefs, today, tomorrow, next, now } = usePrayerTimes({
     autoDetect: false,
   });
   const tPrayers = useTranslations("prayerTimes");
@@ -99,9 +99,16 @@ export function PrayerChime() {
       ? (next.isTomorrow ? tomorrow[next.key] : today[next.key]).getTime()
       : null;
   const hasPrefs = !!effectivePrefs;
+  // A minute-bucketed clock so the scheduling effect re-runs as the ticker
+  // advances. Without this the effect only re-ran when `targetMs`/`next.key`
+  // changed (i.e. when a prayer *passed*) — so a page loaded more than 60 min
+  // before the next prayer would hit the >60-min guard below, bail, and never
+  // re-arm as it entered the window. Re-evaluating each minute lets it arm the
+  // timer once the next prayer is within the hour.
+  const nowMinute = now ? Math.floor(now.getTime() / 60_000) : 0;
 
   // Schedule the next chime whenever the target time changes (which it does
-  // as the ticker rolls past a prayer). Re-arms automatically.
+  // as the ticker rolls past a prayer) or as we tick into the arming window.
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!hasPrefs || targetMs === null) return;
@@ -158,7 +165,7 @@ export function PrayerChime() {
       if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasPrefs, targetMs, next?.key]);
+  }, [hasPrefs, targetMs, next?.key, nowMinute]);
 
   return null;
 }
