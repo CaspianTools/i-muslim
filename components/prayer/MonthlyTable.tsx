@@ -74,7 +74,7 @@ export function MonthlyTable({
       <table className="w-full text-sm">
         <thead className="bg-muted/50 text-left text-xs uppercase text-muted-foreground">
           <tr>
-            <th className="px-3 py-2 font-medium">Date</th>
+            <th className="px-3 py-2 font-medium">{t("date")}</th>
             {COLUMNS.map((c) => (
               <th key={c} className="px-3 py-2 font-medium">
                 {t(c)}

@@ -104,6 +104,20 @@ export function publicUrlFor(storagePath: string): string {
   return `https://storage.googleapis.com/${bucket}/${encodeURI(storagePath)}`;
 }
 
+// All site-branding objects live under this prefix (see createSiteUploadUrl).
+const SITE_ASSET_PREFIX = "site/branding/";
+
+// The make-public / delete helpers below accept a caller-supplied storagePath.
+// Without this guard a `settings.write` holder could pass an arbitrary bucket
+// object key — a private user upload, a matrimonial photo, or a mosque proof
+// doc — and have it made publicly readable or deleted. Constrain both to the
+// admin-owned site-branding prefix so they can only touch site assets.
+function assertSiteAssetPath(storagePath: string): void {
+  if (!storagePath.startsWith(SITE_ASSET_PREFIX) || storagePath.includes("..")) {
+    throw new Error(`Refusing to operate on non-site-asset path: ${storagePath}`);
+  }
+}
+
 // Site branding (logo/favicon/og/article placeholder) is rendered via plain
 // `https://storage.googleapis.com/...` URLs in <link rel="icon"> / <img>, which
 // the GCS REST endpoint serves with no Firebase Storage rules in the loop —
@@ -111,6 +125,7 @@ export function publicUrlFor(storagePath: string): string {
 // Granting per-object public read only on these admin-uploaded site assets
 // keeps everything else (user uploads, etc.) gated by Storage Rules.
 export async function makeSiteAssetPublic(storagePath: string): Promise<void> {
+  assertSiteAssetPath(storagePath);
   try {
     await getBucket().file(storagePath).makePublic();
   } catch (err) {
@@ -120,6 +135,7 @@ export async function makeSiteAssetPublic(storagePath: string): Promise<void> {
 }
 
 export async function deleteSiteStorageObject(storagePath: string): Promise<void> {
+  assertSiteAssetPath(storagePath);
   try {
     await getBucket().file(storagePath).delete({ ignoreNotFound: true });
   } catch (err) {

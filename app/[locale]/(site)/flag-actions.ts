@@ -36,7 +36,13 @@ function flagDocId(itemType: ContentFlagItemType, itemId: string, uid: string): 
 export async function flagContentAction(
   input: FlagContentInput,
 ): Promise<FlagContentResult> {
-  const { itemType, itemId, reference, href, locale } = input;
+  const { itemType, itemId } = input;
+  // Cap the caller-supplied display fields (only `note` was capped before) so
+  // they can't bloat the flag doc or inject an oversized string into the admin
+  // moderation UI (`reference` is used as the notification title).
+  const reference = (input.reference ?? "").trim().slice(0, 200);
+  const href = (input.href ?? "").trim().slice(0, 400);
+  const locale = (input.locale ?? "").trim().slice(0, 16);
   const note = (input.note ?? "").trim().slice(0, 500);
   if (itemType !== "hadith" && itemType !== "ayah") {
     return { ok: false, error: "Invalid item type", reason: "invalid" };

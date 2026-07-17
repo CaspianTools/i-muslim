@@ -75,6 +75,42 @@ export function clearPrefs(): void {
   }
 }
 
+// A calculation method the user explicitly chose during onboarding *before* a
+// location (and thus full prefs) existed — e.g. the "Approximate location" path,
+// where the actual location is resolved asynchronously by usePrayerTimes'
+// auto-detect. That detect adopts this pending method instead of the country
+// default when it writes the first prefs, then clears it, so a manual choice
+// survives the async race instead of being silently dropped.
+const PENDING_METHOD_KEY = "i-muslim-prayer-pending-method";
+
+export function readPendingMethod(): MethodKey | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const v = window.localStorage.getItem(PENDING_METHOD_KEY);
+    return v ? (v as MethodKey) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function writePendingMethod(method: MethodKey): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(PENDING_METHOD_KEY, method);
+  } catch {
+    // ignore
+  }
+}
+
+export function clearPendingMethod(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(PENDING_METHOD_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 const subscribe = (cb: () => void): (() => void) => {
   if (typeof window === "undefined") return () => {};
   const handler = (e: StorageEvent) => {

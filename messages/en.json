@@ -291,7 +291,8 @@
     "isha": "Isha",
     "next": "Next:",
     "in": "in {countdown}",
-    "allComplete": "All prayers complete"
+    "allComplete": "All prayers complete",
+    "date": "Date"
   },
   "hijri": {
     "months": {

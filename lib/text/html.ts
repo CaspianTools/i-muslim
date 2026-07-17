@@ -73,7 +73,12 @@ export function stripHtml(s: string): string {
  */
 export function stripFootnoteMarkers(s: string): string {
   return s
-    .replace(/\d+/g, "")
+    // Only strip digits that are a footnote marker — i.e. glued directly to the
+    // end of a word ("We2") or to a word's terminal punctuation ("Merciful.2").
+    // Standalone or grouped numerals a translation might legitimately contain
+    // ("12 months", "1,000", "3.14") are left intact.
+    .replace(/(?<=[A-Za-z])\d+/g, "")
+    .replace(/(?<=[A-Za-z][.,;:!?])\d+/g, "")
     .replace(/\s{2,}/g, " ")
     .replace(/\s+([.,;:!?])/g, "$1")
     .trim();

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ALL_METHODS, pickDefaultMethod, pickDefaultMadhab } from "@/lib/prayer/methods";
-import { readPrefs, writePrefs } from "@/lib/prayer/storage";
+import { readPrefs, writePrefs, writePendingMethod, clearPendingMethod } from "@/lib/prayer/storage";
 import { requestBrowserLocation } from "@/lib/prayer/location";
 import { tzToCity } from "@/lib/prayer/tz-country";
 import { detectClientTimeZone } from "@/lib/prayer/location";
@@ -68,6 +68,7 @@ const getOnboardedServer = () => true;
  */
 export function OnboardingModal() {
   const t = useTranslations("onboarding");
+  const tMethod = useTranslations("prayer");
   const onboarded = useSyncExternalStore(
     subscribeOnboarded,
     getOnboarded,
@@ -122,6 +123,13 @@ export function OnboardingModal() {
     const existing = readPrefs();
     if (existing) {
       writePrefs({ ...existing, method, source: "manual" });
+      clearPendingMethod();
+    } else {
+      // No full prefs yet (the "Approximate location" path, before the
+      // background auto-detect has resolved a location). Record the chosen
+      // method so the auto-detect adopts it instead of the country default —
+      // otherwise the selection is lost to the async detect race.
+      writePendingMethod(method);
     }
     finish();
   }
@@ -184,7 +192,7 @@ export function OnboardingModal() {
             >
               {ALL_METHODS.map((m) => (
                 <option key={m} value={m}>
-                  {m.replace(/([A-Z])/g, " $1").trim()}
+                  {tMethod(`method.${m}`)}
                 </option>
               ))}
             </select>

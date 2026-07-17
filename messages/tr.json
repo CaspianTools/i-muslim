@@ -294,7 +294,8 @@
     "isha": "Yatsı",
     "next": "Sıradaki:",
     "in": "{countdown} sonra",
-    "allComplete": "Bugünkü tüm namazlar tamamlandı"
+    "allComplete": "Bugünkü tüm namazlar tamamlandı",
+    "date": "Tarih"
   },
   "hijri": {
     "months": {

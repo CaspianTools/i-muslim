@@ -18,6 +18,8 @@ import {
 } from "./location";
 import { pickDefaultMadhab, pickDefaultMethod } from "./methods";
 import {
+  clearPendingMethod,
+  readPendingMethod,
   readPrefs,
   usePrayerPrefs,
   writePrefs,
@@ -35,6 +37,14 @@ async function resolveTzFromCoords(lat: number, lng: number): Promise<string> {
     return detectClientTimeZone();
   }
 }
+
+// Module-scoped guard so only ONE auto-detect cascade runs at a time across all
+// mounted usePrayerTimes instances (the site layout mounts several). Without it,
+// each instance independently fired the ipapi.co lookup on a first visit → 2–3
+// concurrent requests and needless rate-limit/quota pressure. The winner writes
+// prefs to localStorage; the others pick them up via the storage-event
+// subscription. Reset in `finally` so a later visit can retry if detection failed.
+let autoDetectInFlight = false;
 
 export interface UsePrayerTimesOptions {
   fallback?: PrayerPrefs;
@@ -64,10 +74,15 @@ export function usePrayerTimes(
     if (!autoDetect) return;
     if (typeof window === "undefined") return;
     if (readPrefs()) return;
+    if (autoDetectInFlight) return; // another instance is already detecting
+    autoDetectInFlight = true;
 
     let cancelled = false;
     (async () => {
       setAutoBusy(true);
+      // A method the user chose during onboarding before a location existed;
+      // adopt it instead of the country default, then clear it once consumed.
+      const pendingMethod = readPendingMethod();
       try {
         const permState = await geolocationPermissionState();
         if (permState === "granted" && !cancelled) {
@@ -84,14 +99,15 @@ export function usePrayerTimes(
             const tzCity = tzToCity(tz);
             const cc = tzCity?.countryCode ?? null;
             writePrefs({
-              method: pickDefaultMethod(cc),
+              method: pendingMethod ?? pickDefaultMethod(cc),
               madhab: pickDefaultMadhab(cc),
               coords: c,
               city: tzCity?.city ?? null,
               countryCode: cc,
               tz,
-              source: "browser",
+              source: pendingMethod ? "manual" : "browser",
             });
+            clearPendingMethod();
             return;
           } catch {
             // fall through
@@ -102,14 +118,15 @@ export function usePrayerTimes(
         if (cancelled) return;
         if (ip) {
           writePrefs({
-            method: pickDefaultMethod(ip.countryCode),
+            method: pendingMethod ?? pickDefaultMethod(ip.countryCode),
             madhab: pickDefaultMadhab(ip.countryCode),
             coords: ip.coords,
             city: ip.city,
             countryCode: ip.countryCode,
             tz: ip.tz,
-            source: "auto-ip",
+            source: pendingMethod ? "manual" : "auto-ip",
           });
+          clearPendingMethod();
           return;
         }
 
@@ -117,16 +134,18 @@ export function usePrayerTimes(
         const tzCity = tzToCity(tz);
         if (tzCity && !cancelled) {
           writePrefs({
-            method: pickDefaultMethod(tzCity.countryCode),
+            method: pendingMethod ?? pickDefaultMethod(tzCity.countryCode),
             madhab: pickDefaultMadhab(tzCity.countryCode),
             coords: { lat: tzCity.lat, lng: tzCity.lng },
             city: tzCity.city,
             countryCode: tzCity.countryCode,
             tz,
-            source: "auto-tz",
+            source: pendingMethod ? "manual" : "auto-tz",
           });
+          clearPendingMethod();
         }
       } finally {
+        autoDetectInFlight = false;
         if (!cancelled) setAutoBusy(false);
       }
     })();

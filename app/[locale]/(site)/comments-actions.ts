@@ -43,17 +43,26 @@ export type FlagCommentResult =
   | { ok: true; autoHidden: boolean }
   | ActionFailure;
 
+// Cap the caller-supplied display metadata so it can't be used to bloat the
+// comment doc (only the body is otherwise length-limited).
 function sanitizeMeta(meta: CommentItemMeta): CommentItemMeta {
   return {
-    title: meta.title,
-    subtitle: meta.subtitle ?? null,
-    href: meta.href,
-    locale: meta.locale ?? null,
+    title: (meta.title ?? "").slice(0, 200),
+    subtitle: meta.subtitle ? meta.subtitle.slice(0, 200) : null,
+    href: (meta.href ?? "").slice(0, 400),
+    locale: meta.locale ? meta.locale.slice(0, 16) : null,
   };
 }
 
+// Only revalidate our own relative routes. Rejecting absolute / protocol-
+// relative hrefs stops a caller from driving revalidation of an arbitrary path
+// (cache-churn) via the itemMeta.href they control.
+function isInAppPath(href: string): boolean {
+  return href.startsWith("/") && !href.startsWith("//");
+}
+
 function revalidateForMeta(meta: CommentItemMeta) {
-  if (meta.href) revalidatePath(meta.href);
+  if (meta.href && isInAppPath(meta.href)) revalidatePath(meta.href);
   revalidatePath("/profile/comments");
 }
 

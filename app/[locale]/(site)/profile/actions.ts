@@ -127,13 +127,14 @@ export async function toggleFavoriteAction(payload: {
     await col.add({
       itemType: payload.itemType,
       itemId: payload.itemId,
+      // Cap caller-supplied display fields so a favorite doc can't be bloated.
       itemMeta: {
-        title: payload.itemMeta.title,
-        subtitle: payload.itemMeta.subtitle ?? null,
-        href: payload.itemMeta.href,
-        thumbnail: payload.itemMeta.thumbnail ?? null,
-        arabic: payload.itemMeta.arabic ?? null,
-        locale: payload.itemMeta.locale ?? null,
+        title: (payload.itemMeta.title ?? "").slice(0, 200),
+        subtitle: payload.itemMeta.subtitle ? payload.itemMeta.subtitle.slice(0, 200) : null,
+        href: (payload.itemMeta.href ?? "").slice(0, 400),
+        thumbnail: payload.itemMeta.thumbnail ? payload.itemMeta.thumbnail.slice(0, 400) : null,
+        arabic: payload.itemMeta.arabic ? payload.itemMeta.arabic.slice(0, 2000) : null,
+        locale: payload.itemMeta.locale ? payload.itemMeta.locale.slice(0, 16) : null,
       },
       createdAt: FieldValue.serverTimestamp(),
     });

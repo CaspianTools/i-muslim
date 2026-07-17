@@ -31,13 +31,15 @@ function tsToIso(value: unknown): string {
   return new Date().toISOString();
 }
 
+// Cap the caller-supplied display metadata so it can't bloat the note doc
+// (only `text` is otherwise length-limited).
 function sanitizeMeta(meta: NoteItemMeta): NoteItemMeta {
   return {
-    title: meta.title,
-    subtitle: meta.subtitle ?? null,
-    href: meta.href,
-    arabic: meta.arabic ?? null,
-    locale: meta.locale ?? null,
+    title: (meta.title ?? "").slice(0, 200),
+    subtitle: meta.subtitle ? meta.subtitle.slice(0, 200) : null,
+    href: (meta.href ?? "").slice(0, 400),
+    arabic: meta.arabic ? meta.arabic.slice(0, 2000) : null,
+    locale: meta.locale ? meta.locale.slice(0, 16) : null,
   };
 }
 

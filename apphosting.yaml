@@ -49,6 +49,17 @@ env:
       - BUILD
       - RUNTIME
 
+  # Pin the runtime timezone to UTC. The prayer-time / Hijri / ICS routes build
+  # dates via Date.UTC(...) and hand them to `adhan` / `@umalqura/core`, which
+  # read the runtime-LOCAL date components — correct only while the runtime is
+  # UTC. Cloud Run already defaults to UTC; pinning it here removes the latent
+  # off-by-one-day risk if that default ever changes.
+  - variable: TZ
+    value: UTC
+    availability:
+      - BUILD
+      - RUNTIME
+
 # Cloud Run sizing/scaling. minInstances stays 0 so nothing bills while idle
 # (the app cold-starts on the first request); maxInstances caps worst-case
 # fan-out (a traffic spike or runaway loop) so spend is bounded. Bump the cap if

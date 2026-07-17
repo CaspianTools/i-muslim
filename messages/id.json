@@ -294,7 +294,8 @@
     "isha": "Isya",
     "next": "Selanjutnya:",
     "in": "dalam {countdown}",
-    "allComplete": "Semua salat hari ini telah selesai"
+    "allComplete": "Semua salat hari ini telah selesai",
+    "date": "Tanggal"
   },
   "hijri": {
     "months": {

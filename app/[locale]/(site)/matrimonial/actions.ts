@@ -76,6 +76,9 @@ export async function respondInterest(
   fromUserId: string,
   decision: "accepted" | "declined",
 ): Promise<void> {
+  // Validate the caller-supplied status at runtime — the TS type is erased, so a
+  // raw action call could otherwise write an arbitrary status onto the interest.
+  if (decision !== "accepted" && decision !== "declined") return;
   const session = await requireSiteSession();
   const existing = await findInterest(fromUserId, session.uid);
   if (!existing) return;
@@ -88,11 +91,22 @@ export async function respondInterest(
   revalidatePath("/profile/matrimonial");
 }
 
+const REPORT_REASONS: readonly ReportReason[] = [
+  "fake",
+  "harassment",
+  "inappropriate_photo",
+  "non_muslim",
+  "scam",
+  "other",
+];
+
 export async function reportProfile(
   targetUserId: string,
   reason: ReportReason,
   notes: string | null,
 ): Promise<{ ok: boolean; rateLimit?: boolean }> {
+  // Validate the caller-supplied reason at runtime (the TS type is erased).
+  if (!REPORT_REASONS.includes(reason)) return { ok: false };
   const session = await requireSiteSession();
   const reports = await listReports();
   const today = new Date().toISOString().slice(0, 10);

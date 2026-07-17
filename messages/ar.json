@@ -294,7 +294,8 @@
     "isha": "العشاء",
     "next": "التالية:",
     "in": "بعد {countdown}",
-    "allComplete": "اكتملت صلوات اليوم"
+    "allComplete": "اكتملت صلوات اليوم",
+    "date": "التاريخ"
   },
   "hijri": {
     "months": {

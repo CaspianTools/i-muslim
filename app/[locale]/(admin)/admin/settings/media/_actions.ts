@@ -47,7 +47,11 @@ export async function deleteSiteAssetAction(
     return { ok: false, error: "unauthorized" };
   }
   if (!storagePath) return { ok: false, error: "missing_path" };
-  await deleteSiteStorageObject(storagePath);
+  try {
+    await deleteSiteStorageObject(storagePath);
+  } catch {
+    return { ok: false, error: "invalid_path" };
+  }
   return { ok: true };
 }
 

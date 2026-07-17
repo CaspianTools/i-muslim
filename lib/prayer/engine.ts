@@ -157,6 +157,10 @@ export function getNextPrayer(
 
 export function getCurrentPrayer(now: Date, today: DailyTimes): PrayerKey | null {
   const order: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
+  // Between midnight and today's Fajr we're still inside the previous night's
+  // Isha window (Isha runs until the next Fajr), so the current prayer is Isha —
+  // not "nothing", which is what iterating only today's Fajr→Isha would return.
+  if (now.getTime() < today.fajr.getTime()) return "isha";
   let current: PrayerKey | null = null;
   for (const key of order) {
     if (today[key].getTime() <= now.getTime()) current = key;
