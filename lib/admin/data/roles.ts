@@ -15,6 +15,11 @@ import {
 
 const ROLES_COLLECTION = "roles";
 
+// Data-cache tag for role-permission reads (see loadRolePermissions in
+// lib/auth/session.ts). Invalidated by the role write actions so permission
+// changes take effect immediately rather than waiting out the TTL.
+export const ROLES_TAG = "roles";
+
 export interface AdminRoleDoc {
   id: string;
   name: string;

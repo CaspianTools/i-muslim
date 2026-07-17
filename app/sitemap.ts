@@ -56,7 +56,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
 
   const [{ mosques }, countries] = await Promise.all([
-    fetchPublishedMosques({ limit: 5000 }),
+    // Uses the shared published-mosque cache, which is hard-capped at 2000 docs
+    // (see fetchAllPublished) to bound the cost of the hot home/index pages that
+    // read the same set. The prior `limit: 5000` was a no-op past that cap. If
+    // the directory ever exceeds ~2000 published mosques, shard this into a
+    // per-country/paged sitemap via `generateSitemaps` (see app/hadith/sitemap.ts).
+    fetchPublishedMosques(),
     fetchCountryAggregates(),
   ]);
   const mosqueEntries: MetadataRoute.Sitemap = mosques.map((m) =>

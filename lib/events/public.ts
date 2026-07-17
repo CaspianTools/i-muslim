@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { unstable_cache, revalidateTag } from "next/cache";
 import { getDb } from "@/lib/firebase/admin";
 import { MOCK_EVENTS } from "@/lib/admin/mock/events";
@@ -74,7 +75,9 @@ export async function fetchPublicEvents(opts?: {
   return { events: items.slice(0, limit), source };
 }
 
-export async function fetchPublicEvent(id: string): Promise<AdminEvent | null> {
+// Wrapped in React cache() so the detail page's generateMetadata + body share a
+// single Firestore read per request for the same event id.
+export const fetchPublicEvent = cache(async (id: string): Promise<AdminEvent | null> => {
   const db = getDb();
   if (db) {
     try {
@@ -88,7 +91,7 @@ export async function fetchPublicEvent(id: string): Promise<AdminEvent | null> {
     }
   }
   return MOCK_EVENTS.find((e) => e.id === id && e.status === "published") ?? null;
-}
+});
 
 export function nextThreeOccurrences(event: AdminEvent): Date[] {
   const now = new Date();

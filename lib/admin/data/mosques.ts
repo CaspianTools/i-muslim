@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { unstable_cache, revalidateTag } from "next/cache";
 import { getDb } from "@/lib/firebase/admin";
 import { MOCK_MOSQUES, MOCK_MOSQUE_BY_SLUG } from "@/lib/admin/mock/mosques";
@@ -173,7 +174,11 @@ function applyFilters(mosques: Mosque[], filters: MosqueFilters): Mosque[] {
   return out;
 }
 
-export async function fetchMosqueBySlug(slug: string): Promise<{ mosque: Mosque | null; source: MosqueSource }> {
+// Wrapped in React cache() so the detail page's generateMetadata + body (both
+// call this for the same slug) share one Firestore read per request. Not
+// cross-request cached on purpose: the page is dynamic and managers must see
+// their own edits immediately, and it reads regardless of status.
+export const fetchMosqueBySlug = cache(async (slug: string): Promise<{ mosque: Mosque | null; source: MosqueSource }> => {
   const db = getDb();
   if (!db) {
     const m = MOCK_MOSQUE_BY_SLUG.get(slug) ?? null;
@@ -192,7 +197,7 @@ export async function fetchMosqueBySlug(slug: string): Promise<{ mosque: Mosque 
     const m = MOCK_MOSQUE_BY_SLUG.get(slug) ?? null;
     return { mosque: m, source: "mock" };
   }
-}
+});
 
 /**
  * Resolve a mosque by its `/m/<code>` short code. Reads regardless of status so

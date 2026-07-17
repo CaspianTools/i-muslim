@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { unstable_cache, revalidateTag } from "next/cache";
 import { getDb } from "@/lib/firebase/admin";
 import { normalizeBusiness } from "@/lib/admin/data/businesses";
@@ -56,7 +57,9 @@ export const listPublished = unstable_cache(
   { revalidate: 300, tags: [BUSINESSES_PUBLISHED_TAG] },
 );
 
-export async function getBySlug(slug: string): Promise<Business | null> {
+// Wrapped in React cache() so the detail page's generateMetadata + body (which
+// both call this for the same slug) share a single Firestore read per request.
+export const getBySlug = cache(async (slug: string): Promise<Business | null> => {
   const db = getDb();
   if (!db) return null;
   try {
@@ -73,7 +76,7 @@ export async function getBySlug(slug: string): Promise<Business | null> {
     console.warn("[businesses/public] getBySlug failed:", err);
     return null;
   }
-}
+});
 
 export async function listPublishedSlugs(limit = 1000): Promise<Array<{ slug: string; updatedAt: string }>> {
   const db = getDb();

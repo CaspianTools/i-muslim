@@ -1,12 +1,13 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requirePermission, PermissionError } from "@/lib/permissions/server";
 import {
   createRole,
   deleteRole,
   updateRole,
+  ROLES_TAG,
   type AdminRoleDoc,
 } from "@/lib/admin/data/roles";
 import { ALL_PERMISSIONS, isPermission, type Permission } from "@/lib/permissions/catalog";
@@ -51,6 +52,7 @@ export async function createRoleAction(input: {
 
     const role = await createRole({ id, name, description, permissions });
     revalidatePath("/admin/roles");
+    revalidateTag(ROLES_TAG, { expire: 0 });
     return { ok: true, data: role };
   } catch (err) {
     if (err instanceof z.ZodError) {
@@ -83,6 +85,7 @@ export async function updateRoleAction(
     const role = await updateRole(roleId, patch);
     revalidatePath("/admin/roles");
     revalidatePath(`/admin/roles/${roleId}`);
+    revalidateTag(ROLES_TAG, { expire: 0 });
     return { ok: true, data: role };
   } catch (err) {
     if (err instanceof z.ZodError) {
@@ -97,6 +100,7 @@ export async function deleteRoleAction(roleId: string): Promise<ActionResult> {
     await requirePermission("roles.manage");
     await deleteRole(roleId);
     revalidatePath("/admin/roles");
+    revalidateTag(ROLES_TAG, { expire: 0 });
     return { ok: true };
   } catch (err) {
     return fail(err);

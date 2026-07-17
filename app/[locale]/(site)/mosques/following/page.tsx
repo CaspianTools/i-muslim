@@ -5,7 +5,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { getSiteSession } from "@/lib/auth/session";
 import { listFollowedSlugs } from "@/lib/mosques/follows";
 import { listMosqueNews } from "@/lib/mosques/news";
-import { fetchMosqueBySlug } from "@/lib/admin/data/mosques";
+import { fetchPublishedMosques } from "@/lib/admin/data/mosques";
 import { pickLocalized } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,16 +17,22 @@ export default async function FollowingFeedPage() {
   const session = await getSiteSession();
   if (!session) redirect("/login?callbackUrl=/mosques/following");
 
-  const [t, locale] = await Promise.all([getTranslations("mosques.follow"), getLocale()]);
-  const slugs = await listFollowedSlugs(session.uid);
+  const [t, locale, slugs, { mosques: published }] = await Promise.all([
+    getTranslations("mosques.follow"),
+    getLocale(),
+    listFollowedSlugs(session.uid),
+    // Reuse the cross-request-cached published set instead of a per-slug
+    // fetchMosqueBySlug read for each followed mosque (was the N in the N+1).
+    fetchPublishedMosques(),
+  ]);
+  const bySlug = new Map(published.map((m) => [m.slug, m]));
 
+  // Only the news query remains per-followed-mosque; bounded by follow count.
   const grouped = await Promise.all(
     slugs.map(async (slug) => {
-      const [{ mosque }, posts] = await Promise.all([
-        fetchMosqueBySlug(slug),
-        listMosqueNews(slug, { limit: 5 }),
-      ]);
-      if (!mosque || mosque.status !== "published") return [];
+      const mosque = bySlug.get(slug);
+      if (!mosque) return [];
+      const posts = await listMosqueNews(slug, { limit: 5 });
       const name = pickLocalized(mosque.name, locale, "en") ?? mosque.name.en;
       const href = mosque.shortCode ? `/m/${mosque.shortCode}` : `/mosques/${mosque.slug}`;
       return posts.map((post) => ({ post, name, href }));

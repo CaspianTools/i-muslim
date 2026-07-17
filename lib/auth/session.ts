@@ -1,7 +1,9 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { getAdminAuth, getDb } from "@/lib/firebase/admin";
+import { ROLES_TAG } from "@/lib/admin/data/roles";
 import {
   WILDCARD,
   isPermission,
@@ -54,23 +56,31 @@ async function loadUserOverlay(uid: string): Promise<UserOverlay> {
   }
 }
 
-async function loadRolePermissions(roleId: string): Promise<RolePermissions> {
-  const db = getDb();
-  if (!db) return [];
-  try {
-    const snap = await db.collection("roles").doc(roleId).get();
-    if (!snap.exists) return [];
-    const data = snap.data() ?? {};
-    if (data.permissions === WILDCARD) return WILDCARD;
-    if (!Array.isArray(data.permissions)) return [];
-    return (data.permissions as unknown[]).filter(
-      (v): v is Permission => typeof v === "string" && isPermission(v),
-    );
-  } catch (err) {
-    console.warn("[auth/session] role read failed:", err);
-    return [];
-  }
-}
+// Role docs change rarely but are read on every authenticated request, so cache
+// the permission list cross-request in the Data Cache (keyed by roleId) instead
+// of paying a Firestore read per request. Invalidated immediately on any role
+// write via the ROLES_TAG tag; a 1-hour TTL is the only out-of-band fallback.
+const loadRolePermissions = unstable_cache(
+  async (roleId: string): Promise<RolePermissions> => {
+    const db = getDb();
+    if (!db) return [];
+    try {
+      const snap = await db.collection("roles").doc(roleId).get();
+      if (!snap.exists) return [];
+      const data = snap.data() ?? {};
+      if (data.permissions === WILDCARD) return WILDCARD;
+      if (!Array.isArray(data.permissions)) return [];
+      return (data.permissions as unknown[]).filter(
+        (v): v is Permission => typeof v === "string" && isPermission(v),
+      );
+    } catch (err) {
+      console.warn("[auth/session] role read failed:", err);
+      return [];
+    }
+  },
+  ["role-permissions"],
+  { revalidate: 3600, tags: [ROLES_TAG] },
+);
 
 export const getSiteSession = cache(async (): Promise<SiteSession | null> => {
   const auth = getAdminAuth();

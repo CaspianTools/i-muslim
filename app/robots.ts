@@ -7,7 +7,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin/", "/api/"],
+      // `*/admin/` also covers the locale-prefixed admin paths (/en/admin/,
+      // /ar/admin/, …) that a bare `/admin/` rule would miss.
+      disallow: ["/admin/", "*/admin/", "/api/"],
     },
     sitemap: `${site}/sitemap.xml`,
     host: site.replace(/^https?:\/\//, ""),
