@@ -232,22 +232,6 @@
         { "fieldPath": "category", "order": "ASCENDING" },
         { "fieldPath": "latestPublishedAt", "order": "DESCENDING" }
       ]
-    },
-    {
-      "collectionGroup": "mosqueSubmissions",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "mosqueSubmissions",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "submitterIp", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "ASCENDING" }
-      ]
     }
   ],
   "fieldOverrides": []
