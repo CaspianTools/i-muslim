@@ -147,6 +147,13 @@ export async function listComments(
 
     const offset = (page - 1) * pageSize;
     // Fetch one extra to detect hasMore without a count query.
+    //
+    // NOTE: `.offset()` bills the skipped documents, so a deep thread's page N
+    // costs ~N×pageSize reads. Kept intentionally: comment threads here are
+    // shallow (most viewers never page past 1–2), and a cursor (`startAfter`)
+    // rewrite needs boundary-safe ordering — a `createdAt`+`id` composite index
+    // so timestamp-precision ties can't duplicate or skip a comment across
+    // pages. If threads grow deep, migrate to that cursor form.
     const snap = await q
       .orderBy("createdAt", "desc")
       .offset(offset)

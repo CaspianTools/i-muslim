@@ -1981,7 +1981,8 @@
       "takeDown": "إزالة",
       "takenDown": "تمت إزالة التحديث.",
       "takeDownFailed": "تعذّرت إزالة التحديث.",
-      "commentItemTitle": "تحديث {name}"
+      "commentItemTitle": "تحديث {name}",
+      "imageAlt": "صورة نشرها {mosque}"
     },
     "events": {
       "title": "الفعاليات القادمة",
@@ -3364,7 +3365,10 @@
     "gradeTooltip": "Grade",
     "translationUnderReview": "Translation under review",
     "translationUnavailable": "Translation unavailable",
-    "languageUnavailableShowing": "{requested} unavailable — showing {actual}"
+    "languageUnavailableShowing": "{requested} unavailable — showing {actual}",
+    "openHadith": "افتح الحديث {number}",
+    "notes": "ملاحظات",
+    "comments": "التعليقات ({count})"
   },
   "hadithLanguageFilter": {
     "label": "الترجمات",

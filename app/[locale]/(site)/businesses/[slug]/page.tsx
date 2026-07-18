@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowLeft, AtSign, ExternalLink, Globe, Mail, MapPin, Phone, MessageCircle } from "lucide-react";
@@ -146,13 +147,13 @@ export default async function BusinessDetailPage({ params }: RouteParams) {
         <section className="mt-6">
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {business.photos.slice(0, 6).map((photo) => (
-              <li key={photo.storagePath} className="overflow-hidden rounded-lg border border-border bg-muted">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+              <li key={photo.storagePath} className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted">
+                <Image
                   src={bucketUrl(photo.storagePath)}
                   alt={photo.alt ?? business.name}
-                  className="aspect-[4/3] w-full object-cover"
-                  loading="lazy"
+                  fill
+                  sizes="(max-width: 640px) 50vw, 33vw"
+                  className="object-cover"
                 />
               </li>
             ))}

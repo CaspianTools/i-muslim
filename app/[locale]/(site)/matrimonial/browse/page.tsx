@@ -17,7 +17,10 @@ export default async function BrowsePage() {
   const me = await getProfile(session.uid);
   if (!me) redirect("/profile/matrimonial");
 
-  const { profiles } = await listProfiles();
+  // Only active profiles are browsable; filtering in the query keeps the read
+  // cost proportional to active profiles instead of the whole collection. The
+  // mutual (halal, two-way) match is still applied in JS below.
+  const { profiles } = await listProfiles({ status: "active" });
   const candidates = profiles.filter((p) => mutualFilter(me, p));
 
   return (

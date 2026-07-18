@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { CommentThread } from "@/components/comments/CommentThread";
 import { NewsPostActions } from "@/components/mosque/news/NewsPostActions";
@@ -50,12 +51,15 @@ export async function MosqueNewsItem({
       </header>
       <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground sm:text-[0.925rem]">{post.body}</p>
       {post.image?.url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={post.image.url}
-          alt=""
-          className="mt-3 max-h-80 w-full rounded-lg border border-border object-cover sm:max-h-96"
-        />
+        <div className="relative mt-3 aspect-[16/10] w-full overflow-hidden rounded-lg border border-border">
+          <Image
+            src={post.image.url}
+            alt={t("imageAlt", { mosque: mosqueName })}
+            fill
+            sizes="(max-width: 640px) 100vw, 640px"
+            className="object-cover"
+          />
+        </div>
       )}
       <div className="mt-3 border-t border-border pt-2">
         <NewsPostActions

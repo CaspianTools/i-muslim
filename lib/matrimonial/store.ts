@@ -146,26 +146,40 @@ export async function getStoreSource(): Promise<StoreSource> {
   return getDb() ? "firestore" : "mock";
 }
 
-export async function listProfiles(): Promise<{
+export async function listProfiles(opts?: {
+  status?: MatrimonialProfile["status"];
+}): Promise<{
   profiles: MatrimonialProfile[];
   source: StoreSource;
 }> {
+  const mockProfiles = () => {
+    const all = Array.from(getMockState().profiles.values());
+    return opts?.status ? all.filter((p) => p.status === opts.status) : all;
+  };
   const db = getDb();
   if (!db) {
-    return { profiles: Array.from(getMockState().profiles.values()), source: "mock" };
+    return { profiles: mockProfiles(), source: "mock" };
   }
   try {
-    const snap = await db.collection(PROFILES_COLLECTION).limit(500).get();
+    // The public browse only needs `status === "active"` profiles; pushing that
+    // into the query (instead of reading all 500 and filtering in JS) cuts the
+    // read cost of every browse view. Single-field equality needs no composite
+    // index. Admin and the user's own view call without a filter (all statuses).
+    let q: FirebaseFirestore.Query = db.collection(PROFILES_COLLECTION);
+    if (opts?.status) q = q.where("status", "==", opts.status);
+    const snap = await q.limit(500).get();
     const profiles = snap.docs
       .map((d) => normalizeProfile(d.id, d.data() as Record<string, unknown>))
       .filter((p): p is MatrimonialProfile => p !== null);
-    if (profiles.length === 0) {
+    // Only an empty *unfiltered* result means "not seeded" → mock fallback; an
+    // empty filtered result (e.g. no active profiles yet) is a real answer.
+    if (profiles.length === 0 && !opts?.status) {
       return { profiles: Array.from(getMockState().profiles.values()), source: "mock" };
     }
     return { profiles, source: "firestore" };
   } catch (err) {
     console.warn("[matrimonial/store] listProfiles fallback:", err);
-    return { profiles: Array.from(getMockState().profiles.values()), source: "mock" };
+    return { profiles: mockProfiles(), source: "mock" };
   }
 }
 

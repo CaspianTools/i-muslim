@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getSiteSession } from "@/lib/auth/session";
@@ -17,8 +18,9 @@ export default async function FollowingFeedPage() {
   const session = await getSiteSession();
   if (!session) redirect("/login?callbackUrl=/mosques/following");
 
-  const [t, locale, slugs, { mosques: published }] = await Promise.all([
+  const [t, tNews, locale, slugs, { mosques: published }] = await Promise.all([
     getTranslations("mosques.follow"),
+    getTranslations("mosques.news"),
     getLocale(),
     listFollowedSlugs(session.uid),
     // Reuse the cross-request-cached published set instead of a per-slug
@@ -72,8 +74,15 @@ export default async function FollowingFeedPage() {
               </div>
               <p className="mt-2 whitespace-pre-wrap text-sm text-foreground">{post.body}</p>
               {post.image?.url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={post.image.url} alt="" className="mt-3 max-h-80 w-full rounded-lg border border-border object-cover" />
+                <div className="relative mt-3 aspect-[16/10] w-full overflow-hidden rounded-lg border border-border">
+                  <Image
+                    src={post.image.url}
+                    alt={tNews("imageAlt", { mosque: name })}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 640px"
+                    className="object-cover"
+                  />
+                </div>
               )}
               <Link href={href} className="mt-3 inline-block text-xs text-accent hover:underline">
                 {t("viewMasjid")} →

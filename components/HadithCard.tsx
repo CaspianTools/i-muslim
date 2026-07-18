@@ -152,7 +152,7 @@ export function HadithCard({
               <Link
                 href={`/hadith/${collectionId}/${number}`}
                 className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
-                aria-label={permalinkLabel ?? `Open hadith ${number}`}
+                aria-label={permalinkLabel ?? tCard("openHadith", { number })}
               >
                 <ExternalLink className="size-3.5" />
                 <span className="hidden sm:inline">{permalinkLabel ?? "Open"}</span>
@@ -174,8 +174,8 @@ export function HadithCard({
                   href="#notes"
                   data-hadith-scroll-target={tabsAnchorId}
                   className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-transparent px-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  aria-label="Notes"
-                  title="Notes"
+                  aria-label={tCard("notes")}
+                  title={tCard("notes")}
                 >
                   <StickyNote className="size-4" />
                 </a>
@@ -183,8 +183,8 @@ export function HadithCard({
                   href="#comments"
                   data-hadith-scroll-target={tabsAnchorId}
                   className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-transparent px-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  aria-label={`Comments (${commentCount})`}
-                  title="Comments"
+                  aria-label={tCard("comments", { count: commentCount })}
+                  title={tCard("comments", { count: commentCount })}
                 >
                   <MessageSquare className="size-4" />
                   {commentCount > 0 && <span>{commentCount}</span>}

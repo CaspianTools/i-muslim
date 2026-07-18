@@ -1981,7 +1981,8 @@
       "takeDown": "Kaldır",
       "takenDown": "Güncelleme kaldırıldı.",
       "takeDownFailed": "Güncelleme kaldırılamadı.",
-      "commentItemTitle": "{name} güncellemesi"
+      "commentItemTitle": "{name} güncellemesi",
+      "imageAlt": "{mosque} tarafından paylaşılan fotoğraf"
     },
     "events": {
       "title": "Yaklaşan etkinlikler",
@@ -3364,7 +3365,10 @@
     "gradeTooltip": "Derece",
     "translationUnderReview": "Çeviri inceleme aşamasında",
     "translationUnavailable": "çeviri mevcut değil",
-    "languageUnavailableShowing": "{requested} mevcut değil — {actual} gösteriliyor"
+    "languageUnavailableShowing": "{requested} mevcut değil — {actual} gösteriliyor",
+    "openHadith": "Hadisi aç {number}",
+    "notes": "Notlar",
+    "comments": "Yorumlar ({count})"
   },
   "hadithLanguageFilter": {
     "label": "Çeviriler",

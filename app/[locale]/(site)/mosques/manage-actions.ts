@@ -195,9 +195,11 @@ export async function finalizeMosqueUploadAction(
   storagePath: string,
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   if (!(await authorize(slug))) return { ok: false, error: "forbidden" };
-  // Defense in depth: only finalize public-media objects under a mosque folder,
-  // never proof docs (those stay private behind admin-only signed reads).
-  if (!storagePath.startsWith("mosques/") || storagePath.includes("/proof/")) {
+  // Only finalize public-media objects under THIS mosque's folder, never proof
+  // docs (those stay private behind admin-only signed reads). Tying the path to
+  // the authorized slug stops a manager of one mosque from stamping a public
+  // download token on another mosque's media.
+  if (!storagePath.startsWith(`mosques/${slug}/`) || storagePath.includes("/proof/")) {
     return { ok: false, error: "bad_path" };
   }
   try {
