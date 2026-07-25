@@ -635,6 +635,7 @@
     "about": "من نحن",
     "privacy": "الخصوصية",
     "terms": "الشروط",
+    "deleteAccount": "Delete account",
     "contact": "تواصل معنا",
     "developers": "للمطورين",
     "downloads": "Downloads",
@@ -766,6 +767,24 @@
         "errorGeneric": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
         "errorNotConfigured": "نموذج التواصل غير متاح مؤقتًا. يرجى مراسلة fuad.jalilov@gmail.com مباشرةً."
       }
+    },
+    "deleteAccount": {
+      "title": "Delete your account and data",
+      "description": "How to delete your account and any backed-up data for apps by i-muslim / Caspian Tools.",
+      "updated": "Last updated: 25 July 2026",
+      "intro": "This page explains how to delete your account and any backed-up data for apps published by i-muslim (i-muslim.com) and developed by Caspian Tools (caspiantools.com). Our apps are offline-first; signing in for cloud backup is optional, so you only have an account to delete if you chose to sign in. If you never signed in, the app stores nothing off your device — just uninstalling it removes everything.",
+      "howHeading": "How to request deletion",
+      "step1": "Email <email>caspiantools@googlegroups.com</email> from the email address associated with your account.",
+      "step2": "In the subject line, write \"Delete my account\" and the app name — for example: Delete my account — i-muslim Quran",
+      "step3": "We verify the request comes from the account owner, then delete the account.",
+      "howNote": "We complete deletion within 30 days of a verified request and email you to confirm.",
+      "deletedHeading": "What is deleted",
+      "deleted1": "Your account identity — email / Google sign-in and user ID — in Firebase Authentication.",
+      "deleted2": "Any data you backed up to your account (such as bookmarks, saved items, reading progress, and app settings), stored in Cloud Firestore.",
+      "keptHeading": "What is kept",
+      "kept1": "Nothing tied to your identity is retained after deletion, beyond anything the law requires. We keep no separate copies.",
+      "kept2": "Data stored only on your device (while signed out) is not part of your account and is not affected — uninstall the app to remove it.",
+      "contactLine": "caspiantools@googlegroups.com · i-muslim.com · caspiantools.com"
     }
   },
   "articles": {

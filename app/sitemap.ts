@@ -40,6 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/about", { changeFrequency: "yearly", priority: 0.3 }),
     entry("/privacy", { changeFrequency: "yearly", priority: 0.3 }),
     entry("/terms", { changeFrequency: "yearly", priority: 0.3 }),
+    entry("/delete-account", { changeFrequency: "yearly", priority: 0.3 }),
     entry("/contact", { changeFrequency: "yearly", priority: 0.3 }),
     entry("/downloads", { changeFrequency: "monthly", priority: 0.7 }),
     entry("/developers", { changeFrequency: "monthly", priority: 0.5 }),

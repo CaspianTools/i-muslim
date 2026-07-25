@@ -144,6 +144,11 @@ export async function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/delete-account" className={linkClass}>
+                    {t("deleteAccount")}
+                  </Link>
+                </li>
+                <li>
                   <Link href="/contact" className={linkClass}>
                     {t("contact")}
                   </Link>
