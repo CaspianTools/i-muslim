@@ -20,6 +20,112 @@
     "of": "/",
     "copy": "Kopyala"
   },
+  "apps": {
+    "quran": {
+      "meta": {
+        "title": "i-muslim Kur'an — Android için çevrimdışı Kur'an uygulaması",
+        "description": "Android için sakin, çevrimdışı çalışan bir Kur'an okuyucusu. Osmanî Arapça metin, dört meal, tecvid renkleri, yer imleri ve notlar. Ücretsiz, reklamsız, takipsiz."
+      },
+      "hero": {
+        "eyebrow": "Android uygulaması",
+        "title": "i-muslim Kur'an",
+        "tagline": "Çevrimdışı Kur'an okuyucusu. Arapça, dört meal ve tecvid renkleri. Reklamsız.",
+        "lead": "i-muslim Kur'an, gününüze sığan sakin ve çevrimdışı bir Kur'an okuyucusudur. Kur'an'ın tamamı — Osmanî hattıyla Arapça metin ve dört güvenilir meal — uygulamanın içindedir; trende, camide, uçakta ya da şebekenin olmadığı her yerde okuyabilirsiniz. İndirme yok, hesap yok, bekleme yok. İsteğe bağlı bulut yedeklemeyi açmadığınız sürece cihazınızdan hiçbir şey çıkmaz. Yalnızca siz ve Kitap.",
+        "version": "Sürüm {version}",
+        "updated": "Güncelleme {date}"
+      },
+      "badges": {
+        "offline": "Çevrimdışı çalışır",
+        "noAds": "Reklam yok",
+        "noTracking": "Takip yok",
+        "free": "Sonsuza dek ücretsiz"
+      },
+      "cta": {
+        "play": "Google Play'den edinin",
+        "playAria": "i-muslim Kur'an'ı Google Play'den edinin — yeni sekmede açılır",
+        "webReaderLead": "Tarayıcınızda okumayı mı tercih edersiniz?",
+        "webReaderLink": "Web Kur'an okuyucusunu açın",
+        "privacy": "Uygulama verilerinizi nasıl işliyor"
+      },
+      "screenshots": {
+        "heading": "İçeriden bir bakış",
+        "hint": "{version} sürümünden.",
+        "alt": "{caption} — Android'de i-muslim Kur'an",
+        "captions": {
+          "surahList": "114 surenin tamamı, aranabilir",
+          "titleCard": "Her sure süslü bir başlık kartıyla açılır",
+          "mushaf": "Yalnızca Arapça, mushafta basıldığı gibi",
+          "translations": "Mealleri sure adından değiştirin",
+          "tajweed": "İsteğe bağlı tecvid renkleri",
+          "tajweedLegend": "Her kural kendi dilinizde açıklanır",
+          "ayahActions": "Herhangi bir ayeti yer imine ekleyin, not alın, kopyalayın ya da paylaşın",
+          "dark": "Gece dâhil beş okuma arka planı"
+        }
+      },
+      "features": {
+        "heading": "Neler var",
+        "reading": {
+          "title": "Güzel bir okuma deneyimi",
+          "b1": "Her sure süslü bir başlık kartıyla açılır: Arapça adı, açtığınız her dildeki yazılışının yanında; altında surenin numarası ve ayet sayısı. Uygulama içinde çizilir ve okuma arka planınıza uyacak şekilde renklendirilir.",
+          "b2": "Arapçayı tek başına okuyun, sayfa mushafta basıldığı gibi dizilsin: iki yana yaslanmış tek parça bir blok, ayetler arasında çizgi ve rozet olmadan, her ayet numarasını taşıyan geleneksel süslü bir gülle kapanır. Bir meali geri açtığınızda ayet ayet görünüm döner.",
+          "b3": "Beş Arapça yazı tipi: Amiri, Scheherazade New, Noto Naskh Arabic, KFGQPC Osmanî (Medine mushafı) ve PakType Naskh.",
+          "b4": "Kitap havasında okuma arka planları — kâğıt, sepya, mushaf yeşili, gece ve siyah — kontrast için uyarlanan metin rengiyle; yalnızca okuyucuya ya da tüm uygulamaya uygulanır.",
+          "b5": "Ayarlanabilir Arapça ve meal yazı boyutu, ayarlanabilir kelime aralığı ve açık, koyu veya sistem teması."
+        },
+        "tajweed": {
+          "title": "Tecvid renkleri",
+          "b1": "Arapça harfleri tecvid kurallarına göre isteğe bağlı renklendirin — gunne, ihfa, idgam, iklab, kalkale ve medd türleri — tıpkı renkli bir mushaf gibi. Varsayılan olarak kapalıdır; renkler okuma arka planınıza uyum sağlar.",
+          "b2": "Okurken öğrenin: tam boy açılan cetveli açın ve herhangi bir kurala dokunarak kendi arayüz dilinizde nasıl okunduğunu okuyun — hangi harflerin o rengi aldığını gösteren kısa bir Kur'an örneğiyle."
+        },
+        "translations": {
+          "title": "Dört meal, sizin düzeniniz",
+          "b1": "İngilizce (Saheeh International), Rusça (Elmir Kuliev), Azerbaycanca (Alixan Musayev) ve Türkçe (Diyanet İşleri Başkanlığı) — hepsi çevrimdışı.",
+          "b2": "İstediğiniz bileşimi açıp kapatın, Arapçayı gösterin ya da gizleyin.",
+          "b3": "Okuyucunun üstündeki sure adına dokunup mealleri anında değiştirin — Ayarlar'a gitmeye gerek yok."
+        },
+        "offline": {
+          "title": "Tüm Kur'an çevrimdışı",
+          "b1": "114 surenin tamamı; Arapça adı, Latin harfli yazılışı veya anlamıyla aranabilir.",
+          "b2": "Her sure ayet sayısını ve Mekkî mi Medenî mi olduğunu gösterir."
+        },
+        "daily": {
+          "title": "Günlük okuma için",
+          "b1": "Herhangi bir ayeti yer imine ekleyin ve tek dokunuşla geri dönün.",
+          "b2": "İstediğiniz ayete kendi notunuzu yazın; hepsi Notlar altında toplanır.",
+          "b3": "Ayetleri kendi adlandırdığınız koleksiyonlara kaydedin.",
+          "b4": "Bir ayeti mealiyle birlikte kopyalayın veya paylaşın.",
+          "b5": "Kaldığınız yeri tam olarak hatırlar."
+        },
+        "language": {
+          "title": "Kendi dilinizde",
+          "b1": "İngilizce, Arapça (tam sağdan sola düzen), Türkçe, Endonezce, Rusça ve Azerbaycanca olarak tümüyle yerelleştirilmiştir — ilk açılışta seçilir, Ayarlar'dan istediğiniz zaman değiştirilir."
+        },
+        "privacy": {
+          "title": "Varsayılan olarak özel",
+          "b1": "Varsayılan olarak cihazınızdan hiçbir şey çıkmaz — yer imleriniz, notlarınız, koleksiyonlarınız, okuma konumunuz ve ayarlarınız yalnızca telefonunuzda durur. İsteğe bağlı bulut yedekleme, oturum açarak (e-posta veya Google) bunları cihazlar arasında eşitlemenizi sağlar; siz açmadıkça kapalı kalır. Reklam yok, üçüncü taraf takibi yok."
+        },
+        "free": {
+          "title": "Sonsuza dek ücretsiz",
+          "b1": "Reklam yok. Abonelik yok. Uygulama içi satın alma yok. Şartı yok."
+        }
+      },
+      "attribution": "i-muslim Kur'an, <imuslim>i-muslim</imuslim>'in Kur'an uygulamasıdır; <caspian>Caspian Tools</caspian> tarafından geliştirilmiştir — Namaz Vakitleri ve Hadis ayrı uygulamalardır. Kutsal metni sadakatle gösterir, deneyimi basit, sakin ve hızlı tutarız.",
+      "changelog": {
+        "heading": "Yenilikler",
+        "hint": "En son {count} sürüm. Sürüm notları İngilizce yayımlanır.",
+        "noNote": "Bu sürüm için sürüm notu kaydedilmemiş.",
+        "viewAll": "Tüm sürüm geçmişini görün",
+        "page": {
+          "title": "i-muslim Kur'an — sürüm geçmişi",
+          "description": "i-muslim Kur'an Android uygulamasının yayımlanmış her sürümü, en yeniden en eskiye, sürüm notu Google Play'e çıktığı hâliyle.",
+          "heading": "Sürüm geçmişi",
+          "lead": "Uygulamanın her sürümü, en yeniden en eskiye. Sürüm notları İngilizce yayımlanır.",
+          "count": "{count} sürüm",
+          "back": "Uygulama sayfasına dön"
+        }
+      }
+    }
+  },
   "countryCombobox": {
     "selectCountry": "Ülke seç",
     "selectCountries": "Ülke seç",
@@ -581,6 +687,9 @@
     "prayerChime": "Namaz vakti hatırlatıcıları",
     "chimeOn": "Açık",
     "chimeOff": "Sessiz"
+  ,
+    "sectionApps": "Uygulamalar",
+    "appsQuran": "Android için Kur'an"
   },
   "surahPagination": {
     "ariaLabel": "Sure sayfalama",
@@ -641,6 +750,9 @@
     "downloads": "Downloads",
     "language": "Dil",
     "copyright": "© {year} i-muslim"
+  ,
+    "colApps": "Uygulamalar",
+    "appsQuran": "Android için Kur'an"
   },
   "legal": {
     "about": {
@@ -668,23 +780,32 @@
       "p5": "Sorular, silme talepleri veya gizlilikle ilgili her şey için: <contact>iletişim</contact> sayfasındaki adresten bize yazın.",
       "app": {
         "heading": "i-muslim Quran (Android uygulaması)",
-        "updated": "Son güncelleme: 15 Haziran 2026",
-        "intro": "i-muslim Quran uygulaması (paket com.imuslim.quran), Android için çevrimdışı çalışan bir Kur'an okuyucusudur. Gizlilik öyküsü kısadır, çünkü uygulama sizden hiçbir şeye ihtiyaç duymayacak şekilde tasarlanmıştır.",
+        "updated": "Son güncelleme: 1 Ağustos 2026",
+        "intro": "i-muslim Quran uygulaması (paket com.imuslim.quran), Android için çevrimdışı çalışan bir Kur'an okuyucusudur. Hesap olmadan eksiksiz çalışır — Kur'an metninin tamamı ve çeviriler uygulamanın içine gömülüdür. Oturum açmak ve okuma verilerinizi buluta yedeklemek, kapalı bırakabileceğiniz isteğe bağlı eklerdir.",
         "collectHeading": "Neleri topluyoruz",
-        "collectIntro": "Hiçbir şey. Uygulama hiçbir kişisel veriyi toplamaz, iletmez veya paylaşmaz.",
-        "collect1": "Uygulamanın internet izni yoktur ve hiçbir ağ isteği yapmaz. Kur'an metninin tamamı ve çeviriler uygulamanın içine gömülüdür.",
-        "collect2": "Hesap, oturum açma veya kayıt yoktur.",
-        "collect3": "Reklam yoktur; üçüncü taraf analiz, reklam veya takip SDK'ları yoktur.",
+        "collectIntro": "Oturum açmayı seçmediğiniz sürece hiçbir şey. Varsayılan kullanımda — çevrimdışı ve oturum açmadan — uygulama hiçbir kişisel veriyi toplamaz, iletmez veya paylaşmaz.",
+        "collect1": "Okuma, arama, yer imleri, notlar ve koleksiyonların tamamı ağ bağlantısı ve hesap olmadan çalışır. Kur'an metninin tamamı ve çeviriler uygulamanın içine gömülüdür.",
+        "collect2": "Reklam yoktur; üçüncü taraf analiz, reklam veya takip SDK'ları yoktur.",
+        "collect3": "Uygulama internet erişimi bildirir. Bu erişim yalnızca aşağıda açıklanan isteğe bağlı oturum açma ve bulut yedekleme için kullanılır — reklam, analiz veya profilleme için asla.",
+        "accountHeading": "İsteğe bağlı hesap ve bulut yedekleme",
+        "accountIntro": "Okumak için hiçbir zaman hesaba ihtiyacınız olmaz. Oturum açmayı seçerseniz — Google ile ya da bir e-posta adresi ve parolayla — Firebase Authentication kullanarak size bir hesap oluşturur ve şunları saklarız:",
+        "account1": "E-posta adresiniz ve Google ile oturum açtıysanız adınız ile profil fotoğrafınız. Bunlar uygulama içindeki Profil ekranında görünür.",
+        "account2": "Hesabınızı tanımlayan bir kullanıcı kimliği.",
+        "account3": "Bulut yedeklemeyi açarsanız: yer imlerinizin, notlarınızın, koleksiyonlarınızın, okuma ilerlemenizin ve ayarlarınızın bir kopyası, kullanıcı kimliğinize bağlı tek bir belge olarak saklanır.",
+        "accountProcessor": "Bu veriler, veri işleyenimiz olarak Google Firebase'de (Firebase Authentication ve Cloud Firestore) tutulur ve aktarım sırasında HTTPS/TLS ile şifrelenir. Bir güvenlik kuralı, her yedeği yalnızca sahibinin okuyabilmesiyle sınırlar.",
+        "accountNote": "Bunların tümü isteğe bağlıdır ve sizin denetimizdedir. Asla satılmaz, üçüncü taraflarla paylaşılmaz ve reklam ya da profilleme için kullanılmaz. Oturumu kapattığınızda uygulama tam olarak eskisi gibi çevrimdışı çalışmaya devam eder.",
         "storeHeading": "Cihazınızda saklanan veriler",
-        "storeIntro": "Uygulama, yalnızca cihazınızda kalan ve hiçbir yere gönderilmeyen az miktarda veri saklar:",
-        "store1": "Oluşturduğunuz yer imleri.",
+        "storeIntro": "Oturum açsanız da açmasanız da uygulama şunları cihazınızda tutar:",
+        "store1": "Oluşturduğunuz yer imleri, yazdığınız notlar ve bunları düzenlediğiniz koleksiyonlar.",
         "store2": "Okuma konumu (en son okunan sure ve ayet), böylece kaldığınız yerden devam edebilirsiniz.",
-        "store3": "Ayarlar — seçtiğiniz çeviri dilleri, tema (açık/koyu/sistem) ve Arapça yazı tipi boyutu.",
-        "storeNote": "Bu veriler uygulamanın özel depolama alanında bulunur. Uygulamayı kaldırdığınızda veya Android ayarlarından verilerini temizlediğinizde silinir.",
+        "store3": "Ayarlar — seçtiğiniz çeviri dilleri, arayüz dili, tema (açık/koyu/sistem), okuma arka planı, Arapça yazı tipi ve boyutu, tecvid renklerinin açık olup olmadığı.",
+        "storeNote": "Bu veriler uygulamanın özel depolama alanında bulunur. Uygulamayı kaldırdığınızda veya Android ayarlarından verilerini temizlediğinizde silinir. Hiç oturum açmazsanız cihazınızdan asla çıkmaz.",
+        "deletionHeading": "Hesabınızı silme",
+        "deletion": "Hesabınızın ve bulut yedeğinizin silinmesini istediğiniz zaman talep edebilirsiniz. <deleteAccount>hesap silme</deleteAccount> sayfası bunu nasıl talep edeceğinizi ve nelerin kaldırıldığını açıklar.",
         "permissionsHeading": "İzinler",
-        "permissions": "Uygulama hiçbir çalışma zamanı izni ve hiçbir internet erişimi istemez.",
+        "permissions": "Uygulama hiçbir çalışma zamanı izni istemez — konum yok, kişiler yok, depolama yok, kamera yok. Yalnızca yukarıda açıklanan isteğe bağlı hesap ve bulut yedekleme için kullanılan internet erişimi bildirir.",
         "childrenHeading": "Çocuklar",
-        "children": "Uygulama her yaşa uygundur. Çocuklar da dâhil olmak üzere hiç kimseden veri toplamaz.",
+        "children": "Uygulama her yaşa uygundur ve oturum açmadan okuyan hiç kimseden veri toplamaz. Bir çocuk oturum açarsa, yukarıda açıklanan aynı isteğe bağlı hesap verileri geçerli olur ve talep üzerine silinebilir.",
         "changesHeading": "Değişiklikler",
         "changes": "Bu politika değişirse, güncellenmiş sürüm yeni bir \"son güncelleme\" tarihiyle bu sayfada yayımlanacaktır.",
         "contactHeading": "İletişim",

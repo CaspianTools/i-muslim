@@ -5,6 +5,7 @@ import {
   Calendar,
   Heart,
   Newspaper,
+  Smartphone,
   Sparkles,
   Store,
   User as UserIcon,
@@ -80,6 +81,12 @@ export default async function MorePage() {
           Icon={Sparkles}
           label={t("hijriConverter")}
         />
+      </Section>
+
+      {/* The footer is desktop-only, so this is the sole mobile path to the
+          app pages. */}
+      <Section title={t("sectionApps")}>
+        <Row href="/apps/quran" Icon={Smartphone} label={t("appsQuran")} />
       </Section>
 
       <Section title={t("sectionAccount")}>

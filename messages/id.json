@@ -20,6 +20,112 @@
     "of": "dari",
     "copy": "Salin"
   },
+  "apps": {
+    "quran": {
+      "meta": {
+        "title": "Quran by i-muslim — aplikasi Al-Qur'an offline untuk Android",
+        "description": "Pembaca Al-Qur'an yang tenang dan offline untuk Android. Teks Arab Utsmani dengan empat terjemahan, warna tajwid, markah, dan catatan. Gratis, tanpa iklan, tanpa pelacakan."
+      },
+      "hero": {
+        "eyebrow": "Aplikasi Android",
+        "title": "Quran by i-muslim",
+        "tagline": "Pembaca Al-Qur'an offline. Teks Arab, empat terjemahan, warna tajwid. Tanpa iklan.",
+        "lead": "Quran by i-muslim adalah pembaca Al-Qur'an yang tenang dan mengutamakan mode offline. Seluruh Al-Qur'an — teks Arab Utsmani beserta empat terjemahan tepercaya — sudah tertanam di dalam aplikasi, sehingga Anda dapat membaca di kereta, di masjid, di pesawat, atau di mana pun tanpa sinyal. Tanpa unduhan, tanpa akun, tanpa menunggu. Tidak ada yang keluar dari perangkat Anda kecuali Anda mengaktifkan pencadangan awan opsional. Hanya Anda dan Kitab.",
+        "version": "Versi {version}",
+        "updated": "Diperbarui {date}"
+      },
+      "badges": {
+        "offline": "Berfungsi offline",
+        "noAds": "Tanpa iklan",
+        "noTracking": "Tanpa pelacakan",
+        "free": "Gratis selamanya"
+      },
+      "cta": {
+        "play": "Dapatkan di Google Play",
+        "playAria": "Dapatkan Quran by i-muslim di Google Play — terbuka di tab baru",
+        "webReaderLead": "Lebih suka membaca di peramban?",
+        "webReaderLink": "Buka pembaca Al-Qur'an versi web",
+        "privacy": "Cara aplikasi memperlakukan data Anda"
+      },
+      "screenshots": {
+        "heading": "Lihat isinya",
+        "hint": "Dari versi {version}.",
+        "alt": "{caption} — Quran by i-muslim di Android",
+        "captions": {
+          "surahList": "Seluruh 114 surah, dapat dicari",
+          "titleCard": "Kartu judul berhias membuka setiap surah",
+          "mushaf": "Teks Arab saja, sebagaimana dicetak dalam mushaf",
+          "translations": "Ganti terjemahan dari nama surah",
+          "tajweed": "Warna tajwid opsional",
+          "tajweedLegend": "Setiap hukum dijelaskan dalam bahasa Anda",
+          "ayahActions": "Markahi, catat, salin, atau bagikan ayat mana pun",
+          "dark": "Lima latar bacaan, termasuk malam"
+        }
+      },
+      "features": {
+        "heading": "Apa saja di dalamnya",
+        "reading": {
+          "title": "Pengalaman membaca yang indah",
+          "b1": "Setiap surah dibuka dengan kartu judul berhias — nama Arabnya berdampingan dengan ejaannya dalam setiap bahasa yang Anda aktifkan, dengan nomor surah dan jumlah ayat di bawahnya, digambar di dalam aplikasi dan diwarnai serasi dengan latar bacaan Anda.",
+          "b2": "Baca teks Arab saja dan halaman tersusun sebagaimana dicetak dalam mushaf: satu blok mengalir rata kiri-kanan, tanpa garis atau lencana antarayat, tiap ayat ditutup roset hias tradisional yang memuat nomornya. Aktifkan kembali terjemahan dan tampilan ayat demi ayat kembali.",
+          "b3": "Lima huruf Arab — Amiri, Scheherazade New, Noto Naskh Arabic, KFGQPC Utsmani (mushaf Madinah), dan PakType Naskh.",
+          "b4": "Latar bacaan bergaya buku — kertas, sepia, hijau mushaf, malam, dan hitam — dengan warna teks yang menyesuaikan demi kontras, diterapkan pada pembaca saja atau seluruh aplikasi.",
+          "b5": "Ukuran huruf Arab dan terjemahan yang dapat diatur, jarak antarkata yang dapat diatur, serta tema terang, gelap, atau mengikuti sistem."
+        },
+        "tajweed": {
+          "title": "Warna tajwid",
+          "b1": "Warnai huruf Arab menurut hukum tajwid secara opsional — gunnah, ikhfa, idgham, iqlab, qalqalah, dan keluarga mad — persis seperti mushaf berwarna. Nonaktif secara bawaan; warnanya menyesuaikan latar bacaan Anda.",
+          "b2": "Belajar sambil membaca: buka legenda setinggi layar dan ketuk hukum mana pun untuk membaca, dalam bahasa antarmuka Anda, cara melafalkannya — dengan contoh Qurani singkat yang menunjukkan huruf mana yang berwarna itu."
+        },
+        "translations": {
+          "title": "Empat terjemahan, sesuai keinginan",
+          "b1": "Inggris (Saheeh International), Rusia (Elmir Kuliev), Azerbaijan (Alikhan Musayev), dan Turki (Diyanet İşleri Başkanlığı) — semuanya offline.",
+          "b2": "Tampilkan kombinasi mana pun, dan tampilkan atau sembunyikan teks Arab.",
+          "b3": "Ketuk nama surah di bagian atas pembaca untuk berganti terjemahan seketika — tanpa membuka Pengaturan."
+        },
+        "offline": {
+          "title": "Baca seluruh Al-Qur'an offline",
+          "b1": "Seluruh 114 surah, dapat dicari dengan nama Arab, ejaan Latin, atau arti terjemahannya.",
+          "b2": "Setiap surah menampilkan jumlah ayat dan apakah diturunkan di Makkah atau Madinah."
+        },
+        "daily": {
+          "title": "Dibuat untuk bacaan harian",
+          "b1": "Markahi ayat mana pun dan kembali dengan sekali ketuk.",
+          "b2": "Tulis catatan Anda sendiri pada ayat mana pun, semuanya terkumpul di Catatan.",
+          "b3": "Simpan ayat ke dalam koleksi bernama milik Anda.",
+          "b4": "Salin atau bagikan ayat beserta terjemahannya.",
+          "b5": "Lanjutkan bacaan mengingat persis di mana Anda berhenti."
+        },
+        "language": {
+          "title": "Bahasa Anda",
+          "b1": "Dilokalkan sepenuhnya dalam bahasa Inggris, Arab (tata letak kanan-ke-kiri penuh), Turki, Indonesia, Rusia, dan Azerbaijan — dipilih saat pertama kali dibuka, dapat diganti kapan saja di Pengaturan."
+        },
+        "privacy": {
+          "title": "Privat secara bawaan",
+          "b1": "Secara bawaan tidak ada yang keluar dari perangkat Anda — markah, catatan, koleksi, posisi bacaan, dan pengaturan Anda hanya tersimpan di ponsel. Pencadangan awan opsional memungkinkan Anda masuk (email atau Google) untuk menyelaraskannya antarperangkat; tetap nonaktif kecuali Anda mengaktifkannya. Tanpa iklan, tanpa pelacakan pihak ketiga."
+        },
+        "free": {
+          "title": "Gratis selamanya",
+          "b1": "Tanpa iklan. Tanpa langganan. Tanpa pembelian dalam aplikasi. Tanpa jebakan."
+        }
+      },
+      "attribution": "Quran by i-muslim adalah aplikasi Al-Qur'an dari <imuslim>i-muslim</imuslim>, dikembangkan oleh <caspian>Caspian Tools</caspian> — dengan Waktu Salat dan Hadis sebagai aplikasi terpisah. Kami menyajikan teks suci dengan setia dan menjaga pengalamannya sederhana, tenang, dan cepat.",
+      "changelog": {
+        "heading": "Yang baru",
+        "hint": "{count} rilis terbaru. Catatan rilis diterbitkan dalam bahasa Inggris.",
+        "noNote": "Tidak ada catatan rilis yang tercatat untuk versi ini.",
+        "viewAll": "Lihat riwayat rilis lengkap",
+        "page": {
+          "title": "Quran by i-muslim — riwayat rilis",
+          "description": "Setiap versi yang dirilis dari aplikasi Android Quran by i-muslim, dari yang terbaru, dengan catatan rilis persis seperti yang terbit di Google Play.",
+          "heading": "Riwayat rilis",
+          "lead": "Setiap versi aplikasi, dari yang terbaru. Catatan rilis diterbitkan dalam bahasa Inggris.",
+          "count": "{count} rilis",
+          "back": "Kembali ke halaman aplikasi"
+        }
+      }
+    }
+  },
   "countryCombobox": {
     "selectCountry": "Pilih negara",
     "selectCountries": "Pilih negara",
@@ -581,6 +687,9 @@
     "prayerChime": "Prayer reminders",
     "chimeOn": "On",
     "chimeOff": "Muted"
+  ,
+    "sectionApps": "Aplikasi",
+    "appsQuran": "Quran untuk Android"
   },
   "surahPagination": {
     "ariaLabel": "Surah pagination",
@@ -641,6 +750,9 @@
     "downloads": "Downloads",
     "language": "Bahasa",
     "copyright": "© {year} i-muslim"
+  ,
+    "colApps": "Aplikasi",
+    "appsQuran": "Quran untuk Android"
   },
   "legal": {
     "about": {
@@ -668,23 +780,32 @@
       "p5": "Pertanyaan, permintaan penghapusan, atau apa pun terkait privasi: kirim email ke alamat di halaman <contact>kontak</contact>.",
       "app": {
         "heading": "i-muslim Quran (aplikasi Android)",
-        "updated": "Terakhir diperbarui: 15 Juni 2026",
-        "intro": "Aplikasi i-muslim Quran (paket com.imuslim.quran) adalah pembaca Al-Qur'an offline untuk Android. Kisah privasinya singkat, karena aplikasi dibuat agar tidak membutuhkan apa pun dari Anda.",
+        "updated": "Terakhir diperbarui: 1 Agustus 2026",
+        "intro": "Aplikasi i-muslim Quran (paket com.imuslim.quran) adalah pembaca Al-Qur'an offline untuk Android. Aplikasi berfungsi penuh tanpa akun — seluruh teks Al-Qur'an dan terjemahan sudah tertanam di dalamnya. Masuk ke akun dan mencadangkan data bacaan Anda ke awan adalah tambahan opsional yang boleh Anda biarkan nonaktif.",
         "collectHeading": "Apa yang kami kumpulkan",
-        "collectIntro": "Tidak ada. Aplikasi tidak mengumpulkan, mengirimkan, atau membagikan data pribadi apa pun.",
-        "collect1": "Aplikasi tidak memiliki izin internet dan tidak membuat permintaan jaringan apa pun. Seluruh teks Al-Qur'an dan terjemahan disertakan di dalam aplikasi.",
-        "collect2": "Tidak ada akun, tidak ada login, dan tidak ada pendaftaran.",
-        "collect3": "Tidak ada iklan dan tidak ada SDK analitik, periklanan, atau pelacakan pihak ketiga.",
+        "collectIntro": "Tidak ada, kecuali Anda memilih untuk masuk. Pada penggunaan bawaan — offline dan tanpa masuk — aplikasi sama sekali tidak mengumpulkan, mengirimkan, atau membagikan data pribadi.",
+        "collect1": "Membaca, mencari, markah, catatan, dan koleksi semuanya berfungsi tanpa koneksi jaringan dan tanpa akun. Seluruh teks Al-Qur'an dan terjemahan disertakan di dalam aplikasi.",
+        "collect2": "Tidak ada iklan dan tidak ada SDK analitik, periklanan, atau pelacakan pihak ketiga.",
+        "collect3": "Aplikasi mendeklarasikan akses internet. Akses itu hanya dipakai untuk masuk dan pencadangan awan opsional yang dijelaskan di bawah — tidak pernah untuk iklan, analitik, atau pembuatan profil.",
+        "accountHeading": "Akun dan pencadangan awan opsional",
+        "accountIntro": "Anda tidak pernah membutuhkan akun untuk membaca. Jika Anda memilih untuk masuk — dengan Google, atau dengan alamat email dan kata sandi — kami membuatkan akun untuk Anda menggunakan Firebase Authentication dan menyimpan:",
+        "account1": "Alamat email Anda, dan jika Anda masuk dengan Google, nama serta foto profil Anda. Semua ini tampil di layar Profil di dalam aplikasi.",
+        "account2": "ID pengguna yang mengidentifikasi akun Anda.",
+        "account3": "Jika Anda mengaktifkan pencadangan awan: salinan markah, catatan, koleksi, kemajuan bacaan, dan pengaturan Anda, disimpan sebagai satu dokumen yang terkait dengan ID pengguna Anda.",
+        "accountProcessor": "Data ini disimpan di Google Firebase (Firebase Authentication dan Cloud Firestore) yang bertindak sebagai pemroses kami, dan dienkripsi saat transit melalui HTTPS/TLS. Sebuah aturan keamanan membatasi setiap cadangan sehingga hanya pemiliknya yang dapat membacanya.",
+        "accountNote": "Semuanya opsional dan berada dalam kendali Anda. Data itu tidak pernah dijual, tidak pernah dibagikan kepada pihak ketiga, dan tidak pernah dipakai untuk iklan atau pembuatan profil. Keluar dari akun dan aplikasi tetap bekerja offline persis seperti sebelumnya.",
         "storeHeading": "Data yang disimpan di perangkat Anda",
-        "storeIntro": "Aplikasi menyimpan sedikit data hanya di perangkat Anda, tidak pernah dikirim ke mana pun:",
-        "store1": "Markah (bookmark) yang Anda buat.",
+        "storeIntro": "Baik Anda masuk maupun tidak, aplikasi menyimpan ini di perangkat Anda:",
+        "store1": "Markah (bookmark) yang Anda buat, catatan yang Anda tulis, dan koleksi tempat Anda menatanya.",
         "store2": "Posisi baca (surah dan ayat terakhir dibaca), agar Anda dapat melanjutkan.",
-        "store3": "Pengaturan — bahasa terjemahan yang dipilih, tema (terang/gelap/sistem), dan ukuran font Arab.",
-        "storeNote": "Data ini berada di penyimpanan privat aplikasi. Data dihapus saat Anda mencopot aplikasi atau menghapus datanya dari pengaturan Android.",
+        "store3": "Pengaturan — bahasa terjemahan yang dipilih, bahasa antarmuka, tema (terang/gelap/sistem), latar bacaan, huruf Arab dan ukurannya, serta apakah warna tajwid aktif.",
+        "storeNote": "Data ini berada di penyimpanan privat aplikasi. Data dihapus saat Anda mencopot aplikasi atau menghapus datanya dari pengaturan Android. Jika Anda tidak pernah masuk, data itu tidak pernah keluar dari perangkat Anda.",
+        "deletionHeading": "Menghapus akun Anda",
+        "deletion": "Anda dapat meminta kami menghapus akun dan cadangan awannya kapan saja. Halaman <deleteAccount>penghapusan akun</deleteAccount> menjelaskan cara memintanya dan apa saja yang dihapus.",
         "permissionsHeading": "Izin",
-        "permissions": "Aplikasi tidak meminta izin runtime apa pun dan tidak ada akses internet.",
+        "permissions": "Aplikasi tidak meminta izin runtime apa pun — tanpa lokasi, tanpa kontak, tanpa penyimpanan, tanpa kamera. Aplikasi mendeklarasikan akses internet, yang hanya dipakai untuk akun dan pencadangan awan opsional yang dijelaskan di atas.",
         "childrenHeading": "Anak-anak",
-        "children": "Aplikasi cocok untuk segala usia. Aplikasi tidak mengumpulkan data dari siapa pun, termasuk anak-anak.",
+        "children": "Aplikasi cocok untuk segala usia, dan tidak mengumpulkan apa pun dari siapa saja yang membaca tanpa masuk. Jika seorang anak memang masuk, data akun opsional yang sama seperti dijelaskan di atas berlaku, dan dapat dihapus atas permintaan.",
         "changesHeading": "Perubahan",
         "changes": "Jika kebijakan ini berubah, versi yang diperbarui akan diposting di halaman ini dengan tanggal \"terakhir diperbarui\" yang baru.",
         "contactHeading": "Kontak",

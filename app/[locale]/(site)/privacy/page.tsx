@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Link as LocaleLink } from "@/i18n/navigation";
 import { type Locale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { TocSidebar } from "@/components/site/TocSidebar";
@@ -41,7 +42,9 @@ export default async function PrivacyPage() {
       label: t("app.heading"),
       items: [
         { id: "app-collect", label: t("app.collectHeading") },
+        { id: "app-account", label: t("app.accountHeading") },
         { id: "app-store", label: t("app.storeHeading") },
+        { id: "app-deletion", label: t("app.deletionHeading") },
         { id: "app-permissions", label: t("app.permissionsHeading") },
         { id: "app-children", label: t("app.childrenHeading") },
         { id: "app-changes", label: t("app.changesHeading") },
@@ -72,6 +75,14 @@ export default async function PrivacyPage() {
       >
         {chunks}
       </Link>
+    ),
+    deleteAccount: (chunks: ReactNode) => (
+      <LocaleLink
+        href="/delete-account"
+        className="underline underline-offset-2 hover:text-foreground"
+      >
+        {chunks}
+      </LocaleLink>
     ),
   };
 
@@ -140,6 +151,18 @@ export default async function PrivacyPage() {
               <li>{t("app.collect3")}</li>
             </ul>
 
+            <h3 id="app-account" className={H3}>
+              {t("app.accountHeading")}
+            </h3>
+            <p>{t("app.accountIntro")}</p>
+            <ul className="list-disc space-y-1 pl-5">
+              <li>{t("app.account1")}</li>
+              <li>{t("app.account2")}</li>
+              <li>{t("app.account3")}</li>
+            </ul>
+            <p>{t("app.accountProcessor")}</p>
+            <p>{t("app.accountNote")}</p>
+
             <h3 id="app-store" className={H3}>
               {t("app.storeHeading")}
             </h3>
@@ -150,6 +173,11 @@ export default async function PrivacyPage() {
               <li>{t("app.store3")}</li>
             </ul>
             <p>{t("app.storeNote")}</p>
+
+            <h3 id="app-deletion" className={H3}>
+              {t("app.deletionHeading")}
+            </h3>
+            <p>{t.rich("app.deletion", contactLink)}</p>
 
             <h3 id="app-permissions" className={H3}>
               {t("app.permissionsHeading")}

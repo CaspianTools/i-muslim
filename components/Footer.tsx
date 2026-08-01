@@ -31,7 +31,7 @@ export async function Footer() {
       data-reading-chrome
       className="mt-16 hidden border-t border-border bg-muted/40 md:block"
     >
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 text-sm sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 text-sm sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
         <div className="space-y-3">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             {siteConfig.logoUrl ? (
@@ -116,6 +116,17 @@ export async function Footer() {
             <li>
               <Link href="/hijri-converter" className={linkClass}>
                 {t("hijriConverter")}
+              </Link>
+            </li>
+          </ul>
+        </nav>
+
+        <nav aria-label={t("colApps")} className="space-y-3">
+          <h2 className={headingClass}>{t("colApps")}</h2>
+          <ul className="space-y-2">
+            <li>
+              <Link href="/apps/quran" className={linkClass}>
+                {t("appsQuran")}
               </Link>
             </li>
           </ul>

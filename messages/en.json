@@ -17,6 +17,112 @@
     "of": "of",
     "copy": "Copy"
   },
+  "apps": {
+    "quran": {
+      "meta": {
+        "title": "Quran by i-muslim — offline Quran app for Android",
+        "description": "A calm, offline-first Quran reader for Android. Uthmani Arabic with four translations, tajweed colours, bookmarks and notes. Free, no ads, no tracking."
+      },
+      "hero": {
+        "eyebrow": "Android app",
+        "title": "Quran by i-muslim",
+        "tagline": "Offline Quran reader. Arabic with four translations, tajweed colours. No ads.",
+        "lead": "Quran by i-muslim is a calm, offline-first Quran reader that fits into your day. The entire Quran — the Uthmani Arabic together with four trusted translations — is built into the app, so you can read on the train, in the masjid, on a plane, or anywhere with no signal. No download, no account, nothing to load. Nothing leaves your device unless you turn on optional cloud backup. Just you and the Book.",
+        "version": "Version {version}",
+        "updated": "Updated {date}"
+      },
+      "badges": {
+        "offline": "Works offline",
+        "noAds": "No ads",
+        "noTracking": "No tracking",
+        "free": "Free forever"
+      },
+      "cta": {
+        "play": "Get it on Google Play",
+        "playAria": "Get Quran by i-muslim on Google Play — opens in a new tab",
+        "webReaderLead": "Prefer to read in your browser?",
+        "webReaderLink": "Open the web Quran reader",
+        "privacy": "How the app handles your data"
+      },
+      "screenshots": {
+        "heading": "A look inside",
+        "hint": "From version {version}.",
+        "alt": "{caption} — Quran by i-muslim on Android",
+        "captions": {
+          "surahList": "All 114 surahs, searchable",
+          "titleCard": "A decorated title card opens every surah",
+          "mushaf": "Arabic alone, set the way a mushaf is printed",
+          "translations": "Switch translations from the surah title",
+          "tajweed": "Optional tajweed colours",
+          "tajweedLegend": "Every rule explained in your language",
+          "ayahActions": "Bookmark, note, copy or share any ayah",
+          "dark": "Five reading backgrounds, including night"
+        }
+      },
+      "features": {
+        "heading": "What's inside",
+        "reading": {
+          "title": "A beautiful reading experience",
+          "b1": "Each surah opens on a decorated title card — the name in Arabic beside its spelling in every language you've enabled, with the surah's number and length below, drawn in-app and tinted to suit your reading background.",
+          "b2": "Read the Arabic on its own and the page is set the way a mushaf is printed: one continuous, justified block with no rules or badges between verses, each one closing in a traditional ornamental rosette holding its number. Turn a translation back on and the verse-by-verse view returns.",
+          "b3": "Five Arabic fonts — Amiri, Scheherazade New, Noto Naskh Arabic, KFGQPC Uthmanic (Madinah mushaf), and PakType Naskh.",
+          "b4": "Book-style reading backgrounds — paper, sepia, mushaf green, night, and black — with text colour that adapts for contrast, applied to the reader or the whole app.",
+          "b5": "Adjustable Arabic and translation font size, adjustable word spacing, and light, dark, or system themes."
+        },
+        "tajweed": {
+          "title": "Tajweed colours",
+          "b1": "Optionally colour-code the Arabic letters by tajweed rule — ghunnah, ikhfa, idgham, iqlab, qalqalah, and the madd family — just like a printed colour mushaf. Off by default; the colours adapt to your reading background.",
+          "b2": "Learn as you read: open the full-height legend and tap any rule to read, in your own interface language, how it is pronounced — with a short Quranic example showing exactly which letters take that colour."
+        },
+        "translations": {
+          "title": "Four translations, your way",
+          "b1": "English (Saheeh International), Russian (Elmir Kuliev), Azerbaijani (Alikhan Musayev), and Turkish (Diyanet İşleri Başkanlığı) — all offline.",
+          "b2": "Show any combination on or off, and show or hide the Arabic.",
+          "b3": "Tap the surah name at the top of the reader to open a picker and switch translations on the spot — no trip to Settings."
+        },
+        "offline": {
+          "title": "Read the whole Quran offline",
+          "b1": "All 114 surahs, searchable by Arabic name, transliteration, or translated name.",
+          "b2": "Every surah shows its verse count and whether it was revealed in Mecca or Medina."
+        },
+        "daily": {
+          "title": "Built for daily reading",
+          "b1": "Bookmark any verse and jump back in one tap.",
+          "b2": "Write your own notes on any ayah and gather them all under Notes.",
+          "b3": "Save verses into your own named collections.",
+          "b4": "Copy or share a verse together with its translation.",
+          "b5": "Last-read resume remembers exactly where you stopped."
+        },
+        "language": {
+          "title": "Your language",
+          "b1": "Fully localised in English, Arabic (complete right-to-left layout), Turkish, Indonesian, Russian, and Azerbaijani — chosen on first launch, switchable anytime in Settings."
+        },
+        "privacy": {
+          "title": "Private by default",
+          "b1": "By default nothing leaves your device — your bookmarks, notes, collections, reading position, and settings live only on your phone. Optional cloud backup lets you sign in (email or Google) to sync them across devices; it stays off unless you turn it on. No ads, no third-party tracking."
+        },
+        "free": {
+          "title": "Free, forever",
+          "b1": "No ads. No subscriptions. No in-app purchases. No catch."
+        }
+      },
+      "attribution": "Quran by i-muslim is the Quran app from <imuslim>i-muslim</imuslim>, developed by <caspian>Caspian Tools</caspian> — with Prayer Times and Hadith as separate apps. We render the sacred text faithfully and keep the experience simple, quiet, and fast.",
+      "changelog": {
+        "heading": "What's new",
+        "hint": "The {count} most recent releases. Release notes are published in English.",
+        "noNote": "No release note was recorded for this version.",
+        "viewAll": "See the full release history",
+        "page": {
+          "title": "Quran by i-muslim — release history",
+          "description": "Every released version of the Quran by i-muslim Android app, newest first, with the release note exactly as it shipped to Google Play.",
+          "heading": "Release history",
+          "lead": "Every version of the app, newest first. Release notes are published in English.",
+          "count": "{count} releases",
+          "back": "Back to the app page"
+        }
+      }
+    }
+  },
   "countryCombobox": {
     "selectCountry": "Select country",
     "selectCountries": "Select countries",
@@ -578,6 +684,9 @@
     "prayerChime": "Prayer reminders",
     "chimeOn": "On",
     "chimeOff": "Muted"
+  ,
+    "sectionApps": "Apps",
+    "appsQuran": "Quran for Android"
   },
   "surahPagination": {
     "ariaLabel": "Surah pagination",
@@ -638,6 +747,9 @@
     "downloads": "Downloads",
     "language": "Language",
     "copyright": "© {year} i-muslim"
+  ,
+    "colApps": "Apps",
+    "appsQuran": "Quran for Android"
   },
   "legal": {
     "about": {
@@ -665,23 +777,32 @@
       "p5": "Questions, deletion requests, or anything privacy-related: email us at the address on the <contact>contact</contact> page.",
       "app": {
         "heading": "i-muslim Quran (Android app)",
-        "updated": "Last updated: 15 June 2026",
-        "intro": "The i-muslim Quran app (package com.imuslim.quran) is an offline Quran reader for Android. Its privacy story is short, because the app is built to need nothing from you.",
+        "updated": "Last updated: 1 August 2026",
+        "intro": "The i-muslim Quran app (package com.imuslim.quran) is an offline Quran reader for Android. It works completely without an account — the full Quran text and translations are built into the app. Signing in and backing up your reading data to the cloud are optional extras you can leave switched off.",
         "collectHeading": "What we collect",
-        "collectIntro": "Nothing. The app does not collect, transmit, or share any personal data.",
-        "collect1": "The app has no internet permission and makes no network requests. The full Quran text and translations are bundled inside the app.",
-        "collect2": "There are no accounts, no login, and no sign-up.",
-        "collect3": "There are no ads and no third-party analytics, advertising, or tracking SDKs.",
+        "collectIntro": "Nothing, unless you choose to sign in. Used the default way — offline and signed out — the app collects, transmits, and shares no personal data at all.",
+        "collect1": "Reading, search, bookmarks, notes, and collections all work with no network connection and no account. The full Quran text and translations are bundled inside the app.",
+        "collect2": "There are no ads, and no third-party analytics, advertising, or tracking SDKs.",
+        "collect3": "The app declares internet access. It is used only for the optional sign-in and cloud backup described below — never for advertising, analytics, or profiling.",
+        "accountHeading": "Optional account and cloud backup",
+        "accountIntro": "You never need an account to read. If you choose to sign in — with Google, or with an email address and password — we create an account for you using Firebase Authentication and store:",
+        "account1": "Your email address, and, if you sign in with Google, your name and profile photo. These appear on the Profile screen inside the app.",
+        "account2": "A user ID that identifies your account.",
+        "account3": "If you turn on cloud backup: a copy of your bookmarks, notes, collections, reading progress, and settings, saved as a single document tied to your user ID.",
+        "accountProcessor": "This data is held in Google Firebase (Firebase Authentication and Cloud Firestore) acting as our processor, and is encrypted in transit over HTTPS/TLS. A security rule restricts each backup so that only its owner can read it.",
+        "accountNote": "All of it is optional and under your control. It is never sold, never shared with third parties, and never used for advertising or profiling. Sign out and the app keeps working offline exactly as before.",
         "storeHeading": "Data stored on your device",
-        "storeIntro": "The app stores a small amount of data only on your device, never sent anywhere:",
-        "store1": "Bookmarks you create.",
+        "storeIntro": "Whether or not you sign in, the app keeps this on your device:",
+        "store1": "Bookmarks you create, notes you write, and the collections you organise them into.",
         "store2": "Reading position (last-read surah and ayah), so you can resume.",
-        "store3": "Settings — chosen translation languages, theme (light/dark/system), and Arabic font size.",
-        "storeNote": "This data lives in the app's private storage. It is removed when you uninstall the app or clear its data from Android settings.",
+        "store3": "Settings — chosen translation languages, interface language, theme (light/dark/system), reading background, Arabic font and font size, and whether tajweed colours are on.",
+        "storeNote": "This data lives in the app's private storage. It is removed when you uninstall the app or clear its data from Android settings. If you never sign in, it never leaves your device.",
+        "deletionHeading": "Deleting your account",
+        "deletion": "You can ask us to delete your account and its cloud backup at any time. The <deleteAccount>account deletion</deleteAccount> page explains how to request it and what gets removed.",
         "permissionsHeading": "Permissions",
-        "permissions": "The app requests no runtime permissions and no internet access.",
+        "permissions": "The app requests no runtime permissions — no location, no contacts, no storage, no camera. It declares internet access, used only for the optional account and cloud backup described above.",
         "childrenHeading": "Children",
-        "children": "The app is suitable for all ages. It does not collect data from anyone, including children.",
+        "children": "The app is suitable for all ages, and collects nothing from anyone who reads without signing in. If a child does sign in, the same optional account data described above applies, and it can be deleted on request.",
         "changesHeading": "Changes",
         "changes": "If this policy changes, the updated version will be posted on this page with a new \"last updated\" date.",
         "contactHeading": "Contact",
