@@ -49,6 +49,31 @@ env:
       - BUILD
       - RUNTIME
 
+  # --- /apps/quran live release data (lib/apps/quran-releases.ts) ----------
+  # Uncomment after creating the secrets — App Hosting fails the rollout if a
+  # referenced secret doesn't exist or isn't granted:
+  #   firebase apphosting:secrets:set QURAN_APP_REPO_TOKEN
+  #   firebase apphosting:secrets:set REVALIDATE_SECRET
+  #
+  # QURAN_APP_REPO_TOKEN: fine-grained GitHub PAT, read-only Contents access to
+  # CaspianTools/i-muslim-quran only — lets the site read releases out of that
+  # repo's play-assets/store-listing.html. Until it's set, /apps/quran serves
+  # the committed snapshot in lib/apps/quran.ts (the pre-automation behavior).
+  #
+  # - variable: QURAN_APP_REPO_TOKEN
+  #   secret: QURAN_APP_REPO_TOKEN
+  #   availability:
+  #     - RUNTIME
+  #
+  # REVALIDATE_SECRET: bearer for POST /api/revalidate/quran-app, which
+  # refreshes the cached release data instantly instead of within the hour.
+  # Optional — the endpoint answers 503 while unset.
+  #
+  # - variable: REVALIDATE_SECRET
+  #   secret: REVALIDATE_SECRET
+  #   availability:
+  #     - RUNTIME
+
   # Pin the runtime timezone to UTC. The prayer-time / Hijri / ICS routes build
   # dates via Date.UTC(...) and hand them to `adhan` / `@umalqura/core`, which
   # read the runtime-LOCAL date components — correct only while the runtime is

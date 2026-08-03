@@ -4,7 +4,7 @@ import { fetchPublishedMosques, fetchCountryAggregates } from "@/lib/admin/data/
 import { listPublishedSlugs as listPublishedBusinessSlugs } from "@/lib/businesses/public";
 import { DEFAULT_LOCALE } from "@/i18n/config";
 import { SITE_URL, indexableLocales } from "@/lib/seo/metadata";
-import { QURAN_APP_LATEST } from "@/lib/apps/quran";
+import { getQuranLatestRelease } from "@/lib/apps/quran-releases";
 
 export const revalidate = 3600;
 
@@ -31,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   };
 
+  const quranAppLatest = await getQuranLatestRelease();
   const staticEntries: MetadataRoute.Sitemap = [
     entry("", { priority: 1.0 }),
     entry("/quran", { priority: 0.8 }),
@@ -47,8 +48,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/developers", { changeFrequency: "monthly", priority: 0.5 }),
     // Not /apps — that's a redirect to the single app page.
     entry("/apps/quran", {
-      lastModified: QURAN_APP_LATEST.date
-        ? new Date(`${QURAN_APP_LATEST.date}T00:00:00Z`)
+      lastModified: quranAppLatest.date
+        ? new Date(`${quranAppLatest.date}T00:00:00Z`)
         : now,
       changeFrequency: "monthly",
       priority: 0.7,
