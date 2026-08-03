@@ -50,24 +50,22 @@ env:
       - RUNTIME
 
   # --- /apps/quran live release data (lib/apps/quran-releases.ts) ----------
-  # Uncomment after creating the secrets — App Hosting fails the rollout if a
-  # referenced secret doesn't exist or isn't granted:
-  #   firebase apphosting:secrets:set QURAN_APP_REPO_TOKEN
-  #   firebase apphosting:secrets:set REVALIDATE_SECRET
-  #
   # QURAN_APP_REPO_TOKEN: fine-grained GitHub PAT, read-only Contents access to
   # CaspianTools/i-muslim-quran only — lets the site read releases out of that
-  # repo's play-assets/store-listing.html. Until it's set, /apps/quran serves
-  # the committed snapshot in lib/apps/quran.ts (the pre-automation behavior).
-  #
-  # - variable: QURAN_APP_REPO_TOKEN
-  #   secret: QURAN_APP_REPO_TOKEN
-  #   availability:
-  #     - RUNTIME
-  #
+  # repo's play-assets/store-listing.html. Set via
+  # `firebase apphosting:secrets:set QURAN_APP_REPO_TOKEN` (App Hosting fails
+  # the rollout if the secret doesn't exist or isn't granted). If it ever needs
+  # to come out again, /apps/quran just falls back to the committed snapshot in
+  # lib/apps/quran.ts.
+  - variable: QURAN_APP_REPO_TOKEN
+    secret: QURAN_APP_REPO_TOKEN
+    availability:
+      - RUNTIME
+
   # REVALIDATE_SECRET: bearer for POST /api/revalidate/quran-app, which
   # refreshes the cached release data instantly instead of within the hour.
-  # Optional — the endpoint answers 503 while unset.
+  # Optional — the endpoint answers 503 while unset. Uncomment after
+  # `firebase apphosting:secrets:set REVALIDATE_SECRET`.
   #
   # - variable: REVALIDATE_SECRET
   #   secret: REVALIDATE_SECRET
