@@ -1,15 +1,21 @@
 /**
  * The i-muslim Quran Android app — the data behind /apps/quran.
  *
- * HAND-MAINTAINED. There is no CI and no cross-repo automation, so on every Play
- * release (see CLAUDE.md in the i-muslim-Quran repo, release workflow step 3):
+ * RELEASES below is a committed FALLBACK SNAPSHOT, not the live source. At
+ * request time the site fetches the release history straight from the app
+ * repo's play-assets/store-listing.html (lib/apps/quran-releases.ts, cached
+ * one hour), so a new Play release appears on /apps/quran on its own — no
+ * hand edit here. This snapshot renders only when that fetch can't
+ * (QURAN_APP_REPO_TOKEN unset, GitHub outage, parse failure), so it may lag;
+ * refresh it now and then by pasting in the newest entries. Two things are
+ * still manual per release:
  *
- *   1. Prepend the new release to RELEASES below — same English text as the
- *      `en-US` note in that repo's play-assets/store-listing.html.
- *   2. If the screenshots changed, re-run `npm run gen:app-shots` into
+ *   1. Screenshots: if they changed, re-run `npm run gen:app-shots` into
  *      public/apps/quran/shots/<versionCode>/ and bump shotSetVersionCode.
+ *   2. Privacy policy: if the release changes what the app does with data,
+ *      update legal.privacy.app in all four locales (see CLAUDE.md).
  *
- * That single edit drives /apps/quran, /apps/quran/changelog, the JSON-LD
+ * The release data drives /apps/quran, /apps/quran/changelog, the JSON-LD
  * softwareVersion / dateModified / releaseNotes, and the sitemap lastModified.
  *
  * Release notes stay English on purpose — only the newest release is translated
@@ -18,7 +24,8 @@
  *
  * Versions that were never shipped to Play (1.0.41 / code 43, folded into
  * 1.0.42; and 1.0.37 / code 38, superseded before upload) are deliberately
- * absent — this is the public history, not the build log.
+ * absent — this is the public history, not the build log. The live fetch
+ * applies the same rule by dropping `shipped:0` entries.
  */
 
 export const QURAN_APP = {
@@ -312,8 +319,6 @@ const RELEASES: AppRelease[] = [
 export const QURAN_APP_RELEASES: readonly AppRelease[] = [...RELEASES].sort(
   (a, b) => b.versionCode - a.versionCode,
 );
-
-export const QURAN_APP_LATEST = QURAN_APP_RELEASES[0];
 
 /** How many releases the app page shows before linking to the full history. */
 export const CHANGELOG_PREVIEW_COUNT = 10;

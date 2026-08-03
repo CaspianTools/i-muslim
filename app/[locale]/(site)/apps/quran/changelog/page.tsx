@@ -4,7 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { type Locale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { QURAN_APP_RELEASES } from "@/lib/apps/quran";
+import { getQuranReleases } from "@/lib/apps/quran-releases";
 import { ReleaseList } from "@/components/apps/ReleaseList";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,6 +29,7 @@ export default async function QuranAppChangelogPage() {
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("apps.quran.changelog.page");
   const tc = await getTranslations("apps.quran.changelog");
+  const releases = await getQuranReleases();
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
@@ -48,12 +49,12 @@ export default async function QuranAppChangelogPage() {
         </h1>
         <p className="mt-2 text-muted-foreground">{t("lead")}</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          {t("count", { count: QURAN_APP_RELEASES.length })}
+          {t("count", { count: releases.length })}
         </p>
       </header>
 
       <ReleaseList
-        releases={QURAN_APP_RELEASES}
+        releases={releases}
         locale={locale}
         noNoteLabel={tc("noNote")}
       />

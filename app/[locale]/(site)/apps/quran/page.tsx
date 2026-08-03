@@ -16,12 +16,8 @@ import { Link } from "@/i18n/navigation";
 import { type Locale } from "@/i18n/config";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { jsonLdHtml } from "@/lib/seo/jsonld";
-import {
-  CHANGELOG_PREVIEW_COUNT,
-  QURAN_APP,
-  QURAN_APP_LATEST,
-  QURAN_APP_RELEASES,
-} from "@/lib/apps/quran";
+import { CHANGELOG_PREVIEW_COUNT, QURAN_APP } from "@/lib/apps/quran";
+import { getQuranReleases } from "@/lib/apps/quran-releases";
 import { AppScreenshotRail } from "@/components/apps/AppScreenshotRail";
 import { PlayStoreButton } from "@/components/apps/PlayStoreButton";
 import { ReleaseList } from "@/components/apps/ReleaseList";
@@ -71,12 +67,14 @@ export default async function QuranAppPage() {
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("apps.quran");
 
-  const releases = QURAN_APP_RELEASES.slice(0, CHANGELOG_PREVIEW_COUNT);
-  const updated = QURAN_APP_LATEST.date
+  const allReleases = await getQuranReleases();
+  const latest = allReleases[0];
+  const releases = allReleases.slice(0, CHANGELOG_PREVIEW_COUNT);
+  const updated = latest.date
     ? new Intl.DateTimeFormat(locale, {
         dateStyle: "long",
         timeZone: "UTC",
-      }).format(new Date(`${QURAN_APP_LATEST.date}T00:00:00Z`))
+      }).format(new Date(`${latest.date}T00:00:00Z`))
     : null;
 
   const shots = SHOTS.map(([file, caption]) => {
@@ -96,9 +94,9 @@ export default async function QuranAppPage() {
     url: `${SITE_URL}/${locale}/apps/quran`,
     applicationCategory: "ReferenceApplication",
     operatingSystem: "Android",
-    softwareVersion: QURAN_APP_LATEST.version,
-    dateModified: QURAN_APP_LATEST.date,
-    releaseNotes: QURAN_APP_LATEST.note,
+    softwareVersion: latest.version,
+    dateModified: latest.date,
+    releaseNotes: latest.note,
     // Canonical, without the `hl` the on-page button adds.
     installUrl: QURAN_APP.playUrl,
     downloadUrl: QURAN_APP.playUrl,
@@ -158,7 +156,7 @@ export default async function QuranAppPage() {
             ariaLabel={t("cta.playAria")}
           />
           <p className="text-xs text-muted-foreground">
-            {t("hero.version", { version: QURAN_APP_LATEST.version })}
+            {t("hero.version", { version: latest.version })}
             {updated ? ` · ${t("hero.updated", { date: updated })}` : ""}
           </p>
         </div>
@@ -167,7 +165,7 @@ export default async function QuranAppPage() {
       <section id="screenshots" className={SECTION}>
         <h2 className={H2}>{t("screenshots.heading")}</h2>
         <p className="mb-5 mt-2 text-sm text-muted-foreground">
-          {t("screenshots.hint", { version: QURAN_APP_LATEST.version })}
+          {t("screenshots.hint", { version: latest.version })}
         </p>
         <AppScreenshotRail shots={shots} />
       </section>
