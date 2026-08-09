@@ -57,7 +57,7 @@ const FEATURES = [
   { key: "tajweed", Icon: Palette, bullets: 2 },
   { key: "translations", Icon: Languages, bullets: 3 },
   { key: "offline", Icon: WifiOff, bullets: 2 },
-  { key: "daily", Icon: Bookmark, bullets: 5 },
+  { key: "daily", Icon: Bookmark, bullets: 6 },
   { key: "language", Icon: Globe, bullets: 1 },
   { key: "privacy", Icon: ShieldCheck, bullets: 1 },
   { key: "free", Icon: Gift, bullets: 1 },

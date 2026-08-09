@@ -91,7 +91,8 @@
           "b2": "Write your own notes on any ayah and gather them all under Notes.",
           "b3": "Save verses into your own named collections.",
           "b4": "Copy or share a verse together with its translation.",
-          "b5": "Last-read resume remembers exactly where you stopped."
+          "b5": "Last-read resume remembers exactly where you stopped.",
+          "b6": "An Ayah of the day widget for your home screen — the Arabic with the translation you read, in the background, text colour and size you choose. Copy it, share it, or draw another verse without opening the app. Every verse it shows is collected inside the app, ready to bookmark, annotate, or save to a collection."
         },
         "language": {
           "title": "Your language",
@@ -683,8 +684,7 @@
     "theme": "Theme",
     "prayerChime": "Prayer reminders",
     "chimeOn": "On",
-    "chimeOff": "Muted"
-  ,
+    "chimeOff": "Muted",
     "sectionApps": "Apps",
     "appsQuran": "Quran for Android"
   },
@@ -746,8 +746,7 @@
     "developers": "Developers",
     "downloads": "Downloads",
     "language": "Language",
-    "copyright": "© {year} i-muslim"
-  ,
+    "copyright": "© {year} i-muslim",
     "colApps": "Apps",
     "appsQuran": "Quran for Android"
   },
@@ -777,7 +776,7 @@
       "p5": "Questions, deletion requests, or anything privacy-related: email us at the address on the <contact>contact</contact> page.",
       "app": {
         "heading": "i-muslim Quran (Android app)",
-        "updated": "Last updated: 1 August 2026",
+        "updated": "Last updated: 9 August 2026",
         "intro": "The i-muslim Quran app (package com.imuslim.quran) is an offline Quran reader for Android. It works completely without an account — the full Quran text and translations are built into the app. Signing in and backing up your reading data to the cloud are optional extras you can leave switched off.",
         "collectHeading": "What we collect",
         "collectIntro": "Nothing, unless you choose to sign in. Used the default way — offline and signed out — the app collects, transmits, and shares no personal data at all.",
@@ -788,19 +787,19 @@
         "accountIntro": "You never need an account to read. If you choose to sign in — with Google, or with an email address and password — we create an account for you using Firebase Authentication and store:",
         "account1": "Your email address, and, if you sign in with Google, your name and profile photo. These appear on the Profile screen inside the app.",
         "account2": "A user ID that identifies your account.",
-        "account3": "If you turn on cloud backup: a copy of your bookmarks, notes, collections, reading progress, and settings, saved as a single document tied to your user ID.",
+        "account3": "If you turn on cloud backup: a copy of your bookmarks, notes, collections, reading progress, Ayah of the day history, and settings, saved as a single document tied to your user ID.",
         "accountProcessor": "This data is held in Google Firebase (Firebase Authentication and Cloud Firestore) acting as our processor, and is encrypted in transit over HTTPS/TLS. A security rule restricts each backup so that only its owner can read it.",
         "accountNote": "All of it is optional and under your control. It is never sold, never shared with third parties, and never used for advertising or profiling. Sign out and the app keeps working offline exactly as before.",
         "storeHeading": "Data stored on your device",
         "storeIntro": "Whether or not you sign in, the app keeps this on your device:",
-        "store1": "Bookmarks you create, notes you write, and the collections you organise them into.",
+        "store1": "Bookmarks you create, notes you write, the collections you organise them into, and the Ayah of the day history the home-screen widget builds up.",
         "store2": "Reading position (last-read surah and ayah), so you can resume.",
         "store3": "Settings — chosen translation languages, interface language, theme (light/dark/system), reading background, Arabic font and font size, and whether tajweed colours are on.",
         "storeNote": "This data lives in the app's private storage. It is removed when you uninstall the app or clear its data from Android settings. If you never sign in, it never leaves your device.",
         "deletionHeading": "Deleting your account",
         "deletion": "You can ask us to delete your account and its cloud backup at any time. The <deleteAccount>account deletion</deleteAccount> page explains how to request it and what gets removed.",
         "permissionsHeading": "Permissions",
-        "permissions": "The app requests no runtime permissions — no location, no contacts, no storage, no camera. It declares internet access, used only for the optional account and cloud backup described above.",
+        "permissions": "The app requests no runtime permissions — no location, no contacts, no storage, no camera. It declares internet access, used only for the optional account and cloud backup described above, and permission to be told when the device has finished starting up, used only to re-schedule the home-screen widget's daily change of verse after a restart.",
         "childrenHeading": "Children",
         "children": "The app is suitable for all ages, and collects nothing from anyone who reads without signing in. If a child does sign in, the same optional account data described above applies, and it can be deleted on request.",
         "changesHeading": "Changes",

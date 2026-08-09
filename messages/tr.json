@@ -94,7 +94,8 @@
           "b2": "İstediğiniz ayete kendi notunuzu yazın; hepsi Notlar altında toplanır.",
           "b3": "Ayetleri kendi adlandırdığınız koleksiyonlara kaydedin.",
           "b4": "Bir ayeti mealiyle birlikte kopyalayın veya paylaşın.",
-          "b5": "Kaldığınız yeri tam olarak hatırlar."
+          "b5": "Kaldığınız yeri tam olarak hatırlar.",
+          "b6": "Ana ekranınız için Günün ayeti widget’ı — Arapçası, okuduğunuz mealiyle; arka planını, metin rengini ve boyutunu siz seçersiniz. Uygulamayı açmadan kopyalayın, paylaşın ya da başka bir ayet çekin. Gösterdiği her ayet uygulamanın içinde toplanır; yer imine ekleyebilir, not yazabilir veya bir koleksiyona kaydedebilirsiniz."
         },
         "language": {
           "title": "Kendi dilinizde",
@@ -686,8 +687,7 @@
     "theme": "Tema",
     "prayerChime": "Namaz vakti hatırlatıcıları",
     "chimeOn": "Açık",
-    "chimeOff": "Sessiz"
-  ,
+    "chimeOff": "Sessiz",
     "sectionApps": "Uygulamalar",
     "appsQuran": "Android için Kur'an"
   },
@@ -749,8 +749,7 @@
     "developers": "Geliştiriciler",
     "downloads": "Downloads",
     "language": "Dil",
-    "copyright": "© {year} i-muslim"
-  ,
+    "copyright": "© {year} i-muslim",
     "colApps": "Uygulamalar",
     "appsQuran": "Android için Kur'an"
   },
@@ -780,7 +779,7 @@
       "p5": "Sorular, silme talepleri veya gizlilikle ilgili her şey için: <contact>iletişim</contact> sayfasındaki adresten bize yazın.",
       "app": {
         "heading": "i-muslim Quran (Android uygulaması)",
-        "updated": "Son güncelleme: 1 Ağustos 2026",
+        "updated": "Son güncelleme: 9 Ağustos 2026",
         "intro": "i-muslim Quran uygulaması (paket com.imuslim.quran), Android için çevrimdışı çalışan bir Kur'an okuyucusudur. Hesap olmadan eksiksiz çalışır — Kur'an metninin tamamı ve çeviriler uygulamanın içine gömülüdür. Oturum açmak ve okuma verilerinizi buluta yedeklemek, kapalı bırakabileceğiniz isteğe bağlı eklerdir.",
         "collectHeading": "Neleri topluyoruz",
         "collectIntro": "Oturum açmayı seçmediğiniz sürece hiçbir şey. Varsayılan kullanımda — çevrimdışı ve oturum açmadan — uygulama hiçbir kişisel veriyi toplamaz, iletmez veya paylaşmaz.",
@@ -791,19 +790,19 @@
         "accountIntro": "Okumak için hiçbir zaman hesaba ihtiyacınız olmaz. Oturum açmayı seçerseniz — Google ile ya da bir e-posta adresi ve parolayla — Firebase Authentication kullanarak size bir hesap oluşturur ve şunları saklarız:",
         "account1": "E-posta adresiniz ve Google ile oturum açtıysanız adınız ile profil fotoğrafınız. Bunlar uygulama içindeki Profil ekranında görünür.",
         "account2": "Hesabınızı tanımlayan bir kullanıcı kimliği.",
-        "account3": "Bulut yedeklemeyi açarsanız: yer imlerinizin, notlarınızın, koleksiyonlarınızın, okuma ilerlemenizin ve ayarlarınızın bir kopyası, kullanıcı kimliğinize bağlı tek bir belge olarak saklanır.",
+        "account3": "Bulut yedeklemeyi açarsanız: yer imlerinizin, notlarınızın, koleksiyonlarınızın, okuma ilerlemenizin, Günün ayeti geçmişinizin ve ayarlarınızın bir kopyası, kullanıcı kimliğinize bağlı tek bir belge olarak saklanır.",
         "accountProcessor": "Bu veriler, veri işleyenimiz olarak Google Firebase'de (Firebase Authentication ve Cloud Firestore) tutulur ve aktarım sırasında HTTPS/TLS ile şifrelenir. Bir güvenlik kuralı, her yedeği yalnızca sahibinin okuyabilmesiyle sınırlar.",
         "accountNote": "Bunların tümü isteğe bağlıdır ve sizin denetimizdedir. Asla satılmaz, üçüncü taraflarla paylaşılmaz ve reklam ya da profilleme için kullanılmaz. Oturumu kapattığınızda uygulama tam olarak eskisi gibi çevrimdışı çalışmaya devam eder.",
         "storeHeading": "Cihazınızda saklanan veriler",
         "storeIntro": "Oturum açsanız da açmasanız da uygulama şunları cihazınızda tutar:",
-        "store1": "Oluşturduğunuz yer imleri, yazdığınız notlar ve bunları düzenlediğiniz koleksiyonlar.",
+        "store1": "Oluşturduğunuz yer imleri, yazdığınız notlar, bunları düzenlediğiniz koleksiyonlar ve ana ekran widget’ının biriktirdiği Günün ayeti geçmişi.",
         "store2": "Okuma konumu (en son okunan sure ve ayet), böylece kaldığınız yerden devam edebilirsiniz.",
         "store3": "Ayarlar — seçtiğiniz çeviri dilleri, arayüz dili, tema (açık/koyu/sistem), okuma arka planı, Arapça yazı tipi ve boyutu, tecvid renklerinin açık olup olmadığı.",
         "storeNote": "Bu veriler uygulamanın özel depolama alanında bulunur. Uygulamayı kaldırdığınızda veya Android ayarlarından verilerini temizlediğinizde silinir. Hiç oturum açmazsanız cihazınızdan asla çıkmaz.",
         "deletionHeading": "Hesabınızı silme",
         "deletion": "Hesabınızın ve bulut yedeğinizin silinmesini istediğiniz zaman talep edebilirsiniz. <deleteAccount>hesap silme</deleteAccount> sayfası bunu nasıl talep edeceğinizi ve nelerin kaldırıldığını açıklar.",
         "permissionsHeading": "İzinler",
-        "permissions": "Uygulama hiçbir çalışma zamanı izni istemez — konum yok, kişiler yok, depolama yok, kamera yok. Yalnızca yukarıda açıklanan isteğe bağlı hesap ve bulut yedekleme için kullanılan internet erişimi bildirir.",
+        "permissions": "Uygulama hiçbir çalışma zamanı izni istemez — konum yok, kişiler yok, depolama yok, kamera yok. Yalnızca yukarıda açıklanan isteğe bağlı hesap ve bulut yedekleme için kullanılan internet erişimini ve cihazın açılışını tamamladığının bildirilmesi iznini bildirir; ikincisi yalnızca yeniden başlatmanın ardından ana ekran widget’ının günlük ayet değişimini yeniden zamanlamak için kullanılır.",
         "childrenHeading": "Çocuklar",
         "children": "Uygulama her yaşa uygundur ve oturum açmadan okuyan hiç kimseden veri toplamaz. Bir çocuk oturum açarsa, yukarıda açıklanan aynı isteğe bağlı hesap verileri geçerli olur ve talep üzerine silinebilir.",
         "changesHeading": "Değişiklikler",

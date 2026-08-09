@@ -94,7 +94,8 @@
           "b2": "Tulis catatan Anda sendiri pada ayat mana pun, semuanya terkumpul di Catatan.",
           "b3": "Simpan ayat ke dalam koleksi bernama milik Anda.",
           "b4": "Salin atau bagikan ayat beserta terjemahannya.",
-          "b5": "Lanjutkan bacaan mengingat persis di mana Anda berhenti."
+          "b5": "Lanjutkan bacaan mengingat persis di mana Anda berhenti.",
+          "b6": "Widget Ayat hari ini untuk layar utama — teks Arab beserta terjemahan yang Anda baca, dengan latar, warna, dan ukuran teks pilihan Anda. Salin, bagikan, atau ambil ayat lain tanpa membuka aplikasi. Setiap ayat yang ditampilkan terkumpul di dalam aplikasi, siap dimarkahi, dicatat, atau disimpan ke koleksi."
         },
         "language": {
           "title": "Bahasa Anda",
@@ -686,8 +687,7 @@
     "theme": "Tema",
     "prayerChime": "Prayer reminders",
     "chimeOn": "On",
-    "chimeOff": "Muted"
-  ,
+    "chimeOff": "Muted",
     "sectionApps": "Aplikasi",
     "appsQuran": "Quran untuk Android"
   },
@@ -749,8 +749,7 @@
     "developers": "Pengembang",
     "downloads": "Downloads",
     "language": "Bahasa",
-    "copyright": "© {year} i-muslim"
-  ,
+    "copyright": "© {year} i-muslim",
     "colApps": "Aplikasi",
     "appsQuran": "Quran untuk Android"
   },
@@ -780,7 +779,7 @@
       "p5": "Pertanyaan, permintaan penghapusan, atau apa pun terkait privasi: kirim email ke alamat di halaman <contact>kontak</contact>.",
       "app": {
         "heading": "i-muslim Quran (aplikasi Android)",
-        "updated": "Terakhir diperbarui: 1 Agustus 2026",
+        "updated": "Terakhir diperbarui: 9 Agustus 2026",
         "intro": "Aplikasi i-muslim Quran (paket com.imuslim.quran) adalah pembaca Al-Qur'an offline untuk Android. Aplikasi berfungsi penuh tanpa akun — seluruh teks Al-Qur'an dan terjemahan sudah tertanam di dalamnya. Masuk ke akun dan mencadangkan data bacaan Anda ke awan adalah tambahan opsional yang boleh Anda biarkan nonaktif.",
         "collectHeading": "Apa yang kami kumpulkan",
         "collectIntro": "Tidak ada, kecuali Anda memilih untuk masuk. Pada penggunaan bawaan — offline dan tanpa masuk — aplikasi sama sekali tidak mengumpulkan, mengirimkan, atau membagikan data pribadi.",
@@ -791,19 +790,19 @@
         "accountIntro": "Anda tidak pernah membutuhkan akun untuk membaca. Jika Anda memilih untuk masuk — dengan Google, atau dengan alamat email dan kata sandi — kami membuatkan akun untuk Anda menggunakan Firebase Authentication dan menyimpan:",
         "account1": "Alamat email Anda, dan jika Anda masuk dengan Google, nama serta foto profil Anda. Semua ini tampil di layar Profil di dalam aplikasi.",
         "account2": "ID pengguna yang mengidentifikasi akun Anda.",
-        "account3": "Jika Anda mengaktifkan pencadangan awan: salinan markah, catatan, koleksi, kemajuan bacaan, dan pengaturan Anda, disimpan sebagai satu dokumen yang terkait dengan ID pengguna Anda.",
+        "account3": "Jika Anda mengaktifkan pencadangan awan: salinan markah, catatan, koleksi, kemajuan bacaan, riwayat Ayat hari ini, dan pengaturan Anda, disimpan sebagai satu dokumen yang terkait dengan ID pengguna Anda.",
         "accountProcessor": "Data ini disimpan di Google Firebase (Firebase Authentication dan Cloud Firestore) yang bertindak sebagai pemroses kami, dan dienkripsi saat transit melalui HTTPS/TLS. Sebuah aturan keamanan membatasi setiap cadangan sehingga hanya pemiliknya yang dapat membacanya.",
         "accountNote": "Semuanya opsional dan berada dalam kendali Anda. Data itu tidak pernah dijual, tidak pernah dibagikan kepada pihak ketiga, dan tidak pernah dipakai untuk iklan atau pembuatan profil. Keluar dari akun dan aplikasi tetap bekerja offline persis seperti sebelumnya.",
         "storeHeading": "Data yang disimpan di perangkat Anda",
         "storeIntro": "Baik Anda masuk maupun tidak, aplikasi menyimpan ini di perangkat Anda:",
-        "store1": "Markah (bookmark) yang Anda buat, catatan yang Anda tulis, dan koleksi tempat Anda menatanya.",
+        "store1": "Markah (bookmark) yang Anda buat, catatan yang Anda tulis, koleksi tempat Anda menatanya, dan riwayat Ayat hari ini yang dikumpulkan widget layar utama.",
         "store2": "Posisi baca (surah dan ayat terakhir dibaca), agar Anda dapat melanjutkan.",
         "store3": "Pengaturan — bahasa terjemahan yang dipilih, bahasa antarmuka, tema (terang/gelap/sistem), latar bacaan, huruf Arab dan ukurannya, serta apakah warna tajwid aktif.",
         "storeNote": "Data ini berada di penyimpanan privat aplikasi. Data dihapus saat Anda mencopot aplikasi atau menghapus datanya dari pengaturan Android. Jika Anda tidak pernah masuk, data itu tidak pernah keluar dari perangkat Anda.",
         "deletionHeading": "Menghapus akun Anda",
         "deletion": "Anda dapat meminta kami menghapus akun dan cadangan awannya kapan saja. Halaman <deleteAccount>penghapusan akun</deleteAccount> menjelaskan cara memintanya dan apa saja yang dihapus.",
         "permissionsHeading": "Izin",
-        "permissions": "Aplikasi tidak meminta izin runtime apa pun — tanpa lokasi, tanpa kontak, tanpa penyimpanan, tanpa kamera. Aplikasi mendeklarasikan akses internet, yang hanya dipakai untuk akun dan pencadangan awan opsional yang dijelaskan di atas.",
+        "permissions": "Aplikasi tidak meminta izin runtime apa pun — tanpa lokasi, tanpa kontak, tanpa penyimpanan, tanpa kamera. Aplikasi mendeklarasikan akses internet, yang hanya dipakai untuk akun dan pencadangan awan opsional yang dijelaskan di atas, serta izin untuk diberi tahu saat perangkat selesai menyala, yang hanya dipakai untuk menjadwalkan ulang pergantian ayat harian pada widget layar utama setelah perangkat dinyalakan kembali.",
         "childrenHeading": "Anak-anak",
         "children": "Aplikasi cocok untuk segala usia, dan tidak mengumpulkan apa pun dari siapa saja yang membaca tanpa masuk. Jika seorang anak memang masuk, data akun opsional yang sama seperti dijelaskan di atas berlaku, dan dapat dihapus atas permintaan.",
         "changesHeading": "Perubahan",
