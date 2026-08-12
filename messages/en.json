@@ -763,7 +763,7 @@
     "privacy": {
       "title": "Privacy",
       "description": "What data i-muslim collects and how we use it.",
-      "lead": "This page covers the i-muslim website and two standalone Android apps — i-muslim Quran and i-muslim Prayer Times. Each handles your data differently, so they are described separately below.",
+      "lead": "This page covers the i-muslim website and two standalone Android apps — i-muslim Quran and Salatuk (Namaz) Prayer Times. Each handles your data differently, so they are described separately below.",
       "webHeading": "Website (i-muslim.com)",
       "p1": "We collect the minimum needed to run the features you use — and nothing more.",
       "h1": "Location",
@@ -808,9 +808,9 @@
         "contact": "Questions about the app's privacy: email us at the address on the <contact>contact</contact> page."
       },
       "prayerApp": {
-        "heading": "i-muslim Prayer Times (Android app)",
-        "updated": "Last updated: 14 July 2026",
-        "intro": "The i-muslim Prayer Times app (package com.imuslim.prayer) computes the five daily prayer times on your device and can remind you and silence your phone around each prayer. It has no accounts, no ads, and no tracking.",
+        "heading": "Salatuk (Namaz) Prayer Times (Android app)",
+        "updated": "Last updated: 12 August 2026",
+        "intro": "The Salatuk app (package com.imuslim.prayer) computes the five daily prayer times on your device and can remind you and silence your phone around each prayer. It has no accounts, no ads, and no tracking.",
         "collectHeading": "What we collect",
         "collectIntro": "Nothing. The app does not collect, transmit to us, or share any personal data — we run no servers.",
         "collect1": "Prayer times are calculated entirely on your device. There are no accounts, no login, and no sign-up.",

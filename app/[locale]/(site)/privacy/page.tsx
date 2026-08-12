@@ -200,7 +200,7 @@ export default async function PrivacyPage() {
             <p>{t.rich("app.contact", contactLink)}</p>
           </section>
 
-          {/* i-muslim Prayer Times (Android app) */}
+          {/* Salatuk (Namaz) Prayer Times (Android app) */}
           <section
             id="prayer-app"
             className="mt-12 scroll-mt-24 space-y-4 border-t border-border pt-8 leading-relaxed text-foreground/90"

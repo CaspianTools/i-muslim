@@ -766,7 +766,7 @@
     "privacy": {
       "title": "Privasi",
       "description": "Data apa yang dikumpulkan i-muslim dan bagaimana kami menggunakannya.",
-      "lead": "Halaman ini mencakup situs web i-muslim dan dua aplikasi Android mandiri — i-muslim Quran dan i-muslim Prayer Times. Masing-masing menangani data Anda secara berbeda, sehingga dijelaskan secara terpisah di bawah ini.",
+      "lead": "Halaman ini mencakup situs web i-muslim dan dua aplikasi Android mandiri — i-muslim Quran dan Salatuk (Namaz) Prayer Times. Masing-masing menangani data Anda secara berbeda, sehingga dijelaskan secara terpisah di bawah ini.",
       "webHeading": "Situs web (i-muslim.com)",
       "p1": "Kami mengumpulkan seminimal mungkin yang dibutuhkan untuk menjalankan fitur yang Anda gunakan — tidak lebih.",
       "h1": "Lokasi",
@@ -811,9 +811,9 @@
         "contact": "Pertanyaan terkait privasi aplikasi: kirim email ke alamat di halaman <contact>kontak</contact>."
       },
       "prayerApp": {
-        "heading": "i-muslim Prayer Times (aplikasi Android)",
-        "updated": "Terakhir diperbarui: 14 Juli 2026",
-        "intro": "Aplikasi i-muslim Prayer Times (paket com.imuslim.prayer) menghitung lima waktu salat harian di perangkat Anda dan dapat mengingatkan Anda serta membisukan ponsel Anda di sekitar setiap waktu salat. Aplikasi tidak memiliki akun, tidak ada iklan, dan tidak ada pelacakan.",
+        "heading": "Salatuk (Namaz) Prayer Times (aplikasi Android)",
+        "updated": "Terakhir diperbarui: 12 Agustus 2026",
+        "intro": "Aplikasi Salatuk (paket com.imuslim.prayer) menghitung lima waktu salat harian di perangkat Anda dan dapat mengingatkan Anda serta membisukan ponsel Anda di sekitar setiap waktu salat. Aplikasi tidak memiliki akun, tidak ada iklan, dan tidak ada pelacakan.",
         "collectHeading": "Apa yang kami kumpulkan",
         "collectIntro": "Tidak ada. Aplikasi tidak mengumpulkan, mengirimkan kepada kami, atau membagikan data pribadi apa pun — kami tidak menjalankan server apa pun.",
         "collect1": "Waktu salat dihitung sepenuhnya di perangkat Anda. Tidak ada akun, tidak ada login, dan tidak ada pendaftaran.",

@@ -766,7 +766,7 @@
     "privacy": {
       "title": "Gizlilik",
       "description": "i-muslim'in topladığı veriler ve bunları nasıl kullandığımız.",
-      "lead": "Bu sayfa i-muslim web sitesini ve Android için iki bağımsız uygulamayı kapsar — i-muslim Quran ve i-muslim Prayer Times. Her biri verilerinizi farklı şekilde işlediğinden, aşağıda ayrı ayrı açıklanmıştır.",
+      "lead": "Bu sayfa i-muslim web sitesini ve Android için iki bağımsız uygulamayı kapsar — i-muslim Quran ve Salatuk (Namaz) Prayer Times. Her biri verilerinizi farklı şekilde işlediğinden, aşağıda ayrı ayrı açıklanmıştır.",
       "webHeading": "Web sitesi (i-muslim.com)",
       "p1": "Yalnızca kullandığınız özelliklerin çalışması için gereken asgariyi topluyoruz — fazlasını değil.",
       "h1": "Konum",
@@ -811,9 +811,9 @@
         "contact": "Uygulamanın gizliliğiyle ilgili sorular için: <contact>iletişim</contact> sayfasındaki adresten bize yazın."
       },
       "prayerApp": {
-        "heading": "i-muslim Prayer Times (Android uygulaması)",
-        "updated": "Son güncelleme: 14 Temmuz 2026",
-        "intro": "i-muslim Prayer Times uygulaması (paket com.imuslim.prayer), beş vakit namazı cihazınızda hesaplar ve her namaz vaktinde size hatırlatma yapabilir ve telefonunuzu sessize alabilir. Hesap, reklam ve takip içermez.",
+        "heading": "Salatuk (Namaz) Prayer Times (Android uygulaması)",
+        "updated": "Son güncelleme: 12 Ağustos 2026",
+        "intro": "Salatuk uygulaması (paket com.imuslim.prayer), beş vakit namazı cihazınızda hesaplar ve her namaz vaktinde size hatırlatma yapabilir ve telefonunuzu sessize alabilir. Hesap, reklam ve takip içermez.",
         "collectHeading": "Neleri topluyoruz",
         "collectIntro": "Hiçbir şey. Uygulama hiçbir kişisel veriyi toplamaz, bize iletmez veya paylaşmaz — hiçbir sunucu çalıştırmıyoruz.",
         "collect1": "Namaz vakitleri tamamen cihazınızda hesaplanır. Hesap, oturum açma veya kayıt yoktur.",
