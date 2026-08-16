@@ -82,8 +82,6 @@ env:
     availability:
       - BUILD
       - RUNTIME
-  - variable: QURAN_APP_REPO_TOKEN
-    secret: QURAN_APP_REPO_TOKEN
 
 # Cloud Run sizing/scaling. minInstances stays 0 so nothing bills while idle
 # (the app cold-starts on the first request); maxInstances caps worst-case
