@@ -39,10 +39,37 @@ const COLLECTIONS = [
 
 const HAS_RUSSIAN = new Set(["bukhari", "muslim", "abudawud"]);
 
+/**
+ * --only=<slug>   seed a single collection (repeatable, comma-separated)
+ * --dry-run       fetch, diff and report; write nothing
+ *
+ * `--only` exists because a full re-run touches all 31,629 documents. Even now
+ * that the write merges rather than replaces, the blast radius of a nine-
+ * collection run is no longer something you want to take on by accident when
+ * the goal is to backfill one collection.
+ */
+const ARGV = process.argv.slice(2);
+const dryRun = ARGV.includes("--dry-run");
+const onlyArg = ARGV.find((a) => a.startsWith("--only="))?.slice("--only=".length);
+const only = onlyArg
+  ? new Set(onlyArg.split(",").map((x) => x.trim()).filter(Boolean))
+  : null;
+
 type HadithGrade = { name: string; grade: string };
 type HadithEntry = {
   hadithnumber: number;
-  arabicnumber: number;
+  /**
+   * Absent on 344 of ara-muslim's 7,563 entries (every `reference.book === 0`
+   * "Introduction" record, starting at index 0) — muslim is the only one of the
+   * nine editions where this happens. Optional, and coalesced to null at the
+   * write site: the Admin SDK throws on an `undefined` field value, which is
+   * what left Sahih Muslim with zero documents.
+   *
+   * Also note the type: muslim carries STRING values here (e.g. "11.01") while
+   * the other editions use numbers. Stored verbatim — nothing reads it as a
+   * number — but the annotation says so rather than lying.
+   */
+  arabicnumber?: number | string;
   text: string;
   grades: HadithGrade[];
   reference: { book: number; hadith: number };
@@ -134,25 +161,50 @@ async function seedCollection(firestore: Firestore, c: (typeof COLLECTIONS)[numb
     wantRussian ? fetchEdition("rus", c.slug) : Promise.resolve<Edition | null>(null),
   ]);
 
-  await seedCollectionMeta(firestore, c, ara);
+  if (!dryRun) await seedCollectionMeta(firestore, c, ara);
 
   const engIdx = indexByNumber(eng.hadiths);
   const rusIdx = rus ? indexByNumber(rus.hadiths) : null;
   const col = firestore.collection("hadith_entries");
 
-  // Bulk-read existing docs to detect editedByAdmin flags.
+  // Bulk-read existing docs to detect edits we must not clobber. Two separate
+  // signals, and BOTH matter:
+  //   editedByAdmin        — whole doc is admin-owned, skip it entirely
+  //   editedTranslations.X — this one language was authored/edited by i-muslim
+  // Only the first was honoured before, and it is set on just ~1,086 of 31,629
+  // docs, while ~28,000 carry per-language flags. Since the write below used to
+  // replace the whole document, a re-run would have destroyed roughly 65,000
+  // i-muslim-authored az/tr/ru translations (config/translationStats:
+  // az 28,100 · tr 20,848 · ru 16,228).
   const refs = ara.hadiths.map((h) => col.doc(`${c.slug}:${h.hadithnumber}`));
   // Firestore getAll has a soft cap; chunk by 500.
   const editedSet = new Set<string>();
+  const authoredLangs = new Map<string, Set<string>>();
   for (let i = 0; i < refs.length; i += 500) {
     const slice = refs.slice(i, i + 500);
     const snaps = await firestore.getAll(...slice);
     for (const s of snaps) {
-      if (s.exists && s.data()?.editedByAdmin === true) editedSet.add(s.id);
+      if (!s.exists) continue;
+      const data = s.data() ?? {};
+      if (data.editedByAdmin === true) editedSet.add(s.id);
+      const flags = data.editedTranslations;
+      if (flags && typeof flags === "object") {
+        const langs = new Set(
+          Object.entries(flags as Record<string, unknown>)
+            .filter(([, v]) => v === true)
+            .map(([k]) => k),
+        );
+        if (langs.size > 0) authoredLangs.set(s.id, langs);
+      }
     }
   }
   if (editedSet.size > 0) {
     console.log(`[${c.slug}] preserving ${editedSet.size} admin-edited entries`);
+  }
+  if (authoredLangs.size > 0) {
+    console.log(
+      `[${c.slug}] preserving authored translations on ${authoredLangs.size} entries`,
+    );
   }
 
   let pending = firestore.batch();
@@ -169,34 +221,54 @@ async function seedCollection(firestore: Firestore, c: (typeof COLLECTIONS)[numb
     const grade = h.grades.find((g) => g.grade)?.grade ?? null;
     const narrator = enEntry?.text.match(/^Narrated\s+([^:]+):/)?.[1] ?? null;
 
-    pending.set(col.doc(id), {
+    // Never overwrite a language i-muslim authored or edited itself.
+    const authored = authoredLangs.get(id);
+    const translations: Record<string, string> = {};
+    const publishedTranslations: Record<string, boolean> = {};
+    if (!authored?.has("en") && enEntry?.text) {
+      translations.en = enEntry.text;
+      publishedTranslations.en = true;
+    }
+    if (!authored?.has("ru") && ruEntry?.text) {
+      translations.ru = ruEntry.text;
+      publishedTranslations.ru = true;
+    }
+
+    const payload = {
       collection: c.slug,
       number: h.hadithnumber,
-      arabic_number: h.arabicnumber,
+      // ara-muslim omits this on its 344 book-0 entries. The Admin SDK rejects
+      // `undefined` outright, and because the first muslim record is one of
+      // them the batch threw before a single commit — zero documents written.
+      arabic_number: h.arabicnumber ?? null,
       book: h.reference.book,
       hadith_in_book: h.reference.hadith,
       text_ar: h.text,
-      translations: {
-        en: enEntry?.text ?? "",
-        ru: ruEntry?.text ?? "",
-      },
+      translations,
       // Canonical upstream (fawazahmed0) is the trusted reference text — land
       // as Published. Admin edits bump editedByAdmin and are skipped by this
       // seeder, so manual unpublish choices are preserved across re-runs.
-      publishedTranslations: {
-        ...(enEntry?.text ? { en: true } : {}),
-        ...(ruEntry?.text ? { ru: true } : {}),
-      },
+      publishedTranslations,
       narrator,
       grade,
       grades: h.grades,
-      tags: [],
-      notes: null,
       published: true,
-      editedByAdmin: false,
       updatedAt: FieldValue.serverTimestamp(),
       updatedBy: "seed",
-    });
+    };
+
+    if (dryRun) {
+      written++;
+      continue;
+    }
+
+    // MERGE, never replace. A bare set() drops every field absent from the
+    // payload — which is how a re-run would have wiped translations.az /
+    // translations.tr, editedTranslations, tags and notes across the corpus.
+    // `tags`, `notes` and `editedByAdmin` are deliberately no longer written at
+    // all: they are reader/admin state, not upstream data, and seeding them was
+    // what reset them.
+    pending.set(col.doc(id), payload, { merge: true });
     pendingCount++;
     written++;
 
@@ -216,17 +288,43 @@ async function main() {
     `Connecting to Firestore project=${process.env.FIREBASE_PROJECT_ID} db=${process.env.FIREBASE_DATABASE_ID ?? "main"}`,
   );
 
-  for (const c of COLLECTIONS) {
+  const targets = COLLECTIONS.filter((c) => !only || only.has(c.slug));
+  if (only) {
+    const unknown = [...only].filter((sl) => !COLLECTIONS.some((c) => c.slug === sl));
+    if (unknown.length > 0) {
+      console.error(`Unknown --only slug(s): ${unknown.join(", ")}`);
+      process.exit(1);
+    }
+    console.log(`Limiting to: ${targets.map((c) => c.slug).join(", ")}`);
+  }
+  if (dryRun) console.log("DRY RUN — nothing will be written.");
+
+  const failed: string[] = [];
+  for (const c of targets) {
     try {
       await seedCollection(firestore, c);
     } catch (err) {
       console.error(`[${c.slug}] FAILED:`, err);
+      failed.push(c.slug);
     }
   }
 
+  if (failed.length > 0) {
+    // Exiting 0 here is what hid Sahih Muslim's failure for months: the run
+    // printed "Done." and looked clean while one collection had written zero
+    // documents. A non-zero exit makes the next failure impossible to miss.
+    console.error(
+      `
+FAILED for ${failed.length} collection(s): ${failed.join(", ")} — see the errors above.`,
+    );
+    process.exit(1);
+  }
+
   console.log("Done.");
-  // Refresh the translationStats doc so /admin/settings reflects the seed.
-  await recomputeTranslationStats(firestore);
+  if (!dryRun) {
+    // Refresh the translationStats doc so /admin/settings reflects the seed.
+    await recomputeTranslationStats(firestore);
+  }
   process.exit(0);
 }
 
