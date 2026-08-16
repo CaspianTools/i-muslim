@@ -260,21 +260,16 @@ export default async function HadithBookPage({
                       status: "in_process",
                     };
                   }
-                  // No translation in this language yet. Fall back to English
-                  // only if English itself is Published.
-                  const enEntry =
-                    lang !== "en" && isPublished("en")
-                      ? docToHadithEntry(h, "en", gradeLabel)
-                      : null;
-                  if (enEntry) {
-                    return { requested: lang, actual: "en", entry: enEntry, fallback: true };
-                  }
+                  // No translation in this language at all — say so rather
+                  // than substituting English under this language's heading.
+                  // No `status`: "in_process" means a Draft awaiting review,
+                  // not a translation that was never written, so HadithCard
+                  // shows "translation unavailable" instead.
                   return {
                     requested: lang,
                     actual: null,
                     entry: null,
                     fallback: false,
-                    status: "in_process",
                   };
                 });
                 const hadithKey = `${collection}:${h.number}`;

@@ -282,29 +282,20 @@ export default async function HadithDetailPage({
         status: "in_process",
       };
     }
-    // No translation in this language. Fall back to English only when
-    // English itself is Published.
-    const enText = doc.translations?.en;
-    if (lang !== "en" && enText && isPublished("en")) {
-      return {
-        requested: lang,
-        actual: "en",
-        entry: {
-          hadithnumber: doc.number,
-          arabicnumber: doc.arabic_number ?? doc.number,
-          text: enText,
-          grades: baseGrades,
-          reference: baseReference,
-        },
-        fallback: true,
-      };
-    }
+    // No translation in this language at all. Say so — do NOT substitute
+    // English. Sahih Muslim has no Azerbaijani or Turkish edition anywhere
+    // upstream, and the old behaviour rendered the English text under an
+    // "Azerbaijani" heading with only a hover tooltip to explain, so three
+    // identical English paragraphs appeared under three language headings.
+    //
+    // No `status` here: "in_process" means a Draft awaiting review, which is a
+    // different thing from a translation that does not exist. Leaving it unset
+    // makes HadithCard show its "translation unavailable" badge instead.
     return {
       requested: lang,
       actual: null,
       entry: null,
       fallback: false,
-      status: "in_process",
     };
   });
 
