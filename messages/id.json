@@ -21,6 +21,126 @@
     "copy": "Salin"
   },
   "apps": {
+    "index": {
+      "meta": {
+        "title": "Aplikasi Android dari i-muslim",
+        "description": "Aplikasi Android i-muslim: pembaca Al-Qur'an offline, dan Salatuk untuk jadwal salat dan azan. Keduanya gratis, keduanya offline, tanpa iklan dan tanpa pelacakan."
+      },
+      "heading": "Aplikasi Android kami",
+      "lead": "Dua aplikasi yang dibangun dengan cara yang sama: semuanya berfungsi offline, tidak ada yang dikunci di balik pembayaran, dan tidak satu pun membawa iklan, pelacak, atau akun yang harus Anda buat.",
+      "openApp": "Buka halaman aplikasi",
+      "openAppAria": "{app} — halaman aplikasi",
+      "version": "Versi {version}",
+      "updated": "Diperbarui {date}",
+      "iconAlt": "Ikon aplikasi {app}"
+    },
+    "prayer": {
+      "meta": {
+        "title": "Salatuk — aplikasi jadwal salat offline untuk Android",
+        "description": "Jadwal salat akurat yang dihitung di perangkat Anda, azan, senyap otomatis saat salat, dan tiga widget layar utama. Gratis, tanpa iklan, tanpa pelacakan, tanpa akun."
+      },
+      "hero": {
+        "eyebrow": "Aplikasi Android",
+        "title": "Salatuk (Namaz) Jadwal Salat",
+        "tagline": "Jadwal salat offline, azan, dan senyap otomatis saat salat. Tanpa iklan.",
+        "lead": "Salatuk adalah pendamping yang tenang dan penuh hormat untuk salat lima waktu. Subuh hingga Isya dihitung langsung di perangkat Anda dengan salah satu dari enam belas metode perhitungan yang sudah mapan, sehingga jadwalnya tetap tepat baik Anda punya sinyal maupun tidak. Aplikasi ini memanggil Anda dengan azan penuh, membisukan ponsel selama Anda salat lalu memulihkan nada dering setelahnya, dan menaruh jadwal hari ini di layar utama Anda. Tanpa iklan, tanpa pelacakan, tanpa akun — dan tidak ada server kami yang bisa dijangkau lokasi Anda.",
+        "version": "Versi {version}",
+        "updated": "Diperbarui {date}"
+      },
+      "badges": {
+        "offline": "Berfungsi offline",
+        "noAds": "Tanpa iklan",
+        "noTracking": "Tanpa pelacakan",
+        "free": "Gratis selamanya"
+      },
+      "cta": {
+        "play": "Dapatkan di Google Play",
+        "playAria": "Dapatkan Salatuk di Google Play — terbuka di tab baru",
+        "webLead": "Hanya perlu jadwal hari ini?",
+        "webLink": "Buka jadwal salat versi web",
+        "privacy": "Cara aplikasi memperlakukan data Anda"
+      },
+      "screenshots": {
+        "heading": "Lihat isinya",
+        "hint": "Dari rilis terkini.",
+        "alt": "{caption} — Salatuk di Android",
+        "captions": {
+          "today": "Jadwal hari ini, dengan hitung mundur langsung ke salat berikutnya",
+          "widget": "Widget layar utama yang terus menghitung mundur",
+          "adhan": "Pilih cara setiap salat memanggil Anda",
+          "silence": "Ponsel Anda membisukan diri selama rentang salat",
+          "methods": "Enam belas metode perhitungan, dan mazhab Asar Anda",
+          "location": "Deteksi lokasi, cari kota, atau ketikkan koordinat",
+          "settings": "Enam bahasa aplikasi, tema, dan format 12 atau 24 jam",
+          "permissions": "Setiap izin dijelaskan sebelum diminta"
+        }
+      },
+      "features": {
+        "heading": "Apa saja di dalamnya",
+        "times": {
+          "title": "Jadwal dihitung di perangkat Anda",
+          "b1": "Subuh, Terbit, Zuhur, Asar, Magrib, dan Isya dihitung di ponsel Anda dengan metode astronomi PrayTimes yang sudah mapan — tanpa perlu internet dan tanpa memuat apa pun.",
+          "b2": "Enam belas metode perhitungan: Liga Dunia Muslim, ISNA, Umm al-Qura, Mesir, Karachi, Teheran, Jafari, Diyanet, Kawasan Teluk, Kuwait, Qatar, Singapura, Dubai, Komite Rukyat Hilal, UOIF Prancis, dan Rusia.",
+          "b3": "Tentukan mazhab Asar Anda — Standar atau Hanafi — dan aturan lintang tinggi untuk wilayah utara tempat matahari nyaris tidak terbenam.",
+          "b4": "Penyesuaian tanggal Hijriah secara manual, agar tanggal yang ditampilkan sesuai dengan rukyat hilal di daerah Anda."
+        },
+        "adhan": {
+          "title": "Azan, pengingat, dan iqamah",
+          "b1": "Tentukan untuk masing-masing dari lima waktu salat bagaimana ia memanggil Anda: azan penuh, notifikasi, banner senyap, atau tidak sama sekali.",
+          "b2": "Tambahkan pengingat beberapa menit sebelum salat, dan peringatan iqamah setelah azan — setiap salat punya jedanya sendiri, bukan satu jeda untuk kelimanya.",
+          "b3": "Azan tetap terdengar meski nada dering sedang dibisukan, lengkap dengan tombol Hentikan sekali ketuk."
+        },
+        "silence": {
+          "title": "Senyap otomatis saat salat",
+          "b1": "Ponsel Anda membisukan diri selama rentang di sekitar setiap salat lalu memulihkan nada dering sesudahnya — jadi tidak berdering di tengah salat, dan Anda tidak lupa mengembalikannya.",
+          "b2": "Atur berapa menit sebelumnya dimulai, berapa lama salat berlangsung, dan berapa menit setelahnya nada dering dipulihkan.",
+          "b3": "Pilih senyap atau getar, dan pilih salat mana saja yang ikut dibisukan."
+        },
+        "widgets": {
+          "title": "Tiga widget layar utama",
+          "b1": "Bilah Hari ini yang lengkap, berisi lokasi Anda, tanggal Masehi dan Hijriah, serta kelima waktu salat.",
+          "b2": "Atau hitung mundur Salat berikutnya yang ringkas, atau daftar Vertikal yang tinggi berisi jadwal hari ini.",
+          "b3": "Ketiganya menyorot salat berikutnya dan menghitung mundur secara langsung, dengan ukuran huruf yang Anda pilih."
+        },
+        "location": {
+          "title": "Lokasi Anda, dengan cara Anda",
+          "b1": "Deteksi otomatis, cari berdasarkan nama kota, atau ketikkan koordinat persis — dan simpan lebih dari satu tempat.",
+          "b2": "Koordinat Anda tetap di perangkat dan tidak pernah dikirim kepada kami. Kami tidak menjalankan server apa pun dan tidak mengumpulkan apa pun.",
+          "b3": "Mengubah koordinat menjadi nama tempat yang mudah dibaca memakai layanan bawaan Android, yang pada sebagian besar ponsel bekerja daring; memasukkan koordinat secara manual melewatinya sama sekali."
+        },
+        "offline": {
+          "title": "Tidak perlu koneksi",
+          "b1": "Setiap waktu dihitung di ponsel Anda, jadi aplikasi tetap berfungsi di pesawat, di bawah tanah, saat bepergian, dan di mana pun tanpa sinyal.",
+          "b2": "Tidak ada yang perlu diunduh, tidak ada akun yang perlu dibuat, tidak ada yang perlu ditunggu."
+        },
+        "everyone": {
+          "title": "Untuk semua orang",
+          "b1": "Seluruh aplikasi tersedia dalam bahasa Indonesia, Inggris, Arab (sepenuhnya kanan ke kiri), Turki, Rusia, dan Azerbaijani.",
+          "b2": "Tema terang, gelap, dan mengikuti sistem, menyesuaikan cara Anda membaca saat Subuh dan saat Isya.",
+          "b3": "Format waktu 12 atau 24 jam, mana pun yang lebih mudah Anda baca."
+        },
+        "privacy": {
+          "title": "Privat sejak awal",
+          "b1": "Tanpa akun, tanpa iklan, tanpa pelacakan pihak ketiga dan tanpa analitik — tidak ada yang perlu dimasuki dan tidak ada milik Anda yang diunggah.",
+          "b2": "Gratis, tanpa versi berbayar dan tanpa fitur yang ditahan untuknya."
+        }
+      },
+      "attribution": "Salatuk adalah aplikasi jadwal salat dari <imuslim>i-muslim</imuslim>, dikembangkan oleh <caspian>Caspian Tools</caspian> — dengan Al-Qur'an dan Hadis sebagai aplikasi terpisah. Kami menjaga jadwalnya akurat, aplikasinya tenang, dan data Anda tetap di ponsel Anda.",
+      "changelog": {
+        "heading": "Yang baru",
+        "hint": "Seluruh {count} rilis sejauh ini. Catatan rilis diterbitkan dalam bahasa Inggris.",
+        "noNote": "Tidak ada catatan rilis yang tercatat untuk versi ini.",
+        "viewAll": "Lihat riwayat rilis lengkap",
+        "page": {
+          "title": "Salatuk — riwayat rilis",
+          "description": "Setiap versi yang dirilis dari aplikasi Android Salatuk (Namaz) Prayer Times, dari yang terbaru, dengan catatan rilis persis seperti yang terbit di Google Play.",
+          "heading": "Riwayat rilis",
+          "lead": "Setiap versi aplikasi, dari yang terbaru. Catatan rilis diterbitkan dalam bahasa Inggris.",
+          "count": "{count} rilis",
+          "back": "Kembali ke halaman aplikasi"
+        }
+      }
+    },
     "quran": {
       "meta": {
         "title": "Quran by i-muslim — aplikasi Al-Qur'an offline untuk Android",
@@ -692,7 +812,8 @@
     "sectionRead": "Bacaan",
     "tafsir": "Tafsir Ibnu Katsir",
     "sectionApps": "Aplikasi",
-    "appsQuran": "Quran untuk Android"
+    "appsQuran": "Quran untuk Android",
+    "appsPrayer": "Jadwal Salat untuk Android"
   },
   "surahPagination": {
     "ariaLabel": "Surah pagination",
@@ -755,7 +876,8 @@
     "language": "Bahasa",
     "copyright": "© {year} i-muslim",
     "colApps": "Aplikasi",
-    "appsQuran": "Quran untuk Android"
+    "appsQuran": "Quran untuk Android",
+    "appsPrayer": "Jadwal Salat untuk Android"
   },
   "legal": {
     "about": {

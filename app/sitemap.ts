@@ -5,6 +5,7 @@ import { listPublishedSlugs as listPublishedBusinessSlugs } from "@/lib/business
 import { DEFAULT_LOCALE } from "@/i18n/config";
 import { SITE_URL, indexableLocales } from "@/lib/seo/metadata";
 import { getQuranLatestRelease } from "@/lib/apps/quran-releases";
+import { getPrayerLatestRelease } from "@/lib/apps/prayer-releases";
 
 export const revalidate = 3600;
 
@@ -31,11 +32,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   };
 
-  const quranAppLatest = await getQuranLatestRelease();
+  const [quranAppLatest, prayerAppLatest] = await Promise.all([
+    getQuranLatestRelease(),
+    getPrayerLatestRelease(),
+  ]);
+  const releaseDate = (date?: string) =>
+    date ? new Date(`${date}T00:00:00Z`) : now;
+  // The index is two release-driven cards, so it changes when they do — dating
+  // it `now` would claim a fresh lastmod on every crawl.
+  const appsIndexModified = [quranAppLatest.date, prayerAppLatest.date]
+    .filter((d): d is string => Boolean(d))
+    .sort()
+    .at(-1);
   const staticEntries: MetadataRoute.Sitemap = [
     entry("", { priority: 1.0 }),
     entry("/quran", { priority: 0.8 }),
-    // Not /tafsir — that's a redirect to the single work page, same as /apps.
+    // Not /tafsir — that's a redirect to the single work page.
     entry("/tafsir/ibn-kathir", { priority: 0.7 }),
     entry("/tafsir/ibn-kathir/ar", { priority: 0.6 }),
     entry("/tafsir/ibn-kathir/id", { priority: 0.6 }),
@@ -50,15 +62,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/contact", { changeFrequency: "yearly", priority: 0.3 }),
     entry("/downloads", { changeFrequency: "monthly", priority: 0.7 }),
     entry("/developers", { changeFrequency: "monthly", priority: 0.5 }),
-    // Not /apps — that's a redirect to the single app page.
+    entry("/apps", {
+      lastModified: releaseDate(appsIndexModified),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    }),
     entry("/apps/quran", {
-      lastModified: quranAppLatest.date
-        ? new Date(`${quranAppLatest.date}T00:00:00Z`)
-        : now,
+      lastModified: releaseDate(quranAppLatest.date),
       changeFrequency: "monthly",
       priority: 0.7,
     }),
     entry("/apps/quran/changelog", {
+      changeFrequency: "monthly",
+      priority: 0.4,
+    }),
+    entry("/apps/prayer", {
+      lastModified: releaseDate(prayerAppLatest.date),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }),
+    entry("/apps/prayer/changelog", {
       changeFrequency: "monthly",
       priority: 0.4,
     }),

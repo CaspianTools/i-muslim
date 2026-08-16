@@ -21,6 +21,126 @@
     "copy": "Kopyala"
   },
   "apps": {
+    "index": {
+      "meta": {
+        "title": "Android için i-muslim uygulamaları",
+        "description": "i-muslim'in Android uygulamaları: çevrimdışı bir Kur'an okuyucusu ve namaz vakitleriyle ezan için Salatuk. İkisi de ücretsiz, ikisi de çevrimdışı, reklamsız ve takipsiz."
+      },
+      "heading": "Android uygulamalarımız",
+      "lead": "Aynı anlayışla yapılmış iki uygulama: her şey çevrimdışı çalışır, hiçbir özellik ücretli duvarın ardında değildir ve ikisinde de reklam, takip aracı ya da açmak zorunda olduğunuz bir hesap yoktur.",
+      "openApp": "Uygulama sayfasını aç",
+      "openAppAria": "{app} — uygulama sayfası",
+      "version": "Sürüm {version}",
+      "updated": "Güncelleme {date}",
+      "iconAlt": "{app} uygulama simgesi"
+    },
+    "prayer": {
+      "meta": {
+        "title": "Salatuk — Android için çevrimdışı namaz vakitleri uygulaması",
+        "description": "Cihazınızda hesaplanan doğru namaz vakitleri, ezan, namaz sırasında otomatik sessize alma ve üç ana ekran widget'ı. Ücretsiz; reklam, takip ve hesap yok."
+      },
+      "hero": {
+        "eyebrow": "Android uygulaması",
+        "title": "Salatuk: Namaz Vakitleri",
+        "tagline": "Çevrimdışı namaz vakitleri, ezan ve namazda otomatik sessize alma. Reklamsız.",
+        "lead": "Salatuk, beş vakit namaz için sakin ve saygılı bir yardımcıdır. İmsaktan yatsıya kadar bütün vakitler, yaygın kabul gören on altı hesaplama yönteminden dilediğinizle doğrudan cihazınızda hesaplanır; böylece bağlantınız olsa da olmasa da vakitler doğrudur. Sizi tam ezanla çağırır, namaz kılarken telefonunuzu susturur ve sonra zil sesini geri açar, günün vakitlerini de ana ekranınızda tutar. Reklam yok, takip yok, hesap yok — ve konumunuzun ulaşacağı bir sunucumuz da yok.",
+        "version": "Sürüm {version}",
+        "updated": "Güncelleme {date}"
+      },
+      "badges": {
+        "offline": "Çevrimdışı çalışır",
+        "noAds": "Reklam yok",
+        "noTracking": "Takip yok",
+        "free": "Sonsuza dek ücretsiz"
+      },
+      "cta": {
+        "play": "Google Play'den edinin",
+        "playAria": "Salatuk'u Google Play'den edinin — yeni sekmede açılır",
+        "webLead": "Yalnızca bugünün vakitleri mi lazım?",
+        "webLink": "Web'de namaz vakitlerini açın",
+        "privacy": "Uygulama verilerinizi nasıl işliyor"
+      },
+      "screenshots": {
+        "heading": "İçeriden bir bakış",
+        "hint": "Güncel sürümden.",
+        "alt": "{caption} — Android'de Salatuk",
+        "captions": {
+          "today": "Bugünün vakitleri ve sonraki namaza canlı geri sayım",
+          "widget": "Geri saymayı sürdüren ana ekran widget'ları",
+          "adhan": "Beş vaktin her birinin sizi nasıl çağıracağını seçin",
+          "silence": "Telefonunuz namaz süresince kendini sessize alır",
+          "methods": "On altı hesaplama yöntemi ve İkindi mezhebiniz",
+          "location": "Konumunuzu algılayın, şehir arayın ya da koordinat girin",
+          "settings": "Altı uygulama dili, temalar ve 12 ya da 24 saat biçimi",
+          "permissions": "Her izin, istenmeden önce açıklanır"
+        }
+      },
+      "features": {
+        "heading": "Neler var",
+        "times": {
+          "title": "Cihazınızda hesaplanan vakitler",
+          "b1": "İmsak, Güneş, Öğle, İkindi, Akşam ve Yatsı, yaygın kabul gören PrayTimes astronomi yöntemiyle telefonunuzda hesaplanır — internet gerekmez, yüklenecek bir şey yoktur.",
+          "b2": "On altı hesaplama yöntemi: Dünya Müslüman Birliği, ISNA, Ümmü'l-Kura, Mısır Genel Araştırma Kurumu, Karaçi, Tahran, Caferi, Diyanet, Körfez Bölgesi, Kuveyt, Katar, Singapur, Dubai, Hilal Gözlem Komitesi, Fransa İslami Kuruluşlar Birliği ve Rusya.",
+          "b3": "İkindi için mezhep tercihinizi — Standart ya da Hanefi — ve güneşin neredeyse batmadığı kuzey bölgeleri için yüksek enlem kuralını seçin.",
+          "b4": "Elle hicri tarih düzeltmesi; böylece gösterilen tarih yerel hilal gözlemine uyar."
+        },
+        "adhan": {
+          "title": "Ezan, hatırlatıcı ve kamet",
+          "b1": "Beş vaktin her biri için o namazın sizi nasıl çağıracağını belirleyin: tam ezan, sesli bir bildirim, sessiz bir bildirim ya da hiçbir şey.",
+          "b2": "Namazdan birkaç dakika önce bir hatırlatıcı, ezandan sonra da bir kamet uyarısı ekleyin — beş vakit için tek bir ortak süre değil, her namazın kendi süresi.",
+          "b3": "Ezan, zil sesiniz kapalıyken bile duyulur; tek dokunuşla durdurabilirsiniz."
+        },
+        "silence": {
+          "title": "Namazda otomatik sessize alma",
+          "b1": "Telefonunuz her namazı kapsayan bir aralıkta kendini susturur, sonra zil sesini geri yükler — böylece namaz sırasında çalmaz, siz de geri açmayı unutmazsınız.",
+          "b2": "Kaç dakika önce başlayacağını, namazın ne kadar süreceğini ve kaç dakika sonra geri yükleneceğini siz belirlersiniz.",
+          "b3": "Sessiz ya da titreşim seçin ve bunun hangi vakitlerde geçerli olacağını belirleyin."
+        },
+        "widgets": {
+          "title": "Üç ana ekran widget'ı",
+          "b1": "Konumunuzu, miladi ve hicri tarihi ve beş vaktin tamamını gösteren geniş Bugün çubuğu.",
+          "b2": "Ya da küçük bir kutuya sığan Sonraki namaz geri sayımı veya günün vakitlerini alt alta sıralayan uzun Dikey liste.",
+          "b3": "Her biri sonraki namazı öne çıkarır ve ona kalan süreyi canlı geri sayar; yazı boyutunu da siz seçersiniz."
+        },
+        "location": {
+          "title": "Konumunuzu siz belirlersiniz",
+          "b1": "Otomatik olarak algılayın, şehir adıyla arayın ya da tam koordinatları elle girin — birden fazla yeri kayıtlı tutabilirsiniz.",
+          "b2": "Koordinatlarınız cihazınızda kalır ve bize hiçbir zaman gönderilmez. Sunucumuz yok, hiçbir şey toplamıyoruz.",
+          "b3": "Koordinatları okunabilir bir yer adına çevirmek için Android'in kendi hizmeti kullanılır; bu, çoğu telefonda çevrimiçi çalışır. Koordinatları elle girmek bunu tamamen atlar."
+        },
+        "offline": {
+          "title": "Bağlantı gerekmez",
+          "b1": "Her vakit telefonunuzda hesaplandığı için uygulama uçakta, yer altında, yolculukta ve çekmeyen her yerde çalışır.",
+          "b2": "İndirilecek bir şey, açılacak bir hesap, beklenecek bir şey yok."
+        },
+        "everyone": {
+          "title": "Herkes için",
+          "b1": "Uygulamanın tamamı İngilizce, Arapça (tamamen sağdan sola), Türkçe, Endonezce, Rusça ve Azerice.",
+          "b2": "İmsakta ve yatsıda nasıl okuduğunuza uyacak açık, koyu ve sistem temaları.",
+          "b3": "12 ya da 24 saat biçimi — hangisini daha kolay okuyorsanız."
+        },
+        "privacy": {
+          "title": "Baştan gizli",
+          "b1": "Hesap yok, reklam yok, üçüncü taraf takibi ve analitik yok — giriş yapılacak bir yer yok, size ait yüklenecek bir şey de yok.",
+          "b2": "Ücretsiz; ücretli bir sürüm ve ona saklanan özellikler yok."
+        }
+      },
+      "attribution": "Salatuk, <imuslim>i-muslim</imuslim>'in namaz vakitleri uygulamasıdır; <caspian>Caspian Tools</caspian> tarafından geliştirilmiştir — Kur'an ve Hadis ayrı uygulamalardır. Vakitleri doğru, uygulamayı sakin ve verilerinizi telefonunuzda tutarız.",
+      "changelog": {
+        "heading": "Yenilikler",
+        "hint": "Bugüne kadarki {count} sürümün tamamı. Sürüm notları İngilizce yayımlanır.",
+        "noNote": "Bu sürüm için sürüm notu kaydedilmemiş.",
+        "viewAll": "Tüm sürüm geçmişini görün",
+        "page": {
+          "title": "Salatuk — sürüm geçmişi",
+          "description": "Salatuk (Namaz) Prayer Times Android uygulamasının yayımlanmış her sürümü, en yeniden en eskiye, sürüm notu Google Play'e çıktığı hâliyle.",
+          "heading": "Sürüm geçmişi",
+          "lead": "Uygulamanın her sürümü, en yeniden en eskiye. Sürüm notları İngilizce yayımlanır.",
+          "count": "{count} sürüm",
+          "back": "Uygulama sayfasına dön"
+        }
+      }
+    },
     "quran": {
       "meta": {
         "title": "i-muslim Kur'an — Android için çevrimdışı Kur'an uygulaması",
@@ -692,7 +812,8 @@
     "sectionRead": "Okuma",
     "tafsir": "İbn Kesîr Tefsiri",
     "sectionApps": "Uygulamalar",
-    "appsQuran": "Android için Kur'an"
+    "appsQuran": "Android için Kur'an",
+    "appsPrayer": "Android için Namaz Vakitleri"
   },
   "surahPagination": {
     "ariaLabel": "Sure sayfalama",
@@ -755,7 +876,8 @@
     "language": "Dil",
     "copyright": "© {year} i-muslim",
     "colApps": "Uygulamalar",
-    "appsQuran": "Android için Kur'an"
+    "appsQuran": "Android için Kur'an",
+    "appsPrayer": "Android için Namaz Vakitleri"
   },
   "legal": {
     "about": {

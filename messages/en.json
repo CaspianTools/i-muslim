@@ -18,6 +18,126 @@
     "copy": "Copy"
   },
   "apps": {
+    "index": {
+      "meta": {
+        "title": "i-muslim apps for Android",
+        "description": "The i-muslim Android apps: an offline Quran reader, and Salatuk for prayer times and the adhan. Both free, both offline, no ads and no tracking."
+      },
+      "heading": "Our Android apps",
+      "lead": "Two apps, built the same way: everything works offline, nothing is behind a paywall, and neither one carries ads, trackers, or an account you have to create.",
+      "openApp": "Open the app page",
+      "openAppAria": "{app} — app page",
+      "version": "Version {version}",
+      "updated": "Updated {date}",
+      "iconAlt": "{app} app icon"
+    },
+    "prayer": {
+      "meta": {
+        "title": "Salatuk — offline prayer times app for Android",
+        "description": "Accurate prayer times computed on your own device, the adhan, auto-silence during salah, and three home-screen widgets. Free, no ads, no tracking, no account."
+      },
+      "hero": {
+        "eyebrow": "Android app",
+        "title": "Salatuk (Namaz) Prayer Times",
+        "tagline": "Offline prayer times, the adhan, and auto-silence during salah. No ads.",
+        "lead": "Salatuk is a calm, respectful companion for the five daily prayers. Fajr through Isha are computed on your own device from any of sixteen established calculation methods, so the times are right whether or not you have a signal. It calls you with the full adhan, silences your phone while you pray and switches the ringer back afterwards, and keeps today's times on your home screen. No ads, no tracking, no account — and no servers of ours for your location to reach.",
+        "version": "Version {version}",
+        "updated": "Updated {date}"
+      },
+      "badges": {
+        "offline": "Works offline",
+        "noAds": "No ads",
+        "noTracking": "No tracking",
+        "free": "Free forever"
+      },
+      "cta": {
+        "play": "Get it on Google Play",
+        "playAria": "Get Salatuk on Google Play — opens in a new tab",
+        "webLead": "Just need today's times?",
+        "webLink": "Open the web prayer times",
+        "privacy": "How the app handles your data"
+      },
+      "screenshots": {
+        "heading": "A look inside",
+        "hint": "From the current release.",
+        "alt": "{caption} — Salatuk on Android",
+        "captions": {
+          "today": "Today's times, with a live countdown to the next prayer",
+          "widget": "Home-screen widgets that keep counting down",
+          "adhan": "Choose how each of the five prayers calls you",
+          "silence": "Your phone silences itself for the prayer window",
+          "methods": "Sixteen calculation methods, and your Asr madhab",
+          "location": "Detect your place, search a city, or type coordinates",
+          "settings": "Six app languages, themes, and a 12- or 24-hour clock",
+          "permissions": "Every permission explained before it is asked for"
+        }
+      },
+      "features": {
+        "heading": "What's inside",
+        "times": {
+          "title": "Times computed on your device",
+          "b1": "Fajr, Sunrise, Dhuhr, Asr, Maghrib and Isha are calculated on your phone with the well-established PrayTimes astronomical method — no internet needed and nothing to load.",
+          "b2": "Sixteen calculation methods: Muslim World League, ISNA, Umm al-Qura, Egyptian, Karachi, Tehran, Jafari, Diyanet, Gulf, Kuwait, Qatar, Singapore, Dubai, Moonsighting Committee, UOIF France and Russia.",
+          "b3": "Pick your Asr madhab — Standard or Hanafi — and a high-latitude rule for northern regions where the sun barely sets.",
+          "b4": "A manual Hijri-date adjustment, so the date shown matches your local moon-sighting."
+        },
+        "adhan": {
+          "title": "Adhan, reminders and iqamah",
+          "b1": "Decide for each of the five prayers how it calls you: the full adhan, a notification, a silent banner, or nothing at all.",
+          "b2": "Add a reminder a few minutes before a prayer, and an iqamah alert after the adhan — each prayer with its own gap, not one shared by all five.",
+          "b3": "The adhan is heard even while your ringer is silenced, with a one-tap Stop."
+        },
+        "silence": {
+          "title": "Auto-silence during salah",
+          "b1": "Your phone mutes itself for a window around each prayer and restores the ringer afterwards — so it never rings mid-salah, and you never forget to switch it back.",
+          "b2": "Set how many minutes before it starts, how long the prayer lasts, and how many minutes after it restores.",
+          "b3": "Choose silent or vibrate, and which of the five prayers it applies to."
+        },
+        "widgets": {
+          "title": "Three home-screen widgets",
+          "b1": "The full Today bar, with your location, the Gregorian and Hijri date and all five times.",
+          "b2": "A compact Next prayer countdown, or a tall Vertical list of today's times.",
+          "b3": "Each highlights the next prayer and counts down to it live, at whichever font size you choose."
+        },
+        "location": {
+          "title": "Your location, your way",
+          "b1": "Detect it automatically, search by city name, or type exact coordinates — and keep more than one place saved.",
+          "b2": "Your coordinates stay on your device and are never sent to us. We run no servers and collect nothing.",
+          "b3": "Turning coordinates into a readable place name uses Android's own geocoder, which on most phones is an online service; entering coordinates by hand skips it entirely."
+        },
+        "offline": {
+          "title": "No connection required",
+          "b1": "Every time is computed on your phone, so the app works on a plane, underground, while travelling, or anywhere with no signal.",
+          "b2": "Nothing to download, no account to create, nothing to wait for."
+        },
+        "everyone": {
+          "title": "Made for everyone",
+          "b1": "The whole app in English, Arabic (fully right-to-left), Turkish, Indonesian, Russian and Azerbaijani.",
+          "b2": "Light, dark and system themes, to match how you read at Fajr and at Isha.",
+          "b3": "A 12- or 24-hour clock, whichever you read more easily."
+        },
+        "privacy": {
+          "title": "Private by default",
+          "b1": "No account, no ads, no third-party tracking and no analytics — there is nothing to sign in to and nothing of yours to upload.",
+          "b2": "Free, with no paid tier and nothing held back for one."
+        }
+      },
+      "attribution": "Salatuk is the prayer-times app from <imuslim>i-muslim</imuslim>, developed by <caspian>Caspian Tools</caspian> — with Quran and Hadith as separate apps. We keep the times accurate, the app quiet, and your data on your phone.",
+      "changelog": {
+        "heading": "What's new",
+        "hint": "All {count} releases so far. Release notes are published in English.",
+        "noNote": "No release note was recorded for this version.",
+        "viewAll": "See the full release history",
+        "page": {
+          "title": "Salatuk — release history",
+          "description": "Every released version of the Salatuk (Namaz) Prayer Times Android app, newest first, with the release note exactly as it shipped to Google Play.",
+          "heading": "Release history",
+          "lead": "Every version of the app, newest first. Release notes are published in English.",
+          "count": "{count} releases",
+          "back": "Back to the app page"
+        }
+      }
+    },
     "quran": {
       "meta": {
         "title": "Quran by i-muslim — offline Quran app for Android",
@@ -689,7 +809,8 @@
     "sectionRead": "Read",
     "tafsir": "Tafsir Ibn Kathir",
     "sectionApps": "Apps",
-    "appsQuran": "Quran for Android"
+    "appsQuran": "Quran for Android",
+    "appsPrayer": "Prayer times for Android"
   },
   "surahPagination": {
     "ariaLabel": "Surah pagination",
@@ -752,7 +873,8 @@
     "language": "Language",
     "copyright": "© {year} i-muslim",
     "colApps": "Apps",
-    "appsQuran": "Quran for Android"
+    "appsQuran": "Quran for Android",
+    "appsPrayer": "Prayer times for Android"
   },
   "legal": {
     "about": {

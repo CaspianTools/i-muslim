@@ -28,25 +28,14 @@
  * applies the same rule by dropping `shipped:0` entries.
  */
 
+import type { AppRelease } from "@/lib/apps/types";
+
 export const QURAN_APP = {
   packageId: "com.imuslim.quran",
   playUrl: "https://play.google.com/store/apps/details?id=com.imuslim.quran",
   /** Which release the screenshots under public/apps/quran/shots/<n>/ came from. */
   shotSetVersionCode: 44,
 } as const;
-
-export type AppRelease = {
-  /** Marketing version, e.g. "1.0.42". Not unique — 1.0.37 shipped twice. */
-  version: string;
-  /** Android versionCode. Unique and monotonic: the sort key and the React key. */
-  versionCode: number;
-  /** ISO yyyy-mm-dd. Absent on early releases where no date was recorded. */
-  date?: string;
-  /** One-line English headline. Always present. */
-  summary: string;
-  /** Full English release note as it shipped to Play. */
-  note?: string;
-};
 
 /** Newest first. Prepend new releases at the top. */
 const RELEASES: AppRelease[] = [
@@ -319,6 +308,3 @@ const RELEASES: AppRelease[] = [
 export const QURAN_APP_RELEASES: readonly AppRelease[] = [...RELEASES].sort(
   (a, b) => b.versionCode - a.versionCode,
 );
-
-/** How many releases the app page shows before linking to the full history. */
-export const CHANGELOG_PREVIEW_COUNT = 10;

@@ -1,5 +1,4 @@
 import { ArrowUpRight, Smartphone } from "lucide-react";
-import { QURAN_APP } from "@/lib/apps/quran";
 
 /**
  * Link to the app's Google Play listing.
@@ -16,11 +15,18 @@ import { QURAN_APP } from "@/lib/apps/quran";
  * and with the mandated clear space. Nothing outside this file needs to change.
  */
 export function PlayStoreButton({
+  playUrl,
   locale,
   label,
   ariaLabel,
   variant = "primary",
 }: {
+  /**
+   * Canonical listing URL without `hl`, e.g. QURAN_APP.playUrl. Required on
+   * purpose: a default would let a new app page link to the wrong listing with
+   * no type error to catch it.
+   */
+  playUrl: string;
   locale: string;
   label: string;
   ariaLabel: string;
@@ -35,7 +41,7 @@ export function PlayStoreButton({
     <a
       // `hl` makes Play open its own listing in the visitor's language — all
       // four bundled locales have a translated Play listing.
-      href={`${QURAN_APP.playUrl}&hl=${locale}`}
+      href={`${playUrl}${playUrl.includes("?") ? "&" : "?"}hl=${locale}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={ariaLabel}

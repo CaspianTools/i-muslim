@@ -134,6 +134,11 @@ export async function Footer() {
                 {t("appsQuran")}
               </Link>
             </li>
+            <li>
+              <Link href="/apps/prayer" className={linkClass}>
+                {t("appsPrayer")}
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import {
-  Bookmark,
-  BookOpen,
-  Gift,
+  Bell,
+  BellOff,
+  Clock,
   Globe,
-  Languages,
-  Palette,
+  LayoutGrid,
+  MapPin,
   ShieldCheck,
   WifiOff,
 } from "lucide-react";
@@ -16,8 +16,8 @@ import { type Locale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { jsonLdHtml } from "@/lib/seo/jsonld";
 import { CHANGELOG_PREVIEW_COUNT } from "@/lib/apps/types";
-import { QURAN_APP } from "@/lib/apps/quran";
-import { getQuranReleases } from "@/lib/apps/quran-releases";
+import { PRAYER_APP } from "@/lib/apps/prayer";
+import { getPrayerReleases } from "@/lib/apps/prayer-releases";
 import { mobileAppJsonLd } from "@/lib/apps/jsonld";
 import { AppFeatureGrid } from "@/components/apps/AppFeatureGrid";
 import { AppScreenshotRail } from "@/components/apps/AppScreenshotRail";
@@ -26,10 +26,10 @@ import { ReleaseList } from "@/components/apps/ReleaseList";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = (await getLocale()) as Locale;
-  const t = await getTranslations("apps.quran");
+  const t = await getTranslations("apps.prayer");
   return buildPageMetadata({
     locale,
-    path: "/apps/quran",
+    path: "/apps/prayer",
     title: t("meta.title"),
     description: t("meta.description"),
   });
@@ -40,36 +40,36 @@ const SECTION = "mt-14 scroll-mt-24";
 
 /** Screenshot file -> caption key. Order here is the display order. */
 const SHOTS = [
-  ["01-surah-list.webp", "surahList"],
-  ["02-title-card.webp", "titleCard"],
-  ["03-mushaf.webp", "mushaf"],
-  ["04-translations.webp", "translations"],
-  ["05-tajweed.webp", "tajweed"],
-  ["06-tajweed-legend.webp", "tajweedLegend"],
-  ["07-ayah-actions.webp", "ayahActions"],
-  ["08-dark.webp", "dark"],
+  ["01-today.webp", "today"],
+  ["02-widget.webp", "widget"],
+  ["03-adhan.webp", "adhan"],
+  ["04-silence.webp", "silence"],
+  ["05-methods.webp", "methods"],
+  ["06-location.webp", "location"],
+  ["07-settings.webp", "settings"],
+  ["08-permissions.webp", "permissions"],
 ] as const;
 
 const shotPath = (file: string) =>
-  `/apps/quran/shots/${QURAN_APP.shotSetVersionCode}/${file}`;
+  `/apps/prayer/shots/${PRAYER_APP.shotSetVersionCode}/${file}`;
 
 /** Feature card -> icon + how many bullets that section has. */
 const FEATURES = [
-  { key: "reading", Icon: BookOpen, bullets: 5 },
-  { key: "tajweed", Icon: Palette, bullets: 2 },
-  { key: "translations", Icon: Languages, bullets: 3 },
+  { key: "times", Icon: Clock, bullets: 4 },
+  { key: "adhan", Icon: Bell, bullets: 3 },
+  { key: "silence", Icon: BellOff, bullets: 3 },
+  { key: "widgets", Icon: LayoutGrid, bullets: 3 },
+  { key: "location", Icon: MapPin, bullets: 3 },
   { key: "offline", Icon: WifiOff, bullets: 2 },
-  { key: "daily", Icon: Bookmark, bullets: 6 },
-  { key: "language", Icon: Globe, bullets: 1 },
-  { key: "privacy", Icon: ShieldCheck, bullets: 1 },
-  { key: "free", Icon: Gift, bullets: 1 },
+  { key: "everyone", Icon: Globe, bullets: 3 },
+  { key: "privacy", Icon: ShieldCheck, bullets: 2 },
 ] as const;
 
-export default async function QuranAppPage() {
+export default async function PrayerAppPage() {
   const locale = (await getLocale()) as Locale;
-  const t = await getTranslations("apps.quran");
+  const t = await getTranslations("apps.prayer");
 
-  const allReleases = await getQuranReleases();
+  const allReleases = await getPrayerReleases();
   const latest = allReleases[0];
   const releases = allReleases.slice(0, CHANGELOG_PREVIEW_COUNT);
   const updated = latest.date
@@ -92,11 +92,12 @@ export default async function QuranAppPage() {
     name: t("hero.title"),
     description: t("meta.description"),
     locale,
-    path: "/apps/quran",
-    applicationCategory: "ReferenceApplication",
+    path: "/apps/prayer",
+    // A prayer companion is a lifestyle app, not a reference work.
+    applicationCategory: "LifestyleApplication",
     latest,
-    playUrl: QURAN_APP.playUrl,
-    iconPath: "/apps/quran/icon-512.png",
+    playUrl: PRAYER_APP.playUrl,
+    iconPath: "/apps/prayer/icon-512.png",
     screenshots: shots.map((s) => s.src),
     // The app's own six UI languages, which are not the site's four.
     inLanguage: ["en", "ar", "tr", "id", "ru", "az"],
@@ -134,7 +135,7 @@ export default async function QuranAppPage() {
 
         <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-3">
           <PlayStoreButton
-            playUrl={QURAN_APP.playUrl}
+            playUrl={PRAYER_APP.playUrl}
             locale={locale}
             label={t("cta.play")}
             ariaLabel={t("cta.playAria")}
@@ -149,7 +150,7 @@ export default async function QuranAppPage() {
       <section id="screenshots" className={SECTION}>
         <h2 className={H2}>{t("screenshots.heading")}</h2>
         <p className="mb-5 mt-2 text-sm text-muted-foreground">
-          {t("screenshots.hint", { version: latest.version })}
+          {t("screenshots.hint")}
         </p>
         <AppScreenshotRail shots={shots} />
       </section>
@@ -166,7 +167,6 @@ export default async function QuranAppPage() {
             ),
           }))}
         />
-
 
         <p className="mt-6 leading-relaxed text-muted-foreground">
           {t.rich("attribution", {
@@ -207,7 +207,7 @@ export default async function QuranAppPage() {
         {allReleases.length > releases.length && (
           <p className="mt-4 text-sm">
             <Link
-              href="/apps/quran/changelog"
+              href="/apps/prayer/changelog"
               className="text-primary underline underline-offset-2 hover:text-foreground"
             >
               {t("changelog.viewAll")}
@@ -226,25 +226,28 @@ export default async function QuranAppPage() {
         </p>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <PlayStoreButton
-            playUrl={QURAN_APP.playUrl}
+            playUrl={PRAYER_APP.playUrl}
             locale={locale}
             label={t("cta.play")}
             ariaLabel={t("cta.playAria")}
           />
+          {/* The app has no sign-in, so there is deliberately no
+              /delete-account link here — that page is for the apps with
+              accounts and does not cover this one. */}
           <Link
-            href="/privacy#android-app"
+            href="/privacy#prayer-app"
             className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-accent"
           >
             {t("cta.privacy")}
           </Link>
         </div>
         <p className="mt-5 text-sm text-muted-foreground">
-          {t("cta.webReaderLead")}{" "}
+          {t("cta.webLead")}{" "}
           <Link
-            href="/quran"
+            href="/prayer-times"
             className="text-primary underline underline-offset-2 hover:text-foreground"
           >
-            {t("cta.webReaderLink")}
+            {t("cta.webLink")}
           </Link>
         </p>
       </section>

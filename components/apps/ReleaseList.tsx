@@ -1,9 +1,9 @@
 import { ChevronDown } from "lucide-react";
-import type { AppRelease } from "@/lib/apps/quran";
+import type { AppRelease } from "@/lib/apps/types";
 
 /**
- * The release history, as a list of expandable rows. Shared by /apps/quran
- * (latest few) and /apps/quran/changelog (all of them).
+ * The release history, as a list of expandable rows. Shared by every /apps/*
+ * page (latest few) and its changelog subpage (all of them).
  *
  * Server component built on native `<details>`: no client bundle, no
  * hydration, and it still works with JavaScript off.

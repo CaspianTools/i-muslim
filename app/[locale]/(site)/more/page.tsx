@@ -92,6 +92,7 @@ export default async function MorePage() {
           app pages. */}
       <Section title={t("sectionApps")}>
         <Row href="/apps/quran" Icon={Smartphone} label={t("appsQuran")} />
+        <Row href="/apps/prayer" Icon={Smartphone} label={t("appsPrayer")} />
       </Section>
 
       <Section title={t("sectionAccount")}>
