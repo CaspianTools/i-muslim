@@ -14,6 +14,15 @@ Arabic alongside English, Russian, and Azerbaijani translations.
 - **Quran** — [quran.com API v4](https://api.quran.com/api/v4) (free, no auth)
   - Translations: Saheeh International (EN #20), Elmir Kuliev (RU #45),
     Alikhan Musayev (AZ #75)
+- **Tafsir** — *Tafsir al-Qur'an al-'Azim* (Ibn Kathir, d. 774 AH)
+  - Arabic: Dar Taybah critical edition (public domain). Editorial apparatus is
+    deliberately not ingested.
+  - Indonesian: unabridged translation, **publisher rights unverified** — rendered
+    on-site with a provenance notice, withheld from `/api/v1` and mobile bundles.
+  - Not fetched at runtime: the corpus is seeded into Firestore with
+    `npm run seed:tafsir -- --lang=ar` from a gitignored copy under `scripts/data/`.
+    English (Darussalam, in copyright) and Russian (unverified) are refused by the
+    seed script by name.
 - **Hadith** — [fawazahmed0/hadith-api](https://github.com/fawazahmed0/hadith-api)
   served via jsDelivr CDN (free, no key)
   - Arabic and English for 9 collections (Bukhari, Muslim, Abu Dawud, Tirmidhi,
@@ -67,6 +76,10 @@ pre-dismisses it so tests interact with the real page.
 - `/` — landing
 - `/quran` — list all 114 surahs
 - `/quran/[surah]` — read a surah with selected translations
+- `/tafsir` — Tafsir Ibn Kathir (redirects to the single work)
+- `/tafsir/[work]/[lang]` — surah index for one commentary language (`ar`, `id`)
+- `/tafsir/[work]/[lang]/[surah]` — the passages covering a surah
+- `/tafsir/[work]/[lang]/[surah]/[range]` — one passage, e.g. `.../ar/2/1-5`
 - `/hadith` — list of collections
 - `/hadith/[collection]` — books within a collection
 - `/hadith/[collection]/[book]` — hadith in a book
@@ -74,7 +87,9 @@ pre-dismisses it so tests interact with the real page.
 
 Use the language chips on reader pages to toggle which translations appear
 alongside the Arabic text. Selection is persisted in `localStorage` and
-shared via the `?lang=` URL parameter.
+shared via the `?lang=` URL parameter. Commentary is a separate axis: `?tafsir=ar|id|off`
+picks the tafsir edition shown under each ayah (there is no Indonesian Quran
+translation and no English tafsir, so the two sets deliberately do not share a param).
 
 ## Developer API
 

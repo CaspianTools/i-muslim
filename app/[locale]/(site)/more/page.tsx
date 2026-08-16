@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import {
+  BookOpenText,
   Calculator,
   Calendar,
   Heart,
@@ -64,6 +65,10 @@ export default async function MorePage() {
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       </header>
+
+      <Section title={t("sectionRead")}>
+        <Row href="/tafsir" Icon={BookOpenText} label={t("tafsir")} />
+      </Section>
 
       <Section title={t("sectionCommunity")}>
         <Row href="/matrimonial" Icon={Heart} label={tNav("matrimonial")} />

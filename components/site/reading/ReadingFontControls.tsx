@@ -15,7 +15,12 @@ function FontSlider({ kind }: { kind: ReaderFontKind }) {
   const [size, setSize] = useReaderFont(kind);
   const { min, max, step } = FONT_BOUNDS[kind];
   const reset = () => setSize(FONT_DEFAULTS[kind]);
-  const label = kind === "arabic" ? t("fontArabic") : t("fontTranslation");
+  const LABEL_KEY = {
+    arabic: "fontArabic",
+    translation: "fontTranslation",
+    tafsir: "fontTafsir",
+  } as const;
+  const label = t(LABEL_KEY[kind]);
   const isDefault = size === FONT_DEFAULTS[kind];
   const pct = ((size - min) / (max - min)) * 100;
 
@@ -71,11 +76,14 @@ function FontSlider({ kind }: { kind: ReaderFontKind }) {
 }
 
 /**
- * Pair of size sliders for Arabic and translation font size. Sits in the
- * Quran / Hadith filters panel so the same control is reachable in normal
- * mode and in reading mode (the filters drawer remains accessible).
+ * Size sliders for Arabic and translation text. Sits in the Quran / Hadith
+ * filters panel so the same control is reachable in normal mode and in reading
+ * mode (the filters drawer remains accessible).
+ *
+ * `showTafsir` adds the commentary slider. Off by default so the Hadith
+ * sidebar, which has no tafsir, doesn't show a control that does nothing.
  */
-export function ReadingFontControls() {
+export function ReadingFontControls({ showTafsir = false }: { showTafsir?: boolean }) {
   const t = useTranslations("readingMode");
   return (
     <section className="space-y-4">
@@ -85,6 +93,7 @@ export function ReadingFontControls() {
       </h3>
       <FontSlider kind="arabic" />
       <FontSlider kind="translation" />
+      {showTafsir && <FontSlider kind="tafsir" />}
     </section>
   );
 }

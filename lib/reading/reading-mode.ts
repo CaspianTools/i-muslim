@@ -3,7 +3,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 
 export type ReadingScope = "quran" | "hadith";
-export type ReaderFontKind = "arabic" | "translation";
+export type ReaderFontKind = "arabic" | "translation" | "tafsir";
 
 const MODE_STORAGE_KEYS: Record<ReadingScope, string> = {
   quran: "reading-mode:quran",
@@ -14,16 +14,22 @@ const MODE_EVENT = "reading-mode-change";
 const FONT_STORAGE_KEYS: Record<ReaderFontKind, string> = {
   arabic: "reading-mode:font-arabic",
   translation: "reading-mode:font-translation",
+  tafsir: "reading-mode:font-tafsir",
 };
 const FONT_EVENT = "reading-mode-font-change";
 
 export const FONT_DEFAULTS: Record<ReaderFontKind, number> = {
   arabic: 32,
   translation: 17,
+  // Tafsir is long-form commentary, not scripture. Arabic at the mushaf's 32px
+  // is an unreadable wall over 6,000 characters; the translation's 17px is too
+  // small for an Arabic reader who shrank translations. It needs its own knob.
+  tafsir: 18,
 };
 export const FONT_BOUNDS: Record<ReaderFontKind, { min: number; max: number; step: number }> = {
   arabic: { min: 20, max: 56, step: 2 },
   translation: { min: 13, max: 28, step: 1 },
+  tafsir: { min: 14, max: 30, step: 1 },
 };
 
 function readMode(scope: ReadingScope): boolean {

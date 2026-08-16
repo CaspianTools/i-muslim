@@ -19,7 +19,11 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { RowActions } from "@/components/admin/RowActions";
 import { toast } from "@/components/ui/sonner";
 import { resolveFlagAction, dismissFlagAction } from "@/lib/admin/actions/content-flags";
-import type { ContentFlag, ContentFlagStatus } from "@/types/content-flag";
+import type {
+  ContentFlag,
+  ContentFlagItemType,
+  ContentFlagStatus,
+} from "@/types/content-flag";
 
 interface Props {
   initialFlags: ContentFlag[];
@@ -31,6 +35,14 @@ type SortKey = "item" | "reporter" | "status" | "createdAt";
 type SortDir = "asc" | "desc";
 
 const STATUS_FILTERS: StatusFilter[] = ["all", "open", "resolved", "dismissed"];
+
+/** Label key per item type. A map rather than a ternary so adding a fourth
+ *  content type is a one-line change instead of a nested conditional. */
+const TYPE_LABEL_KEY: Record<ContentFlagItemType, string> = {
+  hadith: "typeHadith",
+  ayah: "typeAyah",
+  tafsir: "typeTafsir",
+};
 
 function statusVariant(s: ContentFlagStatus): "warning" | "success" | "neutral" {
   if (s === "open") return "warning";
@@ -227,7 +239,7 @@ export function ContentFlagsClient({ initialFlags, canPersist }: Props) {
                       <td className="px-3 py-2.5">
                         <div className="flex items-center gap-2">
                           <Badge variant="neutral">
-                            {f.itemType === "hadith" ? t("typeHadith") : t("typeAyah")}
+                            {t(TYPE_LABEL_KEY[f.itemType] ?? "typeAyah")}
                           </Badge>
                           {f.href ? (
                             <Link

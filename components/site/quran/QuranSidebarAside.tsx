@@ -35,14 +35,20 @@ function getCollapse(): boolean {
  */
 export function QuranSidebarAside({
   availableLangs,
+  tafsirLangs,
 }: {
   availableLangs: readonly LangCode[];
+  tafsirLangs?: readonly ("ar" | "id")[];
 }) {
   const collapsed = useSyncExternalStore(subscribeCollapse, getCollapse, () => false);
   if (collapsed) return null;
   return (
     <aside className="hidden md:block sticky top-20 self-start">
-      <QuranSidebar variant="desktop" availableLangs={availableLangs} />
+      <QuranSidebar
+        variant="desktop"
+        availableLangs={availableLangs}
+        tafsirLangs={tafsirLangs}
+      />
     </aside>
   );
 }

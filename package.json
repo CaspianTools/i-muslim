@@ -16,6 +16,7 @@
     "seed:quran:lang": "tsx scripts/seed-quran-translation.ts",
     "import:quran:tr": "tsx scripts/import-quran-tr.ts",
     "clean:quran:entities": "tsx scripts/clean-quran-entities.ts",
+    "seed:tafsir": "tsx scripts/seed-tafsir.ts",
     "seed:hadith": "tsx scripts/seed-hadith.ts",
     "seed:hadith:lang": "tsx scripts/seed-hadith-translation.ts",
     "seed:business-categories": "tsx scripts/seed-business-categories.ts",

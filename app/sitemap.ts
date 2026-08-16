@@ -35,6 +35,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = [
     entry("", { priority: 1.0 }),
     entry("/quran", { priority: 0.8 }),
+    // Not /tafsir — that's a redirect to the single work page, same as /apps.
+    entry("/tafsir/ibn-kathir", { priority: 0.7 }),
+    entry("/tafsir/ibn-kathir/ar", { priority: 0.6 }),
+    entry("/tafsir/ibn-kathir/id", { priority: 0.6 }),
     entry("/hadith", { priority: 0.8 }),
     entry("/articles", { priority: 0.7 }),
     entry("/mosques", { changeFrequency: "daily", priority: 0.9 }),
@@ -59,6 +63,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.4,
     }),
   ];
+  // The 114 surah pages have never been listed. They need no Firestore — the
+  // count is fixed — and the per-block tafsir URLs live in app/tafsir/sitemap.ts.
+  const surahEntries: MetadataRoute.Sitemap = Array.from({ length: 114 }, (_, i) =>
+    entry(`/quran/${i + 1}`, { changeFrequency: "yearly", priority: 0.7 }),
+  );
+
   const slugs = await listAllPublishedSlugs();
   const articleEntries: MetadataRoute.Sitemap = slugs
     .filter((s) => s.locale === "en")
@@ -118,6 +128,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticEntries,
+    ...surahEntries,
     ...articleEntries,
     ...countryEntries,
     ...cityEntries,

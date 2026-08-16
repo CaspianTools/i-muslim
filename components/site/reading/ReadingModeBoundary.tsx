@@ -9,13 +9,15 @@ import { useReadingMode, useReaderFont, type ReadingScope } from "@/lib/reading/
  * attribute on `<html>`. Globals.css uses these hooks to hide site chrome and
  * scoped in-page chrome (`.reading-hide`).
  *
- * Also reflects the Arabic / translation font sizes onto CSS custom properties
- * so AyahCard and HadithCard can size their text without prop-drilling.
+ * Also reflects the Arabic / translation / tafsir font sizes onto CSS custom
+ * properties so AyahCard, HadithCard and the tafsir prose can size their text
+ * without prop-drilling.
  */
 export function ReadingModeBoundary({ scope }: { scope: ReadingScope }) {
   const [active] = useReadingMode(scope);
   const [arabic] = useReaderFont("arabic");
   const [translation] = useReaderFont("translation");
+  const [tafsir] = useReaderFont("tafsir");
 
   useEffect(() => {
     const body = document.body;
@@ -41,7 +43,8 @@ export function ReadingModeBoundary({ scope }: { scope: ReadingScope }) {
     const html = document.documentElement;
     html.style.setProperty("--reader-arabic-size", `${arabic}px`);
     html.style.setProperty("--reader-translation-size", `${translation}px`);
-  }, [arabic, translation]);
+    html.style.setProperty("--reader-tafsir-size", `${tafsir}px`);
+  }, [arabic, translation, tafsir]);
 
   return null;
 }

@@ -1,12 +1,13 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { Globe } from "lucide-react";
+import { BookOpenText, Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { LangCode } from "@/lib/translations";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { QuranLanguageFilter } from "./QuranLanguageFilter";
+import { TafsirLanguageFilter } from "@/components/site/tafsir/TafsirLanguageFilter";
 import { ReadingFontControls } from "@/components/site/reading/ReadingFontControls";
 
 const COLLAPSE_KEY = "quran:sidebar-collapsed";
@@ -32,17 +33,21 @@ function getCollapse(): boolean {
 interface QuranSidebarProps {
   variant?: "desktop" | "drawer";
   availableLangs: readonly LangCode[];
+  /** Renderable tafsir languages. Empty hides the section entirely. */
+  tafsirLangs?: readonly ("ar" | "id")[];
   onNavigate?: () => void;
 }
 
 export function QuranSidebar({
   variant = "desktop",
   availableLangs,
+  tafsirLangs = [],
   onNavigate: _onNavigate,
 }: QuranSidebarProps) {
   void _onNavigate;
   const collapsed = useSyncExternalStore(subscribeCollapse, getCollapse, () => false);
   const t = useTranslations("quranSidebar");
+  const tTafsir = useTranslations("tafsir");
 
   // On desktop, the user can fully hide the sidebar via QuranFiltersButton in
   // the page header; we render nothing in that state so the main column gets
@@ -72,7 +77,16 @@ export function QuranSidebar({
             </h3>
             <QuranLanguageFilter availableLangs={availableLangs} />
           </section>
-          <ReadingFontControls />
+          {tafsirLangs.length > 0 && (
+            <section className="space-y-2">
+              <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <BookOpenText className="size-3.5" />
+                {tTafsir("filterLabel")}
+              </h3>
+              <TafsirLanguageFilter options={tafsirLangs} />
+            </section>
+          )}
+          <ReadingFontControls showTafsir />
         </div>
       </ScrollArea>
     </div>

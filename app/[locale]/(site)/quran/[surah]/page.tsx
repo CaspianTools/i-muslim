@@ -34,6 +34,12 @@ import { getCommentCountsForAyahs } from "@/lib/comments/data";
 import { CommentThread } from "@/components/comments/CommentThread";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { type Locale } from "@/i18n/config";
+import { listBlockRefs, formatCoverage } from "@/lib/tafsir/blocks";
+import { parseTafsirParam, buildReaderQuery } from "@/lib/tafsir/preference";
+import { DEFAULT_TAFSIR_WORK, getTafsirWork } from "@/lib/tafsir/works";
+import { getTafsirCatalogEntry, renderableTafsirLangs } from "@/lib/tafsir/catalog";
+import type { TafsirBlockHint } from "@/components/site/tafsir/TafsirDisclosure";
+import { TafsirSurahLink } from "@/components/site/tafsir/TafsirSurahLink";
 
 export async function generateMetadata({
   params,
@@ -72,10 +78,10 @@ export default async function SurahPage({
   searchParams,
 }: {
   params: Promise<{ surah: string }>;
-  searchParams: Promise<{ lang?: string }>;
+  searchParams: Promise<{ lang?: string; tafsir?: string }>;
 }) {
   const { surah } = await params;
-  const { lang: langParam } = await searchParams;
+  const { lang: langParam, tafsir: tafsirParam } = await searchParams;
   const id = Number(surah);
   if (!Number.isInteger(id) || id < 1 || id > 114) notFound();
 
@@ -117,11 +123,44 @@ export default async function SurahPage({
     getFavoriteCountsForAyahs(verseKeys),
     getFavoriteStats("surah", String(id)),
   ]);
+  // Tafsir hints come from the COMMITTED index — zero Firestore reads, and no
+  // block text, so a 286-ayah surah adds kilobytes to the payload rather than
+  // the 3.2 MB the Arabic commentary on al-Baqarah actually weighs.
+  const tafsirPref = parseTafsirParam(tafsirParam, locale);
+  // null when the reader turned tafsir off, or the language isn't renderable.
+  const tafsirLang =
+    tafsirPref !== "off" &&
+    getTafsirCatalogEntry(DEFAULT_TAFSIR_WORK, tafsirPref)?.renderOnSite === true
+      ? tafsirPref
+      : null;
+  const tafsirWork = getTafsirWork(DEFAULT_TAFSIR_WORK);
+  const tafsirLangOptions = tafsirWork
+    ? renderableTafsirLangs(tafsirWork.id, tafsirWork.langs)
+    : [];
+  const tafsirHints = new Map<string, TafsirBlockHint>();
+  if (tafsirLang) {
+    for (const ref of listBlockRefs(tafsirLang, id)) {
+      const coverage = formatCoverage(ref);
+      for (const ayah of ref.ayahs) {
+        tafsirHints.set(`${id}:${ayah}`, {
+          workId: DEFAULT_TAFSIR_WORK,
+          lang: tafsirLang,
+          surah: id,
+          ayah,
+          slug: ref.slug,
+          coverage,
+          multiAyah: ref.ayahs.length > 1,
+          href: `/tafsir/${DEFAULT_TAFSIR_WORK}/${tafsirLang}/${id}/${ref.slug}`,
+        });
+      }
+    }
+  }
+
   const localizedMeaning = tNames(String(chapter.id));
 
   const prev = chapters.find((c) => c.id === id - 1);
   const next = chapters.find((c) => c.id === id + 1);
-  const langQS = langParam ? `?lang=${encodeURIComponent(langParam)}` : "";
+  const langQS = buildReaderQuery(langParam, tafsirPref, locale);
 
   const surahId = String(id);
   const surahHref = `/quran/${id}`;
@@ -142,7 +181,10 @@ export default async function SurahPage({
       <ReadingProgressTracker variant={{ kind: "quran", surah: id }} />
       <div className="mx-auto max-w-6xl px-4 py-4 sm:py-10">
         <div className="flex gap-6">
-          <QuranSidebarAside availableLangs={languageSettings.quranEnabled} />
+          <QuranSidebarAside
+            availableLangs={languageSettings.quranEnabled}
+            tafsirLangs={tafsirLangOptions}
+          />
           <div className="min-w-0 flex-1">
             <div data-reading-hide>
               <Link
@@ -204,7 +246,10 @@ export default async function SurahPage({
                   />
                 </div>
                 <ReadingModeToggle scope="quran" />
-                <QuranFiltersButton availableLangs={languageSettings.quranEnabled} />
+                <QuranFiltersButton
+                  availableLangs={languageSettings.quranEnabled}
+                  tafsirLangs={tafsirLangOptions}
+                />
               </div>
             </header>
 
@@ -231,9 +276,16 @@ export default async function SurahPage({
                   currentUid={session?.uid ?? null}
                   commentCount={commentCounts.get(v.verse_key) ?? 0}
                   favoriteCount={ayahFavoriteCounts.get(v.verse_key) ?? 0}
+                  tafsirHint={tafsirHints.get(v.verse_key) ?? null}
                 />
               ))}
             </div>
+
+            {tafsirLang && (
+              <div data-reading-hide className="mt-6">
+                <TafsirSurahLink work={DEFAULT_TAFSIR_WORK} lang={tafsirLang} surah={id} />
+              </div>
+            )}
 
             <SurahPagination
               current={id}

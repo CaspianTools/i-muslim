@@ -4,6 +4,8 @@ import { Link } from "@/i18n/navigation";
 import { getSurahs } from "@/lib/quran/db";
 import { type Locale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { BookOpenText } from "lucide-react";
+import { DEFAULT_TAFSIR_WORK } from "@/lib/tafsir/works";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = (await getLocale()) as Locale;
@@ -17,10 +19,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function QuranIndexPage() {
-  const [chapters, t, tNames] = await Promise.all([
+  const [chapters, t, tNames, tTafsir] = await Promise.all([
     getSurahs(),
     getTranslations("quranPage"),
     getTranslations("surahNames"),
+    getTranslations("tafsir"),
   ]);
 
   return (
@@ -32,6 +35,13 @@ export default async function QuranIndexPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           {t("indexSubtitle")}
         </p>
+        <Link
+          href={`/tafsir/${DEFAULT_TAFSIR_WORK}`}
+          className="mt-3 inline-flex items-center gap-2 text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+        >
+          <BookOpenText className="size-4" />
+          {tTafsir("indexCta")}
+        </Link>
       </div>
 
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

@@ -234,5 +234,11 @@
       ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "tafsir_blocks",
+      "fieldPath": "text",
+      "indexes": []
+    }
+  ]
 }

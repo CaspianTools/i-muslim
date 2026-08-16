@@ -18,12 +18,16 @@ export async function generateSitemaps(): Promise<Array<{ id: number }>> {
   return HADITH_COLLECTION_SLUGS.map((_, id) => ({ id }));
 }
 
-export default async function sitemap({
-  id,
-}: {
-  id: number;
+export default async function sitemap(props: {
+  id: Promise<string>;
 }): Promise<MetadataRoute.Sitemap> {
-  const slug = HADITH_COLLECTION_SLUGS[id];
+  // Next 16 passes the generateSitemaps id as a PROMISE resolving to a STRING
+  // (v16.0.0 breaking change — see
+  // node_modules/next/dist/docs/.../generate-sitemaps.md). Reading it as a
+  // number made `HADITH_COLLECTION_SLUGS[id]` undefined, so all nine shards had
+  // been rendering as empty <urlset> documents.
+  const index = Number.parseInt(await props.id, 10);
+  const slug = Number.isInteger(index) ? HADITH_COLLECTION_SLUGS[index] : undefined;
   if (!slug) return [];
 
   const [numbers, locales] = await Promise.all([

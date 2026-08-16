@@ -29,6 +29,7 @@ function getCollapse(): boolean {
 
 interface Props {
   availableLangs: readonly LangCode[];
+  tafsirLangs?: readonly ("ar" | "id")[];
 }
 
 /**
@@ -41,7 +42,7 @@ interface Props {
  * click handler does, based on a media query at click time. This keeps the
  * trigger position identical across breakpoints.
  */
-export function QuranFiltersButton({ availableLangs }: Props) {
+export function QuranFiltersButton({ availableLangs, tafsirLangs }: Props) {
   const t = useTranslations("quranSidebar");
   const [sheetOpen, setSheetOpen] = useState(false);
   const collapsed = useSyncExternalStore(subscribeCollapse, getCollapse, () => false);
@@ -80,6 +81,7 @@ export function QuranFiltersButton({ availableLangs }: Props) {
           <QuranSidebar
             variant="drawer"
             availableLangs={availableLangs}
+            tafsirLangs={tafsirLangs}
             onNavigate={() => setSheetOpen(false)}
           />
         </SheetContent>

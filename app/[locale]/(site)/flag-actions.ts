@@ -6,7 +6,10 @@ import { getDb } from "@/lib/firebase/admin";
 import { requireSiteSession } from "@/lib/auth/session";
 import { createNotification } from "@/lib/admin/data/notifications";
 import { CONTENT_FLAGS_COLLECTION } from "@/lib/admin/data/content-flags";
-import type { ContentFlagItemType } from "@/types/content-flag";
+import {
+  CONTENT_FLAG_ITEM_TYPES,
+  type ContentFlagItemType,
+} from "@/types/content-flag";
 
 export interface FlagContentInput {
   itemType: ContentFlagItemType;
@@ -29,7 +32,8 @@ function flagDocId(itemType: ContentFlagItemType, itemId: string, uid: string): 
 }
 
 /**
- * Records a content-quality report for a hadith or ayah, deduped one-per-user
+ * Records a content-quality report for a hadith, ayah or tafsir passage,
+ * deduped one-per-user
  * per item (deterministic doc id). A newly-created flag fires a single admin
  * notification; re-flagging the same item is a silent no-op.
  */
@@ -44,7 +48,7 @@ export async function flagContentAction(
   const href = (input.href ?? "").trim().slice(0, 400);
   const locale = (input.locale ?? "").trim().slice(0, 16);
   const note = (input.note ?? "").trim().slice(0, 500);
-  if (itemType !== "hadith" && itemType !== "ayah") {
+  if (!CONTENT_FLAG_ITEM_TYPES.includes(itemType)) {
     return { ok: false, error: "Invalid item type", reason: "invalid" };
   }
   if (!itemId || !reference) {

@@ -645,6 +645,42 @@ body {
   border-radius: 9999px;
 }
 
+/* ----------------------------------------------------------------------------
+ * Tafsir prose. Long-form commentary, not scripture — so Arabic body text uses
+ * the UI Arabic face (IBM Plex Sans Arabic), matching the rule
+ * .article-prose[dir="rtl"] already sets for long RTL prose. Amiri is a display
+ * face for the mushaf and is punishing over 6,000 characters.
+ *
+ * That contrast is then load-bearing: Quran quotations inside the commentary
+ * DO use Amiri plus the accent colour, so they lift off the page the way the
+ * ornate ﴿﴾ brackets do in print.
+ * ------------------------------------------------------------------------- */
+.tafsir-prose {
+  color: var(--foreground);
+  font-size: var(--reader-tafsir-size);
+  line-height: 1.85;
+}
+.tafsir-prose[dir="rtl"],
+.tafsir-prose p[dir="rtl"] {
+  font-family: var(--font-arabic-ui);
+  line-height: 2.05;
+  text-align: start;
+}
+.tafsir-prose > p + p {
+  margin-top: 1.05em;
+}
+.tafsir-quran {
+  font-family: var(--font-arabic);
+  color: var(--accent);
+  font-size: 1.08em;
+}
+.tafsir-ar-run {
+  font-family: var(--font-arabic-ui);
+}
+.tafsir-honorific {
+  font-family: var(--font-arabic);
+}
+
 .article-prose {
   color: var(--foreground);
   font-size: 1rem;
@@ -763,13 +799,16 @@ body {
  * thread, full pagination block). Page-level cards stay visible so the
  * reciter can still tap into the per-ayah / per-hadith context menu.
  *
- * Font sizing is driven by --reader-arabic-size / --reader-translation-size
- * (set on <html>). Defaults match the prior tailwind sizes so non-readers
- * see no change.
+ * Font sizing is driven by --reader-arabic-size / --reader-translation-size /
+ * --reader-tafsir-size (set on <html>). Defaults match the prior tailwind sizes
+ * so non-readers see no change. The tafsir default is declared here too, so the
+ * dedicated /tafsir pages render at the right size before ReadingModeBoundary
+ * hydrates.
  */
 :root {
   --reader-arabic-size: 32px;
   --reader-translation-size: 17px;
+  --reader-tafsir-size: 18px;
 }
 
 /* ----------------------------------------------------------------------------

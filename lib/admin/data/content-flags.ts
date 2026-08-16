@@ -1,14 +1,15 @@
 import "server-only";
 import { getDb } from "@/lib/firebase/admin";
-import type {
-  ContentFlag,
-  ContentFlagItemType,
-  ContentFlagStatus,
+import {
+  CONTENT_FLAG_ITEM_TYPES,
+  type ContentFlag,
+  type ContentFlagItemType,
+  type ContentFlagStatus,
 } from "@/types/content-flag";
 
 export const CONTENT_FLAGS_COLLECTION = "contentFlags";
 
-const ITEM_TYPES: ContentFlagItemType[] = ["hadith", "ayah"];
+const ITEM_TYPES = CONTENT_FLAG_ITEM_TYPES;
 const STATUSES: ContentFlagStatus[] = ["open", "resolved", "dismissed"];
 
 function asIso(v: unknown): string {

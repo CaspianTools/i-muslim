@@ -14,6 +14,12 @@ import {
 } from "@/components/site/NoteEditor";
 import { AyahCommentsButton } from "@/components/comments/AyahCommentsButton";
 import { AyahActionsRow } from "@/components/AyahActionsRow";
+import {
+  TafsirDisclosure,
+  TafsirPanel,
+  TafsirTrigger,
+  type TafsirBlockHint,
+} from "@/components/site/tafsir/TafsirDisclosure";
 import { FlagContentButton } from "@/components/flags/FlagContentButton";
 import { cleanQuranTranslation } from "@/lib/text/html";
 
@@ -27,6 +33,7 @@ export function AyahCard({
   currentUid = null,
   commentCount = 0,
   favoriteCount = 0,
+  tafsirHint = null,
 }: {
   verse: Verse;
   langs: LangCode[];
@@ -37,6 +44,13 @@ export function AyahCard({
   currentUid?: string | null;
   commentCount?: number;
   favoriteCount?: number;
+  /**
+   * Block metadata resolved server-side from the committed tafsir index — no
+   * text, so a 286-ayah surah adds kilobytes, not megabytes. `null` means the
+   * reader turned tafsir off or this ayah has no coverage, and the whole
+   * affordance disappears rather than becoming a dead button.
+   */
+  tafsirHint?: TafsirBlockHint | null;
 }) {
   const nonArabic = langs.filter((l) => l !== "ar");
 
@@ -74,6 +88,7 @@ export function AyahCard({
         itemMeta={itemMeta}
         signedIn={signedIn}
       >
+        <TafsirDisclosure hint={tafsirHint}>
         <header className="mb-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-muted px-2 text-xs font-medium text-muted-foreground">
@@ -100,6 +115,7 @@ export function AyahCard({
             triggerLabel={`${surahName} ${verse.verse_key} actions`}
             desktop={
               <>
+                <TafsirTrigger slot="desktop" />
                 <NoteEditorTrigger />
                 <AyahCommentsButton
                   surahId={surahId}
@@ -131,6 +147,7 @@ export function AyahCard({
             }
             mobile={
               <>
+                <TafsirTrigger slot="mobile" className="w-full justify-start" />
                 <NoteEditorTrigger className="w-full justify-start" />
                 <AyahCommentsButton
                   surahId={surahId}
@@ -203,6 +220,8 @@ export function AyahCard({
         )}
 
         <NoteEditorPanel />
+        <TafsirPanel />
+        </TafsirDisclosure>
       </NoteEditor>
     </article>
   );

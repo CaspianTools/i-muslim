@@ -60,6 +60,11 @@ export async function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/tafsir" className={linkClass}>
+                {t("tafsir")}
+              </Link>
+            </li>
+            <li>
               <Link href="/hadith" className={linkClass}>
                 {t("hadith")}
               </Link>
