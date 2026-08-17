@@ -139,6 +139,46 @@ test.describe("apps index", () => {
   });
 });
 
+test.describe("delete-account page", () => {
+  // The URL every i-muslim app hands to the Play Console as its account-deletion
+  // link, so a 500 here is a compliance problem, not a broken page. `step1` is
+  // the only t.rich string on it: a malformed <email> tag in one locale file
+  // throws at render, which no build, lint or check:locales run would catch.
+  for (const locale of LOCALES) {
+    test(`renders in ${locale} with a working mailto link`, async ({ page }) => {
+      const errors: string[] = [];
+      page.on("pageerror", (err) => errors.push(err.message));
+
+      const response = await page.goto(`/${locale}/delete-account`);
+      expect(response!.status()).toBeLessThan(400);
+
+      // The <email> tag became a real anchor, carrying the pre-filled subject
+      // the page's own instructions tell the user to expect.
+      const mailto = page.locator("a[href^='mailto:caspiantools@googlegroups.com']");
+      await expect(mailto).toHaveCount(1);
+      await expect(mailto).toHaveAttribute(
+        "href",
+        /subject=Delete%20my%20account/,
+      );
+
+      expect(errors, `uncaught page errors: ${errors.join(" | ")}`).toEqual([]);
+    });
+  }
+
+  test("is translated, not left in English, outside en", async ({ page }) => {
+    for (const locale of ["ar", "tr", "id"] as const) {
+      await page.goto(`/${locale}/delete-account`);
+      const h1 = await page.getByRole("heading", { level: 1 }).textContent();
+      expect(h1, `${locale} h1 is still the English string`).not.toBe(
+        "Delete your account and data",
+      );
+      // The subject line is deliberately NOT translated — the mailto pre-fills
+      // it in English, so the instruction has to quote it verbatim.
+      await expect(page.getByText("Delete my account —").first()).toBeVisible();
+    }
+  });
+});
+
 test.describe("privacy policy", () => {
   test("describes the optional account and cloud backup", async ({ page }) => {
     await page.goto("/en/privacy");
