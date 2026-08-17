@@ -79,6 +79,15 @@ export default async function QuranAppPage() {
       }).format(new Date(`${latest.date}T00:00:00Z`))
     : null;
 
+  // The caption names the release the *images* are from, not the newest one.
+  // Not every release re-captures the gallery (the app repo's later release-NN
+  // folders hold only that release's new feature shots), so the two drift apart
+  // — and interpolating `latest.version` here claimed the screenshots showed a
+  // build they predate by five releases.
+  const shotRelease = allReleases.find(
+    (r) => r.versionCode === QURAN_APP.shotSetVersionCode,
+  );
+
   const shots = SHOTS.map(([file, caption]) => {
     const text = t(`screenshots.captions.${caption}`);
     return {
@@ -149,7 +158,9 @@ export default async function QuranAppPage() {
       <section id="screenshots" className={SECTION}>
         <h2 className={H2}>{t("screenshots.heading")}</h2>
         <p className="mb-5 mt-2 text-sm text-muted-foreground">
-          {t("screenshots.hint", { version: latest.version })}
+          {t("screenshots.hint", {
+            version: shotRelease?.version ?? latest.version,
+          })}
         </p>
         <AppScreenshotRail shots={shots} />
       </section>
