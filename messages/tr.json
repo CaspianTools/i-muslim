@@ -305,7 +305,7 @@
     "orDivider": "veya",
     "email": "E-posta",
     "password": "Parola",
-    "emailPlaceholder": "you@example.com",
+    "emailPlaceholder": "siz@ornek.com",
     "continueWithEmail": "E-posta ile devam et",
     "createAccount": "Hesap oluştur",
     "createAccountCta": "Yeni misiniz? Hesap oluşturun",
@@ -979,10 +979,10 @@
       "p4": "Evlilik bölümü, cami rehberi ve işletme rehberi topluluk alanlarıdır. Dürüst olun. Saygılı olun. Başkalarının kimliğine bürünmeyin, yanıltıcı bilgi yayınlamayın. Bu alanları kötüye kullanan hesapları askıya alabiliriz.",
       "h4": "Değişiklikler",
       "p5": "Uygulama büyüdükçe bu şartları güncelleyebiliriz. Önemli değişiklikler bu sayfada belirtilecektir.",
-      "h5": "Zakat calculator rates",
-      "p6": "The zakat calculator converts your assets using currency rates from open.er-api.com and gold/silver spot prices from metals.dev. Both feeds refresh about once an hour and may lag the live market. The resulting nisab threshold and zakat amount are best-effort estimates — verify with a scholar and your local bullion market before paying.",
-      "h6": "Comments",
-      "p7": "Comments on ayahs and hadiths are personal perspectives (reviewed for quality) and should not be taken as authoritative. They are not a religious ruling — consult a qualified scholar for personal matters."
+      "h5": "Zekât hesaplayıcı kur ve fiyatları",
+      "p6": "Zekât hesaplayıcı, varlıklarınızı open.er-api.com'dan alınan döviz kurları ve metals.dev'den alınan altın/gümüş anlık fiyatlarıyla çevirir. Her iki kaynak da yaklaşık saatte bir yenilenir ve anlık piyasanın gerisinde kalabilir. Ortaya çıkan Nisab eşiği ve zekât tutarı en iyi gayretle yapılmış tahminlerdir — ödemeden önce bir âlimle ve yerel külçe piyasanızla teyit edin.",
+      "h6": "Yorumlar",
+      "p7": "Ayetler ve hadisler üzerine yapılan yorumlar kişisel bakış açılarıdır (kalite açısından incelenir) ve muteber bir kaynak olarak görülmemelidir. Bunlar bir fetva değildir — kişisel meselelerde yetkin bir âlime danışın."
     },
     "contact": {
       "title": "İletişim",
@@ -1223,8 +1223,8 @@
       "zakatDue": "Toplam Zekât Borcu (%2.5)",
       "nisabLabel": "Nisab eşiği: {value}",
       "belowNisab": "Net servetiniz şu anda Nisab eşiğinin altında. Zekât farz değildir, ancak gönüllü sadaka her zaman sevap kazandırır.",
-      "aboveNisab": "Above nisab",
-      "belowNisabShort": "Below nisab",
+      "aboveNisab": "Nisab üstü",
+      "belowNisabShort": "Nisab altı",
       "reset": "Hesabı sıfırla",
       "disclaimer": "* Bu hesaplayıcı bir kılavuzdur. Net serveti bir kameri yıl boyunca Nisab'ı aşan kişilere zekât farzdır. Karmaşık durumlar için bir âlime danışın."
     },
