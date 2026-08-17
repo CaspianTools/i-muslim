@@ -49,22 +49,37 @@ env:
       - BUILD
       - RUNTIME
 
-  # --- /apps/quran live release data (lib/apps/quran-releases.ts) ----------
-  # QURAN_APP_REPO_TOKEN: fine-grained GitHub PAT, read-only Contents access to
-  # CaspianTools/i-muslim-quran only — lets the site read releases out of that
-  # repo's play-assets/store-listing.html. Set via
-  # `firebase apphosting:secrets:set QURAN_APP_REPO_TOKEN` (App Hosting fails
-  # the rollout if the secret doesn't exist or isn't granted). If it ever needs
-  # to come out again, /apps/quran just falls back to the committed snapshot in
-  # lib/apps/quran.ts.
+  # --- /apps/* live release data (lib/apps/releases.ts) --------------------
+  # One fine-grained GitHub PAT per app repo, each with read-only Contents
+  # access to that one repo — lets the site read releases out of the repo's
+  # play-assets/store-listing.html. Set via
+  # `firebase apphosting:secrets:set <NAME>` then
+  # `firebase apphosting:secrets:grantaccess <NAME> --backend main` (App Hosting
+  # fails the rollout if the secret doesn't exist or isn't granted, so create
+  # and grant BEFORE adding the entry here). If either ever needs to come out
+  # again, that app page just falls back to its committed snapshot in
+  # lib/apps/quran.ts / lib/apps/prayer.ts.
+  #
+  # Keep each variable listed exactly ONCE. A duplicate entry — not a missing
+  # secret — is what broke every rollout for 13 days (see df713c0), so add new
+  # tokens inside this block rather than appending to the end of `env:`.
+  #
+  # These are RUNTIME-only on purpose: the production build must never depend
+  # on a GitHub token being present.
   - variable: QURAN_APP_REPO_TOKEN
     secret: QURAN_APP_REPO_TOKEN
     availability:
       - RUNTIME
 
-  # REVALIDATE_SECRET: bearer for POST /api/revalidate/quran-app, which
-  # refreshes the cached release data instantly instead of within the hour.
-  # Optional — the endpoint answers 503 while unset. Uncomment after
+  - variable: PRAYER_APP_REPO_TOKEN
+    secret: PRAYER_APP_REPO_TOKEN
+    availability:
+      - RUNTIME
+
+  # REVALIDATE_SECRET: bearer for POST /api/revalidate/quran-app and
+  # /api/revalidate/prayer-app, which refresh the cached release data instantly
+  # instead of within the hour.
+  # Optional — the endpoints answer 503 while unset. Uncomment after
   # `firebase apphosting:secrets:set REVALIDATE_SECRET`.
   #
   # - variable: REVALIDATE_SECRET
