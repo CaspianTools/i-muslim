@@ -1667,6 +1667,21 @@
       }
     },
     "profile": {
+      "labels": {
+        "madhhab": "Mezhep",
+        "sect": "Mezhep grubu",
+        "prayer": "Namaz",
+        "hijab": "Tesettür",
+        "beard": "Sakal",
+        "polygamy": "Çok eşlilik",
+        "revert": "Sonradan Müslüman",
+        "education": "Eğitim",
+        "profession": "Meslek",
+        "maritalHistory": "Evlilik geçmişi",
+        "hasChildren": "Çocuk sahibi",
+        "wantsChildren": "Çocuk isteği",
+        "languages": "Diller"
+      },
       "back": "Profillere geri dön",
       "ageCity": "{age} yaş · {city}, {country}",
       "expressInterest": "İlgi göster",

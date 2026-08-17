@@ -1667,6 +1667,21 @@
       }
     },
     "profile": {
+      "labels": {
+        "madhhab": "Mazhab",
+        "sect": "Aliran",
+        "prayer": "Salat",
+        "hijab": "Hijab",
+        "beard": "Janggut",
+        "polygamy": "Poligami",
+        "revert": "Mualaf",
+        "education": "Pendidikan",
+        "profession": "Profesi",
+        "maritalHistory": "Riwayat pernikahan",
+        "hasChildren": "Punya anak",
+        "wantsChildren": "Ingin punya anak",
+        "languages": "Bahasa"
+      },
       "back": "Kembali ke daftar",
       "ageCity": "{age} tahun · {city}, {country}",
       "expressInterest": "Nyatakan minat",

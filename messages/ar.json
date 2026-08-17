@@ -1667,6 +1667,21 @@
       }
     },
     "profile": {
+      "labels": {
+        "madhhab": "المذهب",
+        "sect": "الطائفة",
+        "prayer": "الصلاة",
+        "hijab": "الحجاب",
+        "beard": "اللحية",
+        "polygamy": "تعدد الزوجات",
+        "revert": "حديث الإسلام",
+        "education": "التعليم",
+        "profession": "المهنة",
+        "maritalHistory": "الحالة الاجتماعية",
+        "hasChildren": "وجود أطفال",
+        "wantsChildren": "الرغبة في الأطفال",
+        "languages": "اللغات"
+      },
       "back": "العودة إلى التصفح",
       "ageCity": "{age} سنة · {city}، {country}",
       "expressInterest": "أبدِ اهتمامًا",

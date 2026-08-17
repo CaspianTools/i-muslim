@@ -1664,6 +1664,21 @@
       }
     },
     "profile": {
+      "labels": {
+        "madhhab": "Madhhab",
+        "sect": "Sect",
+        "prayer": "Prayer",
+        "hijab": "Hijab",
+        "beard": "Beard",
+        "polygamy": "Polygamy",
+        "revert": "Revert",
+        "education": "Education",
+        "profession": "Profession",
+        "maritalHistory": "Marital history",
+        "hasChildren": "Has children",
+        "wantsChildren": "Wants children",
+        "languages": "Languages"
+      },
       "back": "Back to browse",
       "ageCity": "{age} years · {city}, {country}",
       "expressInterest": "Express interest",

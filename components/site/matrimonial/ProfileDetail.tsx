@@ -32,7 +32,9 @@ export async function ProfileDetail({
   backLabel,
 }: Props) {
   const t = await getTranslations("matrimonial.profile");
+  const tLabel = await getTranslations("matrimonial.profile.labels");
   const tMadhhabs = await getTranslations("matrimonial.madhhabs");
+  const tSects = await getTranslations("matrimonial.sects");
   const tPrayer = await getTranslations("matrimonial.prayer");
   const tHijab = await getTranslations("matrimonial.hijab");
   const tBeard = await getTranslations("matrimonial.beard");
@@ -130,17 +132,22 @@ export async function ProfileDetail({
           {t("sectionDeen")}
         </h2>
         <div className="grid gap-2 rounded-lg border border-border bg-card p-4 text-sm sm:grid-cols-2">
-          <Row label="Madhhab" value={tMadhhabs(target.madhhab)} />
-          <Row label="Sect" value={target.sect} />
-          <Row label="Prayer" value={tPrayer(target.prayerCommitment)} />
+          <Row label={tLabel("madhhab")} value={tMadhhabs(target.madhhab)} />
+          {/* Routed through matrimonial.sects like every sibling row — this one
+              used to print the stored enum, so it read "sunni" even in English. */}
+          <Row label={tLabel("sect")} value={tSects(target.sect)} />
+          <Row label={tLabel("prayer")} value={tPrayer(target.prayerCommitment)} />
           {target.gender === "female" && target.hijab !== "na" && (
-            <Row label="Hijab" value={tHijab(target.hijab)} />
+            <Row label={tLabel("hijab")} value={tHijab(target.hijab)} />
           )}
           {target.gender === "male" && target.beard !== "na" && (
-            <Row label="Beard" value={tBeard(target.beard)} />
+            <Row label={tLabel("beard")} value={tBeard(target.beard)} />
           )}
-          <Row label="Polygamy" value={tPolygamy(target.polygamyStance)} />
-          <Row label="Revert" value={target.revert ? tCommon("yes") : tCommon("no")} />
+          <Row label={tLabel("polygamy")} value={tPolygamy(target.polygamyStance)} />
+          <Row
+            label={tLabel("revert")}
+            value={target.revert ? tCommon("yes") : tCommon("no")}
+          />
         </div>
       </section>
 
@@ -149,12 +156,21 @@ export async function ProfileDetail({
           {t("sectionBackground")}
         </h2>
         <div className="grid gap-2 rounded-lg border border-border bg-card p-4 text-sm sm:grid-cols-2">
-          <Row label="Education" value={tEducation(target.education)} />
-          <Row label="Profession" value={target.profession ?? "—"} />
-          <Row label="Marital history" value={tMarital(target.maritalHistory)} />
-          <Row label="Has children" value={target.hasChildren ? tCommon("yes") : tCommon("no")} />
-          <Row label="Wants children" value={tWants(target.wantsChildren)} />
-          <Row label="Languages" value={target.languages.join(", ") || "—"} />
+          <Row label={tLabel("education")} value={tEducation(target.education)} />
+          <Row label={tLabel("profession")} value={target.profession ?? "—"} />
+          <Row
+            label={tLabel("maritalHistory")}
+            value={tMarital(target.maritalHistory)}
+          />
+          <Row
+            label={tLabel("hasChildren")}
+            value={target.hasChildren ? tCommon("yes") : tCommon("no")}
+          />
+          <Row label={tLabel("wantsChildren")} value={tWants(target.wantsChildren)} />
+          <Row
+            label={tLabel("languages")}
+            value={target.languages.join(", ") || "—"}
+          />
         </div>
       </section>
 
