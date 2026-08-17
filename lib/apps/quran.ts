@@ -10,8 +10,11 @@
  * refresh it now and then by pasting in the newest entries. Two things are
  * still manual per release:
  *
- *   1. Screenshots: if they changed, re-run `npm run gen:app-shots` into
+ *   1. Screenshots: if they changed, re-run
+ *      `npm run gen:app-shots -- --app quran` into
  *      public/apps/quran/shots/<versionCode>/ and bump shotSetVersionCode.
+ *      Note the app repo only re-captures the full gallery occasionally; the
+ *      later release-NN folders hold just that release's new feature shots.
  *   2. Privacy policy: if the release changes what the app does with data,
  *      update legal.privacy.app in all four locales (see CLAUDE.md).
  *
@@ -19,7 +22,7 @@
  * softwareVersion / dateModified / releaseNotes, and the sitemap lastModified.
  *
  * Release notes stay English on purpose — only the newest release is translated
- * on Play, and moving ~40 historical notes into messages/*.json would poison the
+ * on Play, and moving the historical notes into messages/*.json would poison the
  * `check:locales` signal with permanently-untranslated keys.
  *
  * Versions that were never shipped to Play (1.0.41 / code 43, folded into
@@ -39,6 +42,41 @@ export const QURAN_APP = {
 
 /** Newest first. Prepend new releases at the top. */
 const RELEASES: AppRelease[] = [
+  {
+    version: "1.0.47",
+    versionCode: 49,
+    date: "2026-08-14",
+    summary: "Keep the screen on while you read; long press a verse to open its actions; the verse you tapped is pointed out when it opens",
+    note: "The screen now stays awake while you read, so a page does not go dark because you have not touched the phone. Your usual timeout returns as soon as you leave, and there is a switch in Settings.\n\nPress and hold anywhere on a verse to open its actions: bookmark, note, collection, copy, share. The button in the corner still works too.\n\nAnd a verse opened from the widget, a bookmark or a search is gently pointed out, so you can see the one you came for.",
+  },
+  {
+    version: "1.0.46",
+    versionCode: 48,
+    date: "2026-08-09",
+    summary: "The sajda mark opens the fifteen verses of prostration, and the widget takes every language you read",
+    note: "The sajda mark now sits beside the verse number instead of trailing the Arabic, and it is easier to see. Tap it for all fifteen verses of prostration, then tap any one of them to read why that verse calls for a sajda, with the narration behind it and its reference.\n\nThe ayah widget now takes every language you read, not just one, and no longer cuts the translation short. Ayah of the day groups its verses by day, and the widget's buttons answer to a tap.",
+  },
+  {
+    version: "1.0.45",
+    versionCode: 47,
+    date: "2026-08-09",
+    summary: "Ayah of the day — a home-screen widget, and a history you can bookmark and annotate",
+    note: "A new home-screen widget: an ayah of the day, in Arabic with the translation you read. Choose its language, background, text colour and text size when you add it, or change them later. Copy or share the verse straight from the widget, or tap for another one. Every verse it shows is kept under Ayah of the day in the menu, where you can bookmark it, add a note or save it to a collection like any other verse — and it travels with your backup.",
+  },
+  {
+    version: "1.0.44",
+    versionCode: 46,
+    date: "2026-08-08",
+    summary: "The surah name follows your reading language; the progress bar starts empty",
+    note: "Two fixes in the reader. The surah name at the top of the screen now follows the language you read in, rather than always appearing in English, so it matches the title card below it. In Azerbaijani, surah 93 is now spelled Duha. And the thin progress line under the status bar now starts empty and fills as you scroll — before, it opened part-filled on short surahs, and completely full whenever a whole surah fitted on one screen.",
+  },
+  {
+    version: "1.0.43",
+    versionCode: 45,
+    date: "2026-08-08",
+    summary: "The surah-name arrow now returns to the surah list",
+    note: "The arrow beside the surah name now always returns you to the list of surahs. Before, it simply retraced your steps: open a verse from a bookmark, a note, a collection or a search result, and the arrow dropped you back into that screen rather than the Quran itself — sometimes several taps from the list. Now one tap goes straight to all 114 surahs, wherever you came from. The phone's own back button still retraces your steps, as before.",
+  },
   {
     version: "1.0.42",
     versionCode: 44,
