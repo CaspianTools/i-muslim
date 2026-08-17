@@ -58,12 +58,16 @@ export async function generateMetadata({
     if (!chapter) return {};
     const translatedName = tNames(String(chapter.id));
     const locale = (await getLocale()) as Locale;
+    // An Arabic reader searching for this page searches for الفاتحة, not
+    // "Al-Fatihah" — so the title and description carry the Arabic name rather
+    // than the Latin transliteration. The on-page header keeps both.
+    const metaName = locale === "ar" ? chapter.name_arabic : chapter.name_simple;
     return buildPageMetadata({
       locale,
       path: `/quran/${surah}`,
-      title: t("surahMetaTitle", { name: chapter.name_simple, id }),
+      title: t("surahMetaTitle", { name: metaName, id }),
       description: t("surahMetaDescription", {
-        name: chapter.name_simple,
+        name: metaName,
         translatedName,
         verses: t("verseCount", { count: chapter.verses_count }),
       }),
