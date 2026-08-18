@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { ArrowLeft } from "lucide-react";
 import { fetchCollectionWithBookStats } from "@/lib/admin/data/hadith";
 import { AdminDownloadHadithDialog } from "@/components/admin/hadith/AdminDownloadHadithDialog";
 import { AdminUploadHadithDialog } from "@/components/admin/hadith/AdminUploadHadithDialog";
@@ -16,21 +18,24 @@ export default async function AdminCollectionPage({
     collection,
   );
   if (!meta) notFound();
+  const t = await getTranslations("hadithAdmin.collection");
+  const tPage = await getTranslations("hadithAdmin.page");
 
   return (
     <div className="space-y-4">
       <div>
         <Link
           href="/admin/hadith"
-          className="text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
-          ← All collections
+          <ArrowLeft className="size-4 rtl:rotate-180" />
+          {t("allCollections")}
         </Link>
         <div className="mt-2 flex items-baseline justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">{meta.name_en}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {meta.books.length} books · {meta.total} total hadith
+              {t("meta", { books: meta.books.length, total: meta.total })}
             </p>
           </div>
           <p dir="rtl" lang="ar" className="font-arabic text-3xl">
@@ -61,11 +66,11 @@ export default async function AdminCollectionPage({
                 <span className="flex-1 truncate">{b.name}</span>
                 {editCount > 0 ? (
                   <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                    {editCount} edited
+                    {tPage("editedCount", { count: editCount })}
                   </span>
                 ) : null}
                 <span className="text-xs text-muted-foreground">
-                  {b.count} hadith
+                  {t("hadithCount", { count: b.count })}
                 </span>
               </Link>
             </li>

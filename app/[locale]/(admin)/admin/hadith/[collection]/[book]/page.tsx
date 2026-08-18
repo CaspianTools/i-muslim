@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { fetchCollectionWithHadiths } from "@/lib/admin/data/hadith";
 import { HadithList } from "@/components/admin/hadith/HadithList";
 import { AdminDownloadHadithDialog } from "@/components/admin/hadith/AdminDownloadHadithDialog";
@@ -35,6 +37,7 @@ export default async function AdminBookPage({
 
   const bookMeta = meta.books.find((b) => b.number === bookNumber);
   if (!bookMeta) notFound();
+  const t = await getTranslations("hadithAdmin.book");
 
   const permissions = session?.permissions ?? [];
   const editableLanguages = editableLanguagesFor(
@@ -60,13 +63,13 @@ export default async function AdminBookPage({
         <div className="mt-2 flex items-baseline justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">
-              {meta.name_en} · Book {bookNumber}
+              {t("crumb", { collection: meta.name_en, number: bookNumber })}
             </p>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight">
               {bookMeta.name}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {entries.length} hadith in this book.
+              {t("countLine", { count: entries.length })}
             </p>
           </div>
         </div>
@@ -92,9 +95,10 @@ export default async function AdminBookPage({
         {prev ? (
           <Link
             href={`/admin/hadith/${collection}/${prev.number}`}
-            className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
+            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
           >
-            ← Book {prev.number}
+            <ArrowLeft className="size-4 rtl:rotate-180" />
+            {t("bookNumber", { number: prev.number })}
           </Link>
         ) : (
           <span />
@@ -102,9 +106,10 @@ export default async function AdminBookPage({
         {next ? (
           <Link
             href={`/admin/hadith/${collection}/${next.number}`}
-            className="rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
+            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 hover:border-accent"
           >
-            Book {next.number} →
+            {t("bookNumber", { number: next.number })}
+            <ArrowRight className="size-4 rtl:rotate-180" />
           </Link>
         ) : (
           <span />

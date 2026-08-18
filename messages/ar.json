@@ -641,7 +641,8 @@
       "citySearchError": "فشل البحث",
       "citySearchAttribution": "البحث مدعوم من OpenStreetMap",
       "save": "حفظ",
-      "reset": "إعادة الكشف التلقائي"
+      "reset": "إعادة الكشف التلقائي",
+      "madhabStandardShort": "الجمهور"
     },
     "method": {
       "MuslimWorldLeague": "رابطة العالم الإسلامي",
@@ -789,7 +790,8 @@
       "send": "إرسال الدعوة",
       "sending": "جارٍ الإرسال…",
       "errorName": "يرجى إدخال الاسم الكامل.",
-      "errorEmail": "أدخل بريداً إلكترونياً صحيحاً."
+      "errorEmail": "أدخل بريداً إلكترونياً صحيحاً.",
+      "failed": "فشلت دعوة المستخدم"
     },
     "assignment": {
       "heading": "الدور واللغات",
@@ -801,7 +803,8 @@
       "searchLanguages": "ابحث عن اللغات…",
       "noMatches": "لا توجد نتائج.",
       "toastUpdated": "تم تحديث {name}."
-    }
+    },
+    "genericError": "فشلت العملية"
   },
   "confirmDialog": {
     "typePromptPrefix": "اكتب",
@@ -2538,7 +2541,8 @@
       "rowOk": "سليم",
       "errorMissingColumn": "{column} مفقود",
       "errorBadCoordinates": "إحداثيات غير صالحة",
-      "errorCountryNotIso2": "يجب أن تكون الدولة بصيغة ISO2"
+      "errorCountryNotIso2": "يجب أن تكون الدولة بصيغة ISO2",
+      "showingFirst": "عرض أول 50 صفًا من أصل {count}."
     },
     "facilities": {
       "pageTitle": "مرافق المساجد",
@@ -2588,8 +2592,11 @@
       "rejectionFailed": "فشل الرفض.",
       "rejected": "تم رفض الطلب.",
       "pageTitle": "طلبات المساجد",
-      "pageSubtitle": "راجع طلبات المطالبة والتسجيل. الموافقة تعيّن مقدّم الطلب مديرًا للمسجد."
-    }
+      "pageSubtitle": "راجع طلبات المطالبة والتسجيل. الموافقة تعيّن مقدّم الطلب مديرًا للمسجد.",
+      "kindClaim": "مطالبة",
+      "kindRegister": "تسجيل"
+    },
+    "viewPublicPage": "عرض الصفحة العامة"
   },
   "businesses": {
     "ogFallbackTitle": "نشاط تجاري حلال",
@@ -2854,7 +2861,11 @@
         "fieldInstagram": "إنستغرام",
         "fieldWhatsapp": "واتساب",
         "fieldCertBody": "شهادة مُدّعاة"
-      }
+      },
+      "hoursOpen": "مفتوح",
+      "hoursClosed": "مغلق",
+      "hoursOpenAria": "وقت فتح {day}",
+      "hoursCloseAria": "وقت إغلاق {day}"
     },
     "submit": {
       "title": "إرسال عمل حلال",
@@ -4390,7 +4401,10 @@
       "narratedBy": "رواه {narrator}",
       "adminEdited": "محرَّر من المشرف؛ يُحفظ عند إعادة التعبئة",
       "draftTitle": "مسودة — غير ظاهر للقارئ العام",
-      "publishedTitle": "منشور — ظاهر للقارئ العام"
+      "publishedTitle": "منشور — ظاهر للقارئ العام",
+      "book": "كتاب {number}",
+      "edited": "محرَّر",
+      "notes": "ملاحظات: {notes}"
     },
     "editor": {
       "title": "تحرير الحديث {collection} رقم {number}",
@@ -4414,10 +4428,10 @@
       "translateDisabledTitle": "أعدّ مفتاح Gemini في /admin/settings أولًا",
       "translating": "جارٍ الترجمة…",
       "translateWithAi": "ترجمة بالذكاء الاصطناعي",
-      "toastNoKey": "أعدّ مفتاح Gemini API في /admin/settings ثم قسم الترجمة بالذكاء الاصطناعي أولًا.",
+      "toastNoKey": "أعدّ أولًا مفتاح Gemini API في /admin/settings ضمن قسم «الترجمة بالذكاء الاصطناعي».",
       "toastDrafted": "تمت صياغة ترجمة {language} — راجعها قبل الحفظ.",
       "errorInvalidInput": "مدخلات غير صالحة.",
-      "errorGeminiNotConfigured": "مفتاح Gemini API غير مُعدّ. أضف واحدًا في /admin/settings ثم قسم الترجمة بالذكاء الاصطناعي.",
+      "errorGeminiNotConfigured": "مفتاح Gemini API غير مُعدّ. أضف مفتاحًا في /admin/settings ضمن قسم «الترجمة بالذكاء الاصطناعي».",
       "errorNotFound": "هذا المدخل لم يعد موجودًا."
     },
     "download": {
@@ -4452,6 +4466,16 @@
       "moreErrors": "… و{count} أخرى.",
       "uploading": "جارٍ الرفع…",
       "clear": "مسح"
+    },
+    "collection": {
+      "allCollections": "كل المجموعات",
+      "meta": "{books} كتاب · {total} حديث إجمالًا",
+      "hadithCount": "{count} حديث"
+    },
+    "book": {
+      "crumb": "{collection} · كتاب {number}",
+      "countLine": "{count} حديث في هذا الكتاب.",
+      "bookNumber": "كتاب {number}"
     }
   },
   "quranAdmin": {
@@ -4471,7 +4495,11 @@
       "filterPlaceholder": "تصفية حسب الرقم أو الترجمة…",
       "unpublished": "غير منشور",
       "editAria": "تحرير الآية {ayah}",
-      "adminEdited": "محرَّر من المشرف؛ يُحفظ عند إعادة التعبئة"
+      "adminEdited": "محرَّر من المشرف؛ يُحفظ عند إعادة التعبئة",
+      "juzPage": "الجزء {juz} · الصفحة {page}",
+      "sajdah": "سجدة",
+      "edited": "محرَّر",
+      "notes": "ملاحظات: {notes}"
     },
     "editor": {
       "title": "تحرير الآية {surah}:{ayah}",
@@ -4493,11 +4521,17 @@
       "translateDisabledTitle": "أعدّ مفتاح Gemini في /admin/settings أولًا",
       "translating": "جارٍ الترجمة…",
       "translateWithAi": "ترجمة بالذكاء الاصطناعي",
-      "toastNoKey": "أعدّ مفتاح Gemini API في /admin/settings ثم قسم الترجمة بالذكاء الاصطناعي أولًا.",
+      "toastNoKey": "أعدّ أولًا مفتاح Gemini API في /admin/settings ضمن قسم «الترجمة بالذكاء الاصطناعي».",
       "toastDrafted": "تمت صياغة ترجمة {language} — راجعها قبل الحفظ.",
       "errorInvalidInput": "مدخلات غير صالحة.",
-      "errorGeminiNotConfigured": "مفتاح Gemini API غير مُعدّ. أضف واحدًا في /admin/settings ثم قسم الترجمة بالذكاء الاصطناعي.",
+      "errorGeminiNotConfigured": "مفتاح Gemini API غير مُعدّ. أضف مفتاحًا في /admin/settings ضمن قسم «الترجمة بالذكاء الاصطناعي».",
       "errorNotFound": "هذا المدخل لم يعد موجودًا."
+    },
+    "surah": {
+      "allSurahs": "كل السور",
+      "heading": "سورة {number} · {name}",
+      "subtitle": "{translated} · {count} آية",
+      "emptyAyahs": "لم يُعثر على آيات لهذه السورة. شغّل <code>npm run seed:quran</code> لتعبئة قاعدة البيانات."
     }
   },
   "rolesAdmin": {
@@ -4520,7 +4554,7 @@
     },
     "matrix": {
       "resource": "المورد",
-      "cellAria": "{action} على {resource}"
+      "cellAria": "{action}: {resource}"
     },
     "newRoleDialog": {
       "title": "دور جديد",
@@ -4597,7 +4631,12 @@
       "toastSaved": "تم حفظ إعدادات الترجمة بالذكاء الاصطناعي",
       "toastSaveFailed": "فشل حفظ إعدادات الترجمة بالذكاء الاصطناعي",
       "toastKeyRemoved": "تمت إزالة مفتاح Gemini",
-      "toastRemoveFailed": "فشلت إزالة المفتاح"
+      "toastRemoveFailed": "فشلت إزالة المفتاح",
+      "confirmRemoveKey": "هل تريد إزالة مفتاح Gemini API المحفوظ؟ ستتعطّل أزرار الترجمة بالذكاء الاصطناعي حتى تُضيف مفتاحًا جديدًا."
     }
+  },
+  "adminLayout": {
+    "title": "لوحة الإدارة",
+    "titleTemplate": "%s · إدارة i-muslim"
   }
 }

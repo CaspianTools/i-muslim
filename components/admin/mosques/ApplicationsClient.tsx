@@ -79,7 +79,7 @@ export function ApplicationsClient({ applications }: { applications: MosqueAppli
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <Badge variant={app.kind === "claim" ? "neutral" : "success"}>
-                    {app.kind === "claim" ? "Claim" : "Register"}
+                    {app.kind === "claim" ? t("kindClaim") : t("kindRegister")}
                   </Badge>
                   <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
                     <Building2 className="size-4" /> {target}

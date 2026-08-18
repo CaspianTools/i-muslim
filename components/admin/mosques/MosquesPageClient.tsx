@@ -445,7 +445,7 @@ export function MosquesPageClient({
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
-                                <Eye /> View public page{" "}
+                                <Eye /> {t("viewPublicPage")}{" "}
                                 <ExternalLink className="ms-auto size-3" />
                               </Link>
                             </DropdownMenuItem>

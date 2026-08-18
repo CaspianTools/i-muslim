@@ -12,6 +12,7 @@ interface Props {
 
 export function HoursEditor({ value, onChange }: Props) {
   const t = useTranslations("businesses.weekdays");
+  const tAdmin = useTranslations("businesses.admin");
 
   function setDay(day: BusinessHoursDay, patch: Partial<{ open: string; close: string; closed: boolean }>) {
     const next: BusinessHours = { ...value };
@@ -41,21 +42,21 @@ export function HoursEditor({ value, onChange }: Props) {
                 checked={!isClosed}
                 onChange={(e) => setDay(day, { closed: !e.target.checked })}
               />
-              <span>{isClosed ? "Closed" : "Open"}</span>
+              <span>{isClosed ? tAdmin("hoursClosed") : tAdmin("hoursOpen")}</span>
             </label>
             <Input
               type="time"
               disabled={isClosed}
               value={entry?.open ?? ""}
               onChange={(e) => setDay(day, { open: e.target.value })}
-              aria-label={`${t(day)} open`}
+              aria-label={tAdmin("hoursOpenAria", { day: t(day) })}
             />
             <Input
               type="time"
               disabled={isClosed}
               value={entry?.close ?? ""}
               onChange={(e) => setDay(day, { close: e.target.value })}
-              aria-label={`${t(day)} close`}
+              aria-label={tAdmin("hoursCloseAria", { day: t(day) })}
             />
           </div>
         );

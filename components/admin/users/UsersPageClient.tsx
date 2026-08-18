@@ -265,7 +265,7 @@ export function UsersPageClient({
                           );
                           toast.success(t("suspendedToast", { name: u.name }));
                         } catch (err) {
-                          toast.error(err instanceof Error ? err.message : "Failed");
+                          toast.error(err instanceof Error ? err.message : t("genericError"));
                         }
                       }}
                     >
@@ -944,7 +944,7 @@ function RoleAssignmentEditor({
           )}
           <div className="flex justify-end">
             <Button size="sm" onClick={saveAssignment} disabled={!dirty || savingAssignment}>
-              {savingAssignment ? tCommon("working") : "Save"}
+              {savingAssignment ? tCommon("working") : tCommon("save")}
             </Button>
           </div>
         </>

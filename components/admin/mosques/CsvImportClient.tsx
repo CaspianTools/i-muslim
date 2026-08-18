@@ -169,7 +169,7 @@ export function CsvImportClient() {
             </table>
             {rows.length > 50 && (
               <p className="px-3 py-2 text-xs text-muted-foreground">
-                Showing first 50 of {rows.length} rows.
+                {t("showingFirst", { count: rows.length })}
               </p>
             )}
           </div>

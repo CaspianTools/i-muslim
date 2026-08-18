@@ -18,12 +18,11 @@ import { getSiteConfig } from "@/lib/admin/data/site-config";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: {
-    default: "Admin",
-    template: "%s · i-muslim Admin",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("adminLayout");
+  // %s is a Next.js metadata token, not an ICU placeholder — every locale must keep it.
+  return { title: { default: t("title"), template: t("titleTemplate") } };
+}
 
 export default async function AdminLayout({
   children,

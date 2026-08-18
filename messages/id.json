@@ -641,7 +641,8 @@
       "citySearchError": "Pencarian gagal",
       "citySearchAttribution": "Pencarian didukung oleh OpenStreetMap",
       "save": "Simpan",
-      "reset": "Atur ulang ke deteksi otomatis"
+      "reset": "Atur ulang ke deteksi otomatis",
+      "madhabStandardShort": "Standar"
     },
     "method": {
       "MuslimWorldLeague": "Liga Dunia Muslim",
@@ -789,7 +790,8 @@
       "send": "Kirim undangan",
       "sending": "Mengirim…",
       "errorName": "Mohon masukkan nama lengkap.",
-      "errorEmail": "Masukkan alamat email yang valid."
+      "errorEmail": "Masukkan alamat email yang valid.",
+      "failed": "Gagal mengundang pengguna"
     },
     "assignment": {
       "heading": "Peran & bahasa",
@@ -801,7 +803,8 @@
       "searchLanguages": "Cari bahasa…",
       "noMatches": "Tidak ada yang cocok.",
       "toastUpdated": "{name} diperbarui."
-    }
+    },
+    "genericError": "Gagal"
   },
   "confirmDialog": {
     "typePromptPrefix": "Ketik",
@@ -2538,7 +2541,8 @@
       "rowOk": "OK",
       "errorMissingColumn": "{column} tidak ada",
       "errorBadCoordinates": "koordinat tidak valid",
-      "errorCountryNotIso2": "negara harus dalam format ISO2"
+      "errorCountryNotIso2": "negara harus dalam format ISO2",
+      "showingFirst": "Menampilkan 50 baris pertama dari {count} baris."
     },
     "facilities": {
       "pageTitle": "Fasilitas Masjid",
@@ -2588,8 +2592,11 @@
       "rejectionFailed": "Penolakan gagal.",
       "rejected": "Pengajuan ditolak.",
       "pageTitle": "Pengajuan masjid",
-      "pageSubtitle": "Tinjau permintaan klaim dan pendaftaran. Menyetujui akan menetapkan pemohon sebagai pengelola masjid."
-    }
+      "pageSubtitle": "Tinjau permintaan klaim dan pendaftaran. Menyetujui akan menetapkan pemohon sebagai pengelola masjid.",
+      "kindClaim": "Klaim",
+      "kindRegister": "Pendaftaran"
+    },
+    "viewPublicPage": "Lihat halaman publik"
   },
   "businesses": {
     "ogFallbackTitle": "Bisnis halal",
@@ -2854,7 +2861,11 @@
         "fieldInstagram": "Instagram",
         "fieldWhatsapp": "WhatsApp",
         "fieldCertBody": "Sertifikasi yang diklaim"
-      }
+      },
+      "hoursOpen": "Buka",
+      "hoursClosed": "Tutup",
+      "hoursOpenAria": "Jam buka {day}",
+      "hoursCloseAria": "Jam tutup {day}"
     },
     "submit": {
       "title": "Kirim bisnis halal",
@@ -4390,7 +4401,10 @@
       "narratedBy": "Diriwayatkan oleh {narrator}",
       "adminEdited": "Diedit admin; dipertahankan saat seed ulang",
       "draftTitle": "Draf — tidak terlihat oleh pembaca umum",
-      "publishedTitle": "Terbit — terlihat oleh pembaca umum"
+      "publishedTitle": "Terbit — terlihat oleh pembaca umum",
+      "book": "Kitab {number}",
+      "edited": "diedit",
+      "notes": "Catatan: {notes}"
     },
     "editor": {
       "title": "Edit hadis {collection} #{number}",
@@ -4452,6 +4466,16 @@
       "moreErrors": "… dan {count} lainnya.",
       "uploading": "Mengunggah…",
       "clear": "Bersihkan"
+    },
+    "collection": {
+      "allCollections": "Semua koleksi",
+      "meta": "{books} kitab · total {total} hadis",
+      "hadithCount": "{count} hadis"
+    },
+    "book": {
+      "crumb": "{collection} · Kitab {number}",
+      "countLine": "{count} hadis dalam kitab ini.",
+      "bookNumber": "Kitab {number}"
     }
   },
   "quranAdmin": {
@@ -4471,7 +4495,11 @@
       "filterPlaceholder": "Filter berdasarkan nomor atau terjemahan…",
       "unpublished": "belum terbit",
       "editAria": "Edit ayat {ayah}",
-      "adminEdited": "Diedit admin; dipertahankan saat seed ulang"
+      "adminEdited": "Diedit admin; dipertahankan saat seed ulang",
+      "juzPage": "Juz {juz} · Halaman {page}",
+      "sajdah": "Sajdah",
+      "edited": "diedit",
+      "notes": "Catatan: {notes}"
     },
     "editor": {
       "title": "Edit ayat {surah}:{ayah}",
@@ -4498,6 +4526,12 @@
       "errorInvalidInput": "Masukan tidak valid.",
       "errorGeminiNotConfigured": "Kunci Gemini API belum dikonfigurasi. Tambahkan di /admin/settings → terjemahan AI.",
       "errorNotFound": "Entri itu sudah tidak ada."
+    },
+    "surah": {
+      "allSurahs": "Semua surah",
+      "heading": "Surah {number} · {name}",
+      "subtitle": "{translated} · {count} ayat",
+      "emptyAyahs": "Tidak ada ayat untuk surah ini. Jalankan <code>npm run seed:quran</code> untuk mengisi basis data."
     }
   },
   "rolesAdmin": {
@@ -4597,7 +4631,12 @@
       "toastSaved": "Pengaturan terjemahan AI disimpan",
       "toastSaveFailed": "Gagal menyimpan pengaturan terjemahan AI",
       "toastKeyRemoved": "Kunci Gemini dihapus",
-      "toastRemoveFailed": "Gagal menghapus kunci"
+      "toastRemoveFailed": "Gagal menghapus kunci",
+      "confirmRemoveKey": "Hapus kunci Gemini API yang tersimpan? Tombol terjemahan AI akan dinonaktifkan sampai kunci baru ditambahkan."
     }
+  },
+  "adminLayout": {
+    "title": "Admin",
+    "titleTemplate": "%s · Admin i-muslim"
   }
 }

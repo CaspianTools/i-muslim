@@ -53,7 +53,11 @@ export function AdminPrayerTimesView() {
               {prefs.countryCode ? ` · ${prefs.countryCode}` : ""}
             </p>
             <p className="text-xs text-muted-foreground">
-              {prefs.method} · {prefs.madhab === "hanafi" ? "Hanafi" : "Standard"} · {prefs.tz}
+              {prefs.method} ·{" "}
+              {prefs.madhab === "hanafi"
+                ? tPrayer("settings.madhabHanafi")
+                : tPrayer("settings.madhabStandardShort")}{" "}
+              · {prefs.tz}
             </p>
           </div>
           <div className="flex items-center gap-2">

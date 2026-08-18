@@ -74,13 +74,14 @@ export function InviteUserDrawer({ open, onOpenChange, roles, onInvite }: Props)
         body: JSON.stringify(values),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to invite user");
+      if (!res.ok) throw new Error(data.error || "invite-failed");
       onInvite(data.user as AdminUser);
       reset({ name: "", email: "", role: defaultRole });
       onOpenChange(false);
     } catch (err) {
       const { toast } = await import("@/components/ui/sonner");
-      toast.error(err instanceof Error ? err.message : "Failed to invite user");
+      const msg = err instanceof Error ? err.message : "invite-failed";
+      toast.error(msg === "invite-failed" ? t("failed") : msg);
     } finally {
       setSubmitting(false);
     }

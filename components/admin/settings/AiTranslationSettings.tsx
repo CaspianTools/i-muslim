@@ -46,7 +46,7 @@ export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus
   }
 
   function clearKey() {
-    if (!confirm("Remove the stored Gemini API key? AI translate buttons will be disabled until a new key is added.")) return;
+    if (!confirm(t("confirmRemoveKey"))) return;
     startTransition(async () => {
       const res = await clearGeminiKeyAction();
       if (res.ok) {

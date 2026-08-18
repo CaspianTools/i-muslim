@@ -195,12 +195,12 @@ export function AyahList({
                   {a.ayah}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  Juz {a.juz} · Page {a.page}
-                  {a.sajdah && " · Sajdah"}
+                  {tList("juzPage", { juz: a.juz, page: a.page })}
+                  {a.sajdah && ` · ${tList("sajdah")}`}
                 </span>
                 {a.editedByAdmin && (
                   <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                    edited
+                    {tList("edited")}
                   </span>
                 )}
                 {!a.published && (
@@ -252,7 +252,7 @@ export function AyahList({
             </div>
             {a.notes && (
               <p className="mt-2 rounded-md bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
-                Notes: {a.notes}
+                {tList("notes", { notes: a.notes })}
               </p>
             )}
           </article>

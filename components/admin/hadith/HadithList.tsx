@@ -196,7 +196,9 @@ export function HadithList({
                 <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-muted px-1.5 text-xs font-medium tabular-nums">
                   #{h.number}
                 </span>
-                <span className="text-xs text-muted-foreground">Book {h.book}</span>
+                <span className="text-xs text-muted-foreground">
+                  {tList("book", { number: h.book })}
+                </span>
                 {h.grade && (
                   <span className="rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
                     {h.grade}
@@ -204,7 +206,7 @@ export function HadithList({
                 )}
                 {h.editedByAdmin && (
                   <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                    edited
+                    {tList("edited")}
                   </span>
                 )}
                 {!h.published && (
@@ -282,7 +284,7 @@ export function HadithList({
             </div>
             {h.notes && (
               <p className="mt-2 rounded-md bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
-                Notes: {h.notes}
+                {tList("notes", { notes: h.notes })}
               </p>
             )}
           </article>

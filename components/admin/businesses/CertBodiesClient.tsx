@@ -93,9 +93,9 @@ export function CertBodiesClient({ initialCertBodies, canPersist }: Props) {
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                <th className="px-3 py-2">{t("colName")}</th>
+                <th className="px-3 py-2">{t("name")}</th>
                 <th className="px-3 py-2">{t("slug")}</th>
-                <th className="px-3 py-2">{t("colCountry")}</th>
+                <th className="px-3 py-2">{t("country")}</th>
                 <th className="px-3 py-2">{t("verifiedByPlatformLabel")}</th>
                 <th className="px-3 py-2 text-end">{tCommon("actions")}</th>
               </tr>

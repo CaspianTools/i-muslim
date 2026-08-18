@@ -641,7 +641,8 @@
       "citySearchError": "Arama başarısız",
       "citySearchAttribution": "Arama OpenStreetMap tarafından desteklenmektedir",
       "save": "Kaydet",
-      "reset": "Otomatik tespite sıfırla"
+      "reset": "Otomatik tespite sıfırla",
+      "madhabStandardShort": "Standart"
     },
     "method": {
       "MuslimWorldLeague": "Dünya İslam Birliği",
@@ -789,7 +790,8 @@
       "send": "Davet gönder",
       "sending": "Gönderiliyor…",
       "errorName": "Lütfen tam ad girin.",
-      "errorEmail": "Geçerli bir e-posta adresi girin."
+      "errorEmail": "Geçerli bir e-posta adresi girin.",
+      "failed": "Kullanıcı davet edilemedi"
     },
     "assignment": {
       "heading": "Rol ve diller",
@@ -801,7 +803,8 @@
       "searchLanguages": "Dil ara…",
       "noMatches": "Eşleşme yok.",
       "toastUpdated": "{name} güncellendi."
-    }
+    },
+    "genericError": "İşlem başarısız"
   },
   "confirmDialog": {
     "typePromptPrefix": "Onaylamak için",
@@ -2538,7 +2541,8 @@
       "rowOk": "Tamam",
       "errorMissingColumn": "{column} eksik",
       "errorBadCoordinates": "geçersiz koordinatlar",
-      "errorCountryNotIso2": "ülke ISO2 biçiminde olmalı"
+      "errorCountryNotIso2": "ülke ISO2 biçiminde olmalı",
+      "showingFirst": "{count} satırın ilk 50 tanesi gösteriliyor."
     },
     "facilities": {
       "pageTitle": "Cami Olanakları",
@@ -2588,8 +2592,11 @@
       "rejectionFailed": "Reddetme başarısız.",
       "rejected": "Başvuru reddedildi.",
       "pageTitle": "Cami başvuruları",
-      "pageSubtitle": "Sahiplik ve kayıt taleplerini inceleyin. Onaylamak, başvuranı caminin yöneticisi olarak atar."
-    }
+      "pageSubtitle": "Sahiplik ve kayıt taleplerini inceleyin. Onaylamak, başvuranı caminin yöneticisi olarak atar.",
+      "kindClaim": "Sahiplik",
+      "kindRegister": "Kayıt"
+    },
+    "viewPublicPage": "Herkese açık sayfayı görüntüle"
   },
   "businesses": {
     "ogFallbackTitle": "Helal işletme",
@@ -2854,7 +2861,11 @@
         "fieldInstagram": "Instagram",
         "fieldWhatsapp": "WhatsApp",
         "fieldCertBody": "Belirtilen sertifikasyon"
-      }
+      },
+      "hoursOpen": "Açık",
+      "hoursClosed": "Kapalı",
+      "hoursOpenAria": "{day} açılış saati",
+      "hoursCloseAria": "{day} kapanış saati"
     },
     "submit": {
       "title": "Helal işletme öner",
@@ -4390,10 +4401,13 @@
       "narratedBy": "Rivayet eden: {narrator}",
       "adminEdited": "Yönetici düzenlemesi; yeniden yüklemede korunur",
       "draftTitle": "Taslak — genel okuyucuya görünmez",
-      "publishedTitle": "Yayında — genel okuyucuya görünür"
+      "publishedTitle": "Yayında — genel okuyucuya görünür",
+      "book": "{number}. kitap",
+      "edited": "düzenlendi",
+      "notes": "Notlar: {notes}"
     },
     "editor": {
-      "title": "Hadisi düzenle {collection} #{number}",
+      "title": "{collection} #{number} hadisini düzenle",
       "description": "Arapça metin salt okunurdur. Çeviriler ve üst veriler düzenlenebilir; çeviri taslağı için yapay zekâ düğmesini kullanın, sonra kaydetmeden önce gözden geçirin.",
       "readOnlyNote": "Üst veri alanları salt okunur — hadith.publish yetkiniz yok.",
       "narrator": "Ravi",
@@ -4452,6 +4466,16 @@
       "moreErrors": "… ve {count} tane daha.",
       "uploading": "Yükleniyor…",
       "clear": "Temizle"
+    },
+    "collection": {
+      "allCollections": "Tüm külliyatlar",
+      "meta": "{books} kitap · toplam {total} hadis",
+      "hadithCount": "{count} hadis"
+    },
+    "book": {
+      "crumb": "{collection} · {number}. kitap",
+      "countLine": "Bu kitapta {count} hadis var.",
+      "bookNumber": "{number}. kitap"
     }
   },
   "quranAdmin": {
@@ -4471,10 +4495,14 @@
       "filterPlaceholder": "Numara veya çeviriye göre filtrele…",
       "unpublished": "yayında değil",
       "editAria": "{ayah} numaralı ayeti düzenle",
-      "adminEdited": "Yönetici düzenlemesi; yeniden yüklemede korunur"
+      "adminEdited": "Yönetici düzenlemesi; yeniden yüklemede korunur",
+      "juzPage": "Cüz {juz} · Sayfa {page}",
+      "sajdah": "Secde",
+      "edited": "düzenlendi",
+      "notes": "Notlar: {notes}"
     },
     "editor": {
-      "title": "Ayeti düzenle {surah}:{ayah}",
+      "title": "{surah}:{ayah} ayetini düzenle",
       "description": "Arapça metin salt okunurdur. Çeviriler ve üst veriler düzenlenebilir; çeviri taslağı için yapay zekâ düğmesini kullanın, sonra kaydetmeden önce gözden geçirin.",
       "readOnlyNote": "Üst veri alanları salt okunur — quran.publish yetkiniz yok.",
       "transliteration": "Okunuş",
@@ -4498,6 +4526,12 @@
       "errorInvalidInput": "Geçersiz giriş.",
       "errorGeminiNotConfigured": "Gemini API anahtarı yapılandırılmamış. /admin/settings → yapay zekâ çevirisi bölümünden ekleyin.",
       "errorNotFound": "Bu kayıt artık mevcut değil."
+    },
+    "surah": {
+      "allSurahs": "Tüm sureler",
+      "heading": "{number}. sure · {name}",
+      "subtitle": "{translated} · {count} ayet",
+      "emptyAyahs": "Bu sure için ayet bulunamadı. Veritabanını doldurmak için <code>npm run seed:quran</code> çalıştırın."
     }
   },
   "rolesAdmin": {
@@ -4597,7 +4631,12 @@
       "toastSaved": "Yapay zekâ çeviri ayarları kaydedildi",
       "toastSaveFailed": "Yapay zekâ çeviri ayarları kaydedilemedi",
       "toastKeyRemoved": "Gemini anahtarı kaldırıldı",
-      "toastRemoveFailed": "Anahtar kaldırılamadı"
+      "toastRemoveFailed": "Anahtar kaldırılamadı",
+      "confirmRemoveKey": "Kayıtlı Gemini API anahtarı kaldırılsın mı? Yeni bir anahtar eklenene kadar yapay zekâ çeviri düğmeleri devre dışı kalacak."
     }
+  },
+  "adminLayout": {
+    "title": "Yönetim",
+    "titleTemplate": "%s · i-muslim Yönetim"
   }
 }

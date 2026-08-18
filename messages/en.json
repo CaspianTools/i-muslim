@@ -638,7 +638,8 @@
       "citySearchError": "Search failed",
       "citySearchAttribution": "Search powered by OpenStreetMap",
       "save": "Save",
-      "reset": "Reset to auto-detect"
+      "reset": "Reset to auto-detect",
+      "madhabStandardShort": "Standard"
     },
     "method": {
       "MuslimWorldLeague": "Muslim World League",
@@ -786,7 +787,8 @@
       "send": "Send invite",
       "sending": "Sending…",
       "errorName": "Please enter a full name.",
-      "errorEmail": "Enter a valid email address."
+      "errorEmail": "Enter a valid email address.",
+      "failed": "Failed to invite user"
     },
     "assignment": {
       "heading": "Role & languages",
@@ -798,7 +800,8 @@
       "searchLanguages": "Search languages…",
       "noMatches": "No matches.",
       "toastUpdated": "Updated {name}."
-    }
+    },
+    "genericError": "Failed"
   },
   "confirmDialog": {
     "typePromptPrefix": "Type",
@@ -2535,7 +2538,8 @@
       "rowOk": "OK",
       "errorMissingColumn": "missing {column}",
       "errorBadCoordinates": "bad coordinates",
-      "errorCountryNotIso2": "country must be ISO2"
+      "errorCountryNotIso2": "country must be ISO2",
+      "showingFirst": "Showing first 50 of {count} rows."
     },
     "facilities": {
       "pageTitle": "Mosque Facilities",
@@ -2585,8 +2589,11 @@
       "rejectionFailed": "Rejection failed.",
       "rejected": "Application rejected.",
       "pageTitle": "Masjid applications",
-      "pageSubtitle": "Review claim and registration requests. Approving assigns the applicant as the masjid's manager."
-    }
+      "pageSubtitle": "Review claim and registration requests. Approving assigns the applicant as the masjid's manager.",
+      "kindClaim": "Claim",
+      "kindRegister": "Register"
+    },
+    "viewPublicPage": "View public page"
   },
   "businesses": {
     "ogFallbackTitle": "Halal business",
@@ -2851,7 +2858,11 @@
         "fieldInstagram": "Instagram",
         "fieldWhatsapp": "WhatsApp",
         "fieldCertBody": "Claimed certification"
-      }
+      },
+      "hoursOpen": "Open",
+      "hoursClosed": "Closed",
+      "hoursOpenAria": "{day} open",
+      "hoursCloseAria": "{day} close"
     },
     "submit": {
       "title": "Submit a halal business",
@@ -4387,7 +4398,10 @@
       "narratedBy": "Narrated by {narrator}",
       "adminEdited": "Admin-edited; preserved on re-seed",
       "draftTitle": "Draft — not visible to public reader",
-      "publishedTitle": "Published — visible to public reader"
+      "publishedTitle": "Published — visible to public reader",
+      "book": "Book {number}",
+      "edited": "edited",
+      "notes": "Notes: {notes}"
     },
     "editor": {
       "title": "Edit hadith {collection} #{number}",
@@ -4449,6 +4463,16 @@
       "moreErrors": "… and {count} more.",
       "uploading": "Uploading…",
       "clear": "Clear"
+    },
+    "collection": {
+      "allCollections": "All collections",
+      "meta": "{books} books · {total} total hadith",
+      "hadithCount": "{count} hadith"
+    },
+    "book": {
+      "crumb": "{collection} · Book {number}",
+      "countLine": "{count} hadith in this book.",
+      "bookNumber": "Book {number}"
     }
   },
   "quranAdmin": {
@@ -4468,7 +4492,11 @@
       "filterPlaceholder": "Filter by number or translation…",
       "unpublished": "unpublished",
       "editAria": "Edit ayah {ayah}",
-      "adminEdited": "Admin-edited; preserved on re-seed"
+      "adminEdited": "Admin-edited; preserved on re-seed",
+      "juzPage": "Juz {juz} · Page {page}",
+      "sajdah": "Sajdah",
+      "edited": "edited",
+      "notes": "Notes: {notes}"
     },
     "editor": {
       "title": "Edit ayah {surah}:{ayah}",
@@ -4495,6 +4523,12 @@
       "errorInvalidInput": "Invalid input.",
       "errorGeminiNotConfigured": "Gemini API key not configured. Add one in /admin/settings → AI translation.",
       "errorNotFound": "That entry no longer exists."
+    },
+    "surah": {
+      "allSurahs": "All surahs",
+      "heading": "Surah {number} · {name}",
+      "subtitle": "{translated} · {count} ayahs",
+      "emptyAyahs": "No ayahs found for this surah. Run <code>npm run seed:quran</code> to populate the database."
     }
   },
   "rolesAdmin": {
@@ -4594,7 +4628,12 @@
       "toastSaved": "AI translation settings saved",
       "toastSaveFailed": "Failed to save AI translation settings",
       "toastKeyRemoved": "Gemini key removed",
-      "toastRemoveFailed": "Failed to remove key"
+      "toastRemoveFailed": "Failed to remove key",
+      "confirmRemoveKey": "Remove the stored Gemini API key? AI translate buttons will be disabled until a new key is added."
     }
+  },
+  "adminLayout": {
+    "title": "Admin",
+    "titleTemplate": "%s · i-muslim Admin"
   }
 }
