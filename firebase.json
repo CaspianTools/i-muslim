@@ -8,7 +8,8 @@
     "rules": "storage.rules"
   },
   "apphosting": {
-    "backendId": "i-muslim",
+    "backendId": "main",
+    "alwaysDeployFromSource": false,
     "rootDir": "/",
     "ignore": [
       "node_modules",
