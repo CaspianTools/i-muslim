@@ -24,23 +24,20 @@ export async function translateAyahFieldAction(
 ): Promise<TranslateAyahFieldResult> {
   const parsed = translateSchema.safeParse(rawInput);
   if (!parsed.success) {
-    return { ok: false, error: "Invalid input." };
+    return { ok: false, error: "invalid-input" };
   }
   await requirePermissionForLanguage("quran.translate", parsed.data.targetLang);
 
   const config = await getGeminiConfig();
   if (!config) {
-    return {
-      ok: false,
-      error: "Gemini API key not configured. Add one in /admin/settings → AI translation.",
-    };
+    return { ok: false, error: "gemini-not-configured" };
   }
 
   const db = requireDb();
   const id = `${parsed.data.surah}:${parsed.data.ayah}`;
   const snap = await db.collection("quran_ayahs").doc(id).get();
   if (!snap.exists) {
-    return { ok: false, error: `Ayah ${id} not found.` };
+    return { ok: false, error: "not-found" };
   }
   const data = snap.data() ?? {};
   const arabic = (data.text_ar as string | undefined) ?? "";

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +26,7 @@ export function AdminDownloadHadithDialog(props: Props) {
   const [chunked, setChunked] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const t = useTranslations("hadithAdmin.download");
 
   const isCollection = props.scope === "collection";
 
@@ -69,7 +71,7 @@ export function AdminDownloadHadithDialog(props: Props) {
         URL.revokeObjectURL(blobUrl);
         setOpen(false);
       } catch {
-        setError("Download failed. Please try again.");
+        setError(t("failed"));
       }
     });
   };
@@ -79,21 +81,21 @@ export function AdminDownloadHadithDialog(props: Props) {
       <PopoverTrigger asChild>
         <Button type="button" variant="secondary" size="sm">
           <Download aria-hidden="true" />
-          <span>Download</span>
+          <span>{t("trigger")}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-72 space-y-4">
         <div className="space-y-1">
           <h3 className="text-sm font-semibold">
-            {isCollection ? "Download collection" : "Download book"}
+            {isCollection ? t("titleCollection") : t("titleBook")}
           </h3>
           <p className="text-xs text-muted-foreground">
-            Includes drafts and admin metadata.
+            {t("note")}
           </p>
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="hadith-download-lang">Language</Label>
+          <Label htmlFor="hadith-download-lang">{t("language")}</Label>
           <select
             id="hadith-download-lang"
             value={lang}
@@ -101,10 +103,10 @@ export function AdminDownloadHadithDialog(props: Props) {
             disabled={pending}
             className="block w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
           >
-            <option value="all">All languages</option>
+            <option value="all">{t("allLanguages")}</option>
             {ALL_LANGS.map((code) => (
               <option key={code} value={code}>
-                {LANG_LABELS[code] ?? code} ({code})
+                {t("languageOption", { name: LANG_LABELS[code] ?? code, code })}
               </option>
             ))}
           </select>
@@ -112,7 +114,7 @@ export function AdminDownloadHadithDialog(props: Props) {
 
         {isCollection ? (
           <fieldset className="space-y-1.5" disabled={pending}>
-            <legend className="text-sm font-medium">Format</legend>
+            <legend className="text-sm font-medium">{t("format")}</legend>
             <label className="flex cursor-pointer items-center gap-2 text-sm">
               <input
                 type="radio"
@@ -120,7 +122,7 @@ export function AdminDownloadHadithDialog(props: Props) {
                 checked={!chunked}
                 onChange={() => setChunked(false)}
               />
-              <span>Single JSON file</span>
+              <span>{t("singleJson")}</span>
             </label>
             <label className="flex cursor-pointer items-center gap-2 text-sm">
               <input
@@ -129,7 +131,7 @@ export function AdminDownloadHadithDialog(props: Props) {
                 checked={chunked}
                 onChange={() => setChunked(true)}
               />
-              <span>ZIP — one JSON per book</span>
+              <span>{t("zipPerBook")}</span>
             </label>
           </fieldset>
         ) : null}
@@ -153,7 +155,7 @@ export function AdminDownloadHadithDialog(props: Props) {
           ) : (
             <Download aria-hidden="true" />
           )}
-          <span>{pending ? "Preparing…" : "Download"}</span>
+          <span>{pending ? t("preparing") : t("trigger")}</span>
         </Button>
       </PopoverContent>
     </Popover>

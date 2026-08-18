@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,6 @@ import {
   ALL_ACTIONS_ORDERED,
   PERMISSION_RESOURCES,
   WILDCARD,
-  actionLabel,
   resourceHasAction,
   type Permission,
   type PermissionResource,
@@ -56,6 +56,8 @@ function permsToList(role: AdminRoleDoc): Permission[] {
 
 export function RolesMatrix({ initialRoles, canManage }: Props) {
   const router = useRouter();
+  const t = useTranslations("rolesAdmin");
+  const tCommon = useTranslations("common");
   const [roles, setRoles] = useState(initialRoles);
   const [activeId, setActiveId] = useState<string>(initialRoles[0]?.id ?? "");
   const [createOpen, setCreateOpen] = useState(false);
@@ -111,7 +113,7 @@ export function RolesMatrix({ initialRoles, canManage }: Props) {
         if (next.length > 0) setActiveId(next[0]!.id);
         return next;
       });
-      toast.success(`Deleted role "${target.name}".`);
+      toast.success(t("toastDeleted", { name: target.name }));
       router.refresh();
     });
   }
@@ -120,15 +122,14 @@ export function RolesMatrix({ initialRoles, canManage }: Props) {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Roles & permissions</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("pageTitle")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Pick a role on the left, then toggle the cells below to grant or revoke
-            permissions. Changes save automatically.
+            {t("pageSubtitle")}
           </p>
         </div>
         {canManage && (
           <Button onClick={() => setCreateOpen(true)}>
-            <Plus className="size-4" /> New role
+            <Plus className="size-4" /> {t("newRole")}
           </Button>
         )}
       </div>
@@ -165,8 +166,12 @@ export function RolesMatrix({ initialRoles, canManage }: Props) {
         })}
         {roles.length === 0 && (
           <p className="text-sm text-muted-foreground">
-            No roles yet. Run <code className="rounded bg-muted px-1 py-0.5 font-mono">npm run seed:roles</code>{" "}
-            or click <strong>New role</strong>.
+            {t.rich("emptyHint", {
+              code: (chunks) => (
+                <code className="rounded bg-muted px-1 py-0.5 font-mono">{chunks}</code>
+              ),
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
         )}
       </div>
@@ -206,9 +211,9 @@ export function RolesMatrix({ initialRoles, canManage }: Props) {
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        title={`Delete role "${activeRole?.name}"?`}
-        description="This cannot be undone. Users assigned this role must be reassigned first."
-        confirmLabel="Delete"
+        title={t("deleteTitle", { name: activeRole?.name ?? "" })}
+        description={t("deleteDescription")}
+        confirmLabel={tCommon("delete")}
         onConfirm={handleDelete}
       />
     </div>
@@ -231,6 +236,7 @@ function RoleMetaPanel({
   onUpdated: (r: AdminRoleDoc) => void;
   onDeleteClick: () => void;
 }) {
+  const tMeta = useTranslations("rolesAdmin.meta");
   const [name, setName] = useState(role.name);
   const [description, setDescription] = useState(role.description);
   const [pending, startTransition] = useTransition();
@@ -269,7 +275,7 @@ function RoleMetaPanel({
         <div className="flex-1 space-y-2">
           <div className="space-y-1">
             <Label htmlFor="role-name" className="text-xs uppercase tracking-wide text-muted-foreground">
-              Name
+              {tMeta("name")}
             </Label>
             <Input
               id="role-name"
@@ -281,7 +287,7 @@ function RoleMetaPanel({
           </div>
           <div className="space-y-1">
             <Label htmlFor="role-description" className="text-xs uppercase tracking-wide text-muted-foreground">
-              Description
+              {tMeta("description")}
             </Label>
             <textarea
               id="role-description"
@@ -294,24 +300,39 @@ function RoleMetaPanel({
           </div>
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono">{role.id}</code>
-            {role.builtIn && <Badge variant="neutral" className="text-[10px] uppercase tracking-wide">Built-in</Badge>}
-            {role.protected && <Badge variant="warning" className="text-[10px] uppercase tracking-wide">Protected</Badge>}
+            {role.builtIn && (
+              <Badge variant="neutral" className="text-[10px] uppercase tracking-wide">
+                {tMeta("builtIn")}
+              </Badge>
+            )}
+            {role.protected && (
+              <Badge variant="warning" className="text-[10px] uppercase tracking-wide">
+                {tMeta("protected")}
+              </Badge>
+            )}
             <span>·</span>
-            <span>{role.memberCount ?? 0} member{(role.memberCount ?? 0) === 1 ? "" : "s"}</span>
-            {pending && <span className="text-primary">· saving…</span>}
+            <span>{tMeta("memberCount", { count: role.memberCount ?? 0 })}</span>
+            {pending && <span className="text-primary">{tMeta("saving")}</span>}
           </div>
         </div>
         {canManage && !role.builtIn && !role.protected && (
-          <Button variant="ghost" size="icon" aria-label={`Delete role ${role.name}`} onClick={onDeleteClick}>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={tMeta("deleteAria", { name: role.name })}
+            onClick={onDeleteClick}
+          >
             <Trash2 className="size-4 text-destructive" />
           </Button>
         )}
       </div>
       {role.protected && (
         <p className="rounded-md border border-amber-500/40 bg-amber-500/5 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
-          This role is protected. Permissions and assignment are managed by the
-          <code className="mx-1 rounded bg-muted px-1 py-0.5 font-mono">npm run seed:roles</code>
-          script.
+          {tMeta.rich("protectedNote", {
+            code: (chunks) => (
+              <code className="mx-1 rounded bg-muted px-1 py-0.5 font-mono">{chunks}</code>
+            ),
+          })}
         </p>
       )}
     </div>
@@ -333,6 +354,9 @@ function PermissionMatrix({
   savingPerm: boolean;
   onToggle: (perm: Permission, currentlyOn: boolean) => void;
 }) {
+  const tMatrix = useTranslations("rolesAdmin.matrix");
+  const tActions = useTranslations("rolesAdmin.actions");
+  const tResources = useTranslations("rolesAdmin.resources");
   const grantedSet = useMemo<Set<string>>(() => {
     if (role.permissions === WILDCARD) return new Set();
     return new Set(role.permissions);
@@ -344,25 +368,24 @@ function PermissionMatrix({
         <thead className="bg-muted/40 text-xs uppercase tracking-wide text-muted-foreground">
           <tr>
             <th className="sticky start-0 z-10 bg-muted/40 px-3 py-2 text-left font-medium">
-              Resource
+              {tMatrix("resource")}
             </th>
             {ALL_ACTIONS_ORDERED.map((action) => (
               <th key={action} className="px-2 py-2 text-center font-medium">
-                {actionLabel(action)}
+                {tActions(action)}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {RESOURCES.map((resource) => {
-            const def = PERMISSION_RESOURCES[resource];
             return (
               <tr key={resource} className="border-t border-border">
                 <th
                   scope="row"
                   className="sticky start-0 z-10 bg-card px-3 py-2 text-left align-middle"
                 >
-                  <div className="font-medium text-foreground">{def.label}</div>
+                  <div className="font-medium text-foreground">{tResources(resource)}</div>
                   <div className="font-mono text-[11px] text-muted-foreground">{resource}</div>
                 </th>
                 {ALL_ACTIONS_ORDERED.map((action) => {
@@ -382,7 +405,10 @@ function PermissionMatrix({
                         granted={granted}
                         disabled={!editable || savingPerm}
                         onToggle={() => onToggle(perm, granted)}
-                        ariaLabel={`${actionLabel(action)} on ${def.label}`}
+                        ariaLabel={tMatrix("cellAria", {
+                          action: tActions(action),
+                          resource: tResources(resource),
+                        })}
                       />
                     </td>
                   );
@@ -442,6 +468,8 @@ function NewRoleDialog({
   existingIds: Set<string>;
   onCreated: (role: AdminRoleDoc) => void;
 }) {
+  const tNew = useTranslations("rolesAdmin.newRoleDialog");
+  const tCommonNew = useTranslations("common");
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [idTouched, setIdTouched] = useState(false);
@@ -474,7 +502,7 @@ function NewRoleDialog({
       toast.error(r.error);
       return;
     }
-    toast.success(`Created role "${r.data.name}".`);
+    toast.success(tNew("toastCreated", { name: r.data.name }));
     reset();
     onCreated(r.data);
   }
@@ -489,25 +517,25 @@ function NewRoleDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New role</DialogTitle>
+          <DialogTitle>{tNew("title")}</DialogTitle>
           <DialogDescription>
-            Create a custom role. Toggle its permissions in the matrix once it&apos;s active.
+            {tNew("description")}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="new-role-name">Name</Label>
+            <Label htmlFor="new-role-name">{tNew("name")}</Label>
             <Input
               id="new-role-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Russian translator"
+              placeholder={tNew("namePlaceholder")}
               required
               autoFocus
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="new-role-id">Id</Label>
+            <Label htmlFor="new-role-id">{tNew("id")}</Label>
             <Input
               id="new-role-id"
               value={effectiveId}
@@ -515,26 +543,26 @@ function NewRoleDialog({
                 setId(e.target.value);
                 setIdTouched(true);
               }}
-              placeholder="russian-translator"
+              placeholder={tNew("idPlaceholder")}
               pattern="[a-z0-9][a-z0-9-]{1,40}"
               required
             />
             <p className="text-xs text-muted-foreground">
-              Lowercase letters, digits, and hyphens. Used in code and the URL.
+              {tNew("idHint")}
             </p>
             {idCollides && (
               <p className="text-xs text-destructive">
-                A role with this id already exists.
+                {tNew("idCollides")}
               </p>
             )}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="new-role-description">Description</Label>
+            <Label htmlFor="new-role-description">{tNew("description_label")}</Label>
             <Input
               id="new-role-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Translates Hadith and Quran into Russian"
+              placeholder={tNew("descriptionPlaceholder")}
             />
           </div>
           <DialogFooter>
@@ -544,10 +572,10 @@ function NewRoleDialog({
               onClick={() => onOpenChange(false)}
               disabled={submitting}
             >
-              Cancel
+              {tCommonNew("cancel")}
             </Button>
             <Button type="submit" disabled={submitting || idCollides || !name.trim() || !effectiveId}>
-              {submitting ? "Creating…" : "Create role"}
+              {submitting ? tNew("creating") : tNew("submit")}
             </Button>
           </DialogFooter>
         </form>

@@ -695,7 +695,8 @@
       "status": "Status",
       "lastUsed": "Last used",
       "requests": "Requests"
-    }
+    },
+    "noCorsTitle": "No CORS — backend only"
   },
   "users": {
     "pageTitle": "Users",
@@ -786,6 +787,17 @@
       "sending": "Sending…",
       "errorName": "Please enter a full name.",
       "errorEmail": "Enter a valid email address."
+    },
+    "assignment": {
+      "heading": "Role & languages",
+      "protectedNote": "This user holds a protected role. Reassignment is managed by the <code>npm run seed:roles</code> script.",
+      "role": "Role",
+      "approvedLanguages": "Approved languages",
+      "languagesHint": "Leave empty to grant access to every language.",
+      "selectLanguages": "Select languages…",
+      "searchLanguages": "Search languages…",
+      "noMatches": "No matches.",
+      "toastUpdated": "Updated {name}."
     }
   },
   "confirmDialog": {
@@ -1837,7 +1849,10 @@
         "activityPlaceholder": "Activity timeline ships with Phase 1.5.",
         "dangerZone": "Danger zone",
         "dangerZoneNote": "Suspending hides the profile from search; deleting is permanent.",
-        "deleteProfile": "Delete profile"
+        "deleteProfile": "Delete profile",
+        "userId": "User ID",
+        "joined": "Joined",
+        "lastActive": "Last active"
       },
       "reports": {
         "columnReporter": "Reporter",
@@ -2511,7 +2526,16 @@
       "importAll": "Import all valid rows",
       "importing": "Importing…",
       "successToast": "Imported {count} mosques.",
-      "noPersistNote": "Importing requires Firebase Admin to be configured."
+      "noPersistNote": "Importing requires Firebase Admin to be configured.",
+      "failedToast": "{count} failed: {errors}",
+      "colName": "Name",
+      "colCity": "City",
+      "colCountry": "Country",
+      "colStatus": "Status",
+      "rowOk": "OK",
+      "errorMissingColumn": "missing {column}",
+      "errorBadCoordinates": "bad coordinates",
+      "errorCountryNotIso2": "country must be ISO2"
     },
     "facilities": {
       "pageTitle": "Mosque Facilities",
@@ -2543,6 +2567,25 @@
       "replace": "Replace",
       "remove": "Remove image",
       "limitHint": "JPEG / PNG / WebP, up to 5 MB."
+    },
+    "rowActions": "Actions for {name}",
+    "rowsPerPage": "Rows per page",
+    "rangeOf": "{start}–{end} of {total}",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "applications": {
+      "empty": "No pending masjid applications.",
+      "proof": "Proof",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rejectPrompt": "Reason for rejection (optional):",
+      "proofFailed": "Couldn't open the proof document.",
+      "approvalFailed": "Approval failed.",
+      "approved": "Approved — manager assigned to {slug}.",
+      "rejectionFailed": "Rejection failed.",
+      "rejected": "Application rejected.",
+      "pageTitle": "Masjid applications",
+      "pageSubtitle": "Review claim and registration requests. Approving assigns the applicant as the masjid's manager."
     }
   },
   "businesses": {
@@ -3034,7 +3077,9 @@
         "errorMissingFields": "Native name, English name, and flag are required.",
         "errorParse": "Translations JSON is not valid JSON",
         "errorNotObject": "Translations must be a JSON object at the top level.",
-        "errorWriteFailed": "Could not save the locale."
+        "errorWriteFailed": "Could not save the locale.",
+        "nativeNamePlaceholder": "Français",
+        "englishNamePlaceholder": "French"
       },
       "content": {
         "titleQuran": "Qur'an translations",
@@ -4216,5 +4261,340 @@
     "body": "An unexpected error occurred. You can try again, or return to the homepage.",
     "retry": "Try again",
     "home": "Go home"
+  },
+  "articlesAdmin": {
+    "editor": {
+      "translation": "Translation",
+      "searchLanguage": "Search language…",
+      "noMatches": "No matches.",
+      "category": "Category",
+      "categoryInactive": "(inactive)",
+      "heroUrl": "Hero image URL (optional)",
+      "heroAlt": "Hero alt text",
+      "slug": "Slug ({locale})",
+      "slugPlaceholder": "auto-generated from title",
+      "regenerateSlug": "Regenerate slug from title",
+      "excerpt": "Excerpt (≤ 200 chars)",
+      "title": "Title",
+      "write": "Write",
+      "preview": "Preview",
+      "bodyPlaceholder": "Write Markdown here. # Heading, **bold**, [link](url), - lists, > blockquote, ```code```. HTML is stripped.",
+      "rendering": "Rendering…",
+      "previewFailed": "Preview failed: {error}",
+      "charsAndReadingTime": "{chars} chars · ~{minutes} min read",
+      "newArticle": "New article",
+      "statusLine": "Status ({locale}): {status}",
+      "mockMode": "sample data mode (read-only)",
+      "createDraft": "Create draft",
+      "unpublish": "Unpublish ({locale})",
+      "publish": "Publish ({locale})",
+      "toastConfigureFirebase": "Configure Firebase Admin to save articles.",
+      "toastNeedTranslation": "Add at least one translation with a title.",
+      "toastCreated": "Article created.",
+      "toastSaved": "Article saved.",
+      "toastSlugConflict": "Slug \"{slug}\" is already used in {locale}.",
+      "toastSaveFailed": "Save failed: {error}",
+      "toastSaveFirst": "Save the article first.",
+      "toastPublished": "Published ({locale}).",
+      "toastIncomplete": "Add a title, slug, and body before publishing.",
+      "toastPublishFailed": "Publish failed: {error}",
+      "toastUnpublished": "Unpublished ({locale}).",
+      "toastUnpublishFailed": "Unpublish failed: {error}",
+      "saving": "Saving…"
+    },
+    "list": {
+      "searchPlaceholder": "Search title…",
+      "searchAria": "Search articles",
+      "filterByStatus": "Filter by status",
+      "allStatuses": "All statuses",
+      "draft": "Draft",
+      "published": "Published",
+      "filterByCategory": "Filter by category",
+      "allCategories": "All categories",
+      "newArticle": "New article",
+      "mockNotice": "Configure Firebase Admin to create and edit articles. Listing shows sample data.",
+      "colTitle": "Title",
+      "colCategory": "Category",
+      "colLocales": "Locales",
+      "colUpdated": "Updated",
+      "empty": "No articles match these filters.",
+      "untitled": "Untitled",
+      "deleteTitle": "Delete article",
+      "deleteDescription": "This permanently deletes \"{title}\" and all its translations. This cannot be undone.",
+      "deleting": "Deleting…",
+      "toastDeletedMock": "Deleted (mock) — Firebase not configured.",
+      "toastDeleted": "Deleted \"{title}\".",
+      "toastDeleteFailed": "Failed to delete: {error}"
+    },
+    "categories": {
+      "addCategory": "Add category",
+      "empty": "No categories yet.",
+      "colName": "Name (EN)",
+      "colSlug": "Slug",
+      "colSort": "Sort",
+      "colActive": "Active",
+      "editTitle": "Edit category",
+      "editDescription": "Localized labels for the article category. The slug is used in URLs and stored on each article.",
+      "deleteTitle": "Delete category",
+      "deleteDescription": "This permanently deletes \"{name}\". Articles still using this slug will keep it as a string but will no longer match a known category. This cannot be undone.",
+      "toastNotConfigured": "Firebase Admin is not configured.",
+      "toastDeleted": "Category deleted."
+    },
+    "categoryForm": {
+      "slug": "Slug",
+      "slugPlaceholder": "auto-generated from English name",
+      "iconKey": "Icon key (optional)",
+      "sortOrder": "Sort order",
+      "active": "Active",
+      "name": "Name ({language})",
+      "saving": "Saving…",
+      "create": "Create",
+      "toastNotConfigured": "Firebase Admin is not configured.",
+      "toastUpdated": "Category updated.",
+      "toastCreated": "Category created."
+    },
+    "pages": {
+      "listTitle": "Articles & Blog",
+      "categoriesTitle": "Article categories",
+      "categoriesSubtitle": "Curate the categories admins can pick when creating an article.",
+      "editTitle": "Edit article",
+      "editSubtitle": "Edit translations and publish per locale.",
+      "notConfigured": "Firebase Admin is not configured. Set the env vars and restart.",
+      "untitledArticle": "Untitled article",
+      "backToArticles": "Back to articles"
+    }
+  },
+  "hadithAdmin": {
+    "page": {
+      "title": "Hadith",
+      "emptyHint": "Database is empty. Run npm run seed:hadith to populate.",
+      "collectionCount": "{count} collections.",
+      "emptyTitle": "No Hadith data found in Firestore.",
+      "runLabel": "Run:",
+      "countsLine": "{hadith} hadith · {books} books",
+      "editedCount": "{count} edited"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published"
+    },
+    "list": {
+      "filterPlaceholder": "Filter by number, narrator, or text…",
+      "unpublished": "unpublished",
+      "draftTranslations": "Draft translations: {langs}",
+      "needsReview": "needs review ({count})",
+      "editAria": "Edit hadith {number}",
+      "narratedBy": "Narrated by {narrator}",
+      "adminEdited": "Admin-edited; preserved on re-seed",
+      "draftTitle": "Draft — not visible to public reader",
+      "publishedTitle": "Published — visible to public reader"
+    },
+    "editor": {
+      "title": "Edit hadith {collection} #{number}",
+      "description": "Arabic text is read-only. Translations and metadata can be edited; use the AI button to draft a translation, then review before saving.",
+      "readOnlyNote": "Metadata fields are read-only — you don't have hadith.publish.",
+      "narrator": "Narrator",
+      "grade": "Grade",
+      "tags": "Tags (comma-separated)",
+      "notes": "Internal notes",
+      "publishedCheckbox": "Published (visible to public reader)",
+      "arabicTab": "Arabic",
+      "viewOnly": "view-only",
+      "arabicReadOnly": "Arabic (read-only)",
+      "saving": "Saving…",
+      "toastSaved": "Hadith {collection}:{number} saved",
+      "toastSaveFailed": "Failed to save"
+    },
+    "translationField": {
+      "publishStatusAria": "Publish status for {language} translation",
+      "translateTitle": "Translate to {language} with Gemini",
+      "translateDisabledTitle": "Configure a Gemini key in /admin/settings first",
+      "translating": "Translating…",
+      "translateWithAi": "Translate with AI",
+      "toastNoKey": "Configure a Gemini API key in /admin/settings → AI translation first.",
+      "toastDrafted": "{language} translation drafted — review before saving.",
+      "errorInvalidInput": "Invalid input.",
+      "errorGeminiNotConfigured": "Gemini API key not configured. Add one in /admin/settings → AI translation.",
+      "errorNotFound": "That entry no longer exists."
+    },
+    "download": {
+      "trigger": "Download",
+      "titleCollection": "Download collection",
+      "titleBook": "Download book",
+      "note": "Includes drafts and admin metadata.",
+      "language": "Language",
+      "allLanguages": "All languages",
+      "languageOption": "{name} ({code})",
+      "format": "Format",
+      "singleJson": "Single JSON file",
+      "zipPerBook": "ZIP — one JSON per book",
+      "preparing": "Preparing…",
+      "failed": "Download failed. Please try again."
+    },
+    "upload": {
+      "trigger": "Upload",
+      "title": "Upload translated JSON",
+      "note": "Merges translations + status into Firestore. Reference fields (narrator, grades, tags, notes) are not modified.",
+      "fileLabel": "JSON file",
+      "notAnExport": "File doesn't look like an i-muslim hadith export.",
+      "wrongCollection": "File is for collection \"{slug}\", but you're uploading to \"{collection}\".",
+      "parseFailed": "Couldn't parse JSON: {error}",
+      "parseFailedGeneric": "Couldn't parse JSON.",
+      "uploadFailed": "Upload failed.",
+      "previewLine": "{lang} · {count} hadith",
+      "previewBook": " · book {number}",
+      "updatedCount": "<b>{count}</b> updated",
+      "skippedPlaceholder": " · {count} skipped (placeholder)",
+      "skippedNoChange": " · {count} skipped (no change)",
+      "moreErrors": "… and {count} more.",
+      "uploading": "Uploading…",
+      "clear": "Clear"
+    }
+  },
+  "quranAdmin": {
+    "page": {
+      "title": "Quran",
+      "emptyHint": "Database is empty. Run npm run seed:quran to populate.",
+      "surahCount": "{count} surahs.",
+      "emptyTitle": "No Quran data found in Firestore.",
+      "emptyBody": "Make sure FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY are set in <code>.env.local</code>, then run:",
+      "colName": "Name",
+      "colArabic": "Arabic",
+      "colPlace": "Place",
+      "colAyahs": "Ayahs",
+      "colEdited": "Edited"
+    },
+    "list": {
+      "filterPlaceholder": "Filter by number or translation…",
+      "unpublished": "unpublished",
+      "editAria": "Edit ayah {ayah}",
+      "adminEdited": "Admin-edited; preserved on re-seed"
+    },
+    "editor": {
+      "title": "Edit ayah {surah}:{ayah}",
+      "description": "Arabic text is read-only. Translations and metadata can be edited; use the AI button to draft a translation, then review before saving.",
+      "readOnlyNote": "Metadata fields are read-only — you don't have quran.publish.",
+      "transliteration": "Transliteration",
+      "tags": "Tags (comma-separated)",
+      "notes": "Internal notes",
+      "publishedCheckbox": "Published (visible to public reader)",
+      "arabicTab": "Arabic",
+      "viewOnly": "view-only",
+      "arabicReadOnly": "Arabic (read-only)",
+      "saving": "Saving…",
+      "toastSaved": "Ayah {surah}:{ayah} saved",
+      "toastSaveFailed": "Failed to save"
+    },
+    "translationField": {
+      "translateTitle": "Translate to {language} with Gemini",
+      "translateDisabledTitle": "Configure a Gemini key in /admin/settings first",
+      "translating": "Translating…",
+      "translateWithAi": "Translate with AI",
+      "toastNoKey": "Configure a Gemini API key in /admin/settings → AI translation first.",
+      "toastDrafted": "{language} translation drafted — review before saving.",
+      "errorInvalidInput": "Invalid input.",
+      "errorGeminiNotConfigured": "Gemini API key not configured. Add one in /admin/settings → AI translation.",
+      "errorNotFound": "That entry no longer exists."
+    }
+  },
+  "rolesAdmin": {
+    "pageTitle": "Roles & permissions",
+    "pageSubtitle": "Pick a role on the left, then toggle the cells below to grant or revoke permissions. Changes save automatically.",
+    "newRole": "New role",
+    "emptyHint": "No roles yet. Run <code>npm run seed:roles</code> or click <strong>New role</strong>.",
+    "deleteTitle": "Delete role \"{name}\"?",
+    "deleteDescription": "This cannot be undone. Users assigned this role must be reassigned first.",
+    "toastDeleted": "Deleted role \"{name}\".",
+    "meta": {
+      "name": "Name",
+      "description": "Description",
+      "builtIn": "Built-in",
+      "protected": "Protected",
+      "memberCount": "{count, plural, one {# member} other {# members}}",
+      "saving": "· saving…",
+      "deleteAria": "Delete role {name}",
+      "protectedNote": "This role is protected. Permissions and assignment are managed by the <code>npm run seed:roles</code> script."
+    },
+    "matrix": {
+      "resource": "Resource",
+      "cellAria": "{action} on {resource}"
+    },
+    "newRoleDialog": {
+      "title": "New role",
+      "description": "Create a custom role. Toggle its permissions in the matrix once it's active.",
+      "name": "Name",
+      "namePlaceholder": "Russian translator",
+      "id": "Id",
+      "idPlaceholder": "russian-translator",
+      "idHint": "Lowercase letters, digits, and hyphens. Used in code and the URL.",
+      "idCollides": "A role with this id already exists.",
+      "description_label": "Description",
+      "descriptionPlaceholder": "Translates Hadith and Quran into Russian",
+      "creating": "Creating…",
+      "submit": "Create role",
+      "toastCreated": "Created role \"{name}\"."
+    },
+    "resources": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "roles": "Roles & permissions",
+      "articles": "Articles",
+      "quran": "Quran",
+      "hadith": "Hadith",
+      "duas": "Duas",
+      "mosques": "Mosques",
+      "businesses": "Businesses",
+      "events": "Events",
+      "comments": "Comments",
+      "flags": "Content flags",
+      "contact": "Contact messages",
+      "matrimonial": "Matrimonial",
+      "prayerTimes": "Prayer times",
+      "settings": "Site settings",
+      "integrations": "Integrations",
+      "apiKeys": "API keys",
+      "notifications": "Notifications",
+      "uiLocales": "UI strings"
+    },
+    "actions": {
+      "read": "View",
+      "write": "Create & edit",
+      "translate": "Translate",
+      "publish": "Publish",
+      "invite": "Invite",
+      "edit": "Edit",
+      "suspend": "Suspend",
+      "delete": "Delete",
+      "manage": "Manage",
+      "moderate": "Moderate",
+      "respond": "Respond"
+    }
+  },
+  "prayerTimesAdmin": {
+    "pageTitle": "Prayer Times",
+    "pageSubtitle": "Calculation method, juristic school, and 30-day schedule for the resolved location."
+  },
+  "integrationsAdmin": {
+    "subtitle": "External services wired into the admin tools.",
+    "ai": {
+      "title": "AI translation",
+      "description": "Configure a Google Gemini API key to enable per-hadith AI translation buttons in the admin editor. The key is stored server-side only and never sent back to the browser.",
+      "status": "Status:",
+      "keyConfigured": "Key configured ({key})",
+      "noKey": "No key configured",
+      "lastUpdated": "· last updated {date}",
+      "updatedBy": " by {user}",
+      "apiKey": "Gemini API key",
+      "apiKeyKeepHint": "(leave empty to keep current)",
+      "rotatePlaceholder": "Enter a new key to rotate",
+      "createKeyAt": "Create a key at",
+      "model": "Model",
+      "saving": "Saving…",
+      "removeKey": "Remove key",
+      "toastSaved": "AI translation settings saved",
+      "toastSaveFailed": "Failed to save AI translation settings",
+      "toastKeyRemoved": "Gemini key removed",
+      "toastRemoveFailed": "Failed to remove key"
+    }
   }
 }

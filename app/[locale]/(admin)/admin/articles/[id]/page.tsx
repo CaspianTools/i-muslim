@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { ArticleEditorClient } from "@/components/admin/articles/ArticleEditorClient";
@@ -11,9 +11,10 @@ import { getFirebaseAdminStatus } from "@/lib/firebase/admin";
 import { getSiteSession } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/permissions/check";
 
-export const metadata: Metadata = {
-  title: "Edit article",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("articlesAdmin.pages");
+  return { title: t("editTitle") };
+}
 
 export default async function EditArticlePage({
   params,
@@ -26,6 +27,7 @@ export default async function EditArticlePage({
   // itself. No admin error boundary exists, so redirect to the dashboard.
   const session = await getSiteSession();
   const locale = await getLocale();
+  const t = await getTranslations("articlesAdmin.pages");
   if (!session || !hasPermission(session.permissions, "articles.write")) {
     redirect(`/${locale}/admin`);
   }
@@ -33,9 +35,9 @@ export default async function EditArticlePage({
   if (!status.configured) {
     return (
       <div>
-        <PageHeader title="Edit article" />
+        <PageHeader title={t("editTitle")} />
         <div className="rounded-md border border-warning/30 bg-warning/5 p-4 text-sm">
-          Firebase Admin is not configured. Set the env vars and restart.
+          {t("notConfigured")}
         </div>
       </div>
     );
@@ -48,18 +50,18 @@ export default async function EditArticlePage({
   const title =
     article.translations.en?.title ||
     Object.values(article.translations).find((t) => t)?.title ||
-    "Untitled article";
+    t("untitledArticle");
   return (
     <div>
       <PageHeader
         title={title}
-        subtitle="Edit translations and publish per locale."
+        subtitle={t("editSubtitle")}
       />
       <Link
         href="/admin/articles"
         className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="size-4" /> Back to articles
+        <ArrowLeft className="size-4" /> {t("backToArticles")}
       </Link>
       <ArticleEditorClient
         article={article}

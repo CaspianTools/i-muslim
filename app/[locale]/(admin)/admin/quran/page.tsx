@@ -1,28 +1,31 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { fetchSurahs } from "@/lib/admin/data/quran";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminQuranPage() {
   const { surahs, source } = await fetchSurahs();
+  const t = await getTranslations("quranAdmin.page");
 
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Quran</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {source === "empty"
-            ? "Database is empty. Run npm run seed:quran to populate."
-            : `${surahs.length} surahs.`}
+            ? t("emptyHint")
+            : t("surahCount", { count: surahs.length })}
         </p>
       </div>
 
       {source === "empty" ? (
         <div className="rounded-md border border-warning/30 bg-warning/5 p-4 text-sm">
-          <p className="font-medium">No Quran data found in Firestore.</p>
+          <p className="font-medium">{t("emptyTitle")}</p>
           <p className="mt-1 text-muted-foreground">
-            Make sure FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL,
-            FIREBASE_PRIVATE_KEY are set in <code>.env.local</code>, then run:
+            {t.rich("emptyBody", {
+              code: (chunks) => <code>{chunks}</code>,
+            })}
           </p>
           <pre className="mt-2 rounded-md bg-muted/40 p-2 font-mono text-xs">npm run seed:quran</pre>
         </div>
@@ -32,11 +35,11 @@ export default async function AdminQuranPage() {
             <thead>
               <tr className="border-b border-border bg-muted/40 text-left">
                 <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground w-16">#</th>
-                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground">Name</th>
-                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground text-right">Arabic</th>
-                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground">Place</th>
-                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground text-right">Ayahs</th>
-                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground text-right">Edited</th>
+                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground">{t("colName")}</th>
+                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground text-right">{t("colArabic")}</th>
+                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground">{t("colPlace")}</th>
+                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground text-right">{t("colAyahs")}</th>
+                <th className="px-3 py-2 text-xs uppercase tracking-wide text-muted-foreground text-right">{t("colEdited")}</th>
               </tr>
             </thead>
             <tbody>

@@ -13,7 +13,7 @@ export function Breadcrumbs() {
 
   if (pathname === "/admin") {
     return (
-      <div className="flex items-center gap-1 text-sm text-muted-foreground" aria-label="Breadcrumb">
+      <div className="flex items-center gap-1 text-sm text-muted-foreground" aria-label={t("label")}>
         <span className="font-medium text-foreground">{t("dashboard")}</span>
       </div>
     );
@@ -30,7 +30,7 @@ export function Breadcrumbs() {
   });
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm">
+    <nav aria-label={t("label")} className="flex items-center gap-1 text-sm">
       <Link href="/admin" className="text-muted-foreground hover:text-foreground">
         {t("dashboard")}
       </Link>

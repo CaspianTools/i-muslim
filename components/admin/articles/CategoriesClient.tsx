@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,8 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
   const [editing, setEditing] = useState<ArticleCategoryDoc | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ArticleCategoryDoc | null>(null);
   const canWrite = useCan("articles.write");
+  const tC = useTranslations("articlesAdmin.categories");
+  const tCommon = useTranslations("common");
 
   function openEdit(c: ArticleCategoryDoc) {
     setEditing(c);
@@ -56,7 +59,7 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
     const target = deleteTarget;
     setDeleteTarget(null);
     if (!canPersist) {
-      toast.error("Firebase Admin is not configured.");
+      toast.error(tC("toastNotConfigured"));
       return;
     }
     const r = await deleteArticleCategoryAction(target.id);
@@ -65,7 +68,7 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
       return;
     }
     setItems((prev) => prev.filter((x) => x.id !== target.id));
-    toast.success("Category deleted.");
+    toast.success(tC("toastDeleted"));
   }
 
   return (
@@ -76,25 +79,25 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
             onClick={() => openQuickCreate("articleCategory")}
             disabled={!canPersist}
           >
-            <Plus className="size-4" /> Add category
+            <Plus className="size-4" /> {tC("addCategory")}
           </Button>
         </div>
       )}
 
       {items.length === 0 ? (
         <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          No categories yet.
+          {tC("empty")}
         </p>
       ) : (
         <div className="overflow-hidden rounded-md border border-border">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                <th className="px-3 py-2">Name (EN)</th>
-                <th className="px-3 py-2">Slug</th>
-                <th className="px-3 py-2">Sort</th>
-                <th className="px-3 py-2">Active</th>
-                <th className="px-3 py-2 text-end">Actions</th>
+                <th className="px-3 py-2">{tC("colName")}</th>
+                <th className="px-3 py-2">{tC("colSlug")}</th>
+                <th className="px-3 py-2">{tC("colSort")}</th>
+                <th className="px-3 py-2">{tC("colActive")}</th>
+                <th className="px-3 py-2 text-end">{tCommon("actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -110,13 +113,13 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
                     </td>
                     <td className="px-3 py-2.5 text-end">
                       {canWrite && (
-                        <RowActions label="Actions">
+                        <RowActions label={tCommon("actions")}>
                           <DropdownMenuItem onClick={() => openEdit(c)}>
-                            <Pencil /> Edit
+                            <Pencil /> {tCommon("edit")}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem variant="danger" onClick={() => setDeleteTarget(c)}>
-                            <Trash2 /> Delete
+                            <Trash2 /> {tCommon("delete")}
                           </DropdownMenuItem>
                         </RowActions>
                       )}
@@ -131,9 +134,9 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
       <EditorDialog open={open} onOpenChange={setOpen}>
         <EditorDialogContent>
           <EditorDialogHeader>
-            <EditorDialogTitle>Edit category</EditorDialogTitle>
+            <EditorDialogTitle>{tC("editTitle")}</EditorDialogTitle>
             <p className="text-sm text-muted-foreground">
-              Localized labels for the article category. The slug is used in URLs and stored on each article.
+              {tC("editDescription")}
             </p>
           </EditorDialogHeader>
           <ArticleCategoryForm
@@ -148,13 +151,13 @@ export function CategoriesClient({ initialCategories, canPersist }: Props) {
       <ConfirmDialog
         open={Boolean(deleteTarget)}
         onOpenChange={(o) => !o && setDeleteTarget(null)}
-        title="Delete category"
+        title={tC("deleteTitle")}
         description={
           deleteTarget
-            ? `This permanently deletes "${deleteTarget.name.en}". Articles still using this slug will keep it as a string but will no longer match a known category. This cannot be undone.`
+            ? tC("deleteDescription", { name: deleteTarget.name.en })
             : ""
         }
-        confirmLabel="Delete"
+        confirmLabel={tCommon("delete")}
         confirmWord={deleteTarget?.slug}
         onConfirm={handleDelete}
       />

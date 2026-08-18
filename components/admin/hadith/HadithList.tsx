@@ -108,6 +108,9 @@ export function HadithList({
   const [filter, setFilter] = useState("");
   const locale = useLocale();
   const tFilter = useTranslations("quranLanguageFilter");
+  const tList = useTranslations("hadithAdmin.list");
+  const tStatus = useTranslations("hadithAdmin.status");
+  const tCommon = useTranslations("common");
 
   // Persist the per-admin "which translations to display" selection in
   // localStorage so it survives reloads. useSyncExternalStore is the
@@ -155,7 +158,7 @@ export function HadithList({
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
         <Input
-          placeholder="Filter by number, narrator, or text…"
+          placeholder={tList("filterPlaceholder")}
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           className="max-w-md"
@@ -206,15 +209,17 @@ export function HadithList({
                 )}
                 {!h.published && (
                   <span className="rounded-full bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning">
-                    unpublished
+                    {tList("unpublished")}
                   </span>
                 )}
                 {draftLangs.length > 0 && (
                   <span
                     className="rounded-full bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning"
-                    title={`Draft translations: ${draftLangs.map((l) => l.toUpperCase()).join(", ")}`}
+                    title={tList("draftTranslations", {
+                      langs: draftLangs.map((l) => l.toUpperCase()).join(", "),
+                    })}
                   >
-                    needs review ({draftLangs.length})
+                    {tList("needsReview", { count: draftLangs.length })}
                   </span>
                 )}
               </div>
@@ -222,14 +227,14 @@ export function HadithList({
                 variant="ghost"
                 size="sm"
                 onClick={() => setEditing(h)}
-                aria-label={`Edit hadith ${h.number}`}
+                aria-label={tList("editAria", { number: h.number })}
               >
-                <Pencil /> Edit
+                <Pencil /> {tCommon("edit")}
               </Button>
             </div>
             {h.narrator && (
               <p className="mb-2 text-xs italic text-muted-foreground">
-                Narrated by {h.narrator}
+                {tList("narratedBy", { narrator: h.narrator })}
               </p>
             )}
             <p
@@ -250,23 +255,23 @@ export function HadithList({
                     <span className="text-xs uppercase tracking-wide text-muted-foreground">
                       {lang.toUpperCase()}
                       {h.editedTranslations?.[lang] && (
-                        <span className="ml-1 text-primary" title="Admin-edited; preserved on re-seed">
+                        <span className="ml-1 text-primary" title={tList("adminEdited")}>
                           ✓
                         </span>
                       )}
                       {isDraft ? (
                         <span
                           className="ml-2 rounded bg-warning/10 px-1.5 py-0.5 text-[10px] font-medium text-warning"
-                          title="Draft — not visible to public reader"
+                          title={tList("draftTitle")}
                         >
-                          Draft
+                          {tStatus("draft")}
                         </span>
                       ) : (
                         <span
                           className="ml-2 rounded bg-success/10 px-1.5 py-0.5 text-[10px] font-medium text-success"
-                          title="Published — visible to public reader"
+                          title={tList("publishedTitle")}
                         >
-                          Published
+                          {tStatus("published")}
                         </span>
                       )}
                     </span>
@@ -337,6 +342,8 @@ function EditHadithDrawer({
   onSaved: (h: AdminHadith) => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
+  const tEd = useTranslations("hadithAdmin.editor");
+  const tCommonEd = useTranslations("common");
 
   const form = useForm<Values>({
     resolver: zodResolver(Schema),
@@ -414,9 +421,9 @@ function EditHadithDrawer({
         editedByAdmin: true,
       };
       onSaved(updated);
-      toast.success(`Hadith ${collection}:${hadith.number} saved`);
+      toast.success(tEd("toastSaved", { collection, number: hadith.number }));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to save");
+      toast.error(err instanceof Error ? err.message : tEd("toastSaveFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -432,11 +439,10 @@ function EditHadithDrawer({
           >
             <EditorDialogHeader>
               <EditorDialogTitle>
-                Edit hadith {collection} #{hadith.number}
+                {tEd("title", { collection, number: hadith.number })}
               </EditorDialogTitle>
               <EditorDialogDescription>
-                Arabic text is read-only. Translations and metadata can be edited;
-                use the AI button to draft a translation, then review before saving.
+                {tEd("description")}
               </EditorDialogDescription>
             </EditorDialogHeader>
             <EditorDialogBody className="overflow-hidden p-0">
@@ -444,23 +450,23 @@ function EditHadithDrawer({
                 <div className="space-y-4 overflow-y-auto p-5 lg:border-e lg:border-border">
                   {!canPublish && (
                     <p className="rounded-md border border-amber-500/40 bg-amber-500/5 p-2 text-xs text-amber-700 dark:text-amber-400">
-                      Metadata fields are read-only — you don&apos;t have hadith.publish.
+                      {tEd("readOnlyNote")}
                     </p>
                   )}
                   <div className="space-y-1.5">
-                    <Label htmlFor="hadith-narrator">Narrator</Label>
+                    <Label htmlFor="hadith-narrator">{tEd("narrator")}</Label>
                     <Input id="hadith-narrator" disabled={!canPublish} {...form.register("narrator")} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="hadith-grade">Grade</Label>
+                    <Label htmlFor="hadith-grade">{tEd("grade")}</Label>
                     <Input id="hadith-grade" disabled={!canPublish} {...form.register("grade")} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="hadith-tags">Tags (comma-separated)</Label>
+                    <Label htmlFor="hadith-tags">{tEd("tags")}</Label>
                     <Input id="hadith-tags" disabled={!canPublish} {...form.register("tags")} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="hadith-notes">Internal notes</Label>
+                    <Label htmlFor="hadith-notes">{tEd("notes")}</Label>
                     <textarea
                       id="hadith-notes"
                       rows={4}
@@ -476,14 +482,14 @@ function EditHadithDrawer({
                       {...form.register("published")}
                       className="size-4"
                     />
-                    Published (visible to public reader)
+                    {tEd("publishedCheckbox")}
                   </label>
                 </div>
 
                 <Tabs defaultValue="ar" className="flex min-h-0 flex-col p-5">
                   <div className="-mx-5 overflow-x-auto px-5 pb-1">
                     <TabsList>
-                      <TabsTrigger value="ar">Arabic</TabsTrigger>
+                      <TabsTrigger value="ar">{tEd("arabicTab")}</TabsTrigger>
                       {NON_ARABIC_LANGS.map((lang) => {
                         const editable = editableLanguages.includes(lang);
                         return (
@@ -491,7 +497,7 @@ function EditHadithDrawer({
                             {LANG_LABELS[lang] ?? lang.toUpperCase()}
                             {!editable && (
                               <span className="ms-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-                                view-only
+                                {tEd("viewOnly")}
                               </span>
                             )}
                           </TabsTrigger>
@@ -502,7 +508,7 @@ function EditHadithDrawer({
                   <TabsContent value="ar" className="mt-3 flex-1 overflow-y-auto">
                     <div className="rounded-md bg-muted/40 p-4">
                       <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                        Arabic (read-only)
+                        {tEd("arabicReadOnly")}
                       </span>
                       <p
                         dir="rtl"
@@ -554,10 +560,10 @@ function EditHadithDrawer({
                 onClick={onClose}
                 disabled={submitting}
               >
-                <X /> Cancel
+                <X /> {tCommonEd("cancel")}
               </Button>
               <Button type="submit" disabled={submitting} aria-busy={submitting}>
-                <Save /> {submitting ? "Saving…" : "Save"}
+                <Save /> {submitting ? tEd("saving") : tCommonEd("save")}
               </Button>
             </EditorDialogFooter>
           </form>
@@ -565,6 +571,25 @@ function EditHadithDrawer({
       </EditorDialogContent>
     </EditorDialog>
   );
+}
+
+
+// The action returns machine codes; anything else is an AI-layer diagnostic
+// (lib/admin/ai/gemini-translate.ts), which is already prose and passes through.
+function useActionErrorText() {
+  const t = useTranslations("hadithAdmin.translationField");
+  return (code: string) => {
+    switch (code) {
+      case "invalid-input":
+        return t("errorInvalidInput");
+      case "gemini-not-configured":
+        return t("errorGeminiNotConfigured");
+      case "not-found":
+        return t("errorNotFound");
+      default:
+        return code;
+    }
+  };
 }
 
 function TranslationField({
@@ -591,13 +616,14 @@ function TranslationField({
   onPublishedChange: (next: boolean) => void;
 }) {
   const [translating, startTranslate] = useTransition();
+  const tTf = useTranslations("hadithAdmin.translationField");
+  const actionErrorText = useActionErrorText();
+  const tEd = useTranslations("hadithAdmin.editor");
   const label = LANG_LABELS[lang] ?? lang;
 
   function onAiTranslate() {
     if (!aiConfigured) {
-      toast.error(
-        "Configure a Gemini API key in /admin/settings → AI translation first.",
-      );
+      toast.error(tTf("toastNoKey"));
       return;
     }
     startTranslate(async () => {
@@ -608,9 +634,9 @@ function TranslationField({
       });
       if (res.ok) {
         setValue(res.text);
-        toast.success(`${label} translation drafted — review before saving.`);
+        toast.success(tTf("toastDrafted", { language: label }));
       } else {
-        toast.error(res.error);
+        toast.error(actionErrorText(res.error));
       }
     });
   }
@@ -622,7 +648,7 @@ function TranslationField({
           {label}
           {!editable && (
             <span className="ms-2 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-              view-only
+              {tEd("viewOnly")}
             </span>
           )}
         </Label>
@@ -631,7 +657,7 @@ function TranslationField({
             <PublishToggle
               value={publishedValue}
               onChange={onPublishedChange}
-              ariaLabel={`Publish status for ${label} translation`}
+              ariaLabel={tTf("publishStatusAria", { language: label })}
             />
           )}
           {editable && (
@@ -642,10 +668,14 @@ function TranslationField({
               onClick={onAiTranslate}
               disabled={translating}
               aria-busy={translating}
-              title={aiConfigured ? `Translate to ${label} with Gemini` : "Configure a Gemini key in /admin/settings first"}
+              title={
+                aiConfigured
+                  ? tTf("translateTitle", { language: label })
+                  : tTf("translateDisabledTitle")
+              }
             >
               <Sparkles />
-              {translating ? "Translating…" : "Translate with AI"}
+              {translating ? tTf("translating") : tTf("translateWithAi")}
             </Button>
           )}
         </div>
@@ -669,6 +699,7 @@ function PublishToggle({
   onChange: (next: boolean) => void;
   ariaLabel: string;
 }) {
+  const tStatus = useTranslations("hadithAdmin.status");
   const baseSegment =
     "rounded px-2 py-0.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring";
   return (
@@ -689,7 +720,7 @@ function PublishToggle({
             : " text-muted-foreground hover:text-foreground")
         }
       >
-        Draft
+        {tStatus("draft")}
       </button>
       <button
         type="button"
@@ -703,7 +734,7 @@ function PublishToggle({
             : " text-muted-foreground hover:text-foreground")
         }
       >
-        Published
+        {tStatus("published")}
       </button>
     </div>
   );

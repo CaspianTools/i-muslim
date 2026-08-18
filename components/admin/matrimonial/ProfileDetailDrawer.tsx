@@ -56,6 +56,10 @@ export function ProfileDetailDrawer({ profile, onOpenChange, onUpdate, onDelete 
   const tGenders = useTranslations("matrimonial.genders");
   const tMadhhabs = useTranslations("matrimonial.madhhabs");
   const tPrayer = useTranslations("matrimonial.prayer");
+  const tLabel = useTranslations("matrimonial.profile.labels");
+  const tEducation = useTranslations("matrimonial.education");
+  const tMarital = useTranslations("matrimonial.marital");
+  const tWants = useTranslations("matrimonial.wantsChildren");
 
   if (!profile) {
     return null;
@@ -140,15 +144,35 @@ export function ProfileDetailDrawer({ profile, onOpenChange, onUpdate, onDelete 
 
             <TabsContent value="profile" className="pt-3 text-sm">
               <div className="grid gap-3 sm:grid-cols-2">
-                <Row label="Email" value={profile.userId} mono />
-                <Row label="Education" value={profile.education} />
-                <Row label="Profession" value={profile.profession ?? "—"} />
-                <Row label="Marital history" value={profile.maritalHistory.replace("_", " ")} />
-                <Row label="Has children" value={profile.hasChildren ? tCommon("yes") : tCommon("no")} />
-                <Row label="Wants children" value={profile.wantsChildren} />
-                <Row label="Languages" value={profile.languages.join(", ") || "—"} />
-                <Row label="Joined" value={formatRelative(profile.createdAt, locale)} />
-                <Row label="Last active" value={formatRelative(profile.lastActiveAt, locale)} />
+                {/* userId is a Firestore uid — MatrimonialProfile has no email
+                    field. This row was labelled "Email", so it read as one. */}
+                <Row label={tDrawer("userId")} value={profile.userId} mono />
+                {/* education / maritalHistory / wantsChildren used to print the stored
+                    enum here — "high_school", "never married", "maybe" — while the public
+                    ProfileDetail routed the same three fields through a translator. */}
+                <Row label={tLabel("education")} value={tEducation(profile.education)} />
+                <Row label={tLabel("profession")} value={profile.profession ?? "—"} />
+                <Row
+                  label={tLabel("maritalHistory")}
+                  value={tMarital(profile.maritalHistory)}
+                />
+                <Row
+                  label={tLabel("hasChildren")}
+                  value={profile.hasChildren ? tCommon("yes") : tCommon("no")}
+                />
+                <Row label={tLabel("wantsChildren")} value={tWants(profile.wantsChildren)} />
+                <Row
+                  label={tLabel("languages")}
+                  value={profile.languages.join(", ") || "—"}
+                />
+                <Row
+                  label={tDrawer("joined")}
+                  value={formatRelative(profile.createdAt, locale)}
+                />
+                <Row
+                  label={tDrawer("lastActive")}
+                  value={formatRelative(profile.lastActiveAt, locale)}
+                />
               </div>
               <div className="mt-3 rounded-md border border-border p-3 text-sm text-muted-foreground">
                 {profile.bio}

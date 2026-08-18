@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Building2, ExternalLink, FileText, Loader2 } from "lucide-react";
@@ -15,12 +16,13 @@ import type { MosqueApplication } from "@/types/mosque-application";
 
 export function ApplicationsClient({ applications }: { applications: MosqueApplication[] }) {
   const router = useRouter();
+  const t = useTranslations("mosquesAdmin.applications");
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function viewProof(storagePath: string) {
     const res = await getApplicationProofUrlAction(storagePath);
     if (!res.ok || !res.url) {
-      toast.error("Couldn't open the proof document.");
+      toast.error(t("proofFailed"));
       return;
     }
     window.open(res.url, "_blank", "noopener,noreferrer");
@@ -31,10 +33,10 @@ export function ApplicationsClient({ applications }: { applications: MosqueAppli
     try {
       const res = await approveMosqueApplication(app.id);
       if (!res.ok) {
-        toast.error(res.error ?? "Approval failed.");
+        toast.error(res.error ?? t("approvalFailed"));
         return;
       }
-      toast.success(`Approved — manager assigned to ${res.slug}.`);
+      toast.success(t("approved", { slug: res.slug ?? "" }));
       router.refresh();
     } finally {
       setBusyId(null);
@@ -42,15 +44,15 @@ export function ApplicationsClient({ applications }: { applications: MosqueAppli
   }
 
   async function reject(app: MosqueApplication) {
-    const reason = window.prompt("Reason for rejection (optional):") ?? "";
+    const reason = window.prompt(t("rejectPrompt")) ?? "";
     setBusyId(app.id);
     try {
       const res = await rejectMosqueApplication(app.id, reason);
       if (!res.ok) {
-        toast.error(res.error ?? "Rejection failed.");
+        toast.error(res.error ?? t("rejectionFailed"));
         return;
       }
-      toast.success("Application rejected.");
+      toast.success(t("rejected"));
       router.refresh();
     } finally {
       setBusyId(null);
@@ -60,7 +62,7 @@ export function ApplicationsClient({ applications }: { applications: MosqueAppli
   if (applications.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-        No pending masjid applications.
+        {t("empty")}
       </p>
     );
   }
@@ -105,15 +107,15 @@ export function ApplicationsClient({ applications }: { applications: MosqueAppli
                   onClick={() => viewProof(app.proofDoc.storagePath)}
                   disabled={busy}
                 >
-                  <FileText className="size-4" /> Proof
+                  <FileText className="size-4" /> {t("proof")}
                   <ExternalLink className="size-3.5" />
                 </Button>
                 <div className="flex gap-2">
                   <Button onClick={() => approve(app)} disabled={busy}>
-                    {busy ? <Loader2 className="size-4 animate-spin" /> : null} Approve
+                    {busy ? <Loader2 className="size-4 animate-spin" /> : null} {t("approve")}
                   </Button>
                   <Button variant="danger" onClick={() => reject(app)} disabled={busy}>
-                    Reject
+                    {t("reject")}
                   </Button>
                 </div>
               </div>

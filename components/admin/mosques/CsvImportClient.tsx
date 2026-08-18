@@ -22,12 +22,12 @@ const REQUIRED_COLS = ["name_en", "address", "city", "country", "lat", "lng", "t
 
 function rowToInput(row: Record<string, string>): { ok: boolean; input?: MosqueInput; error?: string } {
   for (const col of REQUIRED_COLS) {
-    if (!row[col] || !row[col].trim()) return { ok: false, error: `missing ${col}` };
+    if (!row[col] || !row[col].trim()) return { ok: false, error: `missing:${col}` };
   }
   const lat = parseFloat(row.lat!);
   const lng = parseFloat(row.lng!);
-  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return { ok: false, error: "bad coordinates" };
-  if (!/^[A-Za-z]{2}$/.test(row.country!.trim())) return { ok: false, error: "country must be ISO2" };
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return { ok: false, error: "bad-coordinates" };
+  if (!/^[A-Za-z]{2}$/.test(row.country!.trim())) return { ok: false, error: "country-not-iso2" };
 
   const input: MosqueInput = {
     name: {
@@ -65,6 +65,15 @@ function rowToInput(row: Record<string, string>): { ok: boolean; input?: MosqueI
 export function CsvImportClient() {
   const router = useRouter();
   const t = useTranslations("mosquesAdmin.import");
+  const rowErrorText = (code: string | undefined) => {
+    if (!code) return "";
+    if (code.startsWith("missing:")) {
+      return t("errorMissingColumn", { column: code.slice("missing:".length) });
+    }
+    if (code === "bad-coordinates") return t("errorBadCoordinates");
+    if (code === "country-not-iso2") return t("errorCountryNotIso2");
+    return code;
+  };
   const tCommon = useTranslations("common");
   const [rows, setRows] = useState<ParsedRow[]>([]);
   const [submitting, startTransition] = useTransition();
@@ -92,7 +101,13 @@ export function CsvImportClient() {
     startTransition(async () => {
       const res = await bulkImport(valid);
       if (res.created > 0) toast.success(t("successToast", { count: res.created }));
-      if (res.failed > 0) toast.error(`${res.failed} failed: ${res.errors.slice(0, 3).join(", ")}`);
+      if (res.failed > 0)
+        toast.error(
+          t("failedToast", {
+            count: res.failed,
+            errors: res.errors.slice(0, 3).join(", "),
+          }),
+        );
       router.refresh();
       router.push("/admin/mosques");
     });
@@ -128,10 +143,10 @@ export function CsvImportClient() {
               <thead>
                 <tr className="border-b border-border bg-muted/40 text-left">
                   <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">#</th>
-                  <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Name</th>
-                  <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">City</th>
-                  <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Country</th>
-                  <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Status</th>
+                  <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("colName")}</th>
+                  <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("colCity")}</th>
+                  <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("colCountry")}</th>
+                  <th className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("colStatus")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -143,9 +158,9 @@ export function CsvImportClient() {
                     <td className="px-3 py-2 text-muted-foreground">{r.raw.country || "—"}</td>
                     <td className="px-3 py-2">
                       {r.ok ? (
-                        <span className="text-success">OK</span>
+                        <span className="text-success">{t("rowOk")}</span>
                       ) : (
-                        <span className="text-danger">{r.error}</span>
+                        <span className="text-danger">{rowErrorText(r.error)}</span>
                       )}
                     </td>
                   </tr>

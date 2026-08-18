@@ -1,4 +1,7 @@
 {
+  "_meta": {
+    "_review": "Machine-drafted Turkish translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Hutbe, Tefsir, Zekat) and tone (formal vs casual). 2026-05-06 update: filled 611 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
+  },
   "searchPage": {
     "metaTitle": "Arama",
     "metaDescription": "Kur'an'da ve başlıca hadis külliyatlarında arama yapın.",
@@ -15,9 +18,6 @@
       "az": "Azerice",
       "tr": "Türkçe"
     }
-  },
-  "_meta": {
-    "_review": "Machine-drafted Turkish translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Hutbe, Tefsir, Zekat) and tone (formal vs casual). 2026-05-06 update: filled 611 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   },
   "common": {
     "switchToDark": "Koyu moda geç",
@@ -698,7 +698,8 @@
       "status": "Durum",
       "lastUsed": "Son kullanım",
       "requests": "İstekler"
-    }
+    },
+    "noCorsTitle": "CORS yok — yalnızca arka uç"
   },
   "users": {
     "pageTitle": "Kullanıcılar",
@@ -789,6 +790,17 @@
       "sending": "Gönderiliyor…",
       "errorName": "Lütfen tam ad girin.",
       "errorEmail": "Geçerli bir e-posta adresi girin."
+    },
+    "assignment": {
+      "heading": "Rol ve diller",
+      "protectedNote": "Bu kullanıcı korumalı bir role sahip. Yeniden atama <code>npm run seed:roles</code> betiğiyle yönetilir.",
+      "role": "Rol",
+      "approvedLanguages": "Onaylı diller",
+      "languagesHint": "Tüm dillere erişim vermek için boş bırakın.",
+      "selectLanguages": "Dil seçin…",
+      "searchLanguages": "Dil ara…",
+      "noMatches": "Eşleşme yok.",
+      "toastUpdated": "{name} güncellendi."
     }
   },
   "confirmDialog": {
@@ -1840,7 +1852,10 @@
         "activityPlaceholder": "Etkinlik zaman çizelgesi 1.5 fazında geliyor.",
         "dangerZone": "Tehlikeli alan",
         "dangerZoneNote": "Askıya alma profili aramadan gizler; silme kalıcıdır.",
-        "deleteProfile": "Profili sil"
+        "deleteProfile": "Profili sil",
+        "userId": "Kullanıcı kimliği",
+        "joined": "Katıldı",
+        "lastActive": "Son etkinlik"
       },
       "reports": {
         "columnReporter": "Bildiren",
@@ -2514,7 +2529,16 @@
       "importAll": "Tüm geçerli satırları içe aktar",
       "importing": "İçe aktarılıyor…",
       "successToast": "{count} cami içe aktarıldı.",
-      "noPersistNote": "İçe aktarma için Firebase Admin gerekli."
+      "noPersistNote": "İçe aktarma için Firebase Admin gerekli.",
+      "failedToast": "{count} başarısız: {errors}",
+      "colName": "Ad",
+      "colCity": "Şehir",
+      "colCountry": "Ülke",
+      "colStatus": "Durum",
+      "rowOk": "Tamam",
+      "errorMissingColumn": "{column} eksik",
+      "errorBadCoordinates": "geçersiz koordinatlar",
+      "errorCountryNotIso2": "ülke ISO2 biçiminde olmalı"
     },
     "facilities": {
       "pageTitle": "Cami Olanakları",
@@ -2546,6 +2570,25 @@
       "replace": "Değiştir",
       "remove": "Görseli kaldır",
       "limitHint": "JPEG / PNG / WebP, en fazla 5 MB."
+    },
+    "rowActions": "{name} için işlemler",
+    "rowsPerPage": "Sayfa başına satır",
+    "rangeOf": "{start}–{end} / {total}",
+    "previousPage": "Önceki sayfa",
+    "nextPage": "Sonraki sayfa",
+    "applications": {
+      "empty": "Bekleyen cami başvurusu yok.",
+      "proof": "Belge",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "rejectPrompt": "Ret gerekçesi (isteğe bağlı):",
+      "proofFailed": "Kanıt belgesi açılamadı.",
+      "approvalFailed": "Onaylama başarısız.",
+      "approved": "Onaylandı — {slug} için yönetici atandı.",
+      "rejectionFailed": "Reddetme başarısız.",
+      "rejected": "Başvuru reddedildi.",
+      "pageTitle": "Cami başvuruları",
+      "pageSubtitle": "Sahiplik ve kayıt taleplerini inceleyin. Onaylamak, başvuranı caminin yöneticisi olarak atar."
     }
   },
   "businesses": {
@@ -3037,7 +3080,9 @@
         "errorMissingFields": "Yerel ad, İngilizce ad ve bayrak gereklidir.",
         "errorParse": "Çeviri JSON'u geçerli değil",
         "errorNotObject": "Çeviriler en üst düzeyde bir JSON nesnesi olmalıdır.",
-        "errorWriteFailed": "Dil kaydedilemedi."
+        "errorWriteFailed": "Dil kaydedilemedi.",
+        "nativeNamePlaceholder": "Français",
+        "englishNamePlaceholder": "French"
       },
       "content": {
         "titleQuran": "Kur'an çevirileri",
@@ -3270,8 +3315,8 @@
     "notAvailableHere": "Yalnızca Arapça ve Endonezce mevcuttur.",
     "filterLabel": "Tefsir",
     "offLabel": "Kapalı",
-    "empty": "Bu sûre için henüz tefsir bulunmuyor.",
-    "editorialNote": "Bu baskıya ait bir not — İbn Kesîr’in sözü değildir."
+    "editorialNote": "Bu baskıya ait bir not — İbn Kesîr’in sözü değildir.",
+    "empty": "Bu sûre için henüz tefsir bulunmuyor."
   },
   "hadithSidebar": {
     "title": "Filtreler",
@@ -4219,5 +4264,340 @@
     "body": "Beklenmedik bir hata oluştu. Tekrar deneyebilir veya ana sayfaya dönebilirsiniz.",
     "retry": "Tekrar dene",
     "home": "Ana sayfaya dön"
+  },
+  "articlesAdmin": {
+    "editor": {
+      "translation": "Çeviri",
+      "searchLanguage": "Dil ara…",
+      "noMatches": "Eşleşme yok.",
+      "category": "Kategori",
+      "categoryInactive": "(pasif)",
+      "heroUrl": "Kapak görseli URL'si (isteğe bağlı)",
+      "heroAlt": "Kapak görseli alt metni",
+      "slug": "Kısa ad ({locale})",
+      "slugPlaceholder": "başlıktan otomatik oluşturulur",
+      "regenerateSlug": "Kısa adı başlıktan yeniden oluştur",
+      "excerpt": "Özet (≤ 200 karakter)",
+      "title": "Başlık",
+      "write": "Yaz",
+      "preview": "Önizle",
+      "bodyPlaceholder": "Buraya Markdown yazın. # Başlık, **kalın**, [bağlantı](url), - listeler, > alıntı, ```kod```. HTML temizlenir.",
+      "rendering": "İşleniyor…",
+      "previewFailed": "Önizleme başarısız: {error}",
+      "charsAndReadingTime": "{chars} karakter · ~{minutes} dk okuma",
+      "newArticle": "Yeni makale",
+      "statusLine": "Durum ({locale}): {status}",
+      "mockMode": "örnek veri modu (salt okunur)",
+      "createDraft": "Taslak oluştur",
+      "unpublish": "Yayından kaldır ({locale})",
+      "publish": "Yayınla ({locale})",
+      "toastConfigureFirebase": "Makaleleri kaydetmek için Firebase Admin'i yapılandırın.",
+      "toastNeedTranslation": "Başlığı olan en az bir çeviri ekleyin.",
+      "toastCreated": "Makale oluşturuldu.",
+      "toastSaved": "Makale kaydedildi.",
+      "toastSlugConflict": "\"{slug}\" kısa adı {locale} dilinde zaten kullanılıyor.",
+      "toastSaveFailed": "Kaydetme başarısız: {error}",
+      "toastSaveFirst": "Önce makaleyi kaydedin.",
+      "toastPublished": "Yayınlandı ({locale}).",
+      "toastIncomplete": "Yayınlamadan önce başlık, kısa ad ve içerik ekleyin.",
+      "toastPublishFailed": "Yayınlama başarısız: {error}",
+      "toastUnpublished": "Yayından kaldırıldı ({locale}).",
+      "toastUnpublishFailed": "Yayından kaldırma başarısız: {error}",
+      "saving": "Kaydediliyor…"
+    },
+    "list": {
+      "searchPlaceholder": "Başlık ara…",
+      "searchAria": "Makalelerde ara",
+      "filterByStatus": "Duruma göre filtrele",
+      "allStatuses": "Tüm durumlar",
+      "draft": "Taslak",
+      "published": "Yayında",
+      "filterByCategory": "Kategoriye göre filtrele",
+      "allCategories": "Tüm kategoriler",
+      "newArticle": "Yeni makale",
+      "mockNotice": "Makale oluşturup düzenlemek için Firebase Admin'i yapılandırın. Liste örnek veri gösteriyor.",
+      "colTitle": "Başlık",
+      "colCategory": "Kategori",
+      "colLocales": "Diller",
+      "colUpdated": "Güncellendi",
+      "empty": "Bu filtrelere uyan makale yok.",
+      "untitled": "Başlıksız",
+      "deleteTitle": "Makaleyi sil",
+      "deleteDescription": "Bu işlem \"{title}\" makalesini ve tüm çevirilerini kalıcı olarak siler. Geri alınamaz.",
+      "deleting": "Siliniyor…",
+      "toastDeletedMock": "Silindi (örnek) — Firebase yapılandırılmamış.",
+      "toastDeleted": "\"{title}\" silindi.",
+      "toastDeleteFailed": "Silinemedi: {error}"
+    },
+    "categories": {
+      "addCategory": "Kategori ekle",
+      "empty": "Henüz kategori yok.",
+      "colName": "Ad (EN)",
+      "colSlug": "Kısa ad",
+      "colSort": "Sıra",
+      "colActive": "Aktif",
+      "editTitle": "Kategoriyi düzenle",
+      "editDescription": "Makale kategorisi için yerelleştirilmiş etiketler. Kısa ad URL'lerde kullanılır ve her makalede saklanır.",
+      "deleteTitle": "Kategoriyi sil",
+      "deleteDescription": "Bu işlem \"{name}\" kategorisini kalıcı olarak siler. Bu kısa adı kullanan makaleler onu metin olarak tutar ama artık bilinen bir kategoriyle eşleşmez. Geri alınamaz.",
+      "toastNotConfigured": "Firebase Admin yapılandırılmamış.",
+      "toastDeleted": "Kategori silindi."
+    },
+    "categoryForm": {
+      "slug": "Kısa ad",
+      "slugPlaceholder": "İngilizce addan otomatik oluşturulur",
+      "iconKey": "Simge anahtarı (isteğe bağlı)",
+      "sortOrder": "Sıralama",
+      "active": "Aktif",
+      "name": "Ad ({language})",
+      "saving": "Kaydediliyor…",
+      "create": "Oluştur",
+      "toastNotConfigured": "Firebase Admin yapılandırılmamış.",
+      "toastUpdated": "Kategori güncellendi.",
+      "toastCreated": "Kategori oluşturuldu."
+    },
+    "pages": {
+      "listTitle": "Makaleler ve Blog",
+      "categoriesTitle": "Makale kategorileri",
+      "categoriesSubtitle": "Yöneticilerin makale oluştururken seçebileceği kategorileri düzenleyin.",
+      "editTitle": "Makaleyi düzenle",
+      "editSubtitle": "Çevirileri düzenleyin ve dil bazında yayınlayın.",
+      "notConfigured": "Firebase Admin yapılandırılmamış. Ortam değişkenlerini ayarlayıp yeniden başlatın.",
+      "untitledArticle": "Başlıksız makale",
+      "backToArticles": "Makalelere dön"
+    }
+  },
+  "hadithAdmin": {
+    "page": {
+      "title": "Hadis",
+      "emptyHint": "Veritabanı boş. Doldurmak için npm run seed:hadith çalıştırın.",
+      "collectionCount": "{count} külliyat.",
+      "emptyTitle": "Firestore'da hadis verisi bulunamadı.",
+      "runLabel": "Çalıştırın:",
+      "countsLine": "{hadith} hadis · {books} kitap",
+      "editedCount": "{count} düzenlendi"
+    },
+    "status": {
+      "draft": "Taslak",
+      "published": "Yayında"
+    },
+    "list": {
+      "filterPlaceholder": "Numara, ravi veya metne göre filtrele…",
+      "unpublished": "yayında değil",
+      "draftTranslations": "Taslak çeviriler: {langs}",
+      "needsReview": "inceleme gerekiyor ({count})",
+      "editAria": "{number} numaralı hadisi düzenle",
+      "narratedBy": "Rivayet eden: {narrator}",
+      "adminEdited": "Yönetici düzenlemesi; yeniden yüklemede korunur",
+      "draftTitle": "Taslak — genel okuyucuya görünmez",
+      "publishedTitle": "Yayında — genel okuyucuya görünür"
+    },
+    "editor": {
+      "title": "Hadisi düzenle {collection} #{number}",
+      "description": "Arapça metin salt okunurdur. Çeviriler ve üst veriler düzenlenebilir; çeviri taslağı için yapay zekâ düğmesini kullanın, sonra kaydetmeden önce gözden geçirin.",
+      "readOnlyNote": "Üst veri alanları salt okunur — hadith.publish yetkiniz yok.",
+      "narrator": "Ravi",
+      "grade": "Derece",
+      "tags": "Etiketler (virgülle ayrılmış)",
+      "notes": "Dahili notlar",
+      "publishedCheckbox": "Yayında (genel okuyucuya görünür)",
+      "arabicTab": "Arapça",
+      "viewOnly": "salt görüntüleme",
+      "arabicReadOnly": "Arapça (salt okunur)",
+      "saving": "Kaydediliyor…",
+      "toastSaved": "Hadis {collection}:{number} kaydedildi",
+      "toastSaveFailed": "Kaydedilemedi"
+    },
+    "translationField": {
+      "publishStatusAria": "{language} çevirisi için yayın durumu",
+      "translateTitle": "Gemini ile {language} diline çevir",
+      "translateDisabledTitle": "Önce /admin/settings içinde bir Gemini anahtarı yapılandırın",
+      "translating": "Çevriliyor…",
+      "translateWithAi": "Yapay zekâ ile çevir",
+      "toastNoKey": "Önce /admin/settings → yapay zekâ çevirisi bölümünde bir Gemini API anahtarı yapılandırın.",
+      "toastDrafted": "{language} çeviri taslağı hazırlandı — kaydetmeden önce gözden geçirin.",
+      "errorInvalidInput": "Geçersiz giriş.",
+      "errorGeminiNotConfigured": "Gemini API anahtarı yapılandırılmamış. /admin/settings → yapay zekâ çevirisi bölümünden ekleyin.",
+      "errorNotFound": "Bu kayıt artık mevcut değil."
+    },
+    "download": {
+      "trigger": "İndir",
+      "titleCollection": "Külliyatı indir",
+      "titleBook": "Kitabı indir",
+      "note": "Taslakları ve yönetici üst verilerini içerir.",
+      "language": "Dil",
+      "allLanguages": "Tüm diller",
+      "languageOption": "{name} ({code})",
+      "format": "Biçim",
+      "singleJson": "Tek JSON dosyası",
+      "zipPerBook": "ZIP — kitap başına bir JSON",
+      "preparing": "Hazırlanıyor…",
+      "failed": "İndirme başarısız. Lütfen tekrar deneyin."
+    },
+    "upload": {
+      "trigger": "Yükle",
+      "title": "Çevrilmiş JSON yükle",
+      "note": "Çevirileri ve durumu Firestore ile birleştirir. Referans alanları (ravi, dereceler, etiketler, notlar) değiştirilmez.",
+      "fileLabel": "JSON dosyası",
+      "notAnExport": "Dosya bir i-muslim hadis dışa aktarımına benzemiyor.",
+      "wrongCollection": "Dosya \"{slug}\" külliyatına ait, ancak \"{collection}\" külliyatına yüklüyorsunuz.",
+      "parseFailed": "JSON ayrıştırılamadı: {error}",
+      "parseFailedGeneric": "JSON ayrıştırılamadı.",
+      "uploadFailed": "Yükleme başarısız.",
+      "previewLine": "{lang} · {count} hadis",
+      "previewBook": " · kitap {number}",
+      "updatedCount": "<b>{count}</b> güncellendi",
+      "skippedPlaceholder": " · {count} atlandı (yer tutucu)",
+      "skippedNoChange": " · {count} atlandı (değişiklik yok)",
+      "moreErrors": "… ve {count} tane daha.",
+      "uploading": "Yükleniyor…",
+      "clear": "Temizle"
+    }
+  },
+  "quranAdmin": {
+    "page": {
+      "title": "Kur'an",
+      "emptyHint": "Veritabanı boş. Doldurmak için npm run seed:quran çalıştırın.",
+      "surahCount": "{count} sure.",
+      "emptyTitle": "Firestore'da Kur'an verisi bulunamadı.",
+      "emptyBody": "FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY değerlerinin <code>.env.local</code> içinde ayarlandığından emin olun, sonra çalıştırın:",
+      "colName": "Ad",
+      "colArabic": "Arapça",
+      "colPlace": "İniş yeri",
+      "colAyahs": "Ayetler",
+      "colEdited": "Düzenlenen"
+    },
+    "list": {
+      "filterPlaceholder": "Numara veya çeviriye göre filtrele…",
+      "unpublished": "yayında değil",
+      "editAria": "{ayah} numaralı ayeti düzenle",
+      "adminEdited": "Yönetici düzenlemesi; yeniden yüklemede korunur"
+    },
+    "editor": {
+      "title": "Ayeti düzenle {surah}:{ayah}",
+      "description": "Arapça metin salt okunurdur. Çeviriler ve üst veriler düzenlenebilir; çeviri taslağı için yapay zekâ düğmesini kullanın, sonra kaydetmeden önce gözden geçirin.",
+      "readOnlyNote": "Üst veri alanları salt okunur — quran.publish yetkiniz yok.",
+      "transliteration": "Okunuş",
+      "tags": "Etiketler (virgülle ayrılmış)",
+      "notes": "Dahili notlar",
+      "publishedCheckbox": "Yayında (genel okuyucuya görünür)",
+      "arabicTab": "Arapça",
+      "viewOnly": "salt görüntüleme",
+      "arabicReadOnly": "Arapça (salt okunur)",
+      "saving": "Kaydediliyor…",
+      "toastSaved": "Ayet {surah}:{ayah} kaydedildi",
+      "toastSaveFailed": "Kaydedilemedi"
+    },
+    "translationField": {
+      "translateTitle": "Gemini ile {language} diline çevir",
+      "translateDisabledTitle": "Önce /admin/settings içinde bir Gemini anahtarı yapılandırın",
+      "translating": "Çevriliyor…",
+      "translateWithAi": "Yapay zekâ ile çevir",
+      "toastNoKey": "Önce /admin/settings → yapay zekâ çevirisi bölümünde bir Gemini API anahtarı yapılandırın.",
+      "toastDrafted": "{language} çeviri taslağı hazırlandı — kaydetmeden önce gözden geçirin.",
+      "errorInvalidInput": "Geçersiz giriş.",
+      "errorGeminiNotConfigured": "Gemini API anahtarı yapılandırılmamış. /admin/settings → yapay zekâ çevirisi bölümünden ekleyin.",
+      "errorNotFound": "Bu kayıt artık mevcut değil."
+    }
+  },
+  "rolesAdmin": {
+    "pageTitle": "Roller ve izinler",
+    "pageSubtitle": "Soldan bir rol seçin, ardından izin vermek veya kaldırmak için aşağıdaki hücreleri değiştirin. Değişiklikler otomatik kaydedilir.",
+    "newRole": "Yeni rol",
+    "emptyHint": "Henüz rol yok. <code>npm run seed:roles</code> çalıştırın veya <strong>Yeni rol</strong> düğmesine tıklayın.",
+    "deleteTitle": "\"{name}\" rolü silinsin mi?",
+    "deleteDescription": "Bu işlem geri alınamaz. Bu role atanmış kullanıcıların önce yeniden atanması gerekir.",
+    "toastDeleted": "\"{name}\" rolü silindi.",
+    "meta": {
+      "name": "Ad",
+      "description": "Açıklama",
+      "builtIn": "Yerleşik",
+      "protected": "Korumalı",
+      "memberCount": "{count, plural, other {# üye}}",
+      "saving": "· kaydediliyor…",
+      "deleteAria": "{name} rolünü sil",
+      "protectedNote": "Bu rol korumalıdır. İzinler ve atama <code>npm run seed:roles</code> betiğiyle yönetilir."
+    },
+    "matrix": {
+      "resource": "Kaynak",
+      "cellAria": "{resource} üzerinde {action}"
+    },
+    "newRoleDialog": {
+      "title": "Yeni rol",
+      "description": "Özel bir rol oluşturun. Etkinleştikten sonra izinlerini matriste değiştirin.",
+      "name": "Ad",
+      "namePlaceholder": "Rusça çevirmen",
+      "id": "Kimlik",
+      "idPlaceholder": "russian-translator",
+      "idHint": "Küçük harfler, rakamlar ve tireler. Kodda ve URL'de kullanılır.",
+      "idCollides": "Bu kimliğe sahip bir rol zaten var.",
+      "description_label": "Açıklama",
+      "descriptionPlaceholder": "Hadis ve Kur'an'ı Rusçaya çevirir",
+      "creating": "Oluşturuluyor…",
+      "submit": "Rol oluştur",
+      "toastCreated": "\"{name}\" rolü oluşturuldu."
+    },
+    "resources": {
+      "dashboard": "Panel",
+      "users": "Kullanıcılar",
+      "roles": "Roller ve izinler",
+      "articles": "Makaleler",
+      "quran": "Kur'an",
+      "hadith": "Hadis",
+      "duas": "Dualar",
+      "mosques": "Camiler",
+      "businesses": "İşletmeler",
+      "events": "Etkinlikler",
+      "comments": "Yorumlar",
+      "flags": "İçerik bildirimleri",
+      "contact": "İletişim mesajları",
+      "matrimonial": "Evlilik",
+      "prayerTimes": "Namaz vakitleri",
+      "settings": "Site ayarları",
+      "integrations": "Entegrasyonlar",
+      "apiKeys": "API anahtarları",
+      "notifications": "Bildirimler",
+      "uiLocales": "Arayüz metinleri"
+    },
+    "actions": {
+      "read": "Görüntüle",
+      "write": "Oluştur ve düzenle",
+      "translate": "Çevir",
+      "publish": "Yayınla",
+      "invite": "Davet et",
+      "edit": "Düzenle",
+      "suspend": "Askıya al",
+      "delete": "Sil",
+      "manage": "Yönet",
+      "moderate": "Denetle",
+      "respond": "Yanıtla"
+    }
+  },
+  "prayerTimesAdmin": {
+    "pageTitle": "Namaz Vakitleri",
+    "pageSubtitle": "Hesaplama yöntemi, fıkhi mezhep ve çözümlenen konum için 30 günlük takvim."
+  },
+  "integrationsAdmin": {
+    "subtitle": "Yönetim araçlarına bağlı harici servisler.",
+    "ai": {
+      "title": "Yapay zekâ çevirisi",
+      "description": "Yönetim düzenleyicisinde hadis başına yapay zekâ çeviri düğmelerini etkinleştirmek için bir Google Gemini API anahtarı yapılandırın. Anahtar yalnızca sunucu tarafında saklanır ve tarayıcıya geri gönderilmez.",
+      "status": "Durum:",
+      "keyConfigured": "Anahtar yapılandırıldı ({key})",
+      "noKey": "Anahtar yapılandırılmamış",
+      "lastUpdated": "· son güncelleme {date}",
+      "updatedBy": " — {user} tarafından",
+      "apiKey": "Gemini API anahtarı",
+      "apiKeyKeepHint": "(mevcut anahtarı korumak için boş bırakın)",
+      "rotatePlaceholder": "Değiştirmek için yeni bir anahtar girin",
+      "createKeyAt": "Anahtar oluşturma adresi:",
+      "model": "Model",
+      "saving": "Kaydediliyor…",
+      "removeKey": "Anahtarı kaldır",
+      "toastSaved": "Yapay zekâ çeviri ayarları kaydedildi",
+      "toastSaveFailed": "Yapay zekâ çeviri ayarları kaydedilemedi",
+      "toastKeyRemoved": "Gemini anahtarı kaldırıldı",
+      "toastRemoveFailed": "Anahtar kaldırılamadı"
+    }
   }
 }

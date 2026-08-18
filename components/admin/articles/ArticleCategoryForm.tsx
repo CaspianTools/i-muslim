@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,8 @@ interface Props {
 
 export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }: Props) {
   const isEdit = Boolean(category);
+  const tF = useTranslations("articlesAdmin.categoryForm");
+  const tCommon = useTranslations("common");
   const [activeLocale, setActiveLocale] = useState<BundledLocale>("en");
   const [submitting, setSubmitting] = useState(false);
   const [slugTouched, setSlugTouched] = useState(isEdit);
@@ -82,7 +85,7 @@ export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }:
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!canPersist) {
-      toast.error("Firebase Admin is not configured.");
+      toast.error(tF("toastNotConfigured"));
       return;
     }
     setSubmitting(true);
@@ -101,7 +104,7 @@ export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }:
         toast.error(result.error);
         return;
       }
-      toast.success(category ? "Category updated." : "Category created.");
+      toast.success(category ? tF("toastUpdated") : tF("toastCreated"));
       onSaved({
         id: result.data.id,
         slug: payload.slug,
@@ -124,7 +127,7 @@ export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }:
         <div className="grid gap-6 md:grid-cols-[280px_1fr]">
           <aside className="space-y-4 md:border-e md:border-border md:pe-5">
             <div>
-              <Label htmlFor="cat-slug">Slug</Label>
+              <Label htmlFor="cat-slug">{tF("slug")}</Label>
               <Input
                 id="cat-slug"
                 className="mt-1"
@@ -132,11 +135,11 @@ export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }:
                 onChange={(e) => handleSlugChange(e.target.value)}
                 disabled={isEdit}
                 required
-                placeholder="auto-generated from English name"
+                placeholder={tF("slugPlaceholder")}
               />
             </div>
             <div>
-              <Label htmlFor="cat-icon">Icon key (optional)</Label>
+              <Label htmlFor="cat-icon">{tF("iconKey")}</Label>
               <Input
                 id="cat-icon"
                 className="mt-1"
@@ -145,7 +148,7 @@ export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }:
               />
             </div>
             <div>
-              <Label htmlFor="cat-sort">Sort order</Label>
+              <Label htmlFor="cat-sort">{tF("sortOrder")}</Label>
               <Input
                 id="cat-sort"
                 className="mt-1"
@@ -162,7 +165,7 @@ export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }:
                 checked={form.isActive}
                 onChange={(e) => setForm((s) => ({ ...s, isActive: e.target.checked }))}
               />
-              Active
+              {tF("active")}
             </label>
           </aside>
 
@@ -188,7 +191,7 @@ export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }:
 
             <div>
               <Label htmlFor={`cat-name-${activeLocale}`}>
-                Name ({LOCALE_META[activeLocale].englishName})
+                {tF("name", { language: LOCALE_META[activeLocale].englishName })}
               </Label>
               <Input
                 id={`cat-name-${activeLocale}`}
@@ -206,10 +209,10 @@ export function ArticleCategoryForm({ category, canPersist, onSaved, onCancel }:
 
       <div className="flex items-center justify-end gap-2 border-t border-border bg-background px-5 py-3">
         <Button type="button" variant="ghost" onClick={onCancel} disabled={submitting}>
-          <X /> Cancel
+          <X /> {tCommon("cancel")}
         </Button>
         <Button type="submit" disabled={submitting || !canPersist}>
-          <Save /> {submitting ? "Saving…" : isEdit ? "Save" : "Create"}
+          <Save /> {submitting ? tF("saving") : isEdit ? tCommon("save") : tF("create")}
         </Button>
       </div>
     </form>

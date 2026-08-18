@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Save, Trash2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,8 @@ import {
 } from "@/app/[locale]/(admin)/admin/integrations/_actions";
 
 export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus }) {
+  const t = useTranslations("integrationsAdmin.ai");
+  const tCommon = useTranslations("common");
   const [status, setStatus] = useState<GeminiConfigStatus>(initial);
   const [apiKey, setApiKey] = useState("");
   const [model, setModel] = useState<GeminiModel>(initial.model);
@@ -35,9 +38,9 @@ export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus
       if (res.ok) {
         setStatus(res.status);
         setApiKey("");
-        toast.success("AI translation settings saved");
+        toast.success(t("toastSaved"));
       } else {
-        toast.error("Failed to save AI translation settings");
+        toast.error(t("toastSaveFailed"));
       }
     });
   }
@@ -48,9 +51,9 @@ export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus
       const res = await clearGeminiKeyAction();
       if (res.ok) {
         setStatus(res.status);
-        toast.success("Gemini key removed");
+        toast.success(t("toastKeyRemoved"));
       } else {
-        toast.error("Failed to remove key");
+        toast.error(t("toastRemoveFailed"));
       }
     });
   }
@@ -59,46 +62,49 @@ export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Sparkles className="size-4" /> AI translation
+          <Sparkles className="size-4" /> {t("title")}
         </CardTitle>
         <CardDescription>
-          Configure a Google Gemini API key to enable per-hadith AI translation
-          buttons in the admin editor. The key is stored server-side only and
-          never sent back to the browser.
+          {t("description")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="rounded-md border border-border bg-muted/30 p-3 text-sm">
-          <span className="font-medium">Status:</span>{" "}
+          <span className="font-medium">{t("status")}</span>{" "}
           {status.configured ? (
             <span className="text-success">
-              Key configured ({status.maskedKey})
+              {t("keyConfigured", { key: status.maskedKey ?? "" })}
             </span>
           ) : (
-            <span className="text-warning">No key configured</span>
+            <span className="text-warning">{t("noKey")}</span>
           )}
           {status.updatedAt && (
             <span className="ml-2 text-xs text-muted-foreground">
-              · last updated {new Date(status.updatedAt).toLocaleString()}
-              {status.updatedBy ? ` by ${status.updatedBy}` : ""}
+              {t("lastUpdated", {
+                date: new Date(status.updatedAt).toLocaleString(),
+              })}
+              {status.updatedBy ? t("updatedBy", { user: status.updatedBy }) : ""}
             </span>
           )}
         </div>
 
         <div className="space-y-1.5">
           <Label htmlFor="gemini-key">
-            Gemini API key {status.configured && <span className="text-xs text-muted-foreground">(leave empty to keep current)</span>}
+            {t("apiKey")}{" "}
+            {status.configured && (
+              <span className="text-xs text-muted-foreground">{t("apiKeyKeepHint")}</span>
+            )}
           </Label>
           <Input
             id="gemini-key"
             type="password"
             autoComplete="off"
-            placeholder={status.configured ? "Enter a new key to rotate" : "AIza…"}
+            placeholder={status.configured ? t("rotatePlaceholder") : "AIza…"}
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
           />
           <p className="text-xs text-muted-foreground">
-            Create a key at{" "}
+            {t("createKeyAt")}{" "}
             <a
               href="https://aistudio.google.com/apikey"
               target="_blank"
@@ -112,7 +118,7 @@ export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="gemini-model">Model</Label>
+          <Label htmlFor="gemini-model">{t("model")}</Label>
           <select
             id="gemini-model"
             value={model}
@@ -129,7 +135,7 @@ export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus
 
         <div className="flex flex-wrap items-center gap-2">
           <Button onClick={save} disabled={!dirty || pending}>
-            <Save /> {pending ? "Saving…" : "Save"}
+            <Save /> {pending ? t("saving") : tCommon("save")}
           </Button>
           {status.configured && (
             <Button
@@ -138,7 +144,7 @@ export function AiTranslationSettings({ initial }: { initial: GeminiConfigStatus
               disabled={pending}
               className="text-destructive hover:text-destructive"
             >
-              <Trash2 /> Remove key
+              <Trash2 /> {t("removeKey")}
             </Button>
           )}
         </div>

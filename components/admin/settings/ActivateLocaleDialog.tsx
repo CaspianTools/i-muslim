@@ -190,7 +190,7 @@ export function ActivateLocaleDialog({
               <Input
                 value={nativeName}
                 onChange={(e) => setForm((s) => ({ ...s, nativeName: e.target.value }))}
-                placeholder="Français"
+                placeholder={t("nativeNamePlaceholder")}
                 disabled={pending}
               />
             </Field>
@@ -198,7 +198,7 @@ export function ActivateLocaleDialog({
               <Input
                 value={englishName}
                 onChange={(e) => setForm((s) => ({ ...s, englishName: e.target.value }))}
-                placeholder="French"
+                placeholder={t("englishNamePlaceholder")}
                 disabled={pending}
               />
             </Field>

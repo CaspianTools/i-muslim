@@ -832,6 +832,7 @@ function RoleAssignmentEditor({
   onUpdated: (next: Partial<AdminUser> & { id: string }) => void;
 }) {
   const tCommon = useTranslations("common");
+  const tAssign = useTranslations("users.assignment");
   const [pendingRole, setPendingRole] = useState<string>(user.role);
   const [pendingLangs, setPendingLangs] = useState<string[]>([...(user.languages ?? [])]);
   const [savingAssignment, startSaveTransition] = useTransition();
@@ -874,7 +875,7 @@ function RoleAssignmentEditor({
         });
         if (!res.ok) throw new Error((await res.json()).error || "Failed");
         onUpdated({ id: user.id, role: pendingRole, languages: pendingLangs });
-        toast.success(`Updated ${user.name}.`);
+        toast.success(tAssign("toastUpdated", { name: user.name }));
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Failed");
       }
@@ -883,19 +884,21 @@ function RoleAssignmentEditor({
 
   return (
     <div className="rounded-md border border-border p-4 space-y-3">
-      <h3 className="text-sm font-semibold">Role & languages</h3>
+      <h3 className="text-sm font-semibold">{tAssign("heading")}</h3>
       {isProtectedAssignment ? (
         <p className="text-sm text-muted-foreground">
-          This user holds a protected role. Reassignment is managed by the
-          <code className="mx-1 rounded bg-muted px-1 py-0.5 font-mono">npm run seed:roles</code>
-          script.
+          {tAssign.rich("protectedNote", {
+            code: (chunks) => (
+              <code className="mx-1 rounded bg-muted px-1 py-0.5 font-mono">{chunks}</code>
+            ),
+          })}
         </p>
       ) : !canEdit ? (
         <div className="space-y-2">
-          <Row label="Role" value={currentRoleDoc?.name ?? user.role} />
+          <Row label={tAssign("role")} value={currentRoleDoc?.name ?? user.role} />
           {(user.languages?.length ?? 0) > 0 && (
             <Row
-              label="Approved languages"
+              label={tAssign("approvedLanguages")}
               value={user.languages!.map((l) => LANG_LABELS[l] ?? l).join(", ")}
             />
           )}
@@ -904,7 +907,7 @@ function RoleAssignmentEditor({
         <>
           <div className="space-y-1.5">
             <label className="text-sm font-medium" htmlFor="user-role">
-              Role
+              {tAssign("role")}
             </label>
             <select
               id="user-role"
@@ -922,19 +925,19 @@ function RoleAssignmentEditor({
           </div>
           {showLanguagesPicker && (
             <div className="space-y-1.5">
-              <label className="text-sm font-medium">Approved languages</label>
+              <label className="text-sm font-medium">{tAssign("approvedLanguages")}</label>
               <p className="text-xs text-muted-foreground">
-                Leave empty to grant access to every language.
+                {tAssign("languagesHint")}
               </p>
               <SearchableMultiCombobox
                 options={langOptions}
                 value={pendingLangs}
                 onChange={setPendingLangs}
-                placeholder="Select languages…"
-                searchPlaceholder="Search languages…"
-                emptyText="No matches."
+                placeholder={tAssign("selectLanguages")}
+                searchPlaceholder={tAssign("searchLanguages")}
+                emptyText={tAssign("noMatches")}
                 disabled={savingAssignment}
-                ariaLabel="Approved languages"
+                ariaLabel={tAssign("approvedLanguages")}
                 className="w-full"
               />
             </div>

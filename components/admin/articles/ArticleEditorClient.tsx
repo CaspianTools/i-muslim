@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Check, ChevronsUpDown, Eye, Save, Send, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,6 +102,10 @@ export function ArticleEditorClient({
   onCancel,
 }: Props) {
   const router = useRouter();
+  // Named tE, not t: this component already binds `t` to per-locale
+  // translation records in articleToForm/buildPayload.
+  const tE = useTranslations("articlesAdmin.editor");
+  const tCommon = useTranslations("common");
   const sortedCategories = useMemo(
     () => [...categories].sort((a, b) => a.sortOrder - b.sortOrder),
     [categories],
@@ -247,11 +252,11 @@ export function ArticleEditorClient({
 
   function handleSave() {
     if (isMock) {
-      toast.error("Configure Firebase Admin to save articles.");
+      toast.error(tE("toastConfigureFirebase"));
       return;
     }
     if (!canSave) {
-      toast.error("Add at least one translation with a title.");
+      toast.error(tE("toastNeedTranslation"));
       return;
     }
     const payload = buildPayload();
@@ -259,7 +264,7 @@ export function ArticleEditorClient({
       try {
         if (isNew) {
           const { id } = await createArticle(payload);
-          toast.success("Article created.");
+          toast.success(tE("toastCreated"));
           if (onSaved) {
             onSaved({ id });
           } else {
@@ -267,16 +272,18 @@ export function ArticleEditorClient({
           }
         } else {
           await updateArticle(article!.id, payload);
-          toast.success("Article saved.");
+          toast.success(tE("toastSaved"));
           router.refresh();
         }
       } catch (err) {
         const msg = (err as Error).message;
         if (msg.startsWith("slug-conflict:")) {
           const [, locale, slug] = msg.split(":");
-          toast.error(`Slug "${slug}" is already used in ${locale.toUpperCase()}.`);
+          toast.error(
+            tE("toastSlugConflict", { slug, locale: locale.toUpperCase() }),
+          );
         } else {
-          toast.error(`Save failed: ${msg}`);
+          toast.error(tE("toastSaveFailed", { error: msg }));
         }
       }
     });
@@ -284,20 +291,20 @@ export function ArticleEditorClient({
 
   function handlePublish() {
     if (isMock || isNew) {
-      toast.error("Save the article first.");
+      toast.error(tE("toastSaveFirst"));
       return;
     }
     startTransition(async () => {
       try {
         await publishTranslation(article!.id, activeLocale);
-        toast.success(`Published (${activeLocale.toUpperCase()}).`);
+        toast.success(tE("toastPublished", { locale: activeLocale.toUpperCase() }));
         router.refresh();
       } catch (err) {
         const msg = (err as Error).message;
         if (msg === "incomplete-translation") {
-          toast.error("Add a title, slug, and body before publishing.");
+          toast.error(tE("toastIncomplete"));
         } else {
-          toast.error(`Publish failed: ${msg}`);
+          toast.error(tE("toastPublishFailed", { error: msg }));
         }
       }
     });
@@ -308,10 +315,12 @@ export function ArticleEditorClient({
     startTransition(async () => {
       try {
         await unpublishTranslation(article!.id, activeLocale);
-        toast.success(`Unpublished (${activeLocale.toUpperCase()}).`);
+        toast.success(
+          tE("toastUnpublished", { locale: activeLocale.toUpperCase() }),
+        );
         router.refresh();
       } catch (err) {
-        toast.error(`Unpublish failed: ${(err as Error).message}`);
+        toast.error(tE("toastUnpublishFailed", { error: (err as Error).message }));
       }
     });
   }
@@ -333,7 +342,7 @@ export function ArticleEditorClient({
         htmlFor="article-locale"
         className="text-xs uppercase tracking-wide text-muted-foreground"
       >
-        Translation
+        {tE("translation")}
       </Label>
       <Popover open={localePopoverOpen} onOpenChange={setLocalePopoverOpen}>
         <PopoverTrigger asChild>
@@ -360,9 +369,9 @@ export function ArticleEditorClient({
         </PopoverTrigger>
         <PopoverContent align="start" className="w-72 p-0">
           <Command>
-            <CommandInput placeholder="Search language…" />
+            <CommandInput placeholder={tE("searchLanguage")} />
             <CommandList>
-              <CommandEmpty>No matches.</CommandEmpty>
+              <CommandEmpty>{tE("noMatches")}</CommandEmpty>
               {localeOptions.map((opt) => {
                 const isSelected = opt.code === activeLocale;
                 return (
@@ -413,7 +422,7 @@ export function ArticleEditorClient({
       <div className="grid gap-6 md:grid-cols-[260px_1fr]">
         <aside className="space-y-4">
           <div>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">{tE("category")}</Label>
             <select
               id="category"
               className="mt-1 h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
@@ -428,13 +437,13 @@ export function ArticleEditorClient({
               {sortedCategories.map((c) => (
                 <option key={c.slug} value={c.slug} disabled={!c.isActive}>
                   {c.name.en}
-                  {!c.isActive ? " (inactive)" : ""}
+                  {!c.isActive ? ` ${tE("categoryInactive")}` : ""}
                 </option>
               ))}
             </select>
           </div>
           <div>
-            <Label htmlFor="hero-url">Hero image URL (optional)</Label>
+            <Label htmlFor="hero-url">{tE("heroUrl")}</Label>
             <Input
               id="hero-url"
               placeholder="https://images.unsplash.com/…"
@@ -445,7 +454,7 @@ export function ArticleEditorClient({
             />
           </div>
           <div>
-            <Label htmlFor="hero-alt">Hero alt text</Label>
+            <Label htmlFor="hero-alt">{tE("heroAlt")}</Label>
             <Input
               id="hero-alt"
               value={form.heroImageAlt}
@@ -456,22 +465,22 @@ export function ArticleEditorClient({
           </div>
           <div>
             <Label htmlFor={`slug-${activeLocale}`}>
-              Slug ({activeLocale.toUpperCase()})
+              {tE("slug", { locale: activeLocale.toUpperCase() })}
             </Label>
             <div className="mt-1 flex gap-2">
               <Input
                 id={`slug-${activeLocale}`}
                 value={currentTranslation.slug}
                 onChange={(e) => handleSlugChange(e.target.value)}
-                placeholder="auto-generated from title"
+                placeholder={tE("slugPlaceholder")}
               />
               <Button
                 type="button"
                 variant="secondary"
                 size="sm"
                 onClick={regenerateSlug}
-                aria-label="Regenerate slug from title"
-                title="Regenerate slug from title"
+                aria-label={tE("regenerateSlug")}
+                title={tE("regenerateSlug")}
               >
                 <Undo2 />
               </Button>
@@ -479,7 +488,7 @@ export function ArticleEditorClient({
           </div>
           <div>
             <Label htmlFor={`excerpt-${activeLocale}`}>
-              Excerpt (≤ 200 chars)
+              {tE("excerpt")}
             </Label>
             <textarea
               id={`excerpt-${activeLocale}`}
@@ -494,7 +503,7 @@ export function ArticleEditorClient({
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor={`title-${activeLocale}`}>Title</Label>
+            <Label htmlFor={`title-${activeLocale}`}>{tE("title")}</Label>
             <Input
               id={`title-${activeLocale}`}
               value={currentTranslation.title}
@@ -509,35 +518,38 @@ export function ArticleEditorClient({
                 className={`px-3 py-1 rounded ${view === "write" ? "bg-muted" : ""}`}
                 onClick={() => setView("write")}
               >
-                Write
+                {tE("write")}
               </button>
               <button
                 type="button"
                 className={`px-3 py-1 rounded ${view === "preview" ? "bg-muted" : ""}`}
                 onClick={() => setView("preview")}
               >
-                <Eye className="inline size-3.5 me-1" /> Preview
+                <Eye className="inline size-3.5 me-1" /> {tE("preview")}
               </button>
             </div>
             <div className="text-xs text-muted-foreground tabular-nums">
-              {currentTranslation.bodyMd.length} chars · ~{minutes} min read
+              {tE("charsAndReadingTime", {
+                chars: currentTranslation.bodyMd.length,
+                minutes,
+              })}
             </div>
           </div>
 
           {view === "write" ? (
             <textarea
               className="min-h-[420px] w-full rounded-md border border-input bg-background p-3 font-mono text-sm"
-              placeholder="Write Markdown here. # Heading, **bold**, [link](url), - lists, > blockquote, ```code```. HTML is stripped."
+              placeholder={tE("bodyPlaceholder")}
               value={currentTranslation.bodyMd}
               onChange={(e) => updateTranslation("bodyMd", e.target.value)}
             />
           ) : (
             <div className="min-h-[420px] rounded-md border border-border bg-card p-4">
               {previewLoading ? (
-                <div className="text-sm text-muted-foreground">Rendering…</div>
+                <div className="text-sm text-muted-foreground">{tE("rendering")}</div>
               ) : previewError ? (
                 <div className="text-sm text-danger">
-                  Preview failed: {previewError}
+                  {tE("previewFailed", { error: previewError })}
                 </div>
               ) : (
                 <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
@@ -553,9 +565,12 @@ export function ArticleEditorClient({
     <div className="flex flex-wrap items-center justify-between gap-2">
       <div className="text-xs text-muted-foreground">
         {isNew
-          ? "New article"
-          : `Status (${activeLocale.toUpperCase()}): ${currentStatus}`}
-        {isMock && " · sample data mode (read-only)"}
+          ? tE("newArticle")
+          : tE("statusLine", {
+              locale: activeLocale.toUpperCase(),
+              status: currentStatus,
+            })}
+        {isMock && ` · ${tE("mockMode")}`}
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {onCancel && (
@@ -565,7 +580,7 @@ export function ArticleEditorClient({
             onClick={onCancel}
             disabled={pending}
           >
-            Cancel
+            {tCommon("cancel")}
           </Button>
         )}
         <Button
@@ -574,7 +589,8 @@ export function ArticleEditorClient({
           onClick={handleSave}
           disabled={pending || isMock || !canSave}
         >
-          <Save /> {pending ? "Saving…" : isNew ? "Create draft" : "Save"}
+          <Save />{" "}
+          {pending ? tE("saving") : isNew ? tE("createDraft") : tCommon("save")}
         </Button>
         {!isNew && currentStatus === "published" ? (
           <Button
@@ -583,7 +599,7 @@ export function ArticleEditorClient({
             onClick={handleUnpublish}
             disabled={pending || isMock}
           >
-            Unpublish ({activeLocale.toUpperCase()})
+            {tE("unpublish", { locale: activeLocale.toUpperCase() })}
           </Button>
         ) : (
           <Button
@@ -591,7 +607,7 @@ export function ArticleEditorClient({
             onClick={handlePublish}
             disabled={pending || isMock || isNew}
           >
-            <Send /> Publish ({activeLocale.toUpperCase()})
+            <Send /> {tE("publish", { locale: activeLocale.toUpperCase() })}
           </Button>
         )}
       </div>

@@ -1,26 +1,28 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { fetchCollections } from "@/lib/admin/data/hadith";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminHadithPage() {
   const { collections, source } = await fetchCollections();
+  const t = await getTranslations("hadithAdmin.page");
 
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Hadith</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {source === "empty"
-            ? "Database is empty. Run npm run seed:hadith to populate."
-            : `${collections.length} collections.`}
+            ? t("emptyHint")
+            : t("collectionCount", { count: collections.length })}
         </p>
       </div>
 
       {source === "empty" ? (
         <div className="rounded-md border border-warning/30 bg-warning/5 p-4 text-sm">
-          <p className="font-medium">No Hadith data found in Firestore.</p>
-          <p className="mt-1 text-muted-foreground">Run:</p>
+          <p className="font-medium">{t("emptyTitle")}</p>
+          <p className="mt-1 text-muted-foreground">{t("runLabel")}</p>
           <pre className="mt-2 rounded-md bg-muted/40 p-2 font-mono text-xs">npm run seed:hadith</pre>
         </div>
       ) : (
@@ -38,10 +40,15 @@ export default async function AdminHadithPage() {
                   </span>
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{c.total} hadith · {c.books.length} books</span>
+                  <span>
+                    {t("countsLine", {
+                      hadith: c.total,
+                      books: c.books.length,
+                    })}
+                  </span>
                   {c.edited_count && c.edited_count > 0 ? (
                     <span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary">
-                      {c.edited_count} edited
+                      {t("editedCount", { count: c.edited_count })}
                     </span>
                   ) : null}
                 </div>

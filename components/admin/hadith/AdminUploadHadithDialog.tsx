@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Loader2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,6 +43,7 @@ export function AdminUploadHadithDialog({ collection }: Props) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [result, setResult] = useState<UploadResult | null>(null);
   const [pending, startTransition] = useTransition();
+  const t = useTranslations("hadithAdmin.upload");
 
   const handleFile = async (next: File | null) => {
     setFile(next);
@@ -62,13 +64,11 @@ export function AdminUploadHadithDialog({ collection }: Props) {
       const lang = typeof parsed?.lang === "string" ? parsed.lang : null;
       const arr = Array.isArray(parsed?.hadith) ? parsed.hadith : null;
       if (!slug || !lang || !arr) {
-        setParseError("File doesn't look like an i-muslim hadith export.");
+        setParseError(t("notAnExport"));
         return;
       }
       if (slug !== collection) {
-        setParseError(
-          `File is for collection "${slug}", but you're uploading to "${collection}".`,
-        );
+        setParseError(t("wrongCollection", { slug, collection }));
         return;
       }
       setRawText(text);
@@ -85,7 +85,9 @@ export function AdminUploadHadithDialog({ collection }: Props) {
       });
     } catch (err) {
       setParseError(
-        err instanceof Error ? `Couldn't parse JSON: ${err.message}` : "Couldn't parse JSON.",
+        err instanceof Error
+          ? t("parseFailed", { error: err.message })
+          : t("parseFailedGeneric"),
       );
     }
   };
@@ -111,7 +113,7 @@ export function AdminUploadHadithDialog({ collection }: Props) {
         }
         setResult(json);
       } catch (err) {
-        setSubmitError(err instanceof Error ? err.message : "Upload failed.");
+        setSubmitError(err instanceof Error ? err.message : t("uploadFailed"));
       }
     });
   };
@@ -136,20 +138,19 @@ export function AdminUploadHadithDialog({ collection }: Props) {
       <PopoverTrigger asChild>
         <Button type="button" variant="secondary" size="sm">
           <Upload aria-hidden="true" />
-          <span>Upload</span>
+          <span>{t("trigger")}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-96 space-y-4">
         <div className="space-y-1">
-          <h3 className="text-sm font-semibold">Upload translated JSON</h3>
+          <h3 className="text-sm font-semibold">{t("title")}</h3>
           <p className="text-xs text-muted-foreground">
-            Merges translations + status into Firestore. Reference fields
-            (narrator, grades, tags, notes) are not modified.
+            {t("note")}
           </p>
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="hadith-upload-file">JSON file</Label>
+          <Label htmlFor="hadith-upload-file">{t("fileLabel")}</Label>
           <input
             id="hadith-upload-file"
             type="file"
@@ -170,9 +171,9 @@ export function AdminUploadHadithDialog({ collection }: Props) {
           <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-xs">
             <p className="font-medium">{preview.collectionSlug}</p>
             <p className="text-muted-foreground">
-              {preview.lang} · {preview.count} hadith
+              {t("previewLine", { lang: preview.lang, count: preview.count })}
               {preview.scope === "book" && preview.bookNumber !== null
-                ? ` · book ${preview.bookNumber}`
+                ? t("previewBook", { number: preview.bookNumber })
                 : ""}
               {preview.schema ? ` · ${preview.schema}` : ""}
             </p>
@@ -188,12 +189,15 @@ export function AdminUploadHadithDialog({ collection }: Props) {
         {result ? (
           <div className="space-y-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs">
             <p>
-              <span className="font-medium">{result.updated}</span> updated
+              {t.rich("updatedCount", {
+                count: result.updated,
+                b: (chunks) => <span className="font-medium">{chunks}</span>,
+              })}
               {result.skippedPlaceholder > 0
-                ? ` · ${result.skippedPlaceholder} skipped (placeholder)`
+                ? t("skippedPlaceholder", { count: result.skippedPlaceholder })
                 : ""}
               {result.skippedNoChange > 0
-                ? ` · ${result.skippedNoChange} skipped (no change)`
+                ? t("skippedNoChange", { count: result.skippedNoChange })
                 : ""}
             </p>
             {result.errors.length > 0 ? (
@@ -204,7 +208,7 @@ export function AdminUploadHadithDialog({ collection }: Props) {
                   </li>
                 ))}
                 {result.errors.length > 20 ? (
-                  <li>… and {result.errors.length - 20} more.</li>
+                  <li>{t("moreErrors", { count: result.errors.length - 20 })}</li>
                 ) : null}
               </ul>
             ) : null}
@@ -225,7 +229,7 @@ export function AdminUploadHadithDialog({ collection }: Props) {
             ) : (
               <Upload aria-hidden="true" />
             )}
-            <span>{pending ? "Uploading…" : "Upload"}</span>
+            <span>{pending ? t("uploading") : t("trigger")}</span>
           </Button>
           {file ? (
             <Button
@@ -235,7 +239,7 @@ export function AdminUploadHadithDialog({ collection }: Props) {
               onClick={reset}
               disabled={pending}
             >
-              Clear
+              {t("clear")}
             </Button>
           ) : null}
         </div>

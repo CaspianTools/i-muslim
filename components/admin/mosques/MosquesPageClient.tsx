@@ -427,7 +427,7 @@ export function MosquesPageClient({
                           <Button
                             variant="ghost"
                             size="icon"
-                            aria-label={`Actions for ${mosque.name.en}`}
+                            aria-label={t("rowActions", { name: mosque.name.en })}
                           >
                             <MoreHorizontal className="size-4" />
                           </Button>
@@ -498,7 +498,7 @@ export function MosquesPageClient({
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-3 py-2 text-xs">
           <div className="flex items-center gap-2 text-muted-foreground">
-            <span>Rows per page</span>
+            <span>{t("rowsPerPage")}</span>
             <select
               className="h-7 rounded-md border border-input bg-background px-1"
               value={pageSize}
@@ -518,12 +518,16 @@ export function MosquesPageClient({
             <span>
               {filtered.length === 0
                 ? "0"
-                : `${pageStart + 1}–${Math.min(pageStart + pageSize, filtered.length)} of ${filtered.length}`}
+                : t("rangeOf", {
+                    start: pageStart + 1,
+                    end: Math.min(pageStart + pageSize, filtered.length),
+                    total: filtered.length,
+                  })}
             </span>
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Previous"
+              aria-label={t("previousPage")}
               disabled={pageIndex === 0}
               onClick={() => setPageIndex((i) => Math.max(0, i - 1))}
             >
@@ -532,7 +536,7 @@ export function MosquesPageClient({
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Next"
+              aria-label={t("nextPage")}
               disabled={pageIndex >= pageCount - 1}
               onClick={() => setPageIndex((i) => Math.min(pageCount - 1, i + 1))}
             >

@@ -1,4 +1,7 @@
 {
+  "_meta": {
+    "_review": "Machine-drafted Bahasa Indonesia translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Salat, Al-Qur'an, Hadis, Mazhab, Mualaf, Ta'aruf), tone (formal vs casual), and ICU plural arms in comments.* and profileComments.*. 2026-05-06 update: filled 611 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
+  },
   "searchPage": {
     "metaTitle": "Pencarian",
     "metaDescription": "Cari di Al-Qur'an dan kitab-kitab hadis utama.",
@@ -15,9 +18,6 @@
       "az": "Azerbaijan",
       "tr": "Turki"
     }
-  },
-  "_meta": {
-    "_review": "Machine-drafted Bahasa Indonesia translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (Salat, Al-Qur'an, Hadis, Mazhab, Mualaf, Ta'aruf), tone (formal vs casual), and ICU plural arms in comments.* and profileComments.*. 2026-05-06 update: filled 611 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   },
   "common": {
     "switchToDark": "Beralih ke mode gelap",
@@ -698,7 +698,8 @@
       "status": "Status",
       "lastUsed": "Terakhir digunakan",
       "requests": "Permintaan"
-    }
+    },
+    "noCorsTitle": "Tanpa CORS — hanya backend"
   },
   "users": {
     "pageTitle": "Pengguna",
@@ -789,6 +790,17 @@
       "sending": "Mengirim…",
       "errorName": "Mohon masukkan nama lengkap.",
       "errorEmail": "Masukkan alamat email yang valid."
+    },
+    "assignment": {
+      "heading": "Peran & bahasa",
+      "protectedNote": "Pengguna ini memegang peran terlindungi. Penugasan ulang dikelola oleh skrip <code>npm run seed:roles</code>.",
+      "role": "Peran",
+      "approvedLanguages": "Bahasa yang disetujui",
+      "languagesHint": "Kosongkan untuk memberi akses ke semua bahasa.",
+      "selectLanguages": "Pilih bahasa…",
+      "searchLanguages": "Cari bahasa…",
+      "noMatches": "Tidak ada yang cocok.",
+      "toastUpdated": "{name} diperbarui."
     }
   },
   "confirmDialog": {
@@ -1840,7 +1852,10 @@
         "activityPlaceholder": "Linimasa aktivitas akan rilis di Fase 1.5.",
         "dangerZone": "Zona bahaya",
         "dangerZoneNote": "Penangguhan menyembunyikan profil dari pencarian; penghapusan bersifat permanen.",
-        "deleteProfile": "Hapus profil"
+        "deleteProfile": "Hapus profil",
+        "userId": "ID pengguna",
+        "joined": "Bergabung",
+        "lastActive": "Terakhir aktif"
       },
       "reports": {
         "columnReporter": "Pelapor",
@@ -2514,7 +2529,16 @@
       "importAll": "Impor semua baris valid",
       "importing": "Mengimpor…",
       "successToast": "Mengimpor {count} masjid.",
-      "noPersistNote": "Mengimpor memerlukan Firebase Admin yang dikonfigurasi."
+      "noPersistNote": "Mengimpor memerlukan Firebase Admin yang dikonfigurasi.",
+      "failedToast": "{count} gagal: {errors}",
+      "colName": "Nama",
+      "colCity": "Kota",
+      "colCountry": "Negara",
+      "colStatus": "Status",
+      "rowOk": "OK",
+      "errorMissingColumn": "{column} tidak ada",
+      "errorBadCoordinates": "koordinat tidak valid",
+      "errorCountryNotIso2": "negara harus dalam format ISO2"
     },
     "facilities": {
       "pageTitle": "Fasilitas Masjid",
@@ -2546,6 +2570,25 @@
       "replace": "Ganti",
       "remove": "Hapus gambar",
       "limitHint": "JPEG / PNG / WebP, hingga 5 MB."
+    },
+    "rowActions": "Tindakan untuk {name}",
+    "rowsPerPage": "Baris per halaman",
+    "rangeOf": "{start}–{end} dari {total}",
+    "previousPage": "Halaman sebelumnya",
+    "nextPage": "Halaman berikutnya",
+    "applications": {
+      "empty": "Tidak ada pengajuan masjid yang tertunda.",
+      "proof": "Bukti",
+      "approve": "Setujui",
+      "reject": "Tolak",
+      "rejectPrompt": "Alasan penolakan (opsional):",
+      "proofFailed": "Tidak dapat membuka dokumen bukti.",
+      "approvalFailed": "Persetujuan gagal.",
+      "approved": "Disetujui — pengelola ditugaskan ke {slug}.",
+      "rejectionFailed": "Penolakan gagal.",
+      "rejected": "Pengajuan ditolak.",
+      "pageTitle": "Pengajuan masjid",
+      "pageSubtitle": "Tinjau permintaan klaim dan pendaftaran. Menyetujui akan menetapkan pemohon sebagai pengelola masjid."
     }
   },
   "businesses": {
@@ -3037,7 +3080,9 @@
         "errorMissingFields": "Nama asli, nama Inggris, dan bendera wajib diisi.",
         "errorParse": "JSON terjemahan tidak valid",
         "errorNotObject": "Terjemahan harus berupa objek JSON di tingkat atas.",
-        "errorWriteFailed": "Tidak dapat menyimpan bahasa."
+        "errorWriteFailed": "Tidak dapat menyimpan bahasa.",
+        "nativeNamePlaceholder": "Français",
+        "englishNamePlaceholder": "French"
       },
       "content": {
         "titleQuran": "Terjemahan Al-Qur'an",
@@ -3270,8 +3315,8 @@
     "notAvailableHere": "Hanya tersedia dalam bahasa Arab dan Indonesia.",
     "filterLabel": "Tafsir",
     "offLabel": "Nonaktif",
-    "empty": "Belum ada tafsir untuk surah ini.",
-    "editorialNote": "Catatan dari edisi ini — bukan tafsir dari Ibnu Katsir."
+    "editorialNote": "Catatan dari edisi ini — bukan tafsir dari Ibnu Katsir.",
+    "empty": "Belum ada tafsir untuk surah ini."
   },
   "hadithSidebar": {
     "title": "Filter",
@@ -4219,5 +4264,340 @@
     "body": "Terjadi kesalahan tak terduga. Anda dapat mencoba lagi atau kembali ke beranda.",
     "retry": "Coba lagi",
     "home": "Beranda"
+  },
+  "articlesAdmin": {
+    "editor": {
+      "translation": "Terjemahan",
+      "searchLanguage": "Cari bahasa…",
+      "noMatches": "Tidak ada yang cocok.",
+      "category": "Kategori",
+      "categoryInactive": "(nonaktif)",
+      "heroUrl": "URL gambar utama (opsional)",
+      "heroAlt": "Teks alternatif gambar utama",
+      "slug": "Slug ({locale})",
+      "slugPlaceholder": "dibuat otomatis dari judul",
+      "regenerateSlug": "Buat ulang slug dari judul",
+      "excerpt": "Ringkasan (≤ 200 karakter)",
+      "title": "Judul",
+      "write": "Tulis",
+      "preview": "Pratinjau",
+      "bodyPlaceholder": "Tulis Markdown di sini. # Judul, **tebal**, [tautan](url), - daftar, > kutipan, ```kode```. HTML dihapus.",
+      "rendering": "Merender…",
+      "previewFailed": "Pratinjau gagal: {error}",
+      "charsAndReadingTime": "{chars} karakter · ~{minutes} mnt baca",
+      "newArticle": "Artikel baru",
+      "statusLine": "Status ({locale}): {status}",
+      "mockMode": "mode data contoh (hanya baca)",
+      "createDraft": "Buat draf",
+      "unpublish": "Batalkan publikasi ({locale})",
+      "publish": "Terbitkan ({locale})",
+      "toastConfigureFirebase": "Konfigurasikan Firebase Admin untuk menyimpan artikel.",
+      "toastNeedTranslation": "Tambahkan setidaknya satu terjemahan dengan judul.",
+      "toastCreated": "Artikel dibuat.",
+      "toastSaved": "Artikel disimpan.",
+      "toastSlugConflict": "Slug \"{slug}\" sudah digunakan di {locale}.",
+      "toastSaveFailed": "Gagal menyimpan: {error}",
+      "toastSaveFirst": "Simpan artikel terlebih dahulu.",
+      "toastPublished": "Diterbitkan ({locale}).",
+      "toastIncomplete": "Tambahkan judul, slug, dan isi sebelum menerbitkan.",
+      "toastPublishFailed": "Gagal menerbitkan: {error}",
+      "toastUnpublished": "Publikasi dibatalkan ({locale}).",
+      "toastUnpublishFailed": "Gagal membatalkan publikasi: {error}",
+      "saving": "Menyimpan…"
+    },
+    "list": {
+      "searchPlaceholder": "Cari judul…",
+      "searchAria": "Cari artikel",
+      "filterByStatus": "Filter berdasarkan status",
+      "allStatuses": "Semua status",
+      "draft": "Draf",
+      "published": "Terbit",
+      "filterByCategory": "Filter berdasarkan kategori",
+      "allCategories": "Semua kategori",
+      "newArticle": "Artikel baru",
+      "mockNotice": "Konfigurasikan Firebase Admin untuk membuat dan mengedit artikel. Daftar menampilkan data contoh.",
+      "colTitle": "Judul",
+      "colCategory": "Kategori",
+      "colLocales": "Bahasa",
+      "colUpdated": "Diperbarui",
+      "empty": "Tidak ada artikel yang cocok dengan filter ini.",
+      "untitled": "Tanpa judul",
+      "deleteTitle": "Hapus artikel",
+      "deleteDescription": "Ini menghapus \"{title}\" beserta semua terjemahannya secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      "deleting": "Menghapus…",
+      "toastDeletedMock": "Dihapus (contoh) — Firebase belum dikonfigurasi.",
+      "toastDeleted": "\"{title}\" dihapus.",
+      "toastDeleteFailed": "Gagal menghapus: {error}"
+    },
+    "categories": {
+      "addCategory": "Tambah kategori",
+      "empty": "Belum ada kategori.",
+      "colName": "Nama (EN)",
+      "colSlug": "Slug",
+      "colSort": "Urutan",
+      "colActive": "Aktif",
+      "editTitle": "Edit kategori",
+      "editDescription": "Label terlokalisasi untuk kategori artikel. Slug digunakan di URL dan disimpan pada setiap artikel.",
+      "deleteTitle": "Hapus kategori",
+      "deleteDescription": "Ini menghapus \"{name}\" secara permanen. Artikel yang masih memakai slug ini akan menyimpannya sebagai teks tetapi tidak lagi cocok dengan kategori yang dikenal. Tindakan ini tidak dapat dibatalkan.",
+      "toastNotConfigured": "Firebase Admin belum dikonfigurasi.",
+      "toastDeleted": "Kategori dihapus."
+    },
+    "categoryForm": {
+      "slug": "Slug",
+      "slugPlaceholder": "dibuat otomatis dari nama Inggris",
+      "iconKey": "Kunci ikon (opsional)",
+      "sortOrder": "Urutan tampil",
+      "active": "Aktif",
+      "name": "Nama ({language})",
+      "saving": "Menyimpan…",
+      "create": "Buat",
+      "toastNotConfigured": "Firebase Admin belum dikonfigurasi.",
+      "toastUpdated": "Kategori diperbarui.",
+      "toastCreated": "Kategori dibuat."
+    },
+    "pages": {
+      "listTitle": "Artikel & Blog",
+      "categoriesTitle": "Kategori artikel",
+      "categoriesSubtitle": "Kelola kategori yang dapat dipilih admin saat membuat artikel.",
+      "editTitle": "Edit artikel",
+      "editSubtitle": "Edit terjemahan dan terbitkan per bahasa.",
+      "notConfigured": "Firebase Admin belum dikonfigurasi. Atur variabel lingkungan lalu mulai ulang.",
+      "untitledArticle": "Artikel tanpa judul",
+      "backToArticles": "Kembali ke artikel"
+    }
+  },
+  "hadithAdmin": {
+    "page": {
+      "title": "Hadis",
+      "emptyHint": "Basis data kosong. Jalankan npm run seed:hadith untuk mengisinya.",
+      "collectionCount": "{count} koleksi.",
+      "emptyTitle": "Data hadis tidak ditemukan di Firestore.",
+      "runLabel": "Jalankan:",
+      "countsLine": "{hadith} hadis · {books} kitab",
+      "editedCount": "{count} diedit"
+    },
+    "status": {
+      "draft": "Draf",
+      "published": "Terbit"
+    },
+    "list": {
+      "filterPlaceholder": "Filter berdasarkan nomor, perawi, atau teks…",
+      "unpublished": "belum terbit",
+      "draftTranslations": "Terjemahan draf: {langs}",
+      "needsReview": "perlu ditinjau ({count})",
+      "editAria": "Edit hadis {number}",
+      "narratedBy": "Diriwayatkan oleh {narrator}",
+      "adminEdited": "Diedit admin; dipertahankan saat seed ulang",
+      "draftTitle": "Draf — tidak terlihat oleh pembaca umum",
+      "publishedTitle": "Terbit — terlihat oleh pembaca umum"
+    },
+    "editor": {
+      "title": "Edit hadis {collection} #{number}",
+      "description": "Teks Arab hanya-baca. Terjemahan dan metadata dapat diedit; gunakan tombol AI untuk membuat draf terjemahan, lalu tinjau sebelum menyimpan.",
+      "readOnlyNote": "Bidang metadata hanya-baca — Anda tidak memiliki hadith.publish.",
+      "narrator": "Perawi",
+      "grade": "Derajat",
+      "tags": "Tag (dipisah koma)",
+      "notes": "Catatan internal",
+      "publishedCheckbox": "Terbit (terlihat oleh pembaca umum)",
+      "arabicTab": "Arab",
+      "viewOnly": "hanya lihat",
+      "arabicReadOnly": "Arab (hanya-baca)",
+      "saving": "Menyimpan…",
+      "toastSaved": "Hadis {collection}:{number} disimpan",
+      "toastSaveFailed": "Gagal menyimpan"
+    },
+    "translationField": {
+      "publishStatusAria": "Status publikasi untuk terjemahan {language}",
+      "translateTitle": "Terjemahkan ke {language} dengan Gemini",
+      "translateDisabledTitle": "Konfigurasikan kunci Gemini di /admin/settings terlebih dahulu",
+      "translating": "Menerjemahkan…",
+      "translateWithAi": "Terjemahkan dengan AI",
+      "toastNoKey": "Konfigurasikan kunci Gemini API di /admin/settings → terjemahan AI terlebih dahulu.",
+      "toastDrafted": "Draf terjemahan {language} dibuat — tinjau sebelum menyimpan.",
+      "errorInvalidInput": "Masukan tidak valid.",
+      "errorGeminiNotConfigured": "Kunci Gemini API belum dikonfigurasi. Tambahkan di /admin/settings → terjemahan AI.",
+      "errorNotFound": "Entri itu sudah tidak ada."
+    },
+    "download": {
+      "trigger": "Unduh",
+      "titleCollection": "Unduh koleksi",
+      "titleBook": "Unduh kitab",
+      "note": "Termasuk draf dan metadata admin.",
+      "language": "Bahasa",
+      "allLanguages": "Semua bahasa",
+      "languageOption": "{name} ({code})",
+      "format": "Format",
+      "singleJson": "Satu berkas JSON",
+      "zipPerBook": "ZIP — satu JSON per kitab",
+      "preparing": "Menyiapkan…",
+      "failed": "Unduhan gagal. Silakan coba lagi."
+    },
+    "upload": {
+      "trigger": "Unggah",
+      "title": "Unggah JSON terjemahan",
+      "note": "Menggabungkan terjemahan + status ke Firestore. Bidang referensi (perawi, derajat, tag, catatan) tidak diubah.",
+      "fileLabel": "Berkas JSON",
+      "notAnExport": "Berkas ini tampaknya bukan ekspor hadis i-muslim.",
+      "wrongCollection": "Berkas ini untuk koleksi \"{slug}\", tetapi Anda mengunggahnya ke \"{collection}\".",
+      "parseFailed": "Tidak dapat mengurai JSON: {error}",
+      "parseFailedGeneric": "Tidak dapat mengurai JSON.",
+      "uploadFailed": "Unggahan gagal.",
+      "previewLine": "{lang} · {count} hadis",
+      "previewBook": " · kitab {number}",
+      "updatedCount": "<b>{count}</b> diperbarui",
+      "skippedPlaceholder": " · {count} dilewati (teks sementara)",
+      "skippedNoChange": " · {count} dilewati (tanpa perubahan)",
+      "moreErrors": "… dan {count} lainnya.",
+      "uploading": "Mengunggah…",
+      "clear": "Bersihkan"
+    }
+  },
+  "quranAdmin": {
+    "page": {
+      "title": "Al-Qur'an",
+      "emptyHint": "Basis data kosong. Jalankan npm run seed:quran untuk mengisinya.",
+      "surahCount": "{count} surah.",
+      "emptyTitle": "Data Al-Qur'an tidak ditemukan di Firestore.",
+      "emptyBody": "Pastikan FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY sudah diatur di <code>.env.local</code>, lalu jalankan:",
+      "colName": "Nama",
+      "colArabic": "Arab",
+      "colPlace": "Tempat turun",
+      "colAyahs": "Ayat",
+      "colEdited": "Diedit"
+    },
+    "list": {
+      "filterPlaceholder": "Filter berdasarkan nomor atau terjemahan…",
+      "unpublished": "belum terbit",
+      "editAria": "Edit ayat {ayah}",
+      "adminEdited": "Diedit admin; dipertahankan saat seed ulang"
+    },
+    "editor": {
+      "title": "Edit ayat {surah}:{ayah}",
+      "description": "Teks Arab hanya-baca. Terjemahan dan metadata dapat diedit; gunakan tombol AI untuk membuat draf terjemahan, lalu tinjau sebelum menyimpan.",
+      "readOnlyNote": "Bidang metadata hanya-baca — Anda tidak memiliki quran.publish.",
+      "transliteration": "Transliterasi",
+      "tags": "Tag (dipisah koma)",
+      "notes": "Catatan internal",
+      "publishedCheckbox": "Terbit (terlihat oleh pembaca umum)",
+      "arabicTab": "Arab",
+      "viewOnly": "hanya lihat",
+      "arabicReadOnly": "Arab (hanya-baca)",
+      "saving": "Menyimpan…",
+      "toastSaved": "Ayat {surah}:{ayah} disimpan",
+      "toastSaveFailed": "Gagal menyimpan"
+    },
+    "translationField": {
+      "translateTitle": "Terjemahkan ke {language} dengan Gemini",
+      "translateDisabledTitle": "Konfigurasikan kunci Gemini di /admin/settings terlebih dahulu",
+      "translating": "Menerjemahkan…",
+      "translateWithAi": "Terjemahkan dengan AI",
+      "toastNoKey": "Konfigurasikan kunci Gemini API di /admin/settings → terjemahan AI terlebih dahulu.",
+      "toastDrafted": "Draf terjemahan {language} dibuat — tinjau sebelum menyimpan.",
+      "errorInvalidInput": "Masukan tidak valid.",
+      "errorGeminiNotConfigured": "Kunci Gemini API belum dikonfigurasi. Tambahkan di /admin/settings → terjemahan AI.",
+      "errorNotFound": "Entri itu sudah tidak ada."
+    }
+  },
+  "rolesAdmin": {
+    "pageTitle": "Peran & izin",
+    "pageSubtitle": "Pilih peran di sebelah kiri, lalu ubah sel di bawah untuk memberi atau mencabut izin. Perubahan tersimpan otomatis.",
+    "newRole": "Peran baru",
+    "emptyHint": "Belum ada peran. Jalankan <code>npm run seed:roles</code> atau klik <strong>Peran baru</strong>.",
+    "deleteTitle": "Hapus peran \"{name}\"?",
+    "deleteDescription": "Tindakan ini tidak dapat dibatalkan. Pengguna yang ditugaskan ke peran ini harus dipindahkan terlebih dahulu.",
+    "toastDeleted": "Peran \"{name}\" dihapus.",
+    "meta": {
+      "name": "Nama",
+      "description": "Deskripsi",
+      "builtIn": "Bawaan",
+      "protected": "Terlindungi",
+      "memberCount": "{count, plural, other {# anggota}}",
+      "saving": "· menyimpan…",
+      "deleteAria": "Hapus peran {name}",
+      "protectedNote": "Peran ini terlindungi. Izin dan penugasan dikelola oleh skrip <code>npm run seed:roles</code>."
+    },
+    "matrix": {
+      "resource": "Sumber daya",
+      "cellAria": "{action} pada {resource}"
+    },
+    "newRoleDialog": {
+      "title": "Peran baru",
+      "description": "Buat peran khusus. Ubah izinnya di matriks setelah aktif.",
+      "name": "Nama",
+      "namePlaceholder": "Penerjemah Rusia",
+      "id": "Id",
+      "idPlaceholder": "russian-translator",
+      "idHint": "Huruf kecil, angka, dan tanda hubung. Digunakan dalam kode dan URL.",
+      "idCollides": "Peran dengan id ini sudah ada.",
+      "description_label": "Deskripsi",
+      "descriptionPlaceholder": "Menerjemahkan Hadis dan Al-Qur'an ke bahasa Rusia",
+      "creating": "Membuat…",
+      "submit": "Buat peran",
+      "toastCreated": "Peran \"{name}\" dibuat."
+    },
+    "resources": {
+      "dashboard": "Dasbor",
+      "users": "Pengguna",
+      "roles": "Peran & izin",
+      "articles": "Artikel",
+      "quran": "Al-Qur'an",
+      "hadith": "Hadis",
+      "duas": "Doa",
+      "mosques": "Masjid",
+      "businesses": "Bisnis",
+      "events": "Acara",
+      "comments": "Komentar",
+      "flags": "Laporan konten",
+      "contact": "Pesan kontak",
+      "matrimonial": "Ta'aruf",
+      "prayerTimes": "Waktu salat",
+      "settings": "Pengaturan situs",
+      "integrations": "Integrasi",
+      "apiKeys": "Kunci API",
+      "notifications": "Notifikasi",
+      "uiLocales": "Teks antarmuka"
+    },
+    "actions": {
+      "read": "Lihat",
+      "write": "Buat & edit",
+      "translate": "Terjemahkan",
+      "publish": "Terbitkan",
+      "invite": "Undang",
+      "edit": "Edit",
+      "suspend": "Tangguhkan",
+      "delete": "Hapus",
+      "manage": "Kelola",
+      "moderate": "Moderasi",
+      "respond": "Tanggapi"
+    }
+  },
+  "prayerTimesAdmin": {
+    "pageTitle": "Waktu Salat",
+    "pageSubtitle": "Metode perhitungan, mazhab fikih, dan jadwal 30 hari untuk lokasi yang terdeteksi."
+  },
+  "integrationsAdmin": {
+    "subtitle": "Layanan eksternal yang terhubung ke alat admin.",
+    "ai": {
+      "title": "Terjemahan AI",
+      "description": "Konfigurasikan kunci Google Gemini API untuk mengaktifkan tombol terjemahan AI per hadis di editor admin. Kunci disimpan hanya di sisi server dan tidak pernah dikirim kembali ke peramban.",
+      "status": "Status:",
+      "keyConfigured": "Kunci dikonfigurasi ({key})",
+      "noKey": "Belum ada kunci",
+      "lastUpdated": "· terakhir diperbarui {date}",
+      "updatedBy": " oleh {user}",
+      "apiKey": "Kunci Gemini API",
+      "apiKeyKeepHint": "(kosongkan untuk mempertahankan yang sekarang)",
+      "rotatePlaceholder": "Masukkan kunci baru untuk mengganti",
+      "createKeyAt": "Buat kunci di",
+      "model": "Model",
+      "saving": "Menyimpan…",
+      "removeKey": "Hapus kunci",
+      "toastSaved": "Pengaturan terjemahan AI disimpan",
+      "toastSaveFailed": "Gagal menyimpan pengaturan terjemahan AI",
+      "toastKeyRemoved": "Kunci Gemini dihapus",
+      "toastRemoveFailed": "Gagal menghapus kunci"
+    }
   }
 }

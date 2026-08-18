@@ -1,4 +1,7 @@
 {
+  "_meta": {
+    "_review": "Machine-drafted Arabic translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (الصلاة، القرآن، الحديث، المذهب، الزواج), tone (formal vs casual), and ICU plural arms in comments.* and profileComments.*. 2026-05-06 update: filled 610 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
+  },
   "searchPage": {
     "metaTitle": "بحث",
     "metaDescription": "ابحث في القرآن الكريم وأمهات كتب الحديث.",
@@ -15,9 +18,6 @@
       "az": "الأذربيجانية",
       "tr": "التركية"
     }
-  },
-  "_meta": {
-    "_review": "Machine-drafted Arabic translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (الصلاة، القرآن، الحديث، المذهب، الزواج), tone (formal vs casual), and ICU plural arms in comments.* and profileComments.*. 2026-05-06 update: filled 610 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   },
   "common": {
     "switchToDark": "التبديل إلى الوضع الداكن",
@@ -698,7 +698,8 @@
       "status": "الحالة",
       "lastUsed": "آخر استخدام",
       "requests": "الطلبات"
-    }
+    },
+    "noCorsTitle": "بدون CORS — للخادم فقط"
   },
   "users": {
     "pageTitle": "المستخدمون",
@@ -789,6 +790,17 @@
       "sending": "جارٍ الإرسال…",
       "errorName": "يرجى إدخال الاسم الكامل.",
       "errorEmail": "أدخل بريداً إلكترونياً صحيحاً."
+    },
+    "assignment": {
+      "heading": "الدور واللغات",
+      "protectedNote": "هذا المستخدم يحمل دورًا محميًا. تُدار إعادة التعيين عبر سكربت <code>npm run seed:roles</code>.",
+      "role": "الدور",
+      "approvedLanguages": "اللغات المعتمدة",
+      "languagesHint": "اتركه فارغًا لمنح الوصول إلى جميع اللغات.",
+      "selectLanguages": "اختر اللغات…",
+      "searchLanguages": "ابحث عن اللغات…",
+      "noMatches": "لا توجد نتائج.",
+      "toastUpdated": "تم تحديث {name}."
     }
   },
   "confirmDialog": {
@@ -1840,7 +1852,10 @@
         "activityPlaceholder": "سجل النشاط سيصدر مع المرحلة 1.5.",
         "dangerZone": "منطقة الخطر",
         "dangerZoneNote": "التعليق يُخفي الملف من البحث؛ والحذف دائم.",
-        "deleteProfile": "حذف الملف"
+        "deleteProfile": "حذف الملف",
+        "userId": "معرّف المستخدم",
+        "joined": "تاريخ الانضمام",
+        "lastActive": "آخر نشاط"
       },
       "reports": {
         "columnReporter": "المُبلِّغ",
@@ -2514,7 +2529,16 @@
       "importAll": "استيراد كل الصفوف الصحيحة",
       "importing": "جارٍ الاستيراد…",
       "successToast": "تم استيراد {count} مسجد.",
-      "noPersistNote": "يتطلب الاستيراد إعداد Firebase Admin."
+      "noPersistNote": "يتطلب الاستيراد إعداد Firebase Admin.",
+      "failedToast": "فشل {count}: {errors}",
+      "colName": "الاسم",
+      "colCity": "المدينة",
+      "colCountry": "الدولة",
+      "colStatus": "الحالة",
+      "rowOk": "سليم",
+      "errorMissingColumn": "{column} مفقود",
+      "errorBadCoordinates": "إحداثيات غير صالحة",
+      "errorCountryNotIso2": "يجب أن تكون الدولة بصيغة ISO2"
     },
     "facilities": {
       "pageTitle": "مرافق المساجد",
@@ -2546,6 +2570,25 @@
       "replace": "استبدال",
       "remove": "إزالة الصورة",
       "limitHint": "JPEG / PNG / WebP، حتى 5 ميغابايت."
+    },
+    "rowActions": "إجراءات {name}",
+    "rowsPerPage": "صفوف لكل صفحة",
+    "rangeOf": "{start}–{end} من {total}",
+    "previousPage": "الصفحة السابقة",
+    "nextPage": "الصفحة التالية",
+    "applications": {
+      "empty": "لا توجد طلبات مساجد معلّقة.",
+      "proof": "الإثبات",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "rejectPrompt": "سبب الرفض (اختياري):",
+      "proofFailed": "تعذّر فتح مستند الإثبات.",
+      "approvalFailed": "فشلت الموافقة.",
+      "approved": "تمت الموافقة — عُيّن مدير للمسجد {slug}.",
+      "rejectionFailed": "فشل الرفض.",
+      "rejected": "تم رفض الطلب.",
+      "pageTitle": "طلبات المساجد",
+      "pageSubtitle": "راجع طلبات المطالبة والتسجيل. الموافقة تعيّن مقدّم الطلب مديرًا للمسجد."
     }
   },
   "businesses": {
@@ -3037,7 +3080,9 @@
         "errorMissingFields": "الاسم الأصلي والاسم الإنجليزي والعلم مطلوبة.",
         "errorParse": "ترجمات JSON غير صالحة",
         "errorNotObject": "يجب أن تكون الترجمات كائن JSON على المستوى الأعلى.",
-        "errorWriteFailed": "تعذّر حفظ اللغة."
+        "errorWriteFailed": "تعذّر حفظ اللغة.",
+        "nativeNamePlaceholder": "Français",
+        "englishNamePlaceholder": "French"
       },
       "content": {
         "titleQuran": "ترجمات القرآن",
@@ -3270,8 +3315,8 @@
     "notAvailableHere": "متوفِّر بالعربية والإندونيسية فقط.",
     "filterLabel": "التفسير",
     "offLabel": "إيقاف",
-    "empty": "لا يتوفَّر تفسير لهذه السورة بعد.",
-    "editorialNote": "ملاحظة من هذه الطبعة — وليست من كلام ابن كثير."
+    "editorialNote": "ملاحظة من هذه الطبعة — وليست من كلام ابن كثير.",
+    "empty": "لا يتوفَّر تفسير لهذه السورة بعد."
   },
   "hadithSidebar": {
     "title": "التصفيات",
@@ -4219,5 +4264,340 @@
     "body": "حدث خطأ غير متوقع. يمكنك المحاولة مرة أخرى أو العودة إلى الصفحة الرئيسية.",
     "retry": "حاول مرة أخرى",
     "home": "الصفحة الرئيسية"
+  },
+  "articlesAdmin": {
+    "editor": {
+      "translation": "الترجمة",
+      "searchLanguage": "ابحث عن لغة…",
+      "noMatches": "لا توجد نتائج.",
+      "category": "التصنيف",
+      "categoryInactive": "(غير مفعّل)",
+      "heroUrl": "رابط الصورة الرئيسية (اختياري)",
+      "heroAlt": "النص البديل للصورة الرئيسية",
+      "slug": "المعرّف ({locale})",
+      "slugPlaceholder": "يُنشأ تلقائيًا من العنوان",
+      "regenerateSlug": "إعادة توليد المعرّف من العنوان",
+      "excerpt": "المقتطف (≤ 200 حرف)",
+      "title": "العنوان",
+      "write": "تحرير",
+      "preview": "معاينة",
+      "bodyPlaceholder": "اكتب Markdown هنا. # عنوان، **عريض**، [رابط](url)، - قوائم، > اقتباس، ```كود```. يُزال HTML.",
+      "rendering": "جارٍ العرض…",
+      "previewFailed": "فشلت المعاينة: {error}",
+      "charsAndReadingTime": "{chars} حرف · ~{minutes} د قراءة",
+      "newArticle": "مقال جديد",
+      "statusLine": "الحالة ({locale}): {status}",
+      "mockMode": "وضع البيانات التجريبية (للقراءة فقط)",
+      "createDraft": "إنشاء مسودة",
+      "unpublish": "إلغاء النشر ({locale})",
+      "publish": "نشر ({locale})",
+      "toastConfigureFirebase": "أعدّ Firebase Admin لحفظ المقالات.",
+      "toastNeedTranslation": "أضف ترجمة واحدة على الأقل بعنوان.",
+      "toastCreated": "تم إنشاء المقال.",
+      "toastSaved": "تم حفظ المقال.",
+      "toastSlugConflict": "المعرّف \"{slug}\" مستخدم بالفعل في {locale}.",
+      "toastSaveFailed": "فشل الحفظ: {error}",
+      "toastSaveFirst": "احفظ المقال أولًا.",
+      "toastPublished": "تم النشر ({locale}).",
+      "toastIncomplete": "أضف عنوانًا ومعرّفًا ونصًا قبل النشر.",
+      "toastPublishFailed": "فشل النشر: {error}",
+      "toastUnpublished": "تم إلغاء النشر ({locale}).",
+      "toastUnpublishFailed": "فشل إلغاء النشر: {error}",
+      "saving": "جارٍ الحفظ…"
+    },
+    "list": {
+      "searchPlaceholder": "ابحث في العناوين…",
+      "searchAria": "البحث في المقالات",
+      "filterByStatus": "تصفية حسب الحالة",
+      "allStatuses": "كل الحالات",
+      "draft": "مسودة",
+      "published": "منشور",
+      "filterByCategory": "تصفية حسب التصنيف",
+      "allCategories": "كل التصنيفات",
+      "newArticle": "مقال جديد",
+      "mockNotice": "أعدّ Firebase Admin لإنشاء المقالات وتحريرها. القائمة تعرض بيانات تجريبية.",
+      "colTitle": "العنوان",
+      "colCategory": "التصنيف",
+      "colLocales": "اللغات",
+      "colUpdated": "آخر تحديث",
+      "empty": "لا توجد مقالات تطابق هذه المرشّحات.",
+      "untitled": "بدون عنوان",
+      "deleteTitle": "حذف المقال",
+      "deleteDescription": "سيؤدي هذا إلى حذف \"{title}\" وكل ترجماته نهائيًا. لا يمكن التراجع عن هذا.",
+      "deleting": "جارٍ الحذف…",
+      "toastDeletedMock": "تم الحذف (تجريبي) — Firebase غير مُعدّ.",
+      "toastDeleted": "تم حذف \"{title}\".",
+      "toastDeleteFailed": "فشل الحذف: {error}"
+    },
+    "categories": {
+      "addCategory": "إضافة تصنيف",
+      "empty": "لا توجد تصنيفات بعد.",
+      "colName": "الاسم (EN)",
+      "colSlug": "المعرّف",
+      "colSort": "الترتيب",
+      "colActive": "مفعّل",
+      "editTitle": "تحرير التصنيف",
+      "editDescription": "تسميات مترجمة لتصنيف المقالات. يُستخدم المعرّف في الروابط ويُخزَّن على كل مقال.",
+      "deleteTitle": "حذف التصنيف",
+      "deleteDescription": "سيؤدي هذا إلى حذف \"{name}\" نهائيًا. المقالات التي ما زالت تستخدم هذا المعرّف ستحتفظ به كنص لكنها لن تطابق تصنيفًا معروفًا. لا يمكن التراجع عن هذا.",
+      "toastNotConfigured": "Firebase Admin غير مُعدّ.",
+      "toastDeleted": "تم حذف التصنيف."
+    },
+    "categoryForm": {
+      "slug": "المعرّف",
+      "slugPlaceholder": "يُنشأ تلقائيًا من الاسم الإنجليزي",
+      "iconKey": "مفتاح الأيقونة (اختياري)",
+      "sortOrder": "ترتيب العرض",
+      "active": "مفعّل",
+      "name": "الاسم ({language})",
+      "saving": "جارٍ الحفظ…",
+      "create": "إنشاء",
+      "toastNotConfigured": "Firebase Admin غير مُعدّ.",
+      "toastUpdated": "تم تحديث التصنيف.",
+      "toastCreated": "تم إنشاء التصنيف."
+    },
+    "pages": {
+      "listTitle": "المقالات والمدونة",
+      "categoriesTitle": "تصنيفات المقالات",
+      "categoriesSubtitle": "نظّم التصنيفات التي يمكن للمشرفين اختيارها عند إنشاء مقال.",
+      "editTitle": "تحرير المقال",
+      "editSubtitle": "حرّر الترجمات وانشر لكل لغة على حدة.",
+      "notConfigured": "Firebase Admin غير مُعدّ. اضبط متغيّرات البيئة ثم أعد التشغيل.",
+      "untitledArticle": "مقال بدون عنوان",
+      "backToArticles": "العودة إلى المقالات"
+    }
+  },
+  "hadithAdmin": {
+    "page": {
+      "title": "الحديث",
+      "emptyHint": "قاعدة البيانات فارغة. شغّل npm run seed:hadith للتعبئة.",
+      "collectionCount": "{count} مجموعة.",
+      "emptyTitle": "لم يُعثر على بيانات حديث في Firestore.",
+      "runLabel": "شغّل:",
+      "countsLine": "{hadith} حديث · {books} كتاب",
+      "editedCount": "{count} محرَّر"
+    },
+    "status": {
+      "draft": "مسودة",
+      "published": "منشور"
+    },
+    "list": {
+      "filterPlaceholder": "تصفية حسب الرقم أو الراوي أو النص…",
+      "unpublished": "غير منشور",
+      "draftTranslations": "ترجمات مسودة: {langs}",
+      "needsReview": "بحاجة إلى مراجعة ({count})",
+      "editAria": "تحرير الحديث {number}",
+      "narratedBy": "رواه {narrator}",
+      "adminEdited": "محرَّر من المشرف؛ يُحفظ عند إعادة التعبئة",
+      "draftTitle": "مسودة — غير ظاهر للقارئ العام",
+      "publishedTitle": "منشور — ظاهر للقارئ العام"
+    },
+    "editor": {
+      "title": "تحرير الحديث {collection} رقم {number}",
+      "description": "النص العربي للقراءة فقط. يمكن تحرير الترجمات والبيانات الوصفية؛ استخدم زر الذكاء الاصطناعي لصياغة ترجمة ثم راجعها قبل الحفظ.",
+      "readOnlyNote": "حقول البيانات الوصفية للقراءة فقط — لا تملك صلاحية hadith.publish.",
+      "narrator": "الراوي",
+      "grade": "الدرجة",
+      "tags": "الوسوم (مفصولة بفواصل)",
+      "notes": "ملاحظات داخلية",
+      "publishedCheckbox": "منشور (ظاهر للقارئ العام)",
+      "arabicTab": "العربية",
+      "viewOnly": "للعرض فقط",
+      "arabicReadOnly": "العربية (للقراءة فقط)",
+      "saving": "جارٍ الحفظ…",
+      "toastSaved": "تم حفظ الحديث {collection}:{number}",
+      "toastSaveFailed": "فشل الحفظ"
+    },
+    "translationField": {
+      "publishStatusAria": "حالة نشر ترجمة {language}",
+      "translateTitle": "ترجم إلى {language} باستخدام Gemini",
+      "translateDisabledTitle": "أعدّ مفتاح Gemini في /admin/settings أولًا",
+      "translating": "جارٍ الترجمة…",
+      "translateWithAi": "ترجمة بالذكاء الاصطناعي",
+      "toastNoKey": "أعدّ مفتاح Gemini API في /admin/settings ثم قسم الترجمة بالذكاء الاصطناعي أولًا.",
+      "toastDrafted": "تمت صياغة ترجمة {language} — راجعها قبل الحفظ.",
+      "errorInvalidInput": "مدخلات غير صالحة.",
+      "errorGeminiNotConfigured": "مفتاح Gemini API غير مُعدّ. أضف واحدًا في /admin/settings ثم قسم الترجمة بالذكاء الاصطناعي.",
+      "errorNotFound": "هذا المدخل لم يعد موجودًا."
+    },
+    "download": {
+      "trigger": "تنزيل",
+      "titleCollection": "تنزيل المجموعة",
+      "titleBook": "تنزيل الكتاب",
+      "note": "يشمل المسودات والبيانات الوصفية للمشرف.",
+      "language": "اللغة",
+      "allLanguages": "كل اللغات",
+      "languageOption": "{name} ({code})",
+      "format": "الصيغة",
+      "singleJson": "ملف JSON واحد",
+      "zipPerBook": "ZIP — ملف JSON لكل كتاب",
+      "preparing": "جارٍ التحضير…",
+      "failed": "فشل التنزيل. حاول مرة أخرى."
+    },
+    "upload": {
+      "trigger": "رفع",
+      "title": "رفع ملف JSON مترجم",
+      "note": "يدمج الترجمات والحالة في Firestore. لا تُعدَّل الحقول المرجعية (الراوي، الدرجات، الوسوم، الملاحظات).",
+      "fileLabel": "ملف JSON",
+      "notAnExport": "لا يبدو الملف تصديرًا لأحاديث i-muslim.",
+      "wrongCollection": "الملف يخص المجموعة \"{slug}\"، لكنك ترفعه إلى \"{collection}\".",
+      "parseFailed": "تعذّر تحليل JSON: {error}",
+      "parseFailedGeneric": "تعذّر تحليل JSON.",
+      "uploadFailed": "فشل الرفع.",
+      "previewLine": "{lang} · {count} حديث",
+      "previewBook": " · كتاب {number}",
+      "updatedCount": "<b>{count}</b> محدَّث",
+      "skippedPlaceholder": " · تم تخطي {count} (نص مؤقت)",
+      "skippedNoChange": " · تم تخطي {count} (بدون تغيير)",
+      "moreErrors": "… و{count} أخرى.",
+      "uploading": "جارٍ الرفع…",
+      "clear": "مسح"
+    }
+  },
+  "quranAdmin": {
+    "page": {
+      "title": "القرآن",
+      "emptyHint": "قاعدة البيانات فارغة. شغّل npm run seed:quran للتعبئة.",
+      "surahCount": "{count} سورة.",
+      "emptyTitle": "لم يُعثر على بيانات قرآن في Firestore.",
+      "emptyBody": "تأكد من ضبط FIREBASE_PROJECT_ID و FIREBASE_CLIENT_EMAIL و FIREBASE_PRIVATE_KEY في <code>.env.local</code>، ثم شغّل:",
+      "colName": "الاسم",
+      "colArabic": "العربية",
+      "colPlace": "مكان النزول",
+      "colAyahs": "الآيات",
+      "colEdited": "المحرَّرة"
+    },
+    "list": {
+      "filterPlaceholder": "تصفية حسب الرقم أو الترجمة…",
+      "unpublished": "غير منشور",
+      "editAria": "تحرير الآية {ayah}",
+      "adminEdited": "محرَّر من المشرف؛ يُحفظ عند إعادة التعبئة"
+    },
+    "editor": {
+      "title": "تحرير الآية {surah}:{ayah}",
+      "description": "النص العربي للقراءة فقط. يمكن تحرير الترجمات والبيانات الوصفية؛ استخدم زر الذكاء الاصطناعي لصياغة ترجمة ثم راجعها قبل الحفظ.",
+      "readOnlyNote": "حقول البيانات الوصفية للقراءة فقط — لا تملك صلاحية quran.publish.",
+      "transliteration": "النقحرة",
+      "tags": "الوسوم (مفصولة بفواصل)",
+      "notes": "ملاحظات داخلية",
+      "publishedCheckbox": "منشور (ظاهر للقارئ العام)",
+      "arabicTab": "العربية",
+      "viewOnly": "للعرض فقط",
+      "arabicReadOnly": "العربية (للقراءة فقط)",
+      "saving": "جارٍ الحفظ…",
+      "toastSaved": "تم حفظ الآية {surah}:{ayah}",
+      "toastSaveFailed": "فشل الحفظ"
+    },
+    "translationField": {
+      "translateTitle": "ترجم إلى {language} باستخدام Gemini",
+      "translateDisabledTitle": "أعدّ مفتاح Gemini في /admin/settings أولًا",
+      "translating": "جارٍ الترجمة…",
+      "translateWithAi": "ترجمة بالذكاء الاصطناعي",
+      "toastNoKey": "أعدّ مفتاح Gemini API في /admin/settings ثم قسم الترجمة بالذكاء الاصطناعي أولًا.",
+      "toastDrafted": "تمت صياغة ترجمة {language} — راجعها قبل الحفظ.",
+      "errorInvalidInput": "مدخلات غير صالحة.",
+      "errorGeminiNotConfigured": "مفتاح Gemini API غير مُعدّ. أضف واحدًا في /admin/settings ثم قسم الترجمة بالذكاء الاصطناعي.",
+      "errorNotFound": "هذا المدخل لم يعد موجودًا."
+    }
+  },
+  "rolesAdmin": {
+    "pageTitle": "الأدوار والصلاحيات",
+    "pageSubtitle": "اختر دورًا من القائمة الجانبية، ثم بدّل الخلايا أدناه لمنح الصلاحيات أو سحبها. تُحفظ التغييرات تلقائيًا.",
+    "newRole": "دور جديد",
+    "emptyHint": "لا توجد أدوار بعد. شغّل <code>npm run seed:roles</code> أو اضغط <strong>دور جديد</strong>.",
+    "deleteTitle": "حذف الدور \"{name}\"؟",
+    "deleteDescription": "لا يمكن التراجع عن هذا. يجب إعادة تعيين المستخدمين المرتبطين بهذا الدور أولًا.",
+    "toastDeleted": "تم حذف الدور \"{name}\".",
+    "meta": {
+      "name": "الاسم",
+      "description": "الوصف",
+      "builtIn": "مدمج",
+      "protected": "محمي",
+      "memberCount": "{count, plural, zero {لا أعضاء} one {عضو واحد} two {عضوان} few {# أعضاء} many {# عضوًا} other {# عضو}}",
+      "saving": "· جارٍ الحفظ…",
+      "deleteAria": "حذف الدور {name}",
+      "protectedNote": "هذا الدور محمي. تُدار الصلاحيات والتعيين عبر سكربت <code>npm run seed:roles</code>."
+    },
+    "matrix": {
+      "resource": "المورد",
+      "cellAria": "{action} على {resource}"
+    },
+    "newRoleDialog": {
+      "title": "دور جديد",
+      "description": "أنشئ دورًا مخصصًا. بدّل صلاحياته في الجدول بعد تفعيله.",
+      "name": "الاسم",
+      "namePlaceholder": "مترجم روسي",
+      "id": "المعرّف",
+      "idPlaceholder": "russian-translator",
+      "idHint": "أحرف إنجليزية صغيرة وأرقام وشرطات. يُستخدم في الشيفرة وفي الرابط.",
+      "idCollides": "يوجد دور بهذا المعرّف بالفعل.",
+      "description_label": "الوصف",
+      "descriptionPlaceholder": "يترجم الحديث والقرآن إلى الروسية",
+      "creating": "جارٍ الإنشاء…",
+      "submit": "إنشاء الدور",
+      "toastCreated": "تم إنشاء الدور \"{name}\"."
+    },
+    "resources": {
+      "dashboard": "لوحة التحكم",
+      "users": "المستخدمون",
+      "roles": "الأدوار والصلاحيات",
+      "articles": "المقالات",
+      "quran": "القرآن",
+      "hadith": "الحديث",
+      "duas": "الأدعية",
+      "mosques": "المساجد",
+      "businesses": "الأعمال",
+      "events": "الفعاليات",
+      "comments": "التعليقات",
+      "flags": "بلاغات المحتوى",
+      "contact": "رسائل التواصل",
+      "matrimonial": "الزواج",
+      "prayerTimes": "مواقيت الصلاة",
+      "settings": "إعدادات الموقع",
+      "integrations": "التكاملات",
+      "apiKeys": "مفاتيح API",
+      "notifications": "الإشعارات",
+      "uiLocales": "نصوص الواجهة"
+    },
+    "actions": {
+      "read": "عرض",
+      "write": "إنشاء وتحرير",
+      "translate": "ترجمة",
+      "publish": "نشر",
+      "invite": "دعوة",
+      "edit": "تحرير",
+      "suspend": "تعليق",
+      "delete": "حذف",
+      "manage": "إدارة",
+      "moderate": "إشراف",
+      "respond": "رد"
+    }
+  },
+  "prayerTimesAdmin": {
+    "pageTitle": "مواقيت الصلاة",
+    "pageSubtitle": "طريقة الحساب والمذهب الفقهي وجدول 30 يومًا للموقع المحدد."
+  },
+  "integrationsAdmin": {
+    "subtitle": "خدمات خارجية موصولة بأدوات الإدارة.",
+    "ai": {
+      "title": "الترجمة بالذكاء الاصطناعي",
+      "description": "أعدّ مفتاح Google Gemini API لتفعيل أزرار الترجمة بالذكاء الاصطناعي لكل حديث في محرّر الإدارة. يُخزَّن المفتاح على الخادم فقط ولا يُعاد إرساله إلى المتصفح.",
+      "status": "الحالة:",
+      "keyConfigured": "المفتاح مُعدّ ({key})",
+      "noKey": "لا يوجد مفتاح مُعدّ",
+      "lastUpdated": "· آخر تحديث {date}",
+      "updatedBy": " بواسطة {user}",
+      "apiKey": "مفتاح Gemini API",
+      "apiKeyKeepHint": "(اتركه فارغًا للإبقاء على الحالي)",
+      "rotatePlaceholder": "أدخل مفتاحًا جديدًا للتدوير",
+      "createKeyAt": "أنشئ مفتاحًا من",
+      "model": "النموذج",
+      "saving": "جارٍ الحفظ…",
+      "removeKey": "إزالة المفتاح",
+      "toastSaved": "تم حفظ إعدادات الترجمة بالذكاء الاصطناعي",
+      "toastSaveFailed": "فشل حفظ إعدادات الترجمة بالذكاء الاصطناعي",
+      "toastKeyRemoved": "تمت إزالة مفتاح Gemini",
+      "toastRemoveFailed": "فشلت إزالة المفتاح"
+    }
   }
 }

@@ -2,7 +2,7 @@
 
 import { Link } from "@/i18n/navigation";
 import { useMemo, useState, useTransition } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Pencil, Plus, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,6 +52,8 @@ export function ArticlesPageClient({
   const [pending, startTransition] = useTransition();
   const canWrite = useCan("articles.write");
   const locale = useLocale();
+  const tL = useTranslations("articlesAdmin.list");
+  const tCommon = useTranslations("common");
 
   const filtered = useMemo(() => {
     return items.filter((row) => {
@@ -79,18 +81,18 @@ export function ArticlesPageClient({
     if (source === "mock") {
       setItems((prev) => prev.filter((r) => r.id !== deleteTarget.id));
       setDeleteTarget(null);
-      toast(`Deleted (mock) — Firebase not configured.`);
+      toast(tL("toastDeletedMock"));
       return;
     }
     const id = deleteTarget.id;
-    const title = primaryTitle(deleteTarget);
+    const title = primaryTitle(deleteTarget, tL("untitled"));
     startTransition(async () => {
       try {
         await deleteArticle(id);
         setItems((prev) => prev.filter((r) => r.id !== id));
-        toast.success(`Deleted "${title}".`);
+        toast.success(tL("toastDeleted", { title }));
       } catch (err) {
-        toast.error(`Failed to delete: ${(err as Error).message}`);
+        toast.error(tL("toastDeleteFailed", { error: (err as Error).message }));
       } finally {
         setDeleteTarget(null);
       }
@@ -101,29 +103,29 @@ export function ArticlesPageClient({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         <Input
-          placeholder="Search title…"
+          placeholder={tL("searchPlaceholder")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-64"
-          aria-label="Search articles"
+          aria-label={tL("searchAria")}
         />
         <select
           className="h-9 rounded-md border border-input bg-background px-2 text-sm"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          aria-label="Filter by status"
+          aria-label={tL("filterByStatus")}
         >
-          <option value="all">All statuses</option>
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
+          <option value="all">{tL("allStatuses")}</option>
+          <option value="draft">{tL("draft")}</option>
+          <option value="published">{tL("published")}</option>
         </select>
         <select
           className="h-9 rounded-md border border-input bg-background px-2 text-sm"
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value as CategorySlug | "all")}
-          aria-label="Filter by category"
+          aria-label={tL("filterByCategory")}
         >
-          <option value="all">All categories</option>
+          <option value="all">{tL("allCategories")}</option>
           {categoryOptions.map((c) => (
             <option key={c.slug} value={c.slug}>{c.name.en}</option>
           ))}
@@ -135,7 +137,7 @@ export function ArticlesPageClient({
               onClick={() => openQuickCreate("article")}
               disabled={source === "mock"}
             >
-              <Plus /> New article
+              <Plus /> {tL("newArticle")}
             </Button>
           </div>
         )}
@@ -143,7 +145,7 @@ export function ArticlesPageClient({
 
       {source === "mock" && (
         <div className="rounded-md border border-warning/30 bg-warning/5 px-3 py-2 text-xs text-muted-foreground">
-          Configure Firebase Admin to create and edit articles. Listing shows sample data.
+          {tL("mockNotice")}
         </div>
       )}
 
@@ -151,23 +153,23 @@ export function ArticlesPageClient({
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/40 text-left">
-              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Title</th>
-              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Category</th>
-              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Locales</th>
-              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Updated</th>
-              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground text-right">Actions</th>
+              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{tL("colTitle")}</th>
+              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{tL("colCategory")}</th>
+              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{tL("colLocales")}</th>
+              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{tL("colUpdated")}</th>
+              <th scope="col" className="px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground text-right">{tCommon("actions")}</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
                 <td colSpan={5} className="py-12 text-center text-sm text-muted-foreground">
-                  No articles match these filters.
+                  {tL("empty")}
                 </td>
               </tr>
             ) : (
               filtered.map((row) => {
-                const title = primaryTitle(row);
+                const title = primaryTitle(row, tL("untitled"));
                 return (
                   <tr key={row.id} className="border-b border-border last:border-b-0 hover:bg-muted/40">
                     <td className="px-3 py-2 align-middle">
@@ -202,10 +204,10 @@ export function ArticlesPageClient({
                     </td>
                     <td className="px-3 py-2 align-middle text-right">
                       {canWrite && (
-                        <RowActions label="Actions">
+                        <RowActions label={tCommon("actions")}>
                           <DropdownMenuItem asChild>
                             <Link href={`/admin/articles/${row.id}`}>
-                              <Pencil /> Edit
+                              <Pencil /> {tCommon("edit")}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
@@ -213,7 +215,7 @@ export function ArticlesPageClient({
                             variant="danger"
                             onClick={() => setDeleteTarget(row)}
                           >
-                            <Trash2 /> Delete
+                            <Trash2 /> {tCommon("delete")}
                           </DropdownMenuItem>
                         </RowActions>
                       )}
@@ -229,26 +231,30 @@ export function ArticlesPageClient({
       <ConfirmDialog
         open={Boolean(deleteTarget)}
         onOpenChange={(next) => !next && setDeleteTarget(null)}
-        title="Delete article"
+        title={tL("deleteTitle")}
         description={
           deleteTarget
-            ? `This permanently deletes "${primaryTitle(deleteTarget)}" and all its translations. This cannot be undone.`
+            ? tL("deleteDescription", {
+                title: primaryTitle(deleteTarget, tL("untitled")),
+              })
             : ""
         }
-        confirmLabel={pending ? "Deleting…" : "Delete"}
-        confirmWord={deleteTarget ? primaryTitle(deleteTarget) : undefined}
+        confirmLabel={pending ? tL("deleting") : tCommon("delete")}
+        confirmWord={
+          deleteTarget ? primaryTitle(deleteTarget, tL("untitled")) : undefined
+        }
         onConfirm={handleDelete}
       />
     </div>
   );
 }
 
-function primaryTitle(row: AdminArticleRow): string {
+function primaryTitle(row: AdminArticleRow, untitled: string): string {
   return (
     row.translations.en?.title ||
     row.translations.ar?.title ||
     row.translations.tr?.title ||
     row.translations.id?.title ||
-    "Untitled"
+    untitled
   );
 }

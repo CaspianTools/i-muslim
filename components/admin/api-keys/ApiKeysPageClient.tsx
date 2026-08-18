@@ -339,7 +339,7 @@ function EndpointsDialog({ open, onOpenChange, copied, onCopy }: EndpointsDialog
                         {e.permission}
                       </Badge>
                       {!e.cors && (
-                        <Badge variant="neutral" title="No CORS — backend only">
+                        <Badge variant="neutral" title={t("noCorsTitle")}>
                           no-cors
                         </Badge>
                       )}

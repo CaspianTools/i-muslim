@@ -127,7 +127,7 @@ export function CertBodyForm({ certBody, canPersist, onSaved, onCancel }: Props)
               />
             </div>
             <div>
-              <Label htmlFor="cb-country">Country</Label>
+              <Label htmlFor="cb-country">{t("country")}</Label>
               <div className="mt-1">
                 <CountryCombobox
                   required
@@ -151,7 +151,7 @@ export function CertBodyForm({ certBody, canPersist, onSaved, onCancel }: Props)
 
           <div className="space-y-4">
             <div>
-              <Label htmlFor="cb-name">Name</Label>
+              <Label htmlFor="cb-name">{t("name")}</Label>
               <Input
                 id="cb-name"
                 className="mt-1"
@@ -161,7 +161,7 @@ export function CertBodyForm({ certBody, canPersist, onSaved, onCancel }: Props)
               />
             </div>
             <div>
-              <Label htmlFor="cb-website">Website</Label>
+              <Label htmlFor="cb-website">{t("website")}</Label>
               <Input
                 id="cb-website"
                 className="mt-1"

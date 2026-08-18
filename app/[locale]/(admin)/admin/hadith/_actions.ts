@@ -24,23 +24,20 @@ export async function translateHadithFieldAction(
 ): Promise<TranslateHadithFieldResult> {
   const parsed = translateSchema.safeParse(rawInput);
   if (!parsed.success) {
-    return { ok: false, error: "Invalid input." };
+    return { ok: false, error: "invalid-input" };
   }
   await requirePermissionForLanguage("hadith.translate", parsed.data.targetLang);
 
   const config = await getGeminiConfig();
   if (!config) {
-    return {
-      ok: false,
-      error: "Gemini API key not configured. Add one in /admin/settings → AI translation.",
-    };
+    return { ok: false, error: "gemini-not-configured" };
   }
 
   const db = requireDb();
   const id = `${parsed.data.collection}:${parsed.data.number}`;
   const snap = await db.collection("hadith_entries").doc(id).get();
   if (!snap.exists) {
-    return { ok: false, error: `Hadith ${id} not found.` };
+    return { ok: false, error: "not-found" };
   }
   const data = snap.data() ?? {};
   const arabic = (data.text_ar as string | undefined) ?? "";
