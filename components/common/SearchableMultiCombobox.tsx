@@ -27,9 +27,10 @@ export interface SearchableMultiComboboxProps {
   options: SearchableMultiComboboxOption[];
   value: string[];
   onChange: (values: string[]) => void;
-  placeholder?: string;
-  searchPlaceholder?: string;
-  emptyText?: string;
+  /** Required: a default here would silently ship English to a new caller. */
+  placeholder: string;
+  searchPlaceholder: string;
+  emptyText: string;
   removeChipLabel?: (label: string) => string;
   moreText?: (count: number) => string;
   maxVisibleChips?: number;
@@ -45,9 +46,9 @@ export function SearchableMultiCombobox({
   options,
   value,
   onChange,
-  placeholder = "Select…",
-  searchPlaceholder = "Search…",
-  emptyText = "No results.",
+  placeholder,
+  searchPlaceholder,
+  emptyText,
   removeChipLabel,
   moreText,
   maxVisibleChips = 3,

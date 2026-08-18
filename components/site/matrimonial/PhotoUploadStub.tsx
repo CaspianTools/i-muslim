@@ -13,6 +13,7 @@ interface Props {
 export function PhotoUploadStub({ initial, onChange, max = 3 }: Props) {
   const [urls, setUrls] = useState<string[]>(initial);
   const t = useTranslations("matrimonial.onboarding");
+  const tFav = useTranslations("favorites");
 
   function pickFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
@@ -40,7 +41,7 @@ export function PhotoUploadStub({ initial, onChange, max = 3 }: Props) {
             <img src={u} alt="" className="h-full w-full object-cover" />
             <button
               type="button"
-              aria-label="Remove"
+              aria-label={tFav("remove")}
               onClick={() => remove(i)}
               className="absolute right-1 top-1 rounded-full bg-background/80 p-1 hover:bg-background"
             >

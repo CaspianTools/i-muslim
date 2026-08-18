@@ -36,7 +36,10 @@ interface PageContext {
 export async function generateMetadata({ params }: PageContext): Promise<Metadata> {
   const { id } = await params;
   const event = await fetchPublicEvent(id);
-  if (!event) return { title: "Event not found" };
+  if (!event) {
+    const tc = await getTranslations("common");
+    return { title: tc("notFound") };
+  }
   const t = await getTranslations("eventsPublic");
   const locale = (await getLocale()) as Locale;
   return buildPageMetadata({

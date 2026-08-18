@@ -68,8 +68,16 @@ export default async function DevelopersPage() {
     },
   ];
 
+  // The API reference is written in English on purpose. The page sits under [locale], so
+  // without pinning direction it inherits dir="rtl" on /ar and the English
+  // prose, code samples and punctuation all reorder. Same fix as the English
+  // release notes in components/apps/ReleaseList.tsx.
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+    <div
+      lang="en"
+      dir="ltr"
+      className="mx-auto max-w-6xl px-4 py-10 sm:py-14"
+    >
       <div className="flex gap-8 lg:gap-10">
         <aside className="hidden lg:block sticky top-20 self-start">
           <TocSidebar label={tc("onThisPage")} groups={tocGroups} />

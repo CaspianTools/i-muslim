@@ -31,7 +31,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const locale = (await getLocale()) as Locale;
   const article = await getArticleBySlug(slug, locale);
-  if (!article) return { title: "Not found" };
+  if (!article) {
+    const tc = await getTranslations("common");
+    return { title: tc("notFound") };
+  }
   const siteConfig = await getSiteConfig();
   const heroImageUrl = article.heroImageUrl ?? siteConfig.articlePlaceholderUrl;
   return buildPageMetadata({

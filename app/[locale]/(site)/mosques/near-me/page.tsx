@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { NearMeClient } from "@/components/mosque/NearMeClient";
 
-export const metadata: Metadata = {
-  title: "Mosques near me",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("mosques.nearMe");
+  return {
+    title: t("title"),
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function NearMePage() {
   const t = await getTranslations("mosques.nearMe");

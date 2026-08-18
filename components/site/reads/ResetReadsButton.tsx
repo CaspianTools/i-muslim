@@ -53,7 +53,7 @@ export function ResetReadsButton() {
         onOpenChange={setOpen}
         title={t("resetConfirmTitle")}
         description={t("resetConfirmDescription")}
-        confirmWord="RESET"
+        confirmWord={t("resetConfirmWord")}
         confirmLabel={t("resetConfirmCta")}
         onConfirm={handleConfirm}
       />

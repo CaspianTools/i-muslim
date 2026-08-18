@@ -1,8 +1,29 @@
 {
+  "searchPage": {
+    "metaTitle": "بحث",
+    "metaDescription": "ابحث في القرآن الكريم وأمهات كتب الحديث.",
+    "emptyHint": "اكتب كلمة في شريط البحث للعثور على الآيات والأحاديث.",
+    "resultsHeading": "نتائج البحث عن «{query}»",
+    "searching": "جارٍ البحث…",
+    "unavailable": "البحث غير متاح مؤقتًا.",
+    "noMatches": "لا توجد نتائج مطابقة.",
+    "noMatchesHadith": "لا توجد نتائج مطابقة في الكتب التي شملها البحث.",
+    "matchLang": {
+      "ar": "العربية",
+      "en": "الإنجليزية",
+      "ru": "الروسية",
+      "az": "الأذربيجانية",
+      "tr": "التركية"
+    }
+  },
   "_meta": {
     "_review": "Machine-drafted Arabic translations — please have a native speaker review before shipping. Pay particular attention to: Islamic terminology (الصلاة، القرآن، الحديث، المذهب، الزواج), tone (formal vs casual), and ICU plural arms in comments.* and profileComments.*. 2026-05-06 update: filled 610 previously-missing keys across these namespaces — please double-check Islamic terminology and tone here especially: madhhabCombobox, sidebar.items*, nav.search*, prayerBar, zakat, events.submissions, eventsPublic.submit, mosques.submit, mosquesAdmin, businesses.submit & businesses.admin, contactAdmin, adminSettings, quranSidebar, quranLanguageFilter, hadithSidebar, hadithLanguageFilter, profileNav, profileSubmissions, profileForm, profileMatrimonial, favorites, notes, profileNotes, reading, quickCreate, comments, commentsAdmin, profileComments."
   },
   "common": {
+    "switchToDark": "التبديل إلى الوضع الداكن",
+    "switchToLight": "التبديل إلى الوضع الفاتح",
+    "notifications": "الإشعارات",
+    "notFound": "غير موجود",
     "onThisPage": "في هذه الصفحة",
     "cancel": "إلغاء",
     "save": "حفظ",
@@ -468,6 +489,7 @@
     }
   },
   "breadcrumbs": {
+    "label": "مسار التنقل",
     "dashboard": "اللوحة الرئيسية"
   },
   "stub": {
@@ -1142,6 +1164,7 @@
     }
   },
   "zakat": {
+    "moreInfo": "مزيد من المعلومات",
     "title": "زكاة المال",
     "subtitle": "حاسبة تطهير المال",
     "settingsButton": "الإعدادات",
@@ -1655,6 +1678,8 @@
       "errorAgeRange": "يجب أن يكون الحد الأقصى للعمر أكبر من الحد الأدنى."
     },
     "browse": {
+      "ageMin": "الأدنى",
+      "ageMax": "الأقصى",
       "title": "تصفّح الملفات",
       "subtitle": "{count, plural, zero {لا يوجد ملفات مطابقة} one {ملف واحد مطابق} two {ملفان مطابقان} few {# ملفات مطابقة} many {# ملفًا مطابقًا} other {# ملف مطابق}} لتفضيلاتك.",
       "noResults": "لا توجد ملفات مطابقة بعد. حاول توسيع تفضيلاتك.",
@@ -1722,6 +1747,7 @@
       "continueConversation": "متابعة المحادثة (قريبًا)"
     },
     "report": {
+      "rateLimit": "بلغت الحد اليومي للبلاغات.",
       "title": "الإبلاغ عن الملف",
       "description": "أخبرنا بما هو خاطئ. يراجع فريقنا كل بلاغ.",
       "reasonLabel": "السبب",
@@ -2523,6 +2549,10 @@
     }
   },
   "businesses": {
+    "ogFallbackTitle": "نشاط تجاري حلال",
+    "ogFallbackDescription": "دليل منتقى للأنشطة التجارية الحلال",
+    "ogBrandLine": "دليل الأنشطة التجارية الحلال",
+    "ogHalalFallback": "حلال",
     "pageTitle": "دليل الأعمال الحلال",
     "publicTitle": "أعمال حلال",
     "publicSubtitle": "قوائم موثوقة، مختارة بعناية من فريق i-muslim.",
@@ -3928,6 +3958,7 @@
     "empty": "لا يوجد سجل قراءة بعد — ابدأ بقسم القرآن أو الحديث."
   },
   "reads": {
+    "resetConfirmWord": "إعادة",
     "markAsRead": "تعليم كمقروء",
     "marked": "مقروء",
     "markedToast": "تم التعليم كمقروء",

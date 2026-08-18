@@ -1,24 +1,40 @@
 import { ImageResponse } from "next/og";
+import { getTranslations } from "next-intl/server";
 import { getBySlug } from "@/lib/businesses/public";
 
 export const runtime = "nodejs";
+// Static by necessity: Next evaluates `alt` at module load, so it cannot be
+// localised without generateImageMetadata. The image content below is localised.
 export const alt = "Halal business listing";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default async function OpengraphImage({ params }: { params: { slug: string } }) {
-  const business = await getBySlug(params.slug);
-  const title = business?.name ?? "Halal business";
-  const description = business?.description.en ?? "Curated halal business directory";
-  const city = business?.address.city ?? "London";
+export default async function OpengraphImage({
+  params,
+}: {
+  // Next 16 passes params as a Promise. This file used to destructure it
+  // synchronously, so `slug` was undefined and every card rendered the generic
+  // fallback instead of the business.
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  const [business, t, tHalal] = await Promise.all([
+    getBySlug(slug),
+    getTranslations({ locale, namespace: "businesses" }),
+    getTranslations({ locale, namespace: "businesses.halal" }),
+  ]);
+
+  const title = business?.name ?? t("ogFallbackTitle");
+  const description = business?.description.en ?? t("ogFallbackDescription");
+  const city = business?.address.city;
   const halalLabel =
     business?.halal.status === "certified"
-      ? "Certified halal"
+      ? tHalal("certified")
       : business?.halal.status === "self_declared"
-        ? "Self-declared halal"
+        ? tHalal("self_declared")
         : business?.halal.status === "muslim_owned"
-          ? "Muslim-owned"
-          : "Halal";
+          ? tHalal("muslim_owned")
+          : t("ogHalalFallback");
 
   return new ImageResponse(
     (
@@ -52,7 +68,7 @@ export default async function OpengraphImage({ params }: { params: { slug: strin
           >
             ۞
           </span>
-          i-muslim · Halal Business Directory
+          i-muslim · {t("ogBrandLine")}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ fontSize: 64, fontWeight: 700, lineHeight: 1.1 }}>{title}</div>
@@ -61,16 +77,20 @@ export default async function OpengraphImage({ params }: { params: { slug: strin
           </div>
         </div>
         <div style={{ display: "flex", gap: 16, fontSize: 22 }}>
-          <span
-            style={{
-              padding: "8px 14px",
-              borderRadius: 999,
-              background: "rgba(255,255,255,0.15)",
-              border: "1px solid rgba(255,255,255,0.3)",
-            }}
-          >
-            {city}
-          </span>
+          {/* Omitted when the business has no city. It used to fall back to
+              "London", which put a real, wrong city on the share card. */}
+          {city && (
+            <span
+              style={{
+                padding: "8px 14px",
+                borderRadius: 999,
+                background: "rgba(255,255,255,0.15)",
+                border: "1px solid rgba(255,255,255,0.3)",
+              }}
+            >
+              {city}
+            </span>
+          )}
           <span
             style={{
               padding: "8px 14px",

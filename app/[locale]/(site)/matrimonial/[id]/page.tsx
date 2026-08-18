@@ -16,8 +16,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const profile = await getProfile(id);
+  const tMenu = await getTranslations("userMenu");
   return {
-    title: profile?.displayName ?? "Profile",
+    title: profile?.displayName ?? tMenu("profile"),
     robots: { index: false, follow: false },
   };
 }

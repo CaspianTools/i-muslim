@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { useSyncExternalStore } from "react";
 
 function useMounted() {
@@ -12,6 +13,7 @@ function useMounted() {
 }
 
 export function ThemeToggle() {
+  const t = useTranslations("common");
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useMounted();
 
@@ -20,7 +22,7 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? t("switchToLight") : t("switchToDark")}
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
     >

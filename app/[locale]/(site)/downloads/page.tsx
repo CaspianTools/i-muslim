@@ -268,8 +268,16 @@ export default async function DownloadsPage() {
     { id: "changes", label: "Versioning" },
   ];
 
+  // This data catalogue is written in English on purpose. The page sits under [locale], so
+  // without pinning direction it inherits dir="rtl" on /ar and the English
+  // prose, code samples and punctuation all reorder. Same fix as the English
+  // release notes in components/apps/ReleaseList.tsx.
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+    <div
+      lang="en"
+      dir="ltr"
+      className="mx-auto max-w-6xl px-4 py-10 sm:py-14"
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

@@ -6,13 +6,15 @@ import { MobileBottomTabBar } from "@/components/mobile/MobileBottomTabBar";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { ShrinkOnScroll } from "@/components/site/ShrinkOnScroll";
+import { getTranslations } from "next-intl/server";
 import { Toaster } from "@/components/ui/sonner";
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const tCommon = await getTranslations("common");
   return (
     <>
       {/* PWA install banner sits above the prayer bar on mobile only. The
@@ -43,7 +45,7 @@ export default function SiteLayout({
           unlocked on the first user interaction (touch / click) — autoplay
           policies prevent us from creating it eagerly. */}
       <PrayerChime />
-      <Toaster />
+      <Toaster containerAriaLabel={tCommon("notifications")} />
     </>
   );
 }

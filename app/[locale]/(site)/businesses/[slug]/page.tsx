@@ -31,7 +31,10 @@ function bucketUrl(storagePath: string): string {
 export async function generateMetadata({ params }: RouteParams): Promise<Metadata> {
   const { slug } = await params;
   const business = await getBySlug(slug);
-  if (!business) return { title: "Not found" };
+  if (!business) {
+    const tc = await getTranslations("common");
+    return { title: tc("notFound") };
+  }
   const locale = (await getLocale()) as Locale;
   const description = pickLocalized(business.description, locale, "en") ?? business.description.en;
   return buildPageMetadata({

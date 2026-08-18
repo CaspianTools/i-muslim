@@ -8,6 +8,7 @@ import type { MatrimonialProfile } from "@/types/matrimonial";
 
 export function BrowseGrid({ candidates }: { candidates: MatrimonialProfile[] }) {
   const t = useTranslations("matrimonial.browse");
+  const tMadhhabs = useTranslations("matrimonial.madhhabs");
   const [country, setCountry] = useState("");
   const [madhhab, setMadhhab] = useState("");
   const [ageMin, setAgeMin] = useState<string>("");
@@ -62,7 +63,7 @@ export function BrowseGrid({ candidates }: { candidates: MatrimonialProfile[] })
             >
               <option value="">—</option>
               {(["hanafi", "maliki", "shafii", "hanbali", "other", "none"] as const).map((m) => (
-                <option key={m} value={m}>{m}</option>
+                <option key={m} value={m}>{tMadhhabs(m)}</option>
               ))}
             </select>
           </div>
@@ -71,14 +72,14 @@ export function BrowseGrid({ candidates }: { candidates: MatrimonialProfile[] })
             <div className="flex gap-1">
               <Input
                 type="number"
-                placeholder="min"
+                placeholder={t("ageMin")}
                 value={ageMin}
                 onChange={(e) => setAgeMin(e.target.value)}
                 className="w-16"
               />
               <Input
                 type="number"
-                placeholder="max"
+                placeholder={t("ageMax")}
                 value={ageMax}
                 onChange={(e) => setAgeMax(e.target.value)}
                 className="w-16"

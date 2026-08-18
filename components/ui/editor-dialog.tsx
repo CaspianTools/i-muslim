@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 export const EditorDialog = DialogPrimitive.Root;
@@ -54,6 +55,8 @@ export const EditorDialogContent = React.forwardRef<
     "fixed left-1/2 top-1/2 z-50 flex w-[90vw] h-[90vh] max-w-[1200px] max-h-[900px] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-2xl " +
     "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95";
 
+  const t = useTranslations("common");
+
   const mobileClass =
     "fixed inset-y-0 right-0 z-50 flex h-full w-full flex-col overflow-hidden border-l border-border bg-card text-card-foreground shadow-lg transition ease-in-out " +
     "data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right";
@@ -69,7 +72,7 @@ export const EditorDialogContent = React.forwardRef<
         {children}
         {!hideClose && (
           <DialogPrimitive.Close
-            aria-label="Close"
+            aria-label={t("close")}
             className="absolute right-4 top-4 rounded-sm text-muted-foreground transition-opacity hover:opacity-100 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <X className="size-4" />

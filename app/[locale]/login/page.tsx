@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LoginCard } from "@/components/admin/LoginCard";
+import { getTranslations } from "next-intl/server";
 import { getFirebaseAdminStatus } from "@/lib/firebase/admin";
 
-export const metadata: Metadata = {
-  title: "Sign in",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("siteUserMenu");
+  return { title: t("signIn") };
+}
 
 export default function LoginPage() {
   const adminStatus = getFirebaseAdminStatus();

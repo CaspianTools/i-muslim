@@ -40,7 +40,7 @@ export function ReportDialog({ targetId }: { targetId: string }) {
     startTransition(async () => {
       const res = await reportProfile(targetId, reason, notes || null);
       if (!res.ok) {
-        toast.error("Daily report limit reached.");
+        toast.error(t("rateLimit"));
         return;
       }
       toast.success(t("submitted"));

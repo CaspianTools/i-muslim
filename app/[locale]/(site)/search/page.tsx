@@ -1,21 +1,21 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { searchQuran } from "@/lib/quran";
 import { COLLECTIONS, getEditionsForLangs } from "@/lib/hadith";
-import {
-  parseLangsParam,
-  LANG_LABELS,
-  QURAN_TRANSLATION_IDS,
-} from "@/lib/translations";
+import { parseLangsParam, QURAN_TRANSLATION_IDS } from "@/lib/translations";
 import type { LangCode } from "@/lib/translations";
 import type { HadithEntry } from "@/types/hadith";
 import { stripHtml, cleanQuranTranslation } from "@/lib/text/html";
 
-export const metadata = {
-  title: "Search",
-  description: "Search the Quran and major Hadith collections.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata() {
+  const t = await getTranslations("searchPage");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function SearchPage({
   searchParams,
@@ -25,14 +25,14 @@ export default async function SearchPage({
   const { q: qRaw, lang: langParam } = await searchParams;
   const q = (qRaw ?? "").trim();
   const langs = parseLangsParam(langParam);
+  const t = await getTranslations("searchPage");
+  const tNav = await getTranslations("nav");
 
   if (!q) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="text-2xl font-semibold">Search</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Type a query in the search bar to find verses and hadith.
-        </p>
+        <h1 className="text-2xl font-semibold">{t("metaTitle")}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t("emptyHint")}</p>
       </div>
     );
   }
@@ -40,13 +40,21 @@ export default async function SearchPage({
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-2xl font-semibold">
-        Results for &ldquo;{q}&rdquo;
+        {t("resultsHeading", { query: q })}
       </h1>
       <div className="mt-8 space-y-10">
-        <Suspense fallback={<SectionSkeleton title="Quran" />}>
+        <Suspense
+          fallback={
+            <SectionSkeleton title={tNav("quran")} label={t("searching")} />
+          }
+        >
           <QuranResults q={q} langs={langs} />
         </Suspense>
-        <Suspense fallback={<SectionSkeleton title="Hadith" />}>
+        <Suspense
+          fallback={
+            <SectionSkeleton title={tNav("hadith")} label={t("searching")} />
+          }
+        >
           <HadithResults q={q} langs={langs} />
         </Suspense>
       </div>
@@ -54,26 +62,26 @@ export default async function SearchPage({
   );
 }
 
-function SectionSkeleton({ title }: { title: string }) {
+function SectionSkeleton({ title, label }: { title: string; label: string }) {
   return (
     <section>
       <h2 className="text-lg font-semibold">{title}</h2>
-      <p className="mt-2 text-sm text-muted-foreground">Searching…</p>
+      <p className="mt-2 text-sm text-muted-foreground">{label}</p>
     </section>
   );
 }
 
 async function QuranResults({ q, langs }: { q: string; langs: LangCode[] }) {
+  const t = await getTranslations("searchPage");
+  const tNav = await getTranslations("nav");
   let results;
   try {
     results = await searchQuran(q, langs);
   } catch {
     return (
       <section>
-        <h2 className="text-lg font-semibold">Quran</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Search temporarily unavailable.
-        </p>
+        <h2 className="text-lg font-semibold">{tNav("quran")}</h2>
+        <p className="mt-2 text-sm text-muted-foreground">{t("unavailable")}</p>
       </section>
     );
   }
@@ -81,10 +89,11 @@ async function QuranResults({ q, langs }: { q: string; langs: LangCode[] }) {
   return (
     <section>
       <h2 className="text-lg font-semibold">
-        Quran <span className="text-muted-foreground">({results.length})</span>
+        {tNav("quran")}{" "}
+        <span className="text-muted-foreground">({results.length})</span>
       </h2>
       {results.length === 0 ? (
-        <p className="mt-2 text-sm text-muted-foreground">No matches.</p>
+        <p className="mt-2 text-sm text-muted-foreground">{t("noMatches")}</p>
       ) : (
         <ul className="mt-3 space-y-3">
           {results.slice(0, 15).map((r) => {
@@ -136,6 +145,9 @@ type HadithMatch = {
 };
 
 async function HadithResults({ q, langs }: { q: string; langs: LangCode[] }) {
+  const t = await getTranslations("searchPage");
+  const tNav = await getTranslations("nav");
+  const tLang = await getTranslations("searchPage.matchLang");
   const needle = q.toLowerCase();
 
   // Search the English edition for every collection (English has full coverage
@@ -176,7 +188,7 @@ async function HadithResults({ q, langs }: { q: string; langs: LangCode[] }) {
   return (
     <section>
       <h2 className="text-lg font-semibold">
-        Hadith{" "}
+        {tNav("hadith")}{" "}
         <span className="text-muted-foreground">
           ({allMatches.length}
           {allMatches.length >= COLLECTIONS.length * 8 ? "+" : ""})
@@ -184,7 +196,7 @@ async function HadithResults({ q, langs }: { q: string; langs: LangCode[] }) {
       </h2>
       {allMatches.length === 0 ? (
         <p className="mt-2 text-sm text-muted-foreground">
-          No matches in searched collections.
+          {t("noMatchesHadith")}
         </p>
       ) : (
         <ul className="mt-3 space-y-3">
@@ -199,7 +211,7 @@ async function HadithResults({ q, langs }: { q: string; langs: LangCode[] }) {
                     {m.collectionName} #{m.entry.hadithnumber}
                   </span>
                   <span className="rounded-full bg-muted px-2 py-0.5">
-                    {LANG_LABELS[m.matchLang]}
+                    {tLang(m.matchLang)}
                   </span>
                 </div>
                 <p className="line-clamp-3 text-sm leading-relaxed">

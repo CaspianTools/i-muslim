@@ -5,6 +5,7 @@ import { getFirebaseAdminStatus } from "@/lib/firebase/admin";
 import { Sidebar, type SidebarBadges } from "@/components/admin/Sidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { PermissionsProvider } from "@/components/admin/PermissionsContext";
+import { getTranslations } from "next-intl/server";
 import { Toaster } from "@/components/ui/sonner";
 import { countOpenReports } from "@/lib/admin/data/business-reports";
 import { countPendingProfiles } from "@/lib/matrimonial/store";
@@ -32,6 +33,7 @@ export default async function AdminLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const tCommon = await getTranslations({ locale, namespace: "common" });
 
   const status = getFirebaseAdminStatus();
   if (!status.configured) {
@@ -93,7 +95,7 @@ export default async function AdminLayout({
           </main>
         </div>
       </PermissionsProvider>
-      <Toaster />
+      <Toaster containerAriaLabel={tCommon("notifications")} />
     </div>
   );
 }

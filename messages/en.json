@@ -1,5 +1,26 @@
 {
+  "searchPage": {
+    "metaTitle": "Search",
+    "metaDescription": "Search the Quran and major Hadith collections.",
+    "emptyHint": "Type a query in the search bar to find verses and hadith.",
+    "resultsHeading": "Results for “{query}”",
+    "searching": "Searching…",
+    "unavailable": "Search temporarily unavailable.",
+    "noMatches": "No matches.",
+    "noMatchesHadith": "No matches in searched collections.",
+    "matchLang": {
+      "ar": "Arabic",
+      "en": "English",
+      "ru": "Russian",
+      "az": "Azerbaijani",
+      "tr": "Turkish"
+    }
+  },
   "common": {
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode",
+    "notifications": "Notifications",
+    "notFound": "Not found",
     "onThisPage": "On this page",
     "cancel": "Cancel",
     "save": "Save",
@@ -465,6 +486,7 @@
     }
   },
   "breadcrumbs": {
+    "label": "Breadcrumb",
     "dashboard": "Dashboard"
   },
   "stub": {
@@ -1139,6 +1161,7 @@
     }
   },
   "zakat": {
+    "moreInfo": "More info",
     "title": "Zakat Al-Mal",
     "subtitle": "Wealth Purification Calculator",
     "settingsButton": "Settings",
@@ -1652,6 +1675,8 @@
       "errorAgeRange": "Maximum age must be greater than minimum."
     },
     "browse": {
+      "ageMin": "min",
+      "ageMax": "max",
       "title": "Browse profiles",
       "subtitle": "{count, plural, one {# profile matches} other {# profiles match}} your preferences.",
       "noResults": "No profiles match yet. Try widening your preferences.",
@@ -1719,6 +1744,7 @@
       "continueConversation": "Continue conversation (coming soon)"
     },
     "report": {
+      "rateLimit": "Daily report limit reached.",
       "title": "Report profile",
       "description": "Tell us what's wrong. Our team reviews every report.",
       "reasonLabel": "Reason",
@@ -2520,6 +2546,10 @@
     }
   },
   "businesses": {
+    "ogFallbackTitle": "Halal business",
+    "ogFallbackDescription": "Curated halal business directory",
+    "ogBrandLine": "Halal Business Directory",
+    "ogHalalFallback": "Halal",
     "pageTitle": "Halal Business Directory",
     "publicTitle": "Halal businesses",
     "publicSubtitle": "Verified listings, curated by the i-muslim team.",
@@ -3925,6 +3955,7 @@
     "empty": "No reading history yet — start with the Quran or Hadith section."
   },
   "reads": {
+    "resetConfirmWord": "RESET",
     "markAsRead": "Mark as read",
     "marked": "Read",
     "markedToast": "Marked as read",

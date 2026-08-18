@@ -1,6 +1,7 @@
 "use client";
 
 import { HelpCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   Tooltip,
   TooltipContent,
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export function InfoTooltip({ content }: { content: string }) {
+  const t = useTranslations("zakat");
   return (
     <TooltipProvider delayDuration={150}>
       <Tooltip>
@@ -16,7 +18,7 @@ export function InfoTooltip({ content }: { content: string }) {
           <button
             type="button"
             className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="More info"
+            aria-label={t("moreInfo")}
           >
             <HelpCircle className="size-3.5" />
           </button>

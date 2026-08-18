@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 export const Dialog = DialogPrimitive.Root;
@@ -31,8 +32,10 @@ export const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     hideClose?: boolean;
   }
->(({ className, children, hideClose, ...props }, ref) => (
-  <DialogPortal>
+>(({ className, children, hideClose, ...props }, ref) => {
+  const t = useTranslations("common");
+  return (
+    <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
@@ -46,15 +49,16 @@ export const DialogContent = React.forwardRef<
       {children}
       {!hideClose && (
         <DialogPrimitive.Close
-          aria-label="Close"
+          aria-label={t("close")}
           className="absolute right-4 top-4 rounded-sm text-muted-foreground transition-opacity hover:opacity-100 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         >
           <X className="size-4" />
         </DialogPrimitive.Close>
       )}
     </DialogPrimitive.Content>
-  </DialogPortal>
-));
+    </DialogPortal>
+  );
+});
 DialogContent.displayName = "DialogContent";
 
 export function DialogHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

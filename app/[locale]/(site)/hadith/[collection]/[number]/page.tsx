@@ -194,6 +194,7 @@ export default async function HadithDetailPage({
   const t = await getTranslations("hadithPage");
   const tCollections = await getTranslations("hadithCollectionNames");
   const tBookNames = await getTranslations("hadithBookNames");
+  const tBreadcrumbs = await getTranslations("breadcrumbs");
   // Localized names, mirroring the collection/book pages: prefer the
   // hadithCollectionNames / hadithBookNames message keys, fall back to the
   // English Firestore name when a key is absent.
@@ -367,7 +368,7 @@ export default async function HadithDetailPage({
             <div className="min-w-0 flex-1">
               <div className="mx-auto max-w-3xl">
                 <nav
-                  aria-label="Breadcrumb"
+                  aria-label={tBreadcrumbs("label")}
                   className="text-sm text-muted-foreground"
                 >
                   <ol className="flex flex-wrap items-center gap-1">
