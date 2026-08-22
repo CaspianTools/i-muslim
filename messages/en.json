@@ -972,7 +972,7 @@
       },
       "prayerApp": {
         "heading": "Salatuk (Namaz) Prayer Times (Android app)",
-        "updated": "Last updated: 12 August 2026",
+        "updated": "Last updated: 22 August 2026",
         "intro": "The Salatuk app (package com.imuslim.prayer) computes the five daily prayer times on your device and can remind you and silence your phone around each prayer. It has no accounts, no ads, and no tracking.",
         "collectHeading": "What we collect",
         "collectIntro": "Nothing. The app does not collect, transmit to us, or share any personal data — we run no servers.",
@@ -992,6 +992,7 @@
         "permission3": "Do Not Disturb access — to mute your ringer around each prayer and restore it afterwards (the auto-silence feature).",
         "permission4": "Exact alarms — to fire reminders and change the ringer precisely at prayer times.",
         "permission5": "Run at startup — to re-arm the prayer schedule after you restart your phone.",
+        "permission6": "Camera — only if you open the Qibla screen's camera view, so the Qibla marker can be drawn over the live picture in front of you. No frame is captured, saved, analysed, or sent anywhere, and the camera is released the moment you leave that view. The dial works without it.",
         "permissionNote": "You can skip location detection and enter coordinates manually, and you can leave any of these features off.",
         "childrenHeading": "Children",
         "children": "The app is suitable for all ages. It does not collect data from anyone, including children.",

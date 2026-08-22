@@ -975,7 +975,7 @@
       },
       "prayerApp": {
         "heading": "Salatuk (Namaz) Prayer Times (aplikasi Android)",
-        "updated": "Terakhir diperbarui: 12 Agustus 2026",
+        "updated": "Terakhir diperbarui: 22 Agustus 2026",
         "intro": "Aplikasi Salatuk (paket com.imuslim.prayer) menghitung lima waktu salat harian di perangkat Anda dan dapat mengingatkan Anda serta membisukan ponsel Anda di sekitar setiap waktu salat. Aplikasi tidak memiliki akun, tidak ada iklan, dan tidak ada pelacakan.",
         "collectHeading": "Apa yang kami kumpulkan",
         "collectIntro": "Tidak ada. Aplikasi tidak mengumpulkan, mengirimkan kepada kami, atau membagikan data pribadi apa pun — kami tidak menjalankan server apa pun.",
@@ -995,6 +995,7 @@
         "permission3": "Akses Jangan Ganggu — untuk membisukan dering Anda di sekitar setiap waktu salat dan memulihkannya setelahnya (fitur pembisuan otomatis).",
         "permission4": "Alarm presisi — untuk memicu pengingat dan mengubah dering tepat pada waktu salat.",
         "permission5": "Berjalan saat perangkat dinyalakan — untuk mengaktifkan kembali jadwal salat setelah Anda memulai ulang ponsel.",
+        "permission6": "Kamera — hanya jika Anda membuka tampilan kamera pada layar kiblat, agar penanda kiblat dapat digambar di atas gambar langsung di depan Anda. Tidak ada bingkai yang diambil, disimpan, dianalisis, atau dikirim ke mana pun, dan kamera dilepas begitu Anda meninggalkan tampilan itu. Pedomannya tetap bekerja tanpa kamera.",
         "permissionNote": "Anda dapat melewati deteksi lokasi dan memasukkan koordinat secara manual, dan Anda dapat membiarkan fitur-fitur ini tetap nonaktif.",
         "childrenHeading": "Anak-anak",
         "children": "Aplikasi cocok untuk segala usia. Aplikasi tidak mengumpulkan data dari siapa pun, termasuk anak-anak.",

@@ -240,6 +240,7 @@ export default async function PrivacyPage() {
               <li>{t("prayerApp.permission3")}</li>
               <li>{t("prayerApp.permission4")}</li>
               <li>{t("prayerApp.permission5")}</li>
+              <li>{t("prayerApp.permission6")}</li>
             </ul>
             <p>{t("prayerApp.permissionNote")}</p>
 

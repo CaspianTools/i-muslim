@@ -975,7 +975,7 @@
       },
       "prayerApp": {
         "heading": "Salatuk (Namaz) Prayer Times (Android uygulaması)",
-        "updated": "Son güncelleme: 12 Ağustos 2026",
+        "updated": "Son güncelleme: 22 Ağustos 2026",
         "intro": "Salatuk uygulaması (paket com.imuslim.prayer), beş vakit namazı cihazınızda hesaplar ve her namaz vaktinde size hatırlatma yapabilir ve telefonunuzu sessize alabilir. Hesap, reklam ve takip içermez.",
         "collectHeading": "Neleri topluyoruz",
         "collectIntro": "Hiçbir şey. Uygulama hiçbir kişisel veriyi toplamaz, bize iletmez veya paylaşmaz — hiçbir sunucu çalıştırmıyoruz.",
@@ -995,6 +995,7 @@
         "permission3": "Rahatsız Etmeyin erişimi — her namaz vaktinde zil sesinizi kısmak ve sonrasında geri getirmek için (otomatik sessize alma özelliği).",
         "permission4": "Tam zamanlı alarmlar — hatırlatmaları tetiklemek ve zil sesini tam namaz vakitlerinde değiştirmek için.",
         "permission5": "Başlangıçta çalıştırma — telefonunuzu yeniden başlattıktan sonra namaz zamanlamasını yeniden kurmak için.",
+        "permission6": "Kamera — yalnızca kıble ekranının kamera görünümünü açarsanız; kıble işareti önünüzdeki canlı görüntünün üzerine çizilsin diye. Hiçbir kare kaydedilmez, saklanmaz, çözümlenmez veya bir yere gönderilmez ve o görünümden çıktığınız anda kamera serbest bırakılır. Kadran kamerasız da çalışır.",
         "permissionNote": "Konum tespitini atlayıp koordinatları elle girebilir ve bu özelliklerin herhangi birini kapalı bırakabilirsiniz.",
         "childrenHeading": "Çocuklar",
         "children": "Uygulama her yaşa uygundur. Çocuklar da dâhil olmak üzere hiç kimseden veri toplamaz.",
