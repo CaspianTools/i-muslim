@@ -107,6 +107,17 @@ async function fetchVerses(
   return data.verses;
 }
 
+/**
+ * A few upstream verses repeat their own number as a prefix — Kemenag (id)
+ * 38:1-3 read "1. Ṣād, demi Alquran…". The reader already prints the verse
+ * number beside the text, so it would appear twice. Only a prefix equal to this
+ * verse's own number is dropped; a translation that opens with a real numeral
+ * is left alone.
+ */
+function stripOwnVerseNumber(text: string, verseNumber: number): string {
+  return text.replace(new RegExp(`^${verseNumber}\\.\\s+`), "");
+}
+
 async function seedSurahForLang(
   firestore: Firestore,
   chapter: ApiChapter,
@@ -140,7 +151,7 @@ async function seedSurahForLang(
     if (preserveSet.has(id)) continue;
     const t = v.translations.find((tr) => tr.resource_id === resourceId);
     if (!t) continue;
-    const text = cleanQuranTranslation(t.text, lang);
+    const text = stripOwnVerseNumber(cleanQuranTranslation(t.text, lang), v.verse_number);
     if (!text) continue;
 
     // Use nested-object form (NOT a dotted-key like "translations.tr") so

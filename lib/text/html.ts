@@ -55,10 +55,10 @@ export function decodeHtmlEntities(s: string): string {
  * entities, and trim. Output is plain text — safe as a React text child, which
  * React escapes on render.
  *
- * NOTE: this removes the `<sup>` tags but keeps their inner content. The Saheeh
- * International (en) source puts a bare digit inside (`<sup …>1</sup>`), so that
- * digit survives — use `cleanQuranTranslation` (below) for English translation
- * text, which strips those footnote-marker digits too.
+ * NOTE: this removes the `<sup>` tags but keeps their inner content. quran.com
+ * puts a bare digit inside (`<sup …>1</sup>`), so that digit survives — use
+ * `cleanQuranTranslation` (below) for translation text, which removes the
+ * markers whole.
  */
 export function stripHtml(s: string): string {
   return decodeHtmlEntities(s.replace(/<[^>]+>/g, "")).trim();
@@ -84,8 +84,39 @@ export function stripFootnoteMarkers(s: string): string {
     .trim();
 }
 
-/** Strip HTML/entities; for English also drop footnote-marker digits. */
+/** One or more adjacent quran.com footnote markers, with the whitespace around them. */
+const FOOTNOTE_TAGS = /(?:\s*<sup\b[^>]*\bfoot_note\b[^>]*>[\s\S]*?<\/sup>)+\s*/gi;
+
+/**
+ * Remove quran.com footnote markers whole — the `<sup foot_note=…>` tag *and*
+ * the digit inside it, for every language.
+ *
+ * `stripHtml` alone keeps the digit, which the English-only
+ * `stripFootnoteMarkers` then has to find again in the flattened prose. Every
+ * other language was assumed to carry no markers, and the Kemenag (id) edition
+ * disproves it: 930 of them, so 2:255 would read "Kursi-Nya1 meliputi langit".
+ *
+ * The marker is not always where a digit-stripping pass would expect it — the
+ * old English pass left "polytheists."1" and "[in Islām]1 to" behind. It can
+ * stand between two spaces, or be the only thing separating two words
+ * ("sedekah.<sup>1</sup>Allah"). So at either end of the text, or before
+ * punctuation that closes what came before, it simply goes; anywhere else the
+ * text keeps its own spacing — one space if it had any beside the marker, or if
+ * the marker was all that stood between two words. A straight quote is left
+ * out of the punctuation test on purpose: it opens as often as it closes, and
+ * `unlearned,<sup>1</sup> "Have` must keep its space.
+ */
+export function stripFootnoteTags(s: string): string {
+  return s.replace(FOOTNOTE_TAGS, (match: string, offset: number, whole: string) => {
+    const prev = whole[offset - 1];
+    const next = whole[offset + match.length];
+    if (prev === undefined || next === undefined || /[.,;:!?)\]]/.test(next)) return "";
+    return /\s/.test(match) || /[\p{L}\p{N}([]/u.test(next) ? " " : "";
+  });
+}
+
+/** Strip footnote markers, HTML and entities; for English also drop footnote-marker digits. */
 export function cleanQuranTranslation(text: string, lang: string): string {
-  const stripped = stripHtml(text);
+  const stripped = stripHtml(stripFootnoteTags(text));
   return lang === "en" ? stripFootnoteMarkers(stripped) : stripped;
 }
