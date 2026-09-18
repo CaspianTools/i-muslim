@@ -233,12 +233,45 @@ const HADITH_AR_TARGETS: BundleTarget[] = HADITH_COLLECTION_SLUGS.map((slug) => 
  */
 const QURAN_TRANSLATION_EDITIONS: Record<
   string,
-  { slug: string; label: Record<string, string> }
+  {
+    slug: string;
+    label: Record<string, string>;
+    /** Whether the native app ships this translation inside its APK. */
+    inApk: boolean;
+  }
 > = {
-  en: { slug: "saheeh", label: { en: "English Translation", ar: "الترجمة الإنجليزية" } },
-  ru: { slug: "kuliev", label: { en: "Russian Translation", ar: "الترجمة الروسية" } },
-  az: { slug: "musayev", label: { en: "Azerbaijani Translation", ar: "الترجمة الأذربيجانية" } },
-  tr: { slug: "diyanet", label: { en: "Turkish Translation", ar: "الترجمة التركية" } },
+  en: {
+    slug: "saheeh",
+    label: { en: "English Translation", ar: "الترجمة الإنجليزية" },
+    inApk: true,
+  },
+  ru: {
+    slug: "kuliev",
+    label: { en: "Russian Translation", ar: "الترجمة الروسية" },
+    inApk: true,
+  },
+  az: {
+    slug: "musayev",
+    label: { en: "Azerbaijani Translation", ar: "الترجمة الأذربيجانية" },
+    inApk: true,
+  },
+  tr: {
+    slug: "diyanet",
+    label: { en: "Turkish Translation", ar: "الترجمة التركية" },
+    inApk: true,
+  },
+  // The first edition that exists only as a download — which is the whole point
+  // of it. Indonesia has the largest Muslim population on earth and the app has
+  // had an Indonesian interface over English verses since it shipped.
+  id: {
+    slug: "kemenag",
+    label: {
+      en: "Indonesian Translation",
+      ar: "الترجمة الإندونيسية",
+      id: "Terjemahan Bahasa Indonesia",
+    },
+    inApk: false,
+  },
 };
 
 /**
@@ -266,9 +299,9 @@ const QURAN_TRANSLATION_TARGETS: BundleTarget[] = Object.entries(QURAN_TRANSLATI
       label: edition.label,
       // The translation is laid out against the mushaf, so it is only meaningful beside it.
       requires: ["quran.ar"],
-      // True of the five the app ships; the manifest still lists them so a reader who has an
-      // older build, or a future one that unbundles them, can fetch the same edition.
-      bundledWithApp: true,
+      // The four in the APK are still listed, so a reader on an older build — or on a future
+      // one that unbundles them to shrink the install — can fetch the same edition.
+      bundledWithApp: edition.inApk,
       version: 1,
       license: cat.license,
       attribution: cat.attribution,

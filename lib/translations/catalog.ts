@@ -132,6 +132,24 @@ export const QURAN_TRANSLATION_CATALOG: Record<string, TranslationCatalogEntry> 
     notice:
       "746 birleşik (combined) ayahs were split to per-ayah boundaries with AI assistance; this segmentation is unofficial, not Diyanet's own.",
   },
+  id: {
+    // Al-Qur'an dan Terjemahnya, the official translation of the Indonesian
+    // Ministry of Religious Affairs (Kementerian Agama / Kemenag) — the edition
+    // quran.com serves as resource 33, "Indonesian Islamic affairs ministry".
+    //
+    // Licensed like the Diyanet meal above and for the same reason: a state
+    // ministry's own publication, published for the widest possible use and
+    // mirrored by practically every Indonesian Quran app, but with no
+    // machine-readable grant on file that we can point at. It ships under the
+    // project owner's 2026-06-19 decision, which covers the modern Quran
+    // translations as a class rather than one at a time.
+    sourceId: "quran.com:33",
+    attribution:
+      "Kementerian Agama Republik Indonesia — Al-Qur'an dan Terjemahnya",
+    license: "Crown / Government — no open-data grant on file",
+    sourceUrl: "https://api.quran.com/api/v4/resources/translations/33",
+    redistribute: "full",
+  },
 };
 
 /* -------------------------------------------------------------------------- */

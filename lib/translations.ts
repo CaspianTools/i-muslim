@@ -17,6 +17,7 @@ export const ALL_LANGS: readonly LangCode[] = [
   "ru",
   "az",
   "tr",
+  "id",
 ] as const;
 
 export const LANG_LABELS: Record<string, string> = {
@@ -25,15 +26,26 @@ export const LANG_LABELS: Record<string, string> = {
   ru: "Russian",
   az: "Azerbaijani",
   tr: "Turkish",
+  id: "Indonesian",
 };
 
 // Verified translation resource IDs on api.quran.com/api/v4/resources/translations.
 // Arabic is the original — no translation ID. Add an entry when extending.
+//
+// A wrong id here is expensive and quiet: the seeder would write 6,236 verses of
+// the wrong edition into `translations.<lang>`, in a language nobody reading the
+// diff necessarily speaks. Confirm a new id against the live endpoint, and read
+// 1:1 back after the first seed.
 export const QURAN_TRANSLATION_IDS: Record<string, number> = {
   en: 20, // Saheeh International
   ru: 45, // Elmir Kuliev
   az: 75, // Alikhan Musayev
   tr: 77, // Diyanet İşleri Başkanlığı
+  // Kemenag — "Indonesian Islamic affairs ministry" upstream. NOT confirmed
+  // against the live endpoint: this was added from an environment with no route
+  // to api.quran.com, and corroborated from two independent secondary sources
+  // instead. Check it before the first seed.
+  id: 33,
 };
 
 export const QURAN_TRANSLATION_NAMES: Record<string, string> = {
@@ -41,6 +53,7 @@ export const QURAN_TRANSLATION_NAMES: Record<string, string> = {
   ru: "Эльмир Кулиев",
   az: "Əlixan Musayev",
   tr: "Diyanet İşleri Başkanlığı",
+  id: "Kementerian Agama Republik Indonesia",
 };
 
 // fawazahmed0/hadith-api editions per language.
@@ -73,6 +86,10 @@ export const HADITH_LANG_COVERAGE: Record<string, ReadonlySet<string>> = {
   // the seed script will skip any that 404 and the renderer falls back to
   // English on a missing translation.
   tr: new Set(["bukhari"]),
+  // Indonesian was added for the Quran only. Empty like `az`, so the hadith
+  // seeder skips it cleanly rather than fetching editions that are not wired up
+  // here, and hadith renders fall back to English.
+  id: new Set(),
 };
 
 // Maps our LangCode to fawazahmed0's 3-letter edition prefix. Used by both
