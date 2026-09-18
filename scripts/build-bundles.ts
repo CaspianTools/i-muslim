@@ -11,12 +11,23 @@
  *   npm run build:bundles -- --all --upload          # also push to Storage
  *   npm run build:bundles -- --all --dry-run         # don't touch Firestore
  *
- * v1 scope: **only `redistribute: "full"` bundles are built** — Arabic Quran
+ * Scope: **only `redistribute: "full"` bundles are built** — the Arabic Quran
  * mushaf (public domain) and Arabic Hadith per collection (classical public
- * domain). Translation bundles are deliberately not built in v1 because
- * every modern translation in our catalogue is under translator-held
- * copyright (see lib/translations/catalog.ts) — shipping their text inside
- * an .ipa/.apk would be infringement. When the project has CC0-authored
+ * domain).
+ *
+ * The reason this header used to give for skipping translation bundles is out
+ * of date, and was only ever half true. It said every modern translation is
+ * under translator-held copyright, so shipping the text inside an .ipa/.apk
+ * would be infringement. That still holds for the **Hadith** translations,
+ * which remain `metadata-only`. It stopped holding for the four modern
+ * **Quran** translations on 2026-06-19, when the project owner decided to
+ * redistribute EN/RU/AZ/TR in full and accept the exposure — see the header of
+ * lib/translations/catalog.ts, where their `redistribute` is `"full"` and is
+ * marked not to be reverted. So the licence blocker on Quran translation
+ * bundles is already lifted; what is missing is the builder, not the
+ * permission.
+ *
+ * For Hadith the original note still applies: when the project has CC0-authored
  * translations to redistribute, extend HADITH_TRANSLATION_TARGETS below to
  * filter on `editedTranslations[lang] === true` and skip the rest.
  *
