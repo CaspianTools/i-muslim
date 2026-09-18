@@ -41,7 +41,8 @@
 
 import { config as loadEnv } from "dotenv";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, rmSync, statSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { gzipSync } from "node:zlib";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
@@ -162,8 +163,21 @@ interface BundleTarget {
   license: string;
   attribution: string;
   redistribute: "full" | "metadata-only";
+  /** File extension, without the dot. Part of the object name, so it is part of the URL. */
+  ext: string;
+  /**
+   * The `Content-Type` the object is served with.
+   *
+   * Never set `Content-Encoding` alongside it for a pre-compressed bundle. GCS would then
+   * decompress transparently for any client that advertises gzip, and the bytes the client
+   * hashes would stop matching the `sha256` recorded here — the native app verifies the
+   * download against it and would reject every copy.
+   */
+  contentType: string;
   build: (db: Firestore, outPath: string) => Promise<void>;
 }
+
+const SQLITE = { ext: "db", contentType: "application/x-sqlite3" } as const;
 
 const QURAN_AR_TARGET: BundleTarget = {
   id: "quran.ar",
@@ -177,6 +191,7 @@ const QURAN_AR_TARGET: BundleTarget = {
   attribution:
     QURAN_TRANSLATION_CATALOG.ar?.attribution ?? "Uthmani Mushaf (classical text)",
   redistribute: QURAN_TRANSLATION_CATALOG.ar?.redistribute ?? "full",
+  ...SQLITE,
   build: buildQuranAr,
 };
 
@@ -197,15 +212,175 @@ const HADITH_AR_TARGETS: BundleTarget[] = HADITH_COLLECTION_SLUGS.map((slug) => 
     license: cat?.license ?? "Public Domain",
     attribution: cat?.attribution ?? "Classical Arabic edition (public domain)",
     redistribute: cat?.redistribute ?? "full",
+    ...SQLITE,
     build: (db: Firestore, outPath: string) => buildHadithAr(db, slug, outPath),
   };
 });
 
-const ALL_TARGETS: BundleTarget[] = [QURAN_AR_TARGET, ...HADITH_AR_TARGETS];
+/**
+ * Editions of the Quran translations, keyed by the catalogue's language code.
+ *
+ * The **slug is interop, not decoration**. A bundle id is
+ * `quran.<lang>.<translator-slug>`, and the native app hard-codes the same five ids for the
+ * translations it ships inside the APK (`Editions.BUNDLED` in
+ * `app/src/main/java/com/imuslim/quran/data/Editions.kt` in the i-muslim-quran repo). Those ids
+ * are how the app recognises a bundle it already has: get one wrong and the catalogue offers a
+ * download of a translation the reader is already reading.
+ *
+ * A catalogue language with no entry here is a build error rather than a guessed id, so adding
+ * a translation to `lib/translations/catalog.ts` cannot silently produce a bundle the app will
+ * not match.
+ */
+const QURAN_TRANSLATION_EDITIONS: Record<
+  string,
+  { slug: string; label: Record<string, string> }
+> = {
+  en: { slug: "saheeh", label: { en: "English Translation", ar: "الترجمة الإنجليزية" } },
+  ru: { slug: "kuliev", label: { en: "Russian Translation", ar: "الترجمة الروسية" } },
+  az: { slug: "musayev", label: { en: "Azerbaijani Translation", ar: "الترجمة الأذربيجانية" } },
+  tr: { slug: "diyanet", label: { en: "Turkish Translation", ar: "الترجمة التركية" } },
+};
+
+/**
+ * One bundle per Quran translation the catalogue marks `redistribute: "full"`.
+ *
+ * Derived from the catalogue rather than listed here, so the licence decision stays in the one
+ * place that records it: mark a translation `metadata-only` and its bundle stops being built.
+ * Arabic is excluded because it is the mushaf, and has its own target above.
+ */
+const QURAN_TRANSLATION_TARGETS: BundleTarget[] = Object.entries(QURAN_TRANSLATION_CATALOG)
+  .filter(([lang, cat]) => lang !== "ar" && cat.redistribute === "full")
+  .map(([lang, cat]) => {
+    const edition = QURAN_TRANSLATION_EDITIONS[lang];
+    if (!edition) {
+      throw new Error(
+        `No bundle edition defined for Quran translation "${lang}". Add it to ` +
+          `QURAN_TRANSLATION_EDITIONS, using the same id the native app has in Editions.kt.`,
+      );
+    }
+    const id = `quran.${lang}.${edition.slug}`;
+    return {
+      id,
+      resource: "quran" as const,
+      lang,
+      label: edition.label,
+      // The translation is laid out against the mushaf, so it is only meaningful beside it.
+      requires: ["quran.ar"],
+      // True of the five the app ships; the manifest still lists them so a reader who has an
+      // older build, or a future one that unbundles them, can fetch the same edition.
+      bundledWithApp: true,
+      version: 1,
+      license: cat.license,
+      attribution: cat.attribution,
+      redistribute: cat.redistribute,
+      ext: "json.gz",
+      // Deliberately not "application/gzip" with a Content-Encoding header — see BundleTarget.
+      contentType: "application/gzip",
+      build: (db: Firestore, outPath: string) =>
+        buildQuranTranslation(db, { id, lang, version: 1 }, outPath),
+    };
+  });
+
+const ALL_TARGETS: BundleTarget[] = [
+  QURAN_AR_TARGET,
+  ...QURAN_TRANSLATION_TARGETS,
+  ...HADITH_AR_TARGETS,
+];
 
 /* --------------------------------------------------------------------- */
 /* Builders                                                               */
 /* --------------------------------------------------------------------- */
+
+/** Every verse of the Quran, in mushaf order. */
+const EXPECTED_AYAHS = 6236;
+
+/**
+ * Writes one Quran translation as a gzipped JSON payload.
+ *
+ * ### The format
+ *
+ * ```
+ * {"id": "quran.ru.kuliev", "version": 1, "lang": "ru", "count": 6236, "texts": ["…", …]}
+ * ```
+ *
+ * `texts` carries one entry per verse **in mushaf order** — surah 1 to 114, each verse in
+ * sequence — and no verse keys. Repeating `"2:255":` six thousand times would be roughly a
+ * third of the payload to tell the client something it already knows: it has the mushaf, so it
+ * can rebuild the order itself. The whole file lands around 300 KB compressed.
+ *
+ * That economy is also the format's one sharp edge. Position *is* the verse reference, so a
+ * single missing entry shifts every later verse onto the wrong ayah — a translation silently
+ * one verse out from Al-Baqarah onwards. Hence the two guards: exactly [EXPECTED_AYAHS] entries
+ * or this throws, and `count` is written into the payload so the client can refuse a file that
+ * was truncated in transit (a JSON array cut at a comma is still parseable).
+ *
+ * Verses the translation has no text for are written as `""` rather than dropped, which keeps
+ * the positions aligned; the client skips empty entries when it inserts.
+ *
+ * Not SQLite, unlike the other bundles here. Those were built for a client that read them with
+ * ATTACH; the current native app keys its own Room schema by edition id and imports the text,
+ * so a server-built .db would tie this script to that schema's migrations for good.
+ */
+async function buildQuranTranslation(
+  fs: Firestore,
+  meta: { id: string; lang: string; version: number },
+  outPath: string,
+): Promise<void> {
+  console.log(`  reading quran_ayahs (lang=${meta.lang}) ...`);
+  const snap = await fs.collection("quran_ayahs").get();
+
+  const rows = snap.docs
+    .map((doc) => doc.data() as Record<string, unknown>)
+    .filter((d) => Number.isFinite(d.surah) && Number.isFinite(d.ayah))
+    .sort((a, b) =>
+      a.surah !== b.surah
+        ? (a.surah as number) - (b.surah as number)
+        : (a.ayah as number) - (b.ayah as number),
+    );
+
+  if (rows.length !== EXPECTED_AYAHS) {
+    throw new Error(
+      `quran_ayahs holds ${rows.length} verses, expected ${EXPECTED_AYAHS}. ` +
+        `Position is the verse reference in this format, so a short read would ship a ` +
+        `translation misaligned against the mushaf rather than an obviously broken one.`,
+    );
+  }
+
+  let present = 0;
+  const texts = rows.map((d) => {
+    const translations = (d.translations ?? {}) as Record<string, unknown>;
+    const text = translations[meta.lang];
+    if (typeof text !== "string" || text.length === 0) return "";
+    present += 1;
+    return text;
+  });
+
+  if (present === 0) {
+    throw new Error(
+      `No verse in quran_ayahs carries a "${meta.lang}" translation — refusing to upload an ` +
+        `empty bundle that the app would install as a blank translation.`,
+    );
+  }
+
+  const payload = JSON.stringify({
+    id: meta.id,
+    version: meta.version,
+    lang: meta.lang,
+    count: texts.length,
+    texts,
+  });
+
+  try {
+    rmSync(outPath, { force: true });
+  } catch {
+    /* ignore */
+  }
+  writeFileSync(outPath, gzipSync(Buffer.from(payload, "utf8"), { level: 9 }));
+  console.log(
+    `  wrote ${present}/${texts.length} verses` +
+      (present < texts.length ? ` (${texts.length - present} blank)` : ""),
+  );
+}
 
 async function buildQuranAr(fs: Firestore, outPath: string): Promise<void> {
   console.log(`  reading quran_surahs ...`);
@@ -373,7 +548,11 @@ function sha256(path: string): string {
 /* Upload                                                                 */
 /* --------------------------------------------------------------------- */
 
-async function uploadToStorage(localPath: string, remotePath: string): Promise<string> {
+async function uploadToStorage(
+  localPath: string,
+  remotePath: string,
+  contentType: string,
+): Promise<string> {
   const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
   if (!bucketName) {
     throw new Error("FIREBASE_STORAGE_BUCKET env var not set");
@@ -382,7 +561,11 @@ async function uploadToStorage(localPath: string, remotePath: string): Promise<s
   await bucket.upload(localPath, {
     destination: remotePath,
     metadata: {
-      contentType: "application/x-sqlite3",
+      contentType,
+      // No contentEncoding, deliberately, even for the gzipped bundles. Setting it would have
+      // GCS decompress transparently for any client advertising gzip, and the bytes that client
+      // hashes would stop matching the sha256 in the manifest. The native app verifies every
+      // download against that hash and would reject the lot.
       cacheControl: "public, max-age=31536000, immutable",
     },
   });
@@ -436,17 +619,21 @@ async function main() {
   const builtEntries: Array<Record<string, unknown>> = [];
 
   for (const target of targets) {
-    const localPath = join(outDir, `${target.id}.v${target.version}.db`);
+    const objectName = `${target.id}.v${target.version}.${target.ext}`;
+    const localPath = join(outDir, objectName);
     console.log(`\n[${target.id}] building → ${localPath}`);
     await target.build(fs, localPath);
     const sizeBytes = statSync(localPath).size;
+    // Hashed as it sits on disk, which is what the object will be byte for byte, which is what
+    // the native app hashes after downloading. All three have to be the same bytes.
     const sha = sha256(localPath);
     let url = `local://${localPath}`;
     if (args.upload && !args.dryRun) {
       console.log(`  uploading to Firebase Storage ...`);
       url = await uploadToStorage(
         localPath,
-        `bundles/${target.id}.v${target.version}.db`,
+        `bundles/${objectName}`,
+        target.contentType,
       );
       console.log(`  → ${url}`);
     }
