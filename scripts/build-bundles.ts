@@ -7,9 +7,9 @@
  *
  * Run:
  *   npm run build:bundles -- --bundle quran.ar
- *   npm run build:bundles -- --all
- *   npm run build:bundles -- --all --upload          # also push to Storage
- *   npm run build:bundles -- --all --dry-run         # don't touch Firestore
+ *   npm run build:bundles -- --all                   # build into bundles-output/ only
+ *   npm run build:bundles -- --all --upload          # push to Storage, then update the manifest
+ *   npm run build:bundles -- --all --dry-run         # same as no --upload: don't touch Firestore
  *
  * Scope: **only `redistribute: "full"` bundles are built** — the Arabic Quran
  * mushaf (public domain) and Arabic Hadith per collection (classical public
@@ -689,9 +689,13 @@ async function main() {
     console.log(`  size=${(sizeBytes / 1024 / 1024).toFixed(2)} MB  sha256=${sha.slice(0, 12)}…`);
   }
 
-  if (args.dryRun) {
+  // Only an upload may write the manifest. A build without one has nothing to record but
+  // local:// paths, and writing those publishes a path on this machine as a download link — which
+  // happened: `quran.ar` sat in the live manifest pointing at C:\Users\… from May to September.
+  if (args.dryRun || !args.upload) {
     console.log(
-      `\n[dry-run] would update config/bundles with ${builtEntries.length} entry(ies):`,
+      `\n[${args.dryRun ? "dry-run" : "no --upload"}] config/bundles not updated; ` +
+        `it would get ${builtEntries.length} entry(ies):`,
     );
     console.log(JSON.stringify({ bundles: builtEntries }, null, 2));
     return;
@@ -704,9 +708,15 @@ async function main() {
     ? (existing.data()?.bundles as Record<string, unknown>[])
     : [];
 
+  // An entry that is not an https URL can never be downloaded, so it is dropped on the next
+  // write rather than carried forward forever.
   const builtIds = new Set(builtEntries.map((b) => b.id as string));
+  const kept = existingBundles.filter((b) => !builtIds.has(b.id as string));
+  for (const b of kept) {
+    if (!String(b.url).startsWith("https://")) console.log(`  dropping ${b.id}: url ${b.url}`);
+  }
   const merged = [
-    ...existingBundles.filter((b) => !builtIds.has(b.id as string)),
+    ...kept.filter((b) => String(b.url).startsWith("https://")),
     ...builtEntries,
   ];
   const manifestVersion =
